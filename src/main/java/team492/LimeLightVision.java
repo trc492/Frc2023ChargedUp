@@ -26,17 +26,17 @@ import TrcFrcLib.frclib.FrcLimeLightVisionProcessor;
 import TrcFrcLib.frclib.FrcRemoteVisionProcessor;
 import TrcFrcLib.frclib.FrcLimeLightVisionProcessor.RingLightMode;
 
-public class VisionTargeting
+public class LimeLightVision
 {
     public final FrcLimeLightVisionProcessor vision;
 
-    public VisionTargeting()
+    public LimeLightVision()
     {
         vision = new FrcLimeLightVisionProcessor("LimeLight");
         vision.selectPipeline(0);
         vision.setDepthApproximator(
             "ty",
-            y -> (RobotParams.VISION_HIGH_TARGET_HEIGHT - RobotParams.CAMERA_HEIGHT) /
+            y -> (RobotParams.VISION_TARGET_HEIGHT - RobotParams.CAMERA_HEIGHT) /
                  Math.tan(Math.toRadians(y + RobotParams.CAMERA_ANGLE)));
         vision.setOffsets(RobotParams.CAMERA_X_OFFSET, RobotParams.CAMERA_Y_OFFSET);
         vision.setFreshnessTimeout(RobotParams.CAMERA_DATA_TIMEOUT);
@@ -65,7 +65,7 @@ public class VisionTargeting
 
     public double getTargetDistance()
     {
-        return vision.getTargetDepth() * RobotParams.VISION_DISTANCE_FUDGE_FACTOR;
+        return vision.getTargetDepth();
     }   //getTargetDistance
 
     public FrcRemoteVisionProcessor.RelativePose getLastPose()
@@ -84,4 +84,4 @@ public class VisionTargeting
         return vision.getMedianPose(numFrames, requireAll);
     }
 
-}   //class VisionTargeting
+}   //class LimeLightVision

@@ -39,13 +39,20 @@ public class RobotParams
         public static final boolean useXboxController           = true;
         public static final boolean useButtonPanels             = false;
         public static final boolean doOneStickDrive             = true;
-        public static final boolean useGyroAssist               = false;
         // Sensors
-        public static final boolean useNavX                     = true;
+        public static final boolean useNavX                     = false;
         public static final boolean usePdp                      = false;
+        // Vision
+        public static final boolean useLimeLightVision          = false;
+        public static final boolean useOpenCvVision             = true;
+        public static final boolean useStreamCamera             = true;
+        // Robot
+        public static final boolean noRobot                     = true;
+        // Drive Base
         public static final boolean useExternalOdometry         = false;
-        public static final boolean useVision                   = false;
-        public static final boolean useStreamCamera             = false;
+        public static final boolean swerveRobot                 = true;
+        public static final boolean useVelocityControl          = false;
+        public static final boolean useGyroAssist               = false;
         // Subsystems
         public static final boolean useSubsystems               = false;
         // Miscellaneous
@@ -168,14 +175,14 @@ public class RobotParams
     //
     // Vision subsystem.
     //
+    public static final int CAMERA_IMAGE_WIDTH                  = 640;
+    public static final int CAMERA_IMAGE_HEIGHT                 = 480;
     public static final double CAMERA_Y_OFFSET                  = 2.5;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot
     public static final double CAMERA_HEIGHT                    = 22.0; // Inches from the floor
     public static final double CAMERA_ANGLE                     = 36.0; // Degrees from horizontal
     public static final double CAMERA_DATA_TIMEOUT              = 0.5;  // 500ms
-    public static final double VISION_HIGH_TARGET_HEIGHT        = 104.0;// Inches from the floor
-    public static final double VISION_TARGET_RADIUS             = 53.375/2.0;// Inches
-    public static final double VISION_DISTANCE_FUDGE_FACTOR     = 0.9;  // Compensate unknown discrepancy.
+    public static final double VISION_TARGET_HEIGHT             = 104.0;// Inches from the floor
 
     //
     // DriveBase subsystem.

@@ -28,10 +28,8 @@ import TrcCommonLib.command.CmdDriveMotorsTest;
 import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.util.Color;
 import TrcFrcLib.frclib.FrcChoiceMenu;
 import TrcFrcLib.frclib.FrcUserChoices;
-import TrcCommonLib.trclib.TrcColor;
 import TrcCommonLib.trclib.TrcMotor;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPose2D;
@@ -526,11 +524,6 @@ public class FrcTest extends FrcTeleOp
         robot.dashboard.displayPrintf(12, "DrivePower: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
             robot.robotDrive.lfDriveMotor.getMotorPower(), robot.robotDrive.rfDriveMotor.getMotorPower(),
             robot.robotDrive.lbDriveMotor.getMotorPower(), robot.robotDrive.rbDriveMotor.getMotorPower());
-        Color color = robot.colorSensor.getColor();
-        double[] hsv = TrcColor.rgbToHsv(color.red, color.green, color.blue);
-        robot.dashboard.displayPrintf(
-            13, "Color: RGB=(%.2f,%.2f,%.2f), HSV=(%.1f,%.1f,%.1f)",
-            color.red, color.green, color.blue, hsv[0], hsv[1], hsv[2]);
 
         //
         // Display other subsystems and sensor info.

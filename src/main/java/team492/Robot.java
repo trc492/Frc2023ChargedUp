@@ -24,12 +24,12 @@ package team492;
 
 import java.util.Locale;
 
-import com.revrobotics.ColorSensorV3;
-
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcOpenCvDetector;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobotBattery;
 import TrcCommonLib.trclib.TrcTimer;
+import TrcCommonLib.trclib.TrcVisionTargetInfo;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAHRSGyro;
 import TrcFrcLib.frclib.FrcDashboard;
@@ -43,7 +43,6 @@ import TrcFrcLib.frclib.FrcXboxController;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 /**
@@ -77,7 +76,6 @@ public class Robot extends FrcRobotBase
     public FrcPdp pdp;
     public TrcRobotBattery battery;
     public AnalogInput pressureSensor;
-    public ColorSensorV3 colorSensor;
 
     //
     // Miscellaneous hardware.
@@ -87,12 +85,13 @@ public class Robot extends FrcRobotBase
     //
     // Vision subsystem.
     //
-    public VisionTargeting vision;
+    public LimeLightVision limeLightVision;
+    public OpenCvVision openCvVision;
 
     //
     // DriveBase subsystem.
     //
-    public WestCoastDrive robotDrive;
+    public RobotDrive robotDrive;
 
     //
     // Other subsystems.
@@ -166,7 +165,6 @@ public class Robot extends FrcRobotBase
         }
 
         pressureSensor = new AnalogInput(RobotParams.AIN_PRESSURE_SENSOR);
-        colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
 
         //
         // Create and initialize miscellaneous hardware.
@@ -176,21 +174,35 @@ public class Robot extends FrcRobotBase
         //
         // Create and initialize Vision subsystem.
         //
-        if (RobotParams.Preferences.useVision)
+        if (RobotParams.Preferences.useLimeLightVision)
         {
-            vision = new VisionTargeting();
+            limeLightVision = new LimeLightVision();
         }
 
-        //
-        // Create and initialize RobotDrive subsystem.
-        //
-        robotDrive = new WestCoastDrive(this);
-
-        //
-        // Create and initialize other subsystems.
-        //
-        if (RobotParams.Preferences.useSubsystems)
+        if (RobotParams.Preferences.useOpenCvVision)
         {
+            UsbCamera camera = CameraServer.startAutomaticCapture();
+            camera.setResolution(RobotParams.CAMERA_IMAGE_WIDTH, RobotParams.CAMERA_IMAGE_HEIGHT);
+            openCvVision = new OpenCvVision(
+                "OpenCvVision", 1, CameraServer.getVideo(),
+                CameraServer.putVideo("OpenCvStream", RobotParams.CAMERA_IMAGE_WIDTH, RobotParams.CAMERA_IMAGE_HEIGHT),
+                RobotParams.CAMERA_IMAGE_WIDTH, RobotParams.CAMERA_IMAGE_HEIGHT,
+                null, null, globalTracer);
+        }
+
+        if (!RobotParams.Preferences.noRobot)
+        {
+            //
+            // Create and initialize RobotDrive subsystem.
+            //
+            robotDrive = RobotParams.Preferences.swerveRobot? new SwerveDrive(this): new WestCoastDrive(this);
+
+            //
+            // Create and initialize other subsystems.
+            //
+            if (RobotParams.Preferences.useSubsystems)
+            {
+            }
         }
 
         //
@@ -238,7 +250,10 @@ public class Robot extends FrcRobotBase
         //
         // Start subsystems.
         //
-        robotDrive.startMode(runMode, prevMode);
+        if (robotDrive != null)
+        {
+            robotDrive.startMode(runMode, prevMode);
+        }
         ledIndicator.reset();
     }   //robotStartMode
 
@@ -256,7 +271,11 @@ public class Robot extends FrcRobotBase
         //
         // Stop subsystems.
         //
-        robotDrive.stopMode(runMode, nextMode);
+        if (robotDrive != null)
+        {
+            robotDrive.stopMode(runMode, nextMode);
+        }
+
         if (RobotParams.Preferences.useSubsystems)
         {
         }
@@ -319,72 +338,89 @@ public class Robot extends FrcRobotBase
 
             if (RobotParams.Preferences.debugDriveBase)
             {
-                TrcPose2D robotPose = robotDrive.driveBase.getFieldPosition();
-
-                dashboard.putNumber("DriveBase/xPos", robotPose.x);
-                dashboard.putNumber("DriveBase/yPos", robotPose.y);
-                dashboard.putData("DriveBase/heading", ((FrcAHRSGyro) robotDrive.gyro).getGyroSendable());
-                dashboard.putNumber("DriveBase/Yaw", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getYaw());
-                dashboard.putNumber("DriveBase/Pitch", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getPitch());
-                dashboard.putNumber("DriveBase/Roll", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getRoll());
-                dashboard.putNumber("DriveBase/AccelX", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelX());
-                dashboard.putNumber("DriveBase/AccelY", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelY());
-                dashboard.putNumber("DriveBase/AccelZ", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelZ());
-                dashboard.putNumber("DriverBase/Compass", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getCompassHeading());
-
-                //
-                // DriveBase debug info.
-                //
-                double lfDriveEnc = robotDrive.lfDriveMotor.getPosition();
-                double rfDriveEnc = robotDrive.rfDriveMotor.getPosition();
-                double lbDriveEnc = robotDrive.lbDriveMotor.getPosition();
-                double rbDriveEnc = robotDrive.rbDriveMotor.getPosition();
-
-                dashboard.displayPrintf(
-                    8, "DriveBase: lf=%.0f, rf=%.0f, lb=%.0f, rb=%.0f, avg=%.0f",
-                    lfDriveEnc, rfDriveEnc, lbDriveEnc, rbDriveEnc,
-                    (lfDriveEnc + rfDriveEnc + lbDriveEnc + rbDriveEnc) / 4.0);
-                dashboard.displayPrintf(9, "DriveBase: pose=%s", robotPose);
-
-                if (RobotParams.Preferences.debugPidDrive)
+                if (robotDrive != null)
                 {
-                    int lineNum = 10;
-                    if (robotDrive.encoderXPidCtrl != null)
+                    TrcPose2D robotPose = robotDrive.driveBase.getFieldPosition();
+
+                    dashboard.putNumber("DriveBase/xPos", robotPose.x);
+                    dashboard.putNumber("DriveBase/yPos", robotPose.y);
+                    dashboard.putData("DriveBase/heading", ((FrcAHRSGyro) robotDrive.gyro).getGyroSendable());
+                    dashboard.putNumber("DriveBase/Yaw", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getYaw());
+                    dashboard.putNumber("DriveBase/Pitch", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getPitch());
+                    dashboard.putNumber("DriveBase/Roll", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getRoll());
+                    dashboard.putNumber("DriveBase/AccelX", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelX());
+                    dashboard.putNumber("DriveBase/AccelY", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelY());
+                    dashboard.putNumber("DriveBase/AccelZ", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelZ());
+                    dashboard.putNumber("DriverBase/Compass", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getCompassHeading());
+
+                    //
+                    // DriveBase debug info.
+                    //
+                    double lfDriveEnc = robotDrive.lfDriveMotor.getPosition();
+                    double rfDriveEnc = robotDrive.rfDriveMotor.getPosition();
+                    double lbDriveEnc = robotDrive.lbDriveMotor.getPosition();
+                    double rbDriveEnc = robotDrive.rbDriveMotor.getPosition();
+
+                    dashboard.displayPrintf(
+                        8, "DriveBase: lf=%.0f, rf=%.0f, lb=%.0f, rb=%.0f, avg=%.0f",
+                        lfDriveEnc, rfDriveEnc, lbDriveEnc, rbDriveEnc,
+                        (lfDriveEnc + rfDriveEnc + lbDriveEnc + rbDriveEnc) / 4.0);
+                    dashboard.displayPrintf(9, "DriveBase: pose=%s", robotPose);
+
+                    if (RobotParams.Preferences.debugPidDrive)
                     {
-                        robotDrive.encoderXPidCtrl.displayPidInfo(lineNum);
+                        int lineNum = 10;
+                        if (robotDrive.encoderXPidCtrl != null)
+                        {
+                            robotDrive.encoderXPidCtrl.displayPidInfo(lineNum);
+                            lineNum += 2;
+                        }
+                        robotDrive.encoderYPidCtrl.displayPidInfo(lineNum);
                         lineNum += 2;
+                        robotDrive.gyroTurnPidCtrl.displayPidInfo(lineNum);
                     }
-                    robotDrive.encoderYPidCtrl.displayPidInfo(lineNum);
-                    lineNum += 2;
-                    robotDrive.gyroTurnPidCtrl.displayPidInfo(lineNum);
                 }
             }
 
             if (RobotParams.Preferences.showVisionStatus)
             {
-                if (vision != null)
+                if (limeLightVision != null)
                 {
-                    FrcRemoteVisionProcessor.RelativePose pose = vision.getLastPose();
+                    FrcRemoteVisionProcessor.RelativePose pose = limeLightVision.getLastPose();
 
                     if (pose != null)
                     {
-                        double horiAngle = vision.getTargetHorizontalAngle();
-                        double vertAngle = vision.getTargetVerticalAngle();
-                        double distanceToTarget = vision.getTargetDistance();
-                        dashboard.putNumber("Camera/distance", distanceToTarget + RobotParams.VISION_TARGET_RADIUS);
+                        double horiAngle = limeLightVision.getTargetHorizontalAngle();
+                        double vertAngle = limeLightVision.getTargetVerticalAngle();
+                        double distanceToTarget = limeLightVision.getTargetDistance();
+                        dashboard.putNumber("Camera/distance", distanceToTarget);
                         dashboard.putNumber("Camera/horiAngle", horiAngle);
                         dashboard.putNumber("Camera/vertAngle", vertAngle);
                         if (RobotParams.Preferences.debugVision)
                         {
                             dashboard.displayPrintf(
                                 15, "VisionTarget: x=%.1f,y=%.1f,depth=%.1f/%.1f,horiAngle=%.1f,vertAngle=%.1f",
-                                pose.x, pose.y, pose.r, distanceToTarget + RobotParams.VISION_TARGET_RADIUS,
-                                horiAngle, vertAngle);
+                                pose.x, pose.y, pose.r, distanceToTarget, horiAngle, vertAngle);
                         }
                     }
                     else if (RobotParams.Preferences.debugVision)
                     {
                         dashboard.displayPrintf(15, "VisionTarget: No target found!");
+                    }
+                }
+
+                if (openCvVision != null)
+                {
+                    TrcVisionTargetInfo<TrcOpenCvDetector.DetectedObject<?>> targetInfo =
+                        openCvVision.getTargetInfo(null, null);
+
+                    if (targetInfo != null)
+                    {
+                        if (RobotParams.Preferences.debugVision)
+                        {
+                            dashboard.displayPrintf(
+                                14, "%s_Info: %s", openCvVision.getDetectObjectType(), targetInfo);
+                        }
                     }
                 }
             }
