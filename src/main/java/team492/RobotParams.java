@@ -45,7 +45,7 @@ public class RobotParams
         // Vision
         public static final boolean useLimeLightVision          = false;
         public static final boolean useOpenCvVision             = true;
-        public static final boolean useStreamCamera             = true;
+        public static final boolean useStreamCamera             = false;
         // Robot
         public static final boolean noRobot                     = true;
         // Drive Base
@@ -175,8 +175,8 @@ public class RobotParams
     //
     // Vision subsystem.
     //
-    public static final int CAMERA_IMAGE_WIDTH                  = 640;
-    public static final int CAMERA_IMAGE_HEIGHT                 = 480;
+    public static final int CAMERA_IMAGE_WIDTH                  = 160;
+    public static final int CAMERA_IMAGE_HEIGHT                 = 120;
     public static final double CAMERA_Y_OFFSET                  = 2.5;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot
     public static final double CAMERA_HEIGHT                    = 22.0; // Inches from the floor

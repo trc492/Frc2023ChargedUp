@@ -73,7 +73,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         //
         // Initialize subsystems for TeleOp mode if necessary.
         //
-        robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
+        if (robot.robotDrive != null)
+        {
+            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
+        }
     }   //startMode
 
     /**

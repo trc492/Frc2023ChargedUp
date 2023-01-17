@@ -28,14 +28,17 @@ import TrcCommonLib.command.CmdDriveMotorsTest;
 import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import team492.OpenCvVision.ObjectType;
 import TrcFrcLib.frclib.FrcChoiceMenu;
 import TrcFrcLib.frclib.FrcUserChoices;
 import TrcCommonLib.trclib.TrcMotor;
+import TrcCommonLib.trclib.TrcOpenCvDetector;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
+import TrcCommonLib.trclib.TrcVisionTargetInfo;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 
 /**
@@ -55,6 +58,7 @@ public class FrcTest extends FrcTeleOp
     {
         SENSORS_TEST,
         SUBSYSTEMS_TEST,
+        VISION_TEST,
         SWERVE_CALIBRATION,
         DRIVE_SPEED_TEST,
         DRIVE_MOTORS_TEST,
@@ -107,6 +111,7 @@ public class FrcTest extends FrcTeleOp
             //
             testMenu.addChoice("Sensors Test", Test.SENSORS_TEST, true, false);
             testMenu.addChoice("Subsystems Test", Test.SUBSYSTEMS_TEST);
+            testMenu.addChoice("Vision Test", Test.VISION_TEST);
             testMenu.addChoice("Swerve Calibration", Test.SWERVE_CALIBRATION);
             testMenu.addChoice("Drive Speed Test", Test.DRIVE_SPEED_TEST);
             testMenu.addChoice("Drive Motors Test", Test.DRIVE_MOTORS_TEST);
@@ -249,6 +254,14 @@ public class FrcTest extends FrcTeleOp
                 // So let it flow to the next case.
                 //
             case SUBSYSTEMS_TEST:
+                break;
+
+            case VISION_TEST:
+                if (robot.openCvVision != null)
+                {
+                    robot.openCvVision.setDetectObjectType(ObjectType.APRILTAG);
+                    robot.openCvVision.setVideoOutput(0, true);
+                }
                 break;
 
             case SWERVE_CALIBRATION:
@@ -432,6 +445,10 @@ public class FrcTest extends FrcTeleOp
                     displaySensorStates();
                     break;
 
+                case VISION_TEST:
+                    doVisionTest();
+                    break;
+
                 case SWERVE_CALIBRATION:
                     robot.robotDrive.steerCalibratePeriodic();
                     displaySensorStates();
@@ -498,6 +515,7 @@ public class FrcTest extends FrcTeleOp
     //
     // Implement tests.
     //
+
     /**
      * This method reads all sensors and prints out their values. This is a very
      * useful diagnostic tool to check if all sensors are working properly. For
@@ -515,20 +533,39 @@ public class FrcTest extends FrcTeleOp
             robot.dashboard.displayPrintf(
                 9, "Sensors Test (Batt=%.1f/%.1f):", robot.battery.getVoltage(), robot.battery.getLowestVoltage());
         }
-        robot.dashboard.displayPrintf(
-            10, "DriveBase: Pose=%s,Vel=%s", robot.robotDrive.driveBase.getFieldPosition(),
-            robot.robotDrive.driveBase.getFieldVelocity());
-        robot.dashboard.displayPrintf(11, "DriveEncoders: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
-            robot.robotDrive.lfDriveMotor.getPosition(), robot.robotDrive.rfDriveMotor.getPosition(),
-            robot.robotDrive.lbDriveMotor.getPosition(), robot.robotDrive.rbDriveMotor.getPosition());
-        robot.dashboard.displayPrintf(12, "DrivePower: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
-            robot.robotDrive.lfDriveMotor.getMotorPower(), robot.robotDrive.rfDriveMotor.getMotorPower(),
-            robot.robotDrive.lbDriveMotor.getMotorPower(), robot.robotDrive.rbDriveMotor.getMotorPower());
-
+        if (robot.robotDrive != null)
+        {
+            robot.dashboard.displayPrintf(
+                10, "DriveBase: Pose=%s,Vel=%s", robot.robotDrive.driveBase.getFieldPosition(),
+                robot.robotDrive.driveBase.getFieldVelocity());
+            robot.dashboard.displayPrintf(11, "DriveEncoders: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
+                robot.robotDrive.lfDriveMotor.getPosition(), robot.robotDrive.rfDriveMotor.getPosition(),
+                robot.robotDrive.lbDriveMotor.getPosition(), robot.robotDrive.rbDriveMotor.getPosition());
+            robot.dashboard.displayPrintf(12, "DrivePower: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
+                robot.robotDrive.lfDriveMotor.getMotorPower(), robot.robotDrive.rfDriveMotor.getMotorPower(),
+                robot.robotDrive.lbDriveMotor.getMotorPower(), robot.robotDrive.rbDriveMotor.getMotorPower());
+        }
         //
         // Display other subsystems and sensor info.
         //
-
     }   //displaySensorStates
+
+    /**
+     * This method is called periodically to use vision to perform objects detection. It updates the dashboard with
+     * the information of the detected objects.
+     */
+    private void doVisionTest()
+    {
+        if (robot.openCvVision != null)
+        {
+            TrcVisionTargetInfo<TrcOpenCvDetector.DetectedObject<?>> targetInfo =
+                robot.openCvVision.getTargetInfo(null, null);
+            if (targetInfo != null)
+            {
+                // robot.globalTracer.traceInfo("doVisionTest", "Detected AprilTag %s", targetInfo);
+                robot.dashboard.displayPrintf(15, "AprilTag: %s", targetInfo);
+            }
+        }
+    }   //doVisionTest
 
 }   //class FrcTest

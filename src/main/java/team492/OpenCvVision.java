@@ -32,7 +32,7 @@ import TrcCommonLib.trclib.TrcOpenCvColorBlobPipeline;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
 import TrcCommonLib.trclib.TrcOpenCvPipeline;
 import TrcCommonLib.trclib.TrcVisionTargetInfo;
-import TrcFrcLib.frclib.FrcAprilTagPipeline;
+import TrcFrcLib.frclib.FrcOpenCvAprilTagPipeline;
 import TrcFrcLib.frclib.FrcOpenCvDetector;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
@@ -46,7 +46,7 @@ public class OpenCvVision extends FrcOpenCvDetector
 
     public enum ObjectType
     {
-        APRILTAG, POLE, CONE, CUBE;
+        APRILTAG, POLE, CONE, CUBE, NONE;
 
         static ObjectType nextObjectType(ObjectType objType)
         {
@@ -54,7 +54,6 @@ public class OpenCvVision extends FrcOpenCvDetector
 
             switch (objType)
             {
-                default:
                 case APRILTAG:
                     nextObjType = POLE;
                     break;
@@ -68,9 +67,14 @@ public class OpenCvVision extends FrcOpenCvDetector
                     break;
 
                 case CUBE:
+                    nextObjType = NONE;
+                    break;
+
+                default:
+                case NONE:
                     nextObjType = APRILTAG;
                     break;
-            }
+                }
 
             return nextObjType;
         }   //nextObjectType
@@ -82,25 +86,27 @@ public class OpenCvVision extends FrcOpenCvDetector
     private final TrcOpenCvPipeline<DetectedObject<?>> polePipeline;
     private final TrcOpenCvPipeline<DetectedObject<?>> conePipeline;
     private final TrcOpenCvPipeline<DetectedObject<?>> cubePipeline;
-    private ObjectType objectType = null;
+    private ObjectType objectType = ObjectType.NONE;
 
     /**
      * Constructor: Create an instance of the object.
      *
      * @param instanceName specifies the instance name.
-     * @param imageWidth specifies the camera image width.
-     * @param imageHeight specifies the camera image height.
-     * @param cameraRect specifies the homography camera pixel rectangle, can be null if not provided.
-     * @param worldRect specifies the homography world coordinate rectangle, can be null if not provided.
-     * @param openCvCam specifies the OpenCV camera object.
-     * @param cameraRotation specifies the camera orientation.
+     * @param numImageBuffers specifies the number of image buffers to allocate.
+     * @param imageWidth specifies the width of the camera image.
+     * @param imageHeight specifies the height of the camera image.
+     * @param cameraRect specifies the camera rectangle for Homography Mapper, can be null if not provided.
+     * @param worldRect specifies the world rectangle for Homography Mapper, can be null if not provided.
+     * @param cvSink specifies the object to capture the video frames.
+     * @param cvSource specifies the object to stream video output.
      * @param tracer specifies the tracer for trace info, null if none provided.
      */
     public OpenCvVision(
-        String instanceName, int numImageBuffers, CvSink cvSink, CvSource cvSource, int imageWidth, int imageHeight,
-        TrcHomographyMapper.Rectangle cameraRect, TrcHomographyMapper.Rectangle worldRect, TrcDbgTrace tracer)
+        String instanceName, int numImageBuffers, int imageWidth, int imageHeight,
+        TrcHomographyMapper.Rectangle cameraRect, TrcHomographyMapper.Rectangle worldRect,
+        CvSink cvSink, CvSource cvSource, TrcDbgTrace tracer)
     {
-        super(instanceName, numImageBuffers, cvSink, cvSource, imageWidth, imageHeight,  cameraRect, worldRect,
+        super(instanceName, numImageBuffers, imageWidth, imageHeight,  cameraRect, worldRect, cvSink, cvSource,
               tracer);
 
         this.tracer = tracer;
@@ -132,15 +138,13 @@ public class OpenCvVision extends FrcOpenCvDetector
                 .setVerticesRange(0.0, 1000.0)
                 .setAspectRatioRange(0.0, 1000.0);
 
-        aprilTagPipeline = new FrcAprilTagPipeline("tag16h5", null, null, tracer);
+        aprilTagPipeline = new FrcOpenCvAprilTagPipeline("tag16h5", null, null, tracer);
         polePipeline = new TrcOpenCvColorBlobPipeline(
             "polePipeline", colorConversion, colorThresholdsPole, poleFilterContourParams, tracer);
         conePipeline = new TrcOpenCvColorBlobPipeline(
             "conePipeline", colorConversion, colorThresholdsCone, coneFilterContourParams, tracer);
         cubePipeline = new TrcOpenCvColorBlobPipeline(
             "cubePipeline", colorConversion, colorThresholdsCube, cubeFilterContourParams, tracer);
-        // Set default pipeline and enable it.
-        setDetectObjectType(ObjectType.APRILTAG);
     }   //OpenCvVision
 
     /**
@@ -169,6 +173,10 @@ public class OpenCvVision extends FrcOpenCvDetector
 
             case CUBE:
                 setPipeline(cubePipeline);
+                break;
+
+            case NONE:
+                setPipeline(null);
                 break;
         }
     }   //updatePipeline
@@ -203,22 +211,18 @@ public class OpenCvVision extends FrcOpenCvDetector
     }   //getDetectObjectType
 
     /**
-     * This method enables/disables the display of the processed image.
+     * This method sets the intermediate mat of the pipeline as the video output mat and optionally annotate the
+     * detected rectangle on it.
      *
-     * @param intermediateStep specifies the intermediate step frame to be displayed (0 is the original image,
-     *        -1 to disable the image display).
-     * @param annotate specifies true to annotate the image with the detected object rectangles, false otherwise.
-     *        This parameter is ignored if intermediateStep is -1.
+     * @param intermediateStep specifies the intermediate mat used as video output (1 is the original mat, 0 to
+     *        disable video output if supported).
+     * @param annotate specifies true to annotate detected rectangles on the output mat, false otherwise.
+     *        This parameter is ignored if intermediateStep is 0.
      */
-    public void setVideoOutEnabled(int intermediateStep, boolean annotate)
+    public void setVideoOutput(int intermediateStep, boolean annotate)
     {
-        TrcOpenCvPipeline<?> pipeline = getPipeline();
-
-        if (pipeline == polePipeline || pipeline == conePipeline || pipeline == cubePipeline)
-        {
-            setVideoOutEnabled(intermediateStep, annotate);;
-        }
-    }   //setVideoOutputEnabled
+        getPipeline().setVideoOutput(intermediateStep, annotate);
+    }   //setVideoOutput
 
     /**
      * This method returns an array of detected targets from Grip vision.
