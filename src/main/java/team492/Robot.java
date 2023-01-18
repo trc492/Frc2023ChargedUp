@@ -154,7 +154,7 @@ public class Robot extends FrcRobotBase
         //
         if (RobotParams.Preferences.useStreamCamera)
         {
-            UsbCamera camera = CameraServer.startAutomaticCapture("DriverDisplay", 0);
+            UsbCamera camera = CameraServer.startAutomaticCapture("UsbWebcam", 0);
             camera.setResolution(160, 120);
             camera.setFPS(10);
         }
@@ -194,7 +194,7 @@ public class Robot extends FrcRobotBase
             openCvVision = new OpenCvVision(
                 "OpenCvVision", 1, RobotParams.CAMERA_IMAGE_WIDTH, RobotParams.CAMERA_IMAGE_HEIGHT, null, null,
                 CameraServer.getVideo(),
-                CameraServer.putVideo("DriverDisplay", RobotParams.CAMERA_IMAGE_WIDTH, RobotParams.CAMERA_IMAGE_HEIGHT),
+                CameraServer.putVideo("UsbWebcam", RobotParams.CAMERA_IMAGE_WIDTH, RobotParams.CAMERA_IMAGE_HEIGHT),
                 null);
         }
 
