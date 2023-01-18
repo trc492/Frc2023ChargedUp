@@ -36,6 +36,7 @@ import TrcFrcLib.frclib.FrcDashboard;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcMatchInfo;
 import TrcFrcLib.frclib.FrcPdp;
+import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcRemoteVisionProcessor;
 import TrcFrcLib.frclib.FrcRobotBase;
 import TrcFrcLib.frclib.FrcRobotBattery;
@@ -85,6 +86,7 @@ public class Robot extends FrcRobotBase
     //
     // Vision subsystem.
     //
+    public FrcPhotonVision photonVision;
     public LimeLightVision limeLightVision;
     public OpenCvVision openCvVision;
 
@@ -174,9 +176,14 @@ public class Robot extends FrcRobotBase
         //
         // Create and initialize Vision subsystem.
         //
+        if (RobotParams.Preferences.usePhotonVision)
+        {
+            photonVision = new FrcPhotonVision("trc-limelight", globalTracer);
+        }
+
         if (RobotParams.Preferences.useLimeLightVision)
         {
-            limeLightVision = new LimeLightVision();
+            limeLightVision = new LimeLightVision("limelight");
         }
 
         if (RobotParams.Preferences.useOpenCvVision)

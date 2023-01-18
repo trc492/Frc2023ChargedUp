@@ -30,6 +30,7 @@ import TrcCommonLib.command.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import team492.OpenCvVision.ObjectType;
 import TrcFrcLib.frclib.FrcChoiceMenu;
+import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcUserChoices;
 import TrcCommonLib.trclib.TrcMotor;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
@@ -556,13 +557,23 @@ public class FrcTest extends FrcTeleOp
      */
     private void doVisionTest()
     {
+        if (robot.photonVision != null)
+        {
+            FrcPhotonVision.DetectedObject targetInfo = robot.photonVision.getBestDetectedObject();
+            if (targetInfo != null)
+            {
+                // robot.globalTracer.traceInfo("doVisionTest", "Photon: %s", targetInfo);
+                robot.dashboard.displayPrintf(14, "Photon: %s", targetInfo);
+            }
+        }
+
         if (robot.openCvVision != null)
         {
             TrcVisionTargetInfo<TrcOpenCvDetector.DetectedObject<?>> targetInfo =
                 robot.openCvVision.getTargetInfo(null, null);
             if (targetInfo != null)
             {
-                // robot.globalTracer.traceInfo("doVisionTest", "Detected AprilTag %s", targetInfo);
+                // robot.globalTracer.traceInfo("doVisionTest", "AprilTag: %s", targetInfo);
                 robot.dashboard.displayPrintf(15, "AprilTag: %s", targetInfo);
             }
         }

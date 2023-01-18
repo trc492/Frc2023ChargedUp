@@ -518,8 +518,8 @@
                     },
                     "1,0": {
                       "_type": "Camera Stream",
-                      "_source0": "camera_server://limelight",
-                      "_title": "limelight",
+                      "_source0": "camera_server://trc-limelight",
+                      "_title": "trc-limelight",
                       "Crosshair/Show crosshair": true,
                       "Crosshair/Crosshair color": "#FFFFFFFF",
                       "Controls/Show controls": false,
