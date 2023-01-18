@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2023 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,66 +22,59 @@
 
 package team492;
 
-import TrcFrcLib.frclib.FrcLimeLightVisionProcessor;
+import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcFrcLib.frclib.FrcLimeLightVision;
 import TrcFrcLib.frclib.FrcRemoteVisionProcessor;
-import TrcFrcLib.frclib.FrcLimeLightVisionProcessor.RingLightMode;
 
-public class LimeLightVision
+public class LimeLightVision extends FrcLimeLightVision
 {
-    public final FrcLimeLightVisionProcessor vision;
-
-    public LimeLightVision()
+    public LimeLightVision(String instanceName, TrcDbgTrace tracer)
     {
-        vision = new FrcLimeLightVisionProcessor("LimeLight");
-        vision.selectPipeline(0);
-        vision.setDepthApproximator(
+        super(instanceName, tracer);
+        selectPipeline(0);
+        setDepthApproximator(
             "ty",
             y -> (RobotParams.VISION_TARGET_HEIGHT - RobotParams.CAMERA_HEIGHT) /
                  Math.tan(Math.toRadians(y + RobotParams.CAMERA_ANGLE)));
-        vision.setOffsets(RobotParams.CAMERA_X_OFFSET, RobotParams.CAMERA_Y_OFFSET);
-        vision.setFreshnessTimeout(RobotParams.CAMERA_DATA_TIMEOUT);
-        vision.setRingLightEnabled(RingLightMode.OFF);
-    }
-
-    public void setLightEnabled(boolean enabled)
-    {
-        vision.setRingLightEnabled(enabled? RingLightMode.ON: RingLightMode.OFF);
+        setOffsets(RobotParams.CAMERA_X_OFFSET, RobotParams.CAMERA_Y_OFFSET);
+        setFreshnessTimeout(RobotParams.CAMERA_DATA_TIMEOUT);
+        setRingLightEnabled(RingLightMode.OFF);
     }
 
     public boolean targetAcquired()
     {
-        return vision.targetDetected();
+        return targetDetected();
     }   //targetAcquired
 
     public double getTargetHorizontalAngle()
     {
-        return vision.getHeading();
+        return getHeading();
     }   //getTargetHorizontalAngle
 
     public double getTargetVerticalAngle()
     {
-        return vision.getElevation() + RobotParams.CAMERA_ANGLE;
+        return getElevation() + RobotParams.CAMERA_ANGLE;
     }   //getTargetVerticalAngle
 
     public double getTargetDistance()
     {
-        return vision.getTargetDepth();
+        return getTargetDepth();
     }   //getTargetDistance
 
     public FrcRemoteVisionProcessor.RelativePose getLastPose()
     {
-        return vision.getLastPose();
+        return getLastPose();
     }
 
     public void setEnabled(boolean enabled)
     {
-        vision.setEnabled(enabled);
-        setLightEnabled(enabled);
+        setEnabled(enabled);
+        setRingLightEnabled(enabled);
     }
 
     public FrcRemoteVisionProcessor.RelativePose getMedianPose(int numFrames, boolean requireAll)
     {
-        return vision.getMedianPose(numFrames, requireAll);
+        return getMedianPose(numFrames, requireAll);
     }
 
 }   //class LimeLightVision

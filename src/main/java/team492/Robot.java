@@ -183,7 +183,7 @@ public class Robot extends FrcRobotBase
 
         if (RobotParams.Preferences.useLimeLightVision)
         {
-            limeLightVision = new LimeLightVision("limelight");
+            limeLightVision = new LimeLightVision("limelight", globalTracer);
         }
 
         if (RobotParams.Preferences.useOpenCvVision)
