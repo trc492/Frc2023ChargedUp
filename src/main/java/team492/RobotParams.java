@@ -43,10 +43,10 @@ public class RobotParams
         public static final boolean useNavX                     = false;
         public static final boolean usePdp                      = false;
         // Vision
-        public static final boolean usePhotonVision             = true;
-        public static final boolean useLimeLightVision          = false;
-        public static final boolean useOpenCvVision             = true;
         public static final boolean useStreamCamera             = false;
+        public static final boolean usePhotonVision             = true;
+        public static final boolean useOpenCvVision             = true;
+        public static final boolean useLimeLightVision          = false;
         // Robot
         public static final boolean noRobot                     = true;
         // Drive Base
