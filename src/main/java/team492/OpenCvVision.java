@@ -74,7 +74,7 @@ public class OpenCvVision extends FrcOpenCvDetector
                 case NONE:
                     nextObjType = APRILTAG;
                     break;
-                }
+            }
 
             return nextObjType;
         }   //nextObjectType
