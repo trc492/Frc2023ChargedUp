@@ -1,5 +1,23 @@
 /*
- * Placeholder comment
+ * Copyright (c) 2023 Titan Robotics Club (http://www.titanrobotics.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package team492;
@@ -7,14 +25,16 @@ package team492;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
-public class Grabber {
+public class Grabber
+{
 
     //private final Robot robot;
 
     private final FrcPneumatic grabberPneumatic1;
     private final FrcPneumatic grabberPneumatic2;
 
-    public Grabber() {
+    public Grabber()
+    {
         //this.robot = robot;
 
         grabberPneumatic1 = new FrcPneumatic(
@@ -27,23 +47,27 @@ public class Grabber {
         grabberPneumatic2.retract();
     }
 
-    public void partialGrab() {
+    public void partialGrab()
+    {
         //may need code ensuring it's not already grabbing
         grabberPneumatic1.extend();
     }
 
-    public void partialRelease() {
+    public void partialRelease()
+    {
         //may need code ensuring it's not in full grab/already open
         grabberPneumatic1.retract();
     }
 
-    public void fullGrab() {
+    public void fullGrab()
+    {
         //may need code ensuring it's not already grabbing
         grabberPneumatic1.extend();
         grabberPneumatic2.extend();
     }
 
-    public void fullRelease() {
+    public void fullRelease()
+    {
         //may need code ensuring it's not in partial grab/already open
         grabberPneumatic1.retract();
         grabberPneumatic2.retract();

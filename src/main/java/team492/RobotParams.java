@@ -167,10 +167,10 @@ public class RobotParams
     //
     // Solenoid channels.
     //
-    public static final int PNEUMATIC_GRABBER1_RETRACT           = 0;
-    public static final int PNEUMATIC_GRABBER1_EXTEND            = 1;
-    public static final int PNEUMATIC_GRABBER2_RETRACT           = 2;
-    public static final int PNEUMATIC_GRABBER2_EXTEND            = 3;
+    public static final int PNEUMATIC_GRABBER1_RETRACT          = 0;
+    public static final int PNEUMATIC_GRABBER1_EXTEND           = 1;
+    public static final int PNEUMATIC_GRABBER2_RETRACT          = 2;
+    public static final int PNEUMATIC_GRABBER2_EXTEND           = 3;
 
     //
     // Ultrasonic sensors.
@@ -189,7 +189,6 @@ public class RobotParams
     public static final double CAMERA_ANGLE                     = 36.0; // Degrees from horizontal
     public static final double CAMERA_DATA_TIMEOUT              = 0.5;  // 500ms
     public static final double VISION_TARGET_HEIGHT             = 104.0;// Inches from the floor
-
     //
     // DriveBase subsystem.
     //
