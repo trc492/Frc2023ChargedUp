@@ -98,6 +98,7 @@ public class Robot extends FrcRobotBase
     //
     // Other subsystems.
     //
+    public Grabber grabber;
 
     /**
      * Constructor: Create an instance of the object.
@@ -210,6 +211,11 @@ public class Robot extends FrcRobotBase
             //
             if (RobotParams.Preferences.useSubsystems)
             {
+            }
+
+            if (RobotParams.Preferences.useGrabber)
+            {
+                grabber = new Grabber();
             }
         }
 

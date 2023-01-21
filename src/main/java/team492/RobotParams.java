@@ -43,10 +43,10 @@ public class RobotParams
         public static final boolean useNavX                     = false;
         public static final boolean usePdp                      = false;
         // Vision
-        public static final boolean useStreamCamera             = false;
         public static final boolean usePhotonVision             = true;
-        public static final boolean useOpenCvVision             = false;
         public static final boolean useLimeLightVision          = false;
+        public static final boolean useOpenCvVision             = false;
+        public static final boolean useStreamCamera             = false;
         // Robot
         public static final boolean noRobot                     = true;
         // Drive Base
@@ -56,6 +56,7 @@ public class RobotParams
         public static final boolean useGyroAssist               = false;
         // Subsystems
         public static final boolean useSubsystems               = false;
+        public static final boolean useGrabber                  = false;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
@@ -166,6 +167,10 @@ public class RobotParams
     //
     // Solenoid channels.
     //
+    public static final int PNEUMATIC_GRABBER1_RETRACT           = 0;
+    public static final int PNEUMATIC_GRABBER1_EXTEND            = 1;
+    public static final int PNEUMATIC_GRABBER2_RETRACT           = 2;
+    public static final int PNEUMATIC_GRABBER2_EXTEND            = 3;
 
     //
     // Ultrasonic sensors.
