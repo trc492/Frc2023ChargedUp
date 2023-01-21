@@ -27,49 +27,35 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 public class Grabber
 {
-
-    //private final Robot robot;
-
-    private final FrcPneumatic grabberPneumatic1;
-    private final FrcPneumatic grabberPneumatic2;
+    private final FrcPneumatic leftGrabber;
+    private final FrcPneumatic rightGrabber;
 
     public Grabber()
     {
-        //this.robot = robot;
-
-        grabberPneumatic1 = new FrcPneumatic(
-            "Grabber1.pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
-            RobotParams.PNEUMATIC_GRABBER1_RETRACT, RobotParams.PNEUMATIC_GRABBER1_EXTEND);
-        grabberPneumatic2 = new FrcPneumatic(
-            "Grabber2.pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
-            RobotParams.PNEUMATIC_GRABBER2_RETRACT, RobotParams.PNEUMATIC_GRABBER2_EXTEND);
-        grabberPneumatic1.retract();
-        grabberPneumatic2.retract();
+        leftGrabber = new FrcPneumatic(
+            "leftGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
+            RobotParams.PNEUMATIC_LEFT_GRABBER_RETRACT, RobotParams.PNEUMATIC_LEFT_GRABBER_EXTEND);
+        rightGrabber = new FrcPneumatic(
+            "rightGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
+            RobotParams.PNEUMATIC_RIGHT_GRABBER_RETRACT, RobotParams.PNEUMATIC_RIGHT_GRABBER_EXTEND);
+        release();
     }
 
-    public void partialGrab()
+    public void grabCube()
     {
-        //may need code ensuring it's not already grabbing
-        grabberPneumatic1.extend();
+        leftGrabber.extend();
     }
 
-    public void partialRelease()
+    public void grabCone()
     {
-        //may need code ensuring it's not in full grab/already open
-        grabberPneumatic1.retract();
+        leftGrabber.extend();
+        rightGrabber.extend();
     }
 
-    public void fullGrab()
+    public void release()
     {
-        //may need code ensuring it's not already grabbing
-        grabberPneumatic1.extend();
-        grabberPneumatic2.extend();
+        leftGrabber.retract();
+        rightGrabber.retract();
     }
 
-    public void fullRelease()
-    {
-        //may need code ensuring it's not in partial grab/already open
-        grabberPneumatic1.retract();
-        grabberPneumatic2.retract();
-    }
-}
+}   //class Grabber

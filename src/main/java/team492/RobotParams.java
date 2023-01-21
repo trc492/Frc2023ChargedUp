@@ -165,12 +165,12 @@ public class RobotParams
     //
 
     //
-    // Solenoid channels.
+    // Pneumatic channels.
     //
-    public static final int PNEUMATIC_GRABBER1_RETRACT          = 0;
-    public static final int PNEUMATIC_GRABBER1_EXTEND           = 1;
-    public static final int PNEUMATIC_GRABBER2_RETRACT          = 2;
-    public static final int PNEUMATIC_GRABBER2_EXTEND           = 3;
+    public static final int PNEUMATIC_LEFT_GRABBER_RETRACT      = 0;
+    public static final int PNEUMATIC_LEFT_GRABBER_EXTEND       = 1;
+    public static final int PNEUMATIC_RIGHT_GRABBER_RETRACT     = 2;
+    public static final int PNEUMATIC_RIGHT_GRABBER_EXTEND      = 3;
 
     //
     // Ultrasonic sensors.
