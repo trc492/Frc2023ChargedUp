@@ -32,6 +32,7 @@ import TrcCommonLib.trclib.TrcUtil;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 
 /**
@@ -101,24 +102,23 @@ public class PhotonVision extends FrcPhotonVision
         final String funcName = "getRobotFieldPosition";
         TrcPose2D robotPose = null;
 
-        if (aprilTagObj != null)
+        int aprilTagId = aprilTagObj.target.getFiducialId();
+        Pose3d aprilTagPose = getAprilTagPose(aprilTagId);
+
+        if (aprilTagPose != null)
         {
-            int aprilTagId = aprilTagObj.target.getFiducialId();
-            Pose3d aprilTagPose = getAprilTagPose(aprilTagId);
+            Pose3d camPose3d = aprilTagPose.transformBy(aprilTagObj.targetTransform.inverse());
+            Pose2d robotPose2d = camPose3d.transformBy(RobotParams.CAMERA_TRANSFORM3D.inverse()).toPose2d();
+            robotPose = new TrcPose2D(
+                -robotPose2d.getY() * TrcUtil.INCHES_PER_METER,
+                robotPose2d.getX() * TrcUtil.INCHES_PER_METER,
+                -robotPose2d.getRotation().getDegrees());
 
-            if (aprilTagPose != null)
+            if (debugEnabled)
             {
-                Pose3d robotPose3d = aprilTagPose.transformBy(aprilTagObj.targetTransform.inverse());
-                robotPose = new TrcPose2D(
-                    -robotPose3d.getY() * TrcUtil.INCHES_PER_METER,
-                    robotPose3d.getX() * TrcUtil.INCHES_PER_METER,
-                    Math.toDegrees(robotPose3d.getRotation().getAngle()) - aprilTagObj.target.getYaw());
-
-                if (debugEnabled)
-                {
-                    globalTracer.traceInfo(
-                        funcName, "[%d] AprilTagPose=%s, RobotPose=%s, angle=%.1f, yaw=%.1f", aprilTagId, aprilTagPose, robotPose, Math.toDegrees(robotPose3d.getRotation().getAngle()), aprilTagObj.target.getYaw());
-                }
+                globalTracer.traceInfo(
+                    funcName, "[%d] AprilTagPose=%s, RobotPose=%s, yaw=%.1f",
+                    aprilTagId, aprilTagPose, robotPose, aprilTagObj.target.getYaw());
             }
         }
 

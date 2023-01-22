@@ -34,6 +34,7 @@ import TrcCommonLib.trclib.TrcOpenCvPipeline;
 import TrcCommonLib.trclib.TrcVisionTargetInfo;
 import TrcFrcLib.frclib.FrcOpenCvAprilTagPipeline;
 import TrcFrcLib.frclib.FrcOpenCvDetector;
+import edu.wpi.first.apriltag.AprilTagPoseEstimator;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 
@@ -138,7 +139,11 @@ public class OpenCvVision extends FrcOpenCvDetector
                 .setVerticesRange(0.0, 1000.0)
                 .setAspectRatioRange(0.0, 1000.0);
 
-        aprilTagPipeline = new FrcOpenCvAprilTagPipeline("tag16h5", null, null, tracer);
+        aprilTagPipeline = new FrcOpenCvAprilTagPipeline(
+            "tag16h5", null, new AprilTagPoseEstimator.Config(
+                RobotParams.APRILTAG_SIZE, RobotParams.WEBCAM_FX, RobotParams.WEBCAM_FY, RobotParams.WEBCAM_CX,
+                RobotParams.WEBCAM_CY),
+            tracer);
         polePipeline = new TrcOpenCvColorBlobPipeline(
             "polePipeline", colorConversion, colorThresholdsPole, poleFilterContourParams, tracer);
         conePipeline = new TrcOpenCvColorBlobPipeline(

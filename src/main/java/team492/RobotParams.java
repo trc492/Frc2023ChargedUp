@@ -24,6 +24,10 @@ package team492;
 
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPose2D;
+import TrcCommonLib.trclib.TrcUtil;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 /**
  * This class contains parameters and preferences related to all robot operations.
@@ -43,9 +47,9 @@ public class RobotParams
         public static final boolean useNavX                     = false;
         public static final boolean usePdp                      = false;
         // Vision
-        public static final boolean usePhotonVision             = true;
+        public static final boolean usePhotonVision             = false;
         public static final boolean useLimeLightVision          = false;
-        public static final boolean useOpenCvVision             = false;
+        public static final boolean useOpenCvVision             = true;
         public static final boolean useStreamCamera             = false;
         // Robot
         public static final boolean noRobot                     = true;
@@ -183,12 +187,21 @@ public class RobotParams
     //
     public static final int CAMERA_IMAGE_WIDTH                  = 160;
     public static final int CAMERA_IMAGE_HEIGHT                 = 120;
-    public static final double CAMERA_Y_OFFSET                  = 2.5;  // Inches from the center of the robot
-    public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot
-    public static final double CAMERA_HEIGHT                    = 22.0; // Inches from the floor
-    public static final double CAMERA_ANGLE                     = 36.0; // Degrees from horizontal
     public static final double CAMERA_DATA_TIMEOUT              = 0.5;  // 500ms
     public static final double VISION_TARGET_HEIGHT             = 104.0;// Inches from the floor
+    public static final double CAMERA_Y_OFFSET                  = 0.0;  // Inches from the center of the robot
+    public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot
+    public static final double CAMERA_HEIGHT                    = 0.0;  // Inches from the floor
+    public static final double CAMERA_ANGLE                     = 0.0;  // Degrees from horizontal
+    public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
+        new Translation3d(CAMERA_X_OFFSET, CAMERA_Y_OFFSET, CAMERA_HEIGHT),
+        new Rotation3d(0.0, CAMERA_ANGLE, 0.0));
+    public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;
+    public static final double WEBCAM_FX                        = 821.993;  // in pixels
+    public static final double WEBCAM_FY                        = 821.993;  // in pixels
+    public static final double WEBCAM_CX                        = 330.489;  // in pixels
+    public static final double WEBCAM_CY                        = 248.997;  // in pixels
+
     //
     // DriveBase subsystem.
     //
