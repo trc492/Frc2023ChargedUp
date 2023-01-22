@@ -560,10 +560,17 @@ public class FrcTest extends FrcTeleOp
         if (robot.photonVision != null)
         {
             FrcPhotonVision.DetectedObject targetInfo = robot.photonVision.getBestDetectedObject();
+
             if (targetInfo != null)
             {
                 // robot.globalTracer.traceInfo("doVisionTest", "Photon: %s", targetInfo);
                 robot.dashboard.displayPrintf(14, "Photon: %s", targetInfo);
+
+                TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
+                if (robotPose != null)
+                {
+                    robot.dashboard.displayPrintf(15, "RobotPose: %s", robotPose);
+                }
             }
         }
 

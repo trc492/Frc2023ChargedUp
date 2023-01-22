@@ -26,13 +26,23 @@ import java.io.IOException;
 import java.util.Optional;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcPose2D;
+import TrcCommonLib.trclib.TrcTimer;
+import TrcCommonLib.trclib.TrcUtil;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 
+/**
+ * This class is a thin wrapper extending FrcPhotonVision that provides additional game specific functionalities.
+ */
 public class PhotonVision extends FrcPhotonVision
 {
+    private static final String moduleName = "PhotonVision";
+    private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
+    private static final  boolean debugEnabled = true;
+
     private final AprilTagFieldLayout aprilTagFieldLayout;
     // private final AprilTagPoseEstimator poseEstimator;
 
@@ -45,6 +55,8 @@ public class PhotonVision extends FrcPhotonVision
     public PhotonVision(String cameraName, TrcDbgTrace tracer)
     {
         super(cameraName, tracer);
+
+        double startTime = TrcTimer.getModeElapsedTime();
         try
         {
             aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -53,6 +65,12 @@ public class PhotonVision extends FrcPhotonVision
         {
             throw new RuntimeException("Failed to read AprilTag field layout info.");
         }
+        double endTime = TrcTimer.getModeElapsedTime();
+        if (debugEnabled)
+        {
+            globalTracer.traceInfo(
+                moduleName, "[%.3f] Loading AprilTag field layout took %.3f sec.", endTime, endTime - startTime);
+        }
 
         // poseEstimator = new AprilTagPoseEstimator(
         //     new AprilTagPoseEstimator.Config(
@@ -60,20 +78,48 @@ public class PhotonVision extends FrcPhotonVision
         //         RobotParams.APRILTAG_CX, RobotParams.APRILTAG_CY));
     }   //FrcPhotonVision
 
+    /**
+     * This method returns the 3D field location of the AprilTag with its given ID.
+     *
+     * @param aprilTagId sepcifies the AprilTag ID to retrieve its field location.
+     * @return 3D location of the 
+     */
     private Pose3d getAprilTagPose(int aprilTagId)
     {
         Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(aprilTagId);
         return tagPose.isPresent()? tagPose.get(): null;
     }   //getAprilTagPose
 
-    public Pose3d getRobotFieldPosition(DetectedObject aprilTagObj)
+    /**
+     * This method returns the absolute field location of the camera with the given detected AprilTag object.
+     *
+     * @param aprilTagObj specifies the AprilTag object detected by the camera.
+     * @return camera's absolute field location.
+     */
+    public TrcPose2D getRobotFieldPosition(DetectedObject aprilTagObj)
     {
-        Pose3d robotPose = null;
-        Pose3d aprilTagPose = getAprilTagPose(aprilTagObj.target.getFiducialId());
+        final String funcName = "getRobotFieldPosition";
+        TrcPose2D robotPose = null;
 
-        if (aprilTagPose != null)
+        if (aprilTagObj != null)
         {
-            aprilTagPose.transformBy(aprilTagObj.targetTransform.inverse());
+            int aprilTagId = aprilTagObj.target.getFiducialId();
+            Pose3d aprilTagPose = getAprilTagPose(aprilTagId);
+
+            if (aprilTagPose != null)
+            {
+                Pose3d robotPose3d = aprilTagPose.transformBy(aprilTagObj.targetTransform.inverse());
+                robotPose = new TrcPose2D(
+                    -robotPose3d.getY() * TrcUtil.INCHES_PER_METER,
+                    robotPose3d.getX() * TrcUtil.INCHES_PER_METER,
+                    Math.toDegrees(robotPose3d.getRotation().getAngle()));
+
+                if (debugEnabled)
+                {
+                    globalTracer.traceInfo(
+                        funcName, "[%d] AprilTagPose=%s, RobotPose=%s", aprilTagId, aprilTagPose, robotPose);
+                }
+            }
         }
 
         return robotPose;
