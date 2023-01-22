@@ -112,12 +112,12 @@ public class PhotonVision extends FrcPhotonVision
                 robotPose = new TrcPose2D(
                     -robotPose3d.getY() * TrcUtil.INCHES_PER_METER,
                     robotPose3d.getX() * TrcUtil.INCHES_PER_METER,
-                    Math.toDegrees(robotPose3d.getRotation().getAngle()));
+                    Math.toDegrees(robotPose3d.getRotation().getAngle()) - aprilTagObj.target.getYaw());
 
                 if (debugEnabled)
                 {
                     globalTracer.traceInfo(
-                        funcName, "[%d] AprilTagPose=%s, RobotPose=%s", aprilTagId, aprilTagPose, robotPose);
+                        funcName, "[%d] AprilTagPose=%s, RobotPose=%s, angle=%.1f, yaw=%.1f", aprilTagId, aprilTagPose, robotPose, Math.toDegrees(robotPose3d.getRotation().getAngle()), aprilTagObj.target.getYaw());
                 }
             }
         }
