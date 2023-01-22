@@ -101,14 +101,17 @@ public class PhotonVision extends FrcPhotonVision
     {
         final String funcName = "getRobotFieldPosition";
         TrcPose2D robotPose = null;
-
         int aprilTagId = aprilTagObj.target.getFiducialId();
+        // aprilTagPose is the absolute field position of the AprilTag.
         Pose3d aprilTagPose = getAprilTagPose(aprilTagId);
 
         if (aprilTagPose != null)
         {
+            // camPose3d is the absolute field position of the camera.
             Pose3d camPose3d = aprilTagPose.transformBy(aprilTagObj.targetTransform.inverse());
+            // robotPose2d is the absolute field position of the robot centroid projected on the ground.
             Pose2d robotPose2d = camPose3d.transformBy(RobotParams.CAMERA_TRANSFORM3D.inverse()).toPose2d();
+            // robotPose is the absolute field position of the robot adjusted to the robot coordinate system.
             robotPose = new TrcPose2D(
                 -robotPose2d.getY() * TrcUtil.INCHES_PER_METER,
                 robotPose2d.getX() * TrcUtil.INCHES_PER_METER,
