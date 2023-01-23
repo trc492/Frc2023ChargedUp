@@ -196,7 +196,7 @@ public class RobotParams
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_X_OFFSET, CAMERA_Y_OFFSET, CAMERA_HEIGHT),
         new Rotation3d(0.0, CAMERA_ANGLE, 0.0));
-    public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;
+    public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
     public static final double WEBCAM_FX                        = 821.993;  // in pixels
     public static final double WEBCAM_FY                        = 821.993;  // in pixels
     public static final double WEBCAM_CX                        = 330.489;  // in pixels

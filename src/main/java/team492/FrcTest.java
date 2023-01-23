@@ -27,11 +27,9 @@ import java.util.Locale;
 import TrcCommonLib.command.CmdDriveMotorsTest;
 import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import team492.OpenCvVision.ObjectType;
 import TrcFrcLib.frclib.FrcChoiceMenu;
-import TrcFrcLib.frclib.FrcOpenCvAprilTagPipeline;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcUserChoices;
 import TrcCommonLib.trclib.TrcMotor;
@@ -583,16 +581,16 @@ public class FrcTest extends FrcTeleOp
             if (targetInfo != null)
             {
                 robot.dashboard.displayPrintf(15, "AprilTag: %s", targetInfo);
-                if (robot.openCvVision.getDetectObjectType() == ObjectType.APRILTAG)
-                {
-                    FrcOpenCvAprilTagPipeline aprilTagVision =
-                        (FrcOpenCvAprilTagPipeline) robot.openCvVision.getPipeline();
-                    Pose3d aprilTagPose = aprilTagVision.getTargetPosition(
-                        (FrcOpenCvAprilTagPipeline.DetectedObject) targetInfo.detectedObj);
-                    robot.dashboard.displayPrintf(14, "AprilTagPose=%s", aprilTagPose);
-                    // robot.globalTracer.traceInfo(
-                    //     "VisionTest", "[%.3f] AprilTagPose=%s", TrcTimer.getModeElapsedTime(), aprilTagPose);
-                }
+                // if (robot.openCvVision.getDetectObjectType() == ObjectType.APRILTAG)
+                // {
+                //     FrcOpenCvAprilTagPipeline aprilTagVision =
+                //         (FrcOpenCvAprilTagPipeline) robot.openCvVision.getPipeline();
+                //     Pose3d aprilTagPose = aprilTagVision.getTargetPosition(
+                //         (FrcOpenCvAprilTagPipeline.DetectedObject) targetInfo.detectedObj);
+                //     robot.dashboard.displayPrintf(14, "AprilTagPose=%s", aprilTagPose);
+                //     // robot.globalTracer.traceInfo(
+                //     //     "VisionTest", "[%.3f] AprilTagPose=%s", TrcTimer.getModeElapsedTime(), aprilTagPose);
+                // }
             }
         }
     }   //doVisionTest
