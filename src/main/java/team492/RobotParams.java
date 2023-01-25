@@ -61,6 +61,7 @@ public class RobotParams
         // Subsystems
         public static final boolean useSubsystems               = false;
         public static final boolean useGrabber                  = false;
+        public static final boolean useVacuum                   = false;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;

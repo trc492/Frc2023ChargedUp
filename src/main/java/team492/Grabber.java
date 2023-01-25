@@ -31,7 +31,7 @@ public class Grabber
     private final FrcPneumatic leftGrabber;
     private final FrcPneumatic rightGrabber;
     private final FrcPWMTalonSRX vacuum;
-
+        
     public Grabber()
     {
         leftGrabber = new FrcPneumatic(
@@ -41,19 +41,32 @@ public class Grabber
             "rightGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
             RobotParams.PNEUMATIC_RIGHT_GRABBER_RETRACT, RobotParams.PNEUMATIC_RIGHT_GRABBER_EXTEND);
         release();
-        vacuum = new FrcPWMTalonSRX("vacuum", 1, null, null, null);
+        if (RobotParams.Preferences.useVacuum) {
+            vacuum = new FrcPWMTalonSRX("vacuum", 1, null, null, null);
+        } else {
+            vacuum = null;
+        }
     }
 
     public void grabCube()
-    {
-        if(vacuum.getMotorVelocity() == 0) { //this probably works
+    {   
+        if(vacuum != null) {
+            if(vacuum.getMotorVelocity() == 0) { //this probably works
+                leftGrabber.extend();
+            }
+        } else {
             leftGrabber.extend();
         }
     }
 
     public void grabCone()
     {
-        if(vacuum.getMotorVelocity() == 0) { // this probably works
+        if (vacuum != null) {
+            if(vacuum.getMotorVelocity() == 0) { // this probably works
+                leftGrabber.extend();
+                rightGrabber.extend();
+            }
+        } else {
             leftGrabber.extend();
             rightGrabber.extend();
         }
@@ -66,13 +79,15 @@ public class Grabber
     }
 
     public void vacuumOn() {
-        if(!leftGrabber.isExtended()) {
+        if(!leftGrabber.isExtended() && vacuum != null) {
             vacuum.set(1); //this is just a placeholder dont use it and if you do dont blame me if it too strong
         }
     }
 
     public void vacuumOff() {
-        vacuum.stopMotor();
+        if (vacuum != null) {
+            vacuum.stopMotor();
+        }
     }
 
 }   //class Grabber
