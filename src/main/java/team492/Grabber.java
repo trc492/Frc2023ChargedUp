@@ -22,6 +22,7 @@
 
 package team492;
 
+import TrcFrcLib.frclib.FrcPWMTalonSRX;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
@@ -29,6 +30,7 @@ public class Grabber
 {
     private final FrcPneumatic leftGrabber;
     private final FrcPneumatic rightGrabber;
+    private final FrcPWMTalonSRX vacuum;
 
     public Grabber()
     {
@@ -39,6 +41,7 @@ public class Grabber
             "rightGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
             RobotParams.PNEUMATIC_RIGHT_GRABBER_RETRACT, RobotParams.PNEUMATIC_RIGHT_GRABBER_EXTEND);
         release();
+        vacuum = new FrcPWMTalonSRX(null, 0, null, null, null);
     }
 
     public void grabCube()
@@ -56,6 +59,14 @@ public class Grabber
     {
         leftGrabber.retract();
         rightGrabber.retract();
+    }
+
+    public void vacuumOn() {
+        vacuum.set(1); //this is just an example dont use it and if you do dont blame me if it too strong
+    }
+
+    public void vacuumOff() {
+        vacuum.stopMotor();
     }
 
 }   //class Grabber
