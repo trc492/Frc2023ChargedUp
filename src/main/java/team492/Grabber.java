@@ -46,13 +46,17 @@ public class Grabber
 
     public void grabCube()
     {
-        leftGrabber.extend();
+        if(vacuum.getMotorVelocity() == 0) { //this probably works
+            leftGrabber.extend();
+        }
     }
 
     public void grabCone()
     {
-        leftGrabber.extend();
-        rightGrabber.extend();
+        if(vacuum.getMotorVelocity() == 0) { // this probably works
+            leftGrabber.extend();
+            rightGrabber.extend();
+        }
     }
 
     public void release()
@@ -62,7 +66,9 @@ public class Grabber
     }
 
     public void vacuumOn() {
-        vacuum.set(1); //this is just an example dont use it and if you do dont blame me if it too strong
+        if(!leftGrabber.isExtended()) {
+            vacuum.set(1); //this is just a placeholder dont use it and if you do dont blame me if it too strong
+        }
     }
 
     public void vacuumOff() {
