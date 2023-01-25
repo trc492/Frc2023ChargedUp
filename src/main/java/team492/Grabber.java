@@ -41,7 +41,7 @@ public class Grabber
             "rightGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
             RobotParams.PNEUMATIC_RIGHT_GRABBER_RETRACT, RobotParams.PNEUMATIC_RIGHT_GRABBER_EXTEND);
         release();
-        vacuum = new FrcPWMTalonSRX(null, 0, null, null, null);
+        vacuum = new FrcPWMTalonSRX("vacuum", 1, null, null, null);
     }
 
     public void grabCube()
