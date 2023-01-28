@@ -120,6 +120,8 @@ public class RobotParams
     public static final int CANID_RIGHTFRONT_DRIVE              = 4;    // Yellow: 40A
     public static final int CANID_LEFTBACK_DRIVE                = 5;    // Green: 40A
     public static final int CANID_RIGHTBACK_DRIVE               = 6;    // Blue: 40A
+    public static final int CANID_INTAKE_LEFT                   = 27; 
+    public static final int CANID_INTAKE_RIGHT                  = 28;  
 
     // Applicable only for Swerve Drive.
     public static final int CANID_LEFTFRONT_STEER_ENCODER       = 7;    // Orange
@@ -177,6 +179,8 @@ public class RobotParams
     public static final int PNEUMATIC_LEFT_GRABBER_EXTEND       = 1;
     public static final int PNEUMATIC_RIGHT_GRABBER_RETRACT     = 2;
     public static final int PNEUMATIC_RIGHT_GRABBER_EXTEND      = 3;
+    public static final int PNEUMATIC_INTAKE_EXTEND             = 4; 
+    public static final int PNEUMATIC_INTAKE_RETRACT            = 5; 
 
     //
     // Ultrasonic sensors.
