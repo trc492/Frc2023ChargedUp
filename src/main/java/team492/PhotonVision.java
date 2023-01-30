@@ -42,7 +42,7 @@ public class PhotonVision extends FrcPhotonVision
 {
     private static final String moduleName = "PhotonVision";
     private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
-    private static final  boolean debugEnabled = true;
+    private static final boolean debugEnabled = true;
 
     private final AprilTagFieldLayout aprilTagFieldLayout;
     // private final AprilTagPoseEstimator poseEstimator;
@@ -119,9 +119,7 @@ public class PhotonVision extends FrcPhotonVision
 
             if (debugEnabled)
             {
-                globalTracer.traceInfo(
-                    funcName, "[%d] AprilTagPose=%s, RobotPose=%s, yaw=%.1f",
-                    aprilTagId, aprilTagPose, robotPose, aprilTagObj.target.getYaw());
+                globalTracer.traceInfo(funcName, "[%d] RobotPose=%s", aprilTagId, robotPose);
             }
         }
 

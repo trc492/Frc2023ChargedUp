@@ -43,7 +43,10 @@ import TrcCommonLib.trclib.TrcSwerveModule;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
+import TrcFrcLib.frclib.FrcAnalogEncoder;
+import TrcFrcLib.frclib.FrcCANCoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
+import TrcFrcLib.frclib.FrcEncoder;
 import TrcFrcLib.frclib.FrcFalconServo;
 import TrcFrcLib.frclib.FrcPdp;
 
@@ -63,7 +66,7 @@ public class SwerveDrive extends RobotDrive
     //
     // Swerve steering motors and modules.
     //
-    public final CANCoder lfEncoder, rfEncoder, lbEncoder, rbEncoder;
+    public final FrcEncoder lfEncoder, rfEncoder, lbEncoder, rbEncoder;
     public final FrcCANFalcon lfSteerMotor, rfSteerMotor, lbSteerMotor, rbSteerMotor;
     public final TrcSwerveModule lfWheel, lbWheel, rfWheel, rbWheel;
 
@@ -81,24 +84,34 @@ public class SwerveDrive extends RobotDrive
         lbDriveMotor = createDriveMotor("lbDrive", RobotParams.CANID_LEFTBACK_DRIVE, true);
         rbDriveMotor = createDriveMotor("rbDrive", RobotParams.CANID_RIGHTBACK_DRIVE, true);
 
-        lfEncoder = createSteerEncoder("lfEncoder", RobotParams.CANID_LEFTFRONT_STEER_ENCODER, true);
-        rfEncoder = createSteerEncoder("rfEncoder", RobotParams.CANID_RIGHTFRONT_STEER_ENCODER, true);
-        lbEncoder = createSteerEncoder("lbEncoder", RobotParams.CANID_LEFTBACK_STEER_ENCODER, true);
-        rbEncoder = createSteerEncoder("rbEncoder", RobotParams.CANID_RIGHTBACK_STEER_ENCODER, true);
-
-        lfSteerMotor = createSteerMotor("lfSteer", RobotParams.CANID_LEFTFRONT_STEER, false, lfEncoder);
-        TrcTimer.sleep(50);
-        rfSteerMotor = createSteerMotor("rfSteer", RobotParams.CANID_RIGHTFRONT_STEER, false, rfEncoder);
-        TrcTimer.sleep(50);
-        lbSteerMotor = createSteerMotor("lbSteer", RobotParams.CANID_LEFTBACK_STEER, false, lbEncoder);
-        TrcTimer.sleep(50);
-        rbSteerMotor = createSteerMotor("rbSteer", RobotParams.CANID_RIGHTBACK_STEER, false, rbEncoder);
-
         int[] zeros = getSteerZeroPositions();
-        lfWheel = createSwerveModule("lfWheel", lfDriveMotor, lfSteerMotor, lfEncoder, zeros[0]);
-        rfWheel = createSwerveModule("rfWheel", rfDriveMotor, rfSteerMotor, rfEncoder, zeros[1]);
-        lbWheel = createSwerveModule("lbWheel", lbDriveMotor, lbSteerMotor, lbEncoder, zeros[2]);
-        rbWheel = createSwerveModule("rbWheel", rbDriveMotor, rbSteerMotor, rbEncoder, zeros[3]);
+        if (RobotParams.Preferences.useCANCoder)
+        {
+            lfEncoder = createCANCoder("lfEncoder", RobotParams.CANID_LEFTFRONT_STEER_ENCODER, true, zeros[0]);
+            rfEncoder = createCANCoder("rfEncoder", RobotParams.CANID_RIGHTFRONT_STEER_ENCODER, true, zeros[1]);
+            lbEncoder = createCANCoder("lbEncoder", RobotParams.CANID_LEFTBACK_STEER_ENCODER, true, zeros[2]);
+            rbEncoder = createCANCoder("rbEncoder", RobotParams.CANID_RIGHTBACK_STEER_ENCODER, true, zeros[3]);
+        }
+        else
+        {
+            lfEncoder = createAnalogEncoder("lfEncoder", RobotParams.AIN_LEFTFRONT_STEER_ENCODER, true, zeros[0]);
+            rfEncoder = createAnalogEncoder("rfEncoder", RobotParams.AIN_RIGHTFRONT_STEER_ENCODER, true, zeros[1]);
+            lbEncoder = createAnalogEncoder("lbEncoder", RobotParams.AIN_LEFTBACK_STEER_ENCODER, true, zeros[2]);
+            rbEncoder = createAnalogEncoder("rbEncoder", RobotParams.AIN_RIGHTBACK_STEER_ENCODER, true, zeros[3]);
+        }
+
+        lfSteerMotor = createSteerMotor("lfSteer", RobotParams.CANID_LEFTFRONT_STEER, false);
+        TrcTimer.sleep(50);
+        rfSteerMotor = createSteerMotor("rfSteer", RobotParams.CANID_RIGHTFRONT_STEER, false);
+        TrcTimer.sleep(50);
+        lbSteerMotor = createSteerMotor("lbSteer", RobotParams.CANID_LEFTBACK_STEER, false);
+        TrcTimer.sleep(50);
+        rbSteerMotor = createSteerMotor("rbSteer", RobotParams.CANID_RIGHTBACK_STEER, false);
+
+        lfWheel = createSwerveModule("lfWheel", lfDriveMotor, lfSteerMotor, lfEncoder);
+        rfWheel = createSwerveModule("rfWheel", rfDriveMotor, rfSteerMotor, rfEncoder);
+        lbWheel = createSwerveModule("lbWheel", lbDriveMotor, lbSteerMotor, lbEncoder);
+        rbWheel = createSwerveModule("rbWheel", rbDriveMotor, rbSteerMotor, rbEncoder);
 
         driveBase = new TrcSwerveDriveBase(
             lfWheel, lbWheel, rfWheel, rbWheel, gyro, RobotParams.ROBOT_DRIVE_WIDTH, RobotParams.ROBOT_DRIVE_LENGTH);
@@ -188,61 +201,38 @@ public class SwerveDrive extends RobotDrive
     }   //SwerveDrive
 
     /**
-     * This method creates a steering motor for a swerve module.
+     * This method creates an encoder for the steering motor.
      *
-     * @param name specifies the instance name of the steering motor.
-     * @param encoderCanID specifies the CAN ID of the CANcoder used for steering position.
+     * @param name specifies the instance name of the steering encoder.
+     * @param encoderId specifies the CAN ID of the CANcoder.
      * @param inverted specifies true if the sensor direction should be inverted, false otherwise.
-     * @return the created steering motor.
+     * @param steerZero specifies the zero position.
+     * @return the created steering encoder.
      */
-    private CANCoder createSteerEncoder(String name, int encoderCanID, boolean inverted)
+    private FrcEncoder createCANCoder(String name, int encoderId, boolean inverted, double steerZero)
     {
-        final String funcName = "createSteerEncoder";
-        CANCoder encoder = new CANCoder(encoderCanID);
+        final String funcName = "createCANcoder";
+        FrcEncoder encoder = new FrcCANCoder(name, encoderId);
+
+        CANCoder canCoder = (CANCoder) encoder;
         ErrorCode errCode;
         // Reset encoder back to factory default to clear potential previous mis-configurations.
-        errCode = encoder.configFactoryDefault(10);
+        errCode = canCoder.configFactoryDefault(10);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
                 funcName, "%s: CANcoder.configFactoryDefault failed (code=%s).",
                 name, errCode);
         }
-        // // Set encoder to report degrees instead of CPR.
-        // errCode = encoder.configFeedbackCoefficient(
-        //     360.0/RobotParams.CANCODER_CPR, "deg", SensorTimeBase.PerSecond, 10);
-        // if (errCode != ErrorCode.OK)
-        // {
-        //     robot.globalTracer.traceWarn(
-        //         funcName, "%s: CANcoder.configFeedbackCoefficient failed (code=%s).",
-        //         name, errCode);
-        // }
-        // // Set the encoder to report a absolute sensor range of [-180, 180) degree instead of [0, 360).
-        // errCode = encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 10);
-        // if (errCode != ErrorCode.OK)
-        // {
-        //     robot.globalTracer.traceWarn(
-        //         funcName, "%s: CANcoder.configAbsoluteSensorRange failed (code=%s).",
-        //         name, errCode);
-        // }
-        // Set encoder to report CPR instead of degrees.
-        errCode = encoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 10);
+        errCode = canCoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 10);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
                 funcName, "%s: CANcoder.configFeedbackCoefficient failed (code=%s).",
                 name, errCode);
         }
-        // Configure the sensor direction to match the steering motor direction.
-        errCode = encoder.configSensorDirection(inverted, 10);
-        if (errCode != ErrorCode.OK)
-        {
-            robot.globalTracer.traceWarn(
-                funcName, "%s: CANcoder.configSensorDirection failed (code=%s).",
-                name, errCode);
-        }
         // Configure the encoder to initialize to absolute position value at boot.
-        errCode = encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 10);
+        errCode = canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 10);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
@@ -250,16 +240,39 @@ public class SwerveDrive extends RobotDrive
                 name, errCode);
         }
         // Slow down the status frame rate to reduce CAN traffic.
-        errCode = encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 10);
+        errCode = canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 10);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
                 funcName, "%s: CANcoder.setStatusFramePeriod failed (code=%s).",
                 name, errCode);
         }
+        // Configure the sensor direction to match the steering motor direction.
+        encoder.setInverted(inverted);
+        encoder.setScaleAndOffset(
+            RobotParams.FALCON_CPR * RobotParams.STEER_GEAR_RATIO / RobotParams.CANCODER_CPR,
+            steerZero);
 
         return encoder;
-    }   //createSteerEncoder
+    }   //createCANCoder
+
+    /**
+     * This method creates an encoder for the steering motor.
+     *
+     * @param name specifies the instance name of the steering encoder.
+     * @param encoderId specifies the analog channel of the analog encoder.
+     * @param inverted specifies true if the sensor direction should be inverted, false otherwise.
+     * @param steerZero specifies the zero position.
+     * @return the created steering encoder.
+     */
+    private FrcEncoder createAnalogEncoder(String name, int encoderId, boolean inverted, double steerZero)
+    {
+        FrcEncoder encoder = new FrcAnalogEncoder(name, encoderId);
+
+        encoder.setInverted(inverted);
+        encoder.setScaleAndOffset(1.0, steerZero);
+        return encoder;
+    }   //createAnalogEncoder
 
     /**
      * This method creates a steering motor for a swerve module.
@@ -267,15 +280,14 @@ public class SwerveDrive extends RobotDrive
      * @param name specifies the instance name of the steering motor.
      * @param motorCanID specifies the CAN ID of the steering motor.
      * @param inverted specifies true if the steering motor should be inverted, false otherwise.
-     * @param encoder specifies the steering encoder.
      * @return the created steering motor.
      */
-    private FrcCANFalcon createSteerMotor(String name, int motorCanID, boolean inverted, CANCoder encoder)
+    private FrcCANFalcon createSteerMotor(String name, int motorCanID, boolean inverted)
     {
         final String funcName = "createSteerMotor";
         FrcCANFalcon steerMotor = new FrcCANFalcon(name, motorCanID);
         ErrorCode errCode;
-        // Reset encoder back to factory default to clear potential previous mis-configurations.
+        // Reset motor back to factory default to clear potential previous mis-configurations.
         errCode = steerMotor.motor.configFactoryDefault(10);
         if (errCode != ErrorCode.OK)
         {
@@ -294,23 +306,6 @@ public class SwerveDrive extends RobotDrive
 
         steerMotor.motor.enableVoltageCompensation(true);
 
-        // // Comment this code after fully debug integrated encoder.
-        // errCode = steerMotor.motor.configRemoteFeedbackFilter(encoder, 0, 10);
-        // if (errCode != ErrorCode.OK)
-        // {
-        //     robot.globalTracer.traceWarn(
-        //         funcName, "%s: Falcon.configRemoteFeedbackFilter failed (code=%s).",
-        //         name, errCode);
-        // }
-
-        // errCode = steerMotor.motor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 10);
-        // if (errCode != ErrorCode.OK)
-        // {
-        //     robot.globalTracer.traceWarn(
-        //         funcName, "%s: Falcon.configSelectedFeedbackSensor failed (code=%s).",
-        //         name, errCode);
-        // }
-
         steerMotor.setInverted(inverted);
         steerMotor.setBrakeModeEnabled(true);
 
@@ -324,19 +319,14 @@ public class SwerveDrive extends RobotDrive
      * @param driveMotor specifies the drive motor object.
      * @param steerMotor specifies the steering motor object.
      * @param steerEncoder specifies the steering encoder object.
-     * @param steerZero specifies the absolute encoder value for steering zero position.
      * @return the created swerve module.
      */
     private TrcSwerveModule createSwerveModule(
-        String name, FrcCANFalcon driveMotor, FrcCANFalcon steerMotor, CANCoder steerEncoder, int steerZero)
+        String name, FrcCANFalcon driveMotor, FrcCANFalcon steerMotor, FrcEncoder steerEncoder)
     {
         final String funcName = "createSwerveModule";
-        ErrorCode errCode;
-        double encoderPos =
-            (steerEncoder.getAbsolutePosition() - steerZero)/RobotParams.CANCODER_CPR *
-            RobotParams.FALCON_CPR*RobotParams.STEER_GEAR_RATIO;
-
-        errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);
+        double encoderPos = steerEncoder.getPosition();
+        ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
@@ -344,9 +334,10 @@ public class SwerveDrive extends RobotDrive
                 name, errCode, encoderPos);
         }
 
+        // We have already synchronized the Falcon internal encoder with the zero adjusted absolute encoder, so
+        // Falcon servo does not need to compensate for zero position.
         FrcFalconServo servo = new FrcFalconServo(
             name + ".servo", steerMotor, RobotParams.steerCoeffs, RobotParams.STEER_DEGREES_PER_COUNT, 0.0,
-            // name + ".servo", steerMotor, RobotParams.steerCoeffs, RobotParams.STEER_DEGREES_PER_TICK, steerZero,
             RobotParams.STEER_MAX_REQ_VEL, RobotParams.STEER_MAX_ACCEL);
         TrcSwerveModule module = new TrcSwerveModule(name, driveMotor, servo);
         module.disableSteeringLimits();
