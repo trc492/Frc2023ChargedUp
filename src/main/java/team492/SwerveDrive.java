@@ -270,7 +270,7 @@ public class SwerveDrive extends RobotDrive
         FrcEncoder encoder = new FrcAnalogEncoder(name, encoderId);
 
         encoder.setInverted(inverted);
-        encoder.setScaleAndOffset(1.0, steerZero);
+        encoder.setScaleAndOffset(360.0, steerZero);
         return encoder;
     }   //createAnalogEncoder
 
