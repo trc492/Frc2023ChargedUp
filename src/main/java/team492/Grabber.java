@@ -31,7 +31,14 @@ public class Grabber
     private final FrcPneumatic leftGrabber;
     private final FrcPneumatic rightGrabber;
     private final FrcPWMTalonSRX vacuum;
-        
+    
+    /**
+     * Constructor: Create an instance of the object.
+     *
+     */
+
+
+    //Does not require robot param, may need to add
     public Grabber()
     {
         leftGrabber = new FrcPneumatic(
@@ -46,8 +53,9 @@ public class Grabber
         } else {
             vacuum = null;
         }
-    }
+    }   //Grabber
 
+    //This method is called to grab a cube, extends the left pneumatic for a partial grab
     public void grabCube()
     {   
         if(vacuum != null) {
@@ -57,8 +65,9 @@ public class Grabber
         } else {
             leftGrabber.extend();
         }
-    }
+    }   //grabCube
 
+    //This method is called to grab a cone, extends both pneumatics for a complete grab
     public void grabCone()
     {
         if (vacuum != null) {
@@ -70,24 +79,27 @@ public class Grabber
             leftGrabber.extend();
             rightGrabber.extend();
         }
-    }
+    }   //grabCone
 
+    //This method is called to open the grabber, retracting the pneumatics
     public void release()
     {
         leftGrabber.retract();
         rightGrabber.retract();
-    }
+    }   //release
 
+    //This method is called to turn on the vacuum, used to grab a cube
     public void vacuumOn() {
         if(!leftGrabber.isExtended() && vacuum != null) {
             vacuum.set(1); //this is just a placeholder dont use it and if you do dont blame me if it too strong
         }
-    }
+    }   //vacuumOn
 
+    //This method is called to turn off the vacuum, dropping any grabbed cube
     public void vacuumOff() {
         if (vacuum != null) {
             vacuum.stopMotor();
         }
-    }
+    }   //vacuumOff
 
 }   //class Grabber
