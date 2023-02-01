@@ -71,7 +71,7 @@ public class Grabber
     public void grabCone()
     {
         if (vacuum != null) {
-            if(vacuum.getMotorVelocity() == 0) { // this probably works
+            if(vacuum.getMotorVelocity() == 0) { //this probably works
                 leftGrabber.extend();
                 rightGrabber.extend();
             }
@@ -91,7 +91,7 @@ public class Grabber
     //This method is called to turn on the vacuum, used to grab a cube
     public void vacuumOn() {
         if(!leftGrabber.isExtended() && vacuum != null) {
-            vacuum.set(1); //this is just a placeholder dont use it and if you do dont blame me if it too strong
+            vacuum.set(1); //this is just a placeholder, unsure of vacuum strength
         }
     }   //vacuumOn
 
