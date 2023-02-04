@@ -5,6 +5,7 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
+import team492.FrcAuto.AutoChoices;
 
 class CmdAuto implements TrcRobot.RobotCommand
 {
@@ -95,7 +96,7 @@ class CmdAuto implements TrcRobot.RobotCommand
             robot.dashboard.displayPrintf(8, "State: %s", state);
             switch (state)
             {
-                case SCORE: //Scores a game piece, the precondition being that it is already in the scoring position, depending on if its a cone or cube
+                case SCORE: //Scores a game piece, the precondition being that it is already in the scoring position, with a game piece in the robot, depending on if its a cone or cube
                     //TODO: implement code for scoring
                     piecesScored++;
                     if (piecesScored == 1) {
@@ -121,33 +122,80 @@ class CmdAuto implements TrcRobot.RobotCommand
                     }
                     break;
 
-                case GO_TO_GAME_PIECE: //Drives to a game piece we want to pick up, determining the location by how many pieces we have already scored
+                case GO_TO_GAME_PIECE: //Drives to a few feet (3ft from the center of the robot to the ball) behind the game piece we want to pick up, determining the location by how many pieces we have already scored
                     if (piecesScored == 1) {
-                        //drives to the location of the right most piece, broadcasting event when pp finishes
+                        //drives to 3ft behind the right most piece from the init scoring pos
+                        if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 85.0, 45.0),
+                                new TrcPose2D(-33.0, 238.0, 0.0));
+                        }
+                        else {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 564.0, 225.0),
+                                new TrcPose2D(-33.0, 404.0, 180.0));
+                        }
                     }
                     else if (piecesScored == 2) {
-                        //drives to the location of the second right most piece, broadcasting event when pp finishes
+                        //drives to the location of the second right most piece from second scoring pos (shelf closest to scoring table)
+                        if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 85.0, 45.0),
+                                new TrcPose2D(-33.0, 220.0, 0.0),
+                                new TrcPose2D(-82.0, 238.0, 0.0));
+
+                        }
+                        else {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 564.0, 225.0),
+                                new TrcPose2D(-33.0, 429.0, 180.0),
+                                new TrcPose2D(-82.0, 404.0, 180.0));
+                        }
                     }
                     sm.waitForSingleEvent(event, State.PICKUP_PIECE);
                     break;
                     
-                case PICKUP_PIECE: //Picks up a game piece, the precondition being that we already at the correct location
-                    //TODO: implement code for picking up a piece, broadcasting event when done
+                case PICKUP_PIECE: //Drives forward while running intake until it picks up a game piece, the precondition being that we already at the correct location
+                    //runs intake
+                    //drives forward
+                    //stops running intake when piece detected in robot and broadcasts event
                     sm.waitForSingleEvent(event, State.GO_TO_SCORE_POSITION);
                     break;
 
                 case GO_TO_SCORE_POSITION: //Drives to the scoring position, determining the location based on how many pieces we have already scored
                     if (piecesScored == 1) {
                         //drives to the location of the right most piece, broadcasting event when pp finishes
+                        if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
+
+                        }
+                        else {
+                            
+                        }
                     }
                     else if (piecesScored == 2) {
                     //drives to the location of the second right most piece, broadcasting event when pp finishes
+                        if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
+
+                        }
+                        else {
+                        
+                        }
                     }
                     sm.waitForSingleEvent(event, State.SCORE);
                     break;
 
                 case GO_TO_PARK: //Drives to the location to park
                     //TODO: implement code for driving to park location, broadcasting event when pp finishes
+                    if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
+
+                    }
+                    else {
+                        
+                    }
                     sm.waitForSingleEvent(event, State.PARK);
                     break;
 
