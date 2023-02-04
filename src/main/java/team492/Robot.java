@@ -167,7 +167,10 @@ public class Robot extends FrcRobotBase
             battery = new FrcRobotBattery(pdp);
         }
 
-        pressureSensor = new AnalogInput(RobotParams.AIN_PRESSURE_SENSOR);
+        if (RobotParams.Preferences.usePressureSensor)
+        {
+            pressureSensor = new AnalogInput(RobotParams.AIN_PRESSURE_SENSOR);
+        }
 
         //
         // Create and initialize miscellaneous hardware.
@@ -216,6 +219,7 @@ public class Robot extends FrcRobotBase
             if (RobotParams.Preferences.useGrabber)
             {
                 grabber = new Grabber();
+                grabber.release();
             }
         
                 

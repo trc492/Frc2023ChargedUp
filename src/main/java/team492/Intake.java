@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcTimer;
 import TrcFrcLib.frclib.FrcCANFalcon; 
 import TrcFrcLib.frclib.FrcPneumatic; 
 import edu.wpi.first.wpilibj.PneumaticsModuleType; 
+//package and imports
 
 public class Intake implements TrcExclusiveSubsystem { 
     private static final String moduleName = "Intake"; 
@@ -47,17 +48,17 @@ public class Intake implements TrcExclusiveSubsystem {
         intakePneumatic = new FrcPneumatic( moduleName + ".pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM, 
             RobotParams.PNEUMATIC_INTAKE_RETRACT, RobotParams.PNEUMATIC_INTAKE_EXTEND); 
         intakePneumatic.retract(); 
-
+        //intake motors and pneumatics
     } 
 
     public void cancel() { 
         intakeMotorRight.set(0.0); 
         intakeMotorLeft.set(0.0); 
-    } //aka we stop  
+    } //cancel out the right and left intakes
 
     public double getMotorPower()  { 
         return intakeMotorRight.getMotorPower(); 
-    } //get the motor power (no way!!!!) 
+    } //get the motor power 
 
   
     public void setPower(String owner, double delay, double power, double duration) { 
@@ -71,9 +72,9 @@ public class Intake implements TrcExclusiveSubsystem {
         if (validateOwnership(owner)) { 
             intakeMotorRight.set(delay, power, duration); 
             intakeMotorLeft.set(delay, power, duration); 
-        } 
+        } //validate ownership
 
-    }   //setPower 
+    }   
 
     public void setPower(double delay, double power, double duration) { 
         setPower(null, delay, power, duration); 

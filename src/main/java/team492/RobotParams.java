@@ -46,6 +46,7 @@ public class RobotParams
         // Sensors
         public static final boolean useNavX                     = false;
         public static final boolean usePdp                      = false;
+        public static final boolean usePressureSensor           = false;
         // Vision
         public static final boolean usePhotonVision             = false;
         public static final boolean useLimeLightVision          = false;
@@ -56,6 +57,7 @@ public class RobotParams
         // Drive Base
         public static final boolean useExternalOdometry         = false;
         public static final boolean swerveRobot                 = true;
+        public static final boolean useCANCoder                 = true;     //set to false to use Analog Encoder.
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
         // Subsystems
@@ -158,6 +160,10 @@ public class RobotParams
     // Analog Input ports.
     //
     public static final int AIN_PRESSURE_SENSOR                 = 0;
+    public static final int AIN_LEFTFRONT_STEER_ENCODER         = 0;
+    public static final int AIN_RIGHTFRONT_STEER_ENCODER        = 1;
+    public static final int AIN_LEFTBACK_STEER_ENCODER          = 2;
+    public static final int AIN_RIGHTBACK_STEER_ENCODER         = 3;
 
     //
     // Digital Input/Output ports.
