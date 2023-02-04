@@ -64,6 +64,7 @@ public class RobotParams
         public static final boolean useSubsystems               = false;
         public static final boolean useGrabber                  = false;
         public static final boolean useVacuum                   = false;
+        public static final boolean useLift                     = false;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
@@ -124,6 +125,7 @@ public class RobotParams
     public static final int CANID_RIGHTBACK_DRIVE               = 6;    // Blue: 40A
     public static final int CANID_INTAKE_LEFT                   = 27; 
     public static final int CANID_INTAKE_RIGHT                  = 28;  
+    public static final int CANID_LIFT                          = 420; //random number (must find value)
 
     // Applicable only for Swerve Drive.
     public static final int CANID_LEFTFRONT_STEER_ENCODER       = 7;    // Orange
@@ -166,6 +168,10 @@ public class RobotParams
     //
     // Digital Input/Output ports.
     //
+    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH        = 5; //random number
+
+
+
 
     //
     // PWM channels.
@@ -185,8 +191,15 @@ public class RobotParams
     public static final int PNEUMATIC_LEFT_GRABBER_EXTEND       = 1;
     public static final int PNEUMATIC_RIGHT_GRABBER_RETRACT     = 2;
     public static final int PNEUMATIC_RIGHT_GRABBER_EXTEND      = 3;
+
     public static final int PNEUMATIC_INTAKE_EXTEND             = 4; 
     public static final int PNEUMATIC_INTAKE_RETRACT            = 5; 
+
+    public static final int PNEUMATIC_LIFT_RETRACT              = 422; //random number
+    public static final int PNEUMATIC_LIFT_EXTEND               = 423; //random number
+
+
+
 
     //
     // Ultrasonic sensors.
@@ -311,6 +324,25 @@ public class RobotParams
     public static final double PPD_TURN_TOLERANCE               = 2.0;
     public static final double PPD_MOVE_DEF_OUTPUT_LIMIT        = 0.5;
     public static final double PPD_ROT_DEF_OUTPUT_LIMIT         = 0.3;
+
+    //
+    // Lift subsystem
+    //
+    public static final double LIFT_KP                       = 0.2;      //0.06;
+    public static final double LIFT_KI                       = 0.0;
+    public static final double LIFT_KD                       = 0.0;      //0.005;
+    public static final double LIFT_TOLERANCE                = 1.0;
+    public static final int LIFT_ENCODER_PPR                 = 4096;
+    public static final double LIFT_INCHES_PER_COUNT         = 1.392027924751009e-4;
+    public static final double LIFT_OFFSET                   = 29.6785;
+    public static final double LIFT_CAL_POWER                = 0.5;
+    public static final boolean LIFT_MOTOR_INVERTED          = true;
+    public static final double LIFT_MIN_POS                  = 20.0;
+    public static final double LIFT_MAX_POS                  = 65.0;
+    public static final double LIFT_RAISED                   = 23.3; //random number
+    public static final double LIFT_LOWERED                  = 24.3; //random number
+
+
 
     //
     // Other subsystems.
