@@ -65,6 +65,7 @@ public class RobotParams
         public static final boolean useGrabber                  = false;
         public static final boolean useVacuum                   = false;
         public static final boolean useLift                     = false;
+        public static final boolean useArm                      = false;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
@@ -126,6 +127,7 @@ public class RobotParams
     public static final int CANID_INTAKE_LEFT                   = 27; 
     public static final int CANID_INTAKE_RIGHT                  = 28;  
     public static final int CANID_LIFT                          = 420; //random number (must find value)
+    public static final int CANID_ARM                           = 42; //random number (must find value)
 
     // Applicable only for Swerve Drive.
     public static final int CANID_LEFTFRONT_STEER_ENCODER       = 7;    // Orange
@@ -168,7 +170,7 @@ public class RobotParams
     //
     // Digital Input/Output ports.
     //
-    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH        = 5; //random number
+    
 
 
 
@@ -341,8 +343,22 @@ public class RobotParams
     public static final double LIFT_MAX_POS                  = 65.0;
     public static final double LIFT_RAISED                   = 23.3; //random number
     public static final double LIFT_LOWERED                  = 24.3; //random number
+    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH      = 5; //random number
 
-
+    public static final double ARM_KP                       = 0.2;      //0.06;
+    public static final double ARM_KI                       = 0.0;
+    public static final double ARM_KD                       = 0.0;      //0.005;
+    public static final double ARM_TOLERANCE                = 1.0;
+    public static final int ARM_ENCODER_PPR                 = 4096;
+    public static final double ARM_INCHES_PER_COUNT         = 1.392027924751009e-4;
+    public static final double ARM_OFFSET                   = 29.6785;
+    public static final double ARM_CAL_POWER                = 0.5;
+    public static final double ARM_MIN_POS                  = 20.0;
+    public static final double ARM_MAX_POS                  = 65.0;
+    public static final boolean ARM_MOTOR_INVERTED          = true;
+    public static final int DIO_ARM_LOWER_LIMIT_SWITCH      = 7; //random
+    public static final double ARM_RAISED                   = 25.3; //random number
+    public static final double ARM_LOWERED                  = 28.3; //random number
 
     //
     // Other subsystems.
