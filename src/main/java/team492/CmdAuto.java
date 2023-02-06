@@ -5,7 +5,6 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
-import team492.FrcAuto.AutoChoices;
 
 class CmdAuto implements TrcRobot.RobotCommand
 {

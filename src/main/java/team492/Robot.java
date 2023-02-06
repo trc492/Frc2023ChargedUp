@@ -215,19 +215,14 @@ public class Robot extends FrcRobotBase
             //
             if (RobotParams.Preferences.useSubsystems)
             {
+                if (RobotParams.Preferences.useGrabber)
+                {
+                    grabber = new Grabber();
+                    grabber.release();
+                }
             }
-
-            if (RobotParams.Preferences.useGrabber)
-            {
-                grabber = new Grabber();
-                grabber.release();
-            }
-        
-                
-           
         }
 
-            
         if (RobotParams.Preferences.useLift) {
             lift = new Lift(this);
         }    
