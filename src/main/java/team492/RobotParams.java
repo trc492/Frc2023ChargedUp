@@ -75,8 +75,8 @@ public class RobotParams
         // Debug
         public static final boolean debugPowerConsumption       = false;
         public static final boolean debugDriveBase              = false;
-        public static final boolean debugPidDrive               = false;
         public static final boolean debugPurePursuitDrive       = false;
+        public static final boolean debugPidDrive               = false;
         public static final boolean debugSubsystems             = false;
         public static final boolean debugVision                 = false;
         public static final boolean debugLoopTime               = false;

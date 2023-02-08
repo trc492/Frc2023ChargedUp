@@ -100,9 +100,9 @@ public class WestCoastDrive extends RobotDrive
             RobotParams.ROBOT_VEL_KP, RobotParams.ROBOT_VEL_KI, RobotParams.ROBOT_VEL_KD, RobotParams.ROBOT_VEL_KF);
 
         TrcPidController.PidParameters yPosPidParams = new TrcPidController.PidParameters(
-            yPosPidCoeff, RobotParams.WCD_TOLERANCE);
+            yPosPidCoeff, RobotParams.WCD_TOLERANCE, driveBase::getYPosition);
         TrcPidController.PidParameters turnPidParams = new TrcPidController.PidParameters(
-            turnPidCoeff, RobotParams.GYRO_TURN_TOLERANCE);
+            turnPidCoeff, RobotParams.GYRO_TURN_TOLERANCE, driveBase::getHeading);
 
         pidDrive = new TrcPidDrive(
             "pidDrive", driveBase, null, yPosPidParams, turnPidParams);

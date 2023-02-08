@@ -100,11 +100,11 @@ public class MecanumDrive extends RobotDrive
             RobotParams.ROBOT_VEL_KP, RobotParams.ROBOT_VEL_KI, RobotParams.ROBOT_VEL_KD, RobotParams.ROBOT_VEL_KF);
 
         TrcPidController.PidParameters xPosPidParams = new TrcPidController.PidParameters(
-            xPosPidCoeff, RobotParams.MECANUM_X_TOLERANCE);
+            xPosPidCoeff, RobotParams.MECANUM_X_TOLERANCE, driveBase::getXPosition);
         TrcPidController.PidParameters yPosPidParams = new TrcPidController.PidParameters(
-            yPosPidCoeff, RobotParams.MECANUM_Y_TOLERANCE);
+            yPosPidCoeff, RobotParams.MECANUM_Y_TOLERANCE, driveBase::getYPosition);
         TrcPidController.PidParameters turnPidParams = new TrcPidController.PidParameters(
-            turnPidCoeff, RobotParams.GYRO_TURN_TOLERANCE);
+            turnPidCoeff, RobotParams.GYRO_TURN_TOLERANCE, driveBase::getHeading);
 
         pidDrive = new TrcPidDrive(
             "pidDrive", driveBase, xPosPidParams, yPosPidParams, turnPidParams);
