@@ -472,16 +472,31 @@ public class FrcTest extends FrcTeleOp
                 case TUNE_X_PID:
                 case TUNE_Y_PID:
                 case TUNE_TURN_PID:
+                    TrcPidController xPidCtrl, yPidCtrl, turnPidCtrl;
                     int lineNum = 10;
-                    robot.dashboard.displayPrintf(9, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
-                    if (robot.robotDrive.encoderXPidCtrl != null)
+
+                    if (testChoices.getTest() == Test.PP_DRIVE)
                     {
-                        robot.robotDrive.encoderXPidCtrl.displayPidInfo(lineNum);
+                        xPidCtrl = robot.robotDrive.purePursuitDrive.getXPosPidCtrl();
+                        yPidCtrl = robot.robotDrive.purePursuitDrive.getYPosPidCtrl();
+                        turnPidCtrl = robot.robotDrive.purePursuitDrive.getTurnPidCtrl();
+                    }
+                    else
+                    {
+                        xPidCtrl = robot.robotDrive.pidDrive.getXPidCtrl();
+                        yPidCtrl = robot.robotDrive.pidDrive.getYPidCtrl();
+                        turnPidCtrl = robot.robotDrive.pidDrive.getTurnPidCtrl();
+                    }
+
+                    robot.dashboard.displayPrintf(9, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
+                    if (xPidCtrl != null)
+                    {
+                        xPidCtrl.displayPidInfo(lineNum);
                         lineNum += 2;
                     }
-                    robot.robotDrive.encoderYPidCtrl.displayPidInfo(lineNum);
+                    yPidCtrl.displayPidInfo(lineNum);
                     lineNum += 2;
-                    robot.robotDrive.gyroTurnPidCtrl.displayPidInfo(lineNum);
+                    turnPidCtrl.displayPidInfo(lineNum);
                     break;
 
                 default:

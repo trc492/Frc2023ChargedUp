@@ -41,23 +41,24 @@ public class RobotParams
     {
         // Inputs
         public static final boolean useXboxController           = true;
-        public static final boolean useButtonPanels             = false;
+        public static final boolean useButtonPanels             = true;
         public static final boolean doOneStickDrive             = true;
         // Sensors
-        public static final boolean useNavX                     = false;
+        public static final boolean useNavX                     = true;
         public static final boolean usePdp                      = false;
         public static final boolean usePressureSensor           = false;
         // Vision
-        public static final boolean usePhotonVision             = false;
+        public static final boolean usePhotonVision             = true;
         public static final boolean useLimeLightVision          = false;
-        public static final boolean useOpenCvVision             = true;
+        public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Robot
         public static final boolean noRobot                     = true;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
         public static final boolean swerveRobot                 = true;
-        public static final boolean useCANCoder                 = true;     //set to false to use Analog Encoder.
+        public static final boolean useCANCoder                 = false;
+        public static final boolean useAnalogEncoder            = true;
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
         // Subsystems
@@ -75,9 +76,11 @@ public class RobotParams
         public static final boolean debugPowerConsumption       = false;
         public static final boolean debugDriveBase              = false;
         public static final boolean debugPidDrive               = false;
+        public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugSubsystems             = false;
         public static final boolean debugVision                 = false;
         public static final boolean debugLoopTime               = false;
+        public static final boolean debugAnalogEncoder          = true;
     }   //class Preferences
 
     public static final String ROBOT_NAME                       = "Generic_Robot";

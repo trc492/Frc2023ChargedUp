@@ -92,12 +92,16 @@ public class SwerveDrive extends RobotDrive
             lbEncoder = createCANCoder("lbEncoder", RobotParams.CANID_LEFTBACK_STEER_ENCODER, true, zeros[2]);
             rbEncoder = createCANCoder("rbEncoder", RobotParams.CANID_RIGHTBACK_STEER_ENCODER, true, zeros[3]);
         }
-        else
+        else if (RobotParams.Preferences.useAnalogEncoder)
         {
             lfEncoder = createAnalogEncoder("lfEncoder", RobotParams.AIN_LEFTFRONT_STEER_ENCODER, true, zeros[0]);
             rfEncoder = createAnalogEncoder("rfEncoder", RobotParams.AIN_RIGHTFRONT_STEER_ENCODER, true, zeros[1]);
             lbEncoder = createAnalogEncoder("lbEncoder", RobotParams.AIN_LEFTBACK_STEER_ENCODER, true, zeros[2]);
             rbEncoder = createAnalogEncoder("rbEncoder", RobotParams.AIN_RIGHTBACK_STEER_ENCODER, true, zeros[3]);
+        }
+        else
+        {
+            lfEncoder = rfEncoder = lbEncoder = rbEncoder = null;
         }
 
         lfSteerMotor = createSteerMotor("lfSteer", RobotParams.CANID_LEFTFRONT_STEER, false);
@@ -158,37 +162,33 @@ public class SwerveDrive extends RobotDrive
         //
         // Create and initialize PID controllers.
         //
-        // PID Coefficients for X and Y are the same for Swerve Drive.
-        xPosPidCoeff = new TrcPidController.PidCoefficients(
+        // PID Parameters for X and Y are the same for Swerve Drive.
+        xPosPidCoeff = yPosPidCoeff = new TrcPidController.PidCoefficients(
             RobotParams.SWERVE_KP, RobotParams.SWERVE_KI, RobotParams.SWERVE_KD, RobotParams.SWERVE_KF);
-        encoderXPidCtrl = new TrcPidController(
-            "encoderXPidCtrl", xPosPidCoeff, RobotParams.SWERVE_TOLERANCE, driveBase::getXPosition);
-        encoderXPidCtrl.setOutputLimit(RobotParams.DRIVE_MAX_XPID_POWER);
-        encoderXPidCtrl.setRampRate(RobotParams.DRIVE_MAX_XPID_RAMP_RATE);
-    
-        yPosPidCoeff = new TrcPidController.PidCoefficients(
-            RobotParams.SWERVE_KP, RobotParams.SWERVE_KI, RobotParams.SWERVE_KD, RobotParams.SWERVE_KF);
-        encoderYPidCtrl = new TrcPidController(
-            "encoderYPidCtrl", yPosPidCoeff, RobotParams.SWERVE_TOLERANCE, driveBase::getYPosition);
-        encoderYPidCtrl.setOutputLimit(RobotParams.DRIVE_MAX_YPID_POWER);
-        encoderYPidCtrl.setRampRate(RobotParams.DRIVE_MAX_YPID_RAMP_RATE);
-    
         turnPidCoeff = new TrcPidController.PidCoefficients(
             RobotParams.GYRO_TURN_KP, RobotParams.GYRO_TURN_KI, RobotParams.GYRO_TURN_KD, RobotParams.GYRO_TURN_KF);
-        gyroTurnPidCtrl = new TrcPidController(
-            "gyroPidCtrl", turnPidCoeff, RobotParams.GYRO_TURN_TOLERANCE, driveBase::getHeading);
-        gyroTurnPidCtrl.setOutputLimit(RobotParams.DRIVE_MAX_TURNPID_POWER);
-        gyroTurnPidCtrl.setRampRate(RobotParams.DRIVE_MAX_TURNPID_RAMP_RATE);
-        gyroTurnPidCtrl.setAbsoluteSetPoint(true);
-    
         velPidCoeff = new TrcPidController.PidCoefficients(
             RobotParams.ROBOT_VEL_KP, RobotParams.ROBOT_VEL_KI, RobotParams.ROBOT_VEL_KD, RobotParams.ROBOT_VEL_KF);
 
-        pidDrive = new TrcPidDrive("pidDrive", driveBase, encoderXPidCtrl, encoderYPidCtrl, gyroTurnPidCtrl);
+        TrcPidController.PidParameters posPidParams = new TrcPidController.PidParameters(
+            xPosPidCoeff, RobotParams.SWERVE_TOLERANCE);
+        TrcPidController.PidParameters turnPidParams = new TrcPidController.PidParameters(
+            turnPidCoeff, RobotParams.GYRO_TURN_TOLERANCE);
+
+        pidDrive = new TrcPidDrive(
+            "pidDrive", driveBase, posPidParams, posPidParams, turnPidParams);
+
+        pidDrive.getXPidCtrl().setOutputLimit(RobotParams.DRIVE_MAX_XPID_POWER);
+        pidDrive.getXPidCtrl().setRampRate(RobotParams.DRIVE_MAX_XPID_RAMP_RATE);
+        pidDrive.getYPidCtrl().setOutputLimit(RobotParams.DRIVE_MAX_YPID_POWER);
+        pidDrive.getYPidCtrl().setRampRate(RobotParams.DRIVE_MAX_YPID_RAMP_RATE);
+        pidDrive.getTurnPidCtrl().setOutputLimit(RobotParams.DRIVE_MAX_TURNPID_POWER);
+        pidDrive.getTurnPidCtrl().setRampRate(RobotParams.DRIVE_MAX_TURNPID_RAMP_RATE);
+        pidDrive.getTurnPidCtrl().setAbsoluteSetPoint(true);
+
         // AbsoluteTargetMode eliminates cumulative errors on multi-segment runs because drive base is keeping track
         // of the absolute target position.
         pidDrive.setAbsoluteTargetModeEnabled(true);
-        pidDrive.setStallDetectionEnabled(true);
         pidDrive.setMsgTracer(robot.globalTracer, logPoseEvents, tracePidInfo);
 
         purePursuitDrive = new TrcPurePursuitDrive(
