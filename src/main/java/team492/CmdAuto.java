@@ -30,7 +30,8 @@ class CmdAuto implements TrcRobot.RobotCommand
     private final TrcStateMachine<State> sm;
 
     private int piecesScored = 0;
-    private Boolean park = false; //TODO: connect with auto choices (i dont know how, it is false as a placeholder) 
+    private boolean park = false;//if true, we park, if false, we try to score a third piece 
+    //TODO: not sure if we should connect with auto choices or pass in as a parameter
 
     /**
      * Constructor: Create an instance of the object.
@@ -96,7 +97,7 @@ class CmdAuto implements TrcRobot.RobotCommand
             switch (state)
             {
                 case SCORE: //Scores a game piece, the precondition being that it is already in the scoring position, with a game piece in the robot, depending on if its a cone or cube
-                    //TODO: implement code for scoring
+                    //calls autoscore
                     piecesScored++;
                     if (piecesScored == 1) {
                         sm.waitForSingleEvent(event, State.START_DELAY);
@@ -162,44 +163,65 @@ class CmdAuto implements TrcRobot.RobotCommand
                     //runs intake
                     //drives forward
                     //stops running intake when piece detected in robot and broadcasts event
+                    //OR drives forward are runs autopickup
                     sm.waitForSingleEvent(event, State.GO_TO_SCORE_POSITION);
                     break;
 
                 case GO_TO_SCORE_POSITION: //Drives to the scoring position, determining the location based on how many pieces we have already scored
                     if (piecesScored == 1) {
-                        //drives to the location of the right most piece, broadcasting event when pp finishes
+                        //drives to the right most shelf from the right most game piece
                         if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
-
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 85.0, 180.0),
+                                new TrcPose2D(-40.0, 65.0, 180.0));
                         }
                         else {
-                            
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 564.0, 0.0),
+                                new TrcPose2D(-40.0, 584.0, 0.0));
                         }
                     }
                     else if (piecesScored == 2) {
-                    //drives to the location of the second right most piece, broadcasting event when pp finishes
+                        //drives to the right most shelf from the second right most game piece
                         if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
-
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 220.0, 225),
+                                new TrcPose2D(-33.0, 85.0, 180.0),
+                                new TrcPose2D(-40.0, 65.0, 180.0));
                         }
                         else {
-                        
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(-33.0, 429, 315),
+                                new TrcPose2D(-33.0, 564.0, 0.0),
+                                new TrcPose2D(-40.0, 580.0, 0.0));
                         }
                     }
                     sm.waitForSingleEvent(event, State.SCORE);
                     break;
 
-                case GO_TO_PARK: //Drives to the location to park
-                    //TODO: implement code for driving to park location, broadcasting event when pp finishes
+                case GO_TO_PARK: //Drives to just behind the parking platform from the scoring position
                     if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
-
+                        robot.robotDrive.purePursuitDrive.start(
+                            event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                            new TrcPose2D(-107.0, 85.0, 0),
+                            new TrcPose2D(-107.0, 145.0, 0));
                     }
                     else {
-                        
+                        robot.robotDrive.purePursuitDrive.start(
+                            event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                            new TrcPose2D(-107.0, 550.0, 180),
+                            new TrcPose2D(-107.0, 490.0, 180));
                     }
                     sm.waitForSingleEvent(event, State.PARK);
                     break;
 
                 case PARK: //Parks
-                    //TODO: implement code for auto parking, broadcasting event when done
+                    //drives forward
+                    //autoparks
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
                 case DONE:
