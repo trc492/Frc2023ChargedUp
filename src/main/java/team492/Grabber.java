@@ -22,11 +22,12 @@
 
 package team492;
 
+import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcFrcLib.frclib.FrcPWMTalonSRX;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
-public class Grabber
+public class Grabber implements TrcExclusiveSubsystem
 {
     private final FrcPneumatic leftGrabber;
     private final FrcPneumatic rightGrabber;

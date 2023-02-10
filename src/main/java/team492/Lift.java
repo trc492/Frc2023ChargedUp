@@ -27,6 +27,7 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcPidActuator;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcPidActuator.Parameters;
@@ -35,7 +36,7 @@ import TrcFrcLib.frclib.FrcDigitalInput;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
-public class Lift {
+public class Lift implements TrcExclusiveSubsystem{
     private static final String moduleName = "Lift";
     public final Robot robot;
     public final FrcCANFalcon liftMotor;

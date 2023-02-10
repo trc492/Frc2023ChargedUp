@@ -100,6 +100,7 @@ public class Robot extends FrcRobotBase
     public Grabber grabber;
     public Lift lift;
     public Arm arm;
+    public Intake intake; 
 
     /**
      * Constructor: Create an instance of the object.

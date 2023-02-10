@@ -24,13 +24,14 @@
 package team492;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcPidActuator;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcPidActuator.Parameters;
 import TrcFrcLib.frclib.FrcCANFalcon;
 import TrcFrcLib.frclib.FrcDigitalInput;
 
-public class Arm {
+public class Arm implements TrcExclusiveSubsystem{
     private static final String moduleName = "Arm";
     public final Robot robot;
     public final FrcCANFalcon armMotor;

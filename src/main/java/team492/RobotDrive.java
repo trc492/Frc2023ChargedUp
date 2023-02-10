@@ -31,6 +31,7 @@ import java.util.Scanner;
 import com.ctre.phoenix.ErrorCode;
 
 import TrcCommonLib.trclib.TrcDriveBase;
+import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcGyro;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPidDrive;
@@ -45,7 +46,7 @@ import edu.wpi.first.wpilibj.SPI;
 /**
  * This class is intended to be extended by subclasses implementing different robot drive bases.
  */
-public class RobotDrive
+public class RobotDrive implements TrcExclusiveSubsystem
 {
     public enum DriveOrientation
     {
