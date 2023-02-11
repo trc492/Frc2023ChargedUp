@@ -338,10 +338,16 @@ public class RobotParams
     public static final double LIFT_CAL_POWER                = 0.5;
     public static final boolean LIFT_MOTOR_INVERTED          = true;
     public static final double LIFT_MIN_POS                  = 20.0;
-    public static final double LIFT_MAX_POS                  = 65.0;
+    public static final double LIFT_MAX_POS                  = 65.0;    
     public static final double LIFT_RAISED                   = 23.3; //random number
     public static final double LIFT_LOWERED                  = 24.3; //random number
     public static final int DIO_LIFT_LOWER_LIMIT_SWITCH      = 5; //random number
+    public static final double LIFT_LEVEL_1_HEIGHT           = 0.0;
+    public static final double LIFT_LEVEL_2_HEIGHT           = 0.0;
+    public static final double LIFT_LEVEL_3_HEIGHT           = 0.0;
+    public static final double[] LIFT_PRESET_LEVELS = {0,LIFT_LEVEL_1_HEIGHT, LIFT_LEVEL_2_HEIGHT, LIFT_LEVEL_3_HEIGHT};
+
+
 
     public static final double ARM_KP                       = 0.2;      //0.06;
     public static final double ARM_KI                       = 0.0;
