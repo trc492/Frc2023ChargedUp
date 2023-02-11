@@ -306,8 +306,10 @@ public class RobotParams
     public static final double STEER_MAX_VEL                    = ((18700.0 * 0.81 / 56.67) / 60.0) * 360.0;        // deg/sec
     public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0; // count/100ms
 
-    // order is lf, rf, lr, rr
-    public static final int[] STEER_ZEROS                       = new int[] {2167, 3756, 1194, 3485};   // this is a backup if the zeros file isn't found
+    //Zeroes are in Normalized Volts (0-1)
+    //This is a backup if file is not found                                 LF, RF, LR, RR
+    //TODO: Put the real normalzied numbers in the text file
+    public static final double[] STEER_ZEROS                    = new double[] {0.7126, 0.2858, 0.9098, 0.6480};
 
     public static final TrcPidController.PidCoefficients magicSteerCoeff =
         new TrcPidController.PidCoefficients(2.0, 0.01, 0.0, 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS, 5.0 / STEER_DEGREES_PER_COUNT);
