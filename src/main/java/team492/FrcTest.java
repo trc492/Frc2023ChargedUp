@@ -210,6 +210,8 @@ public class FrcTest extends FrcTeleOp
     private double maxTurnRate = 0.0;
     private double prevTime = 0.0;
     private double prevVelocity = 0.0;
+    private double[] steerZeros = new double[4];
+    private long steerZeroSumCount = 0;
 
     public FrcTest(Robot robot)
     {
@@ -266,8 +268,14 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case SWERVE_CALIBRATION:
-                setControlsEnabled(false);
-                robot.robotDrive.startSteerCalibrate();
+                if (robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                {
+                    for (int i = 0; i < steerZeros.length; i++)
+                    {
+                        steerZeros[i] = 0.0;
+                    }
+                    steerZeroSumCount = 0;
+                }
                 break;
 
             case DRIVE_MOTORS_TEST:
@@ -356,6 +364,15 @@ public class FrcTest extends FrcTeleOp
     public void stopMode(RunMode prevMode, RunMode nextMode)
     {
         super.stopMode(prevMode, nextMode);
+        if (testChoices.getTest() == Test.SWERVE_CALIBRATION &&
+            robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+        {
+            for (int i = 0; i < steerZeros.length; i++)
+            {
+                steerZeros[i] /= steerZeroSumCount;
+            }
+            ((SwerveDrive) robot.robotDrive).saveSteerZeroPositions(steerZeros);
+        }
     }   //stopMode
 
     //
@@ -451,8 +468,20 @@ public class FrcTest extends FrcTeleOp
                     break;
 
                 case SWERVE_CALIBRATION:
-                    robot.robotDrive.steerCalibratePeriodic();
-                    displaySensorStates();
+                    if (robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                    {
+                        SwerveDrive swerveDrive = (SwerveDrive) robot.robotDrive;
+
+                        for (int i = 0; i < steerZeros.length; i++)
+                        {
+                            steerZeros[i] += swerveDrive.steerEncoders[i].getRawPosition();
+                        }
+                        steerZeroSumCount++;
+                        robot.dashboard.displayPrintf(
+                            9, "SteerZeros: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
+                            steerZeros[0]/steerZeroSumCount, steerZeros[1]/steerZeroSumCount,
+                            steerZeros[2]/steerZeroSumCount, steerZeros[3]/steerZeroSumCount);
+                    }
                     break;
 
                 case X_TIMED_DRIVE:

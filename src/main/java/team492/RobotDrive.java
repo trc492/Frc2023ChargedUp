@@ -369,20 +369,4 @@ public class RobotDrive implements TrcExclusiveSubsystem
         setFieldPosition(null, useCompassHeading);
     }   //setFieldPosition
 
-    /**
-     * This method is called to start steering calibration for Swerve Drive.
-     */
-    public void startSteerCalibrate()
-    {
-        throw new UnsupportedOperationException("Drivebase does not support calibration.");
-    }   //startSteerCalibrate
-
-    /**
-     * This method is called periodically to calibrate steering for Swerve Drive.
-     */
-    public void steerCalibratePeriodic()
-    {
-        throw new UnsupportedOperationException("Drivebase does not support calibration.");
-    }   //steerCalibratePeriodic
-
 }   //class RobotDrive
