@@ -80,7 +80,7 @@ public class RobotParams
         public static final boolean debugSubsystems             = false;
         public static final boolean debugVision                 = false;
         public static final boolean debugLoopTime               = false;
-        public static final boolean debugAnalogEncoder          = true;
+        // public static final boolean debugAnalogEncoder          = true;
     }   //class Preferences
 
     public static final String ROBOT_NAME                       = "Generic_Robot";
@@ -173,10 +173,6 @@ public class RobotParams
     //
     // Digital Input/Output ports.
     //
-    
-
-
-
 
     //
     // PWM channels.
@@ -202,9 +198,6 @@ public class RobotParams
 
     public static final int PNEUMATIC_LIFT_RETRACT              = 422; //random number
     public static final int PNEUMATIC_LIFT_EXTEND               = 423; //random number
-
-
-
 
     //
     // Ultrasonic sensors.
@@ -302,6 +295,8 @@ public class RobotParams
     public static final double FALCON_CPR                       = 2048.0;
     public static final double STEER_ENCODER_SCALE              = FALCON_CPR / CANCODER_CPR;
     public static final double STEER_GEAR_RATIO                 = (24.0/12.0) * (72.0/14.0);
+
+    public static final double ANALOG_ENCODER_SCALE             = 360.0;//FALCON_CPR;
 
     public static final double STEER_DEGREES_PER_TICK           = 360.0 / CANCODER_CPR;
     public static final double STEER_DEGREES_PER_COUNT          = 360.0 / (FALCON_CPR*STEER_GEAR_RATIO);

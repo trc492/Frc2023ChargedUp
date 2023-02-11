@@ -76,6 +76,7 @@ public class Robot extends FrcRobotBase
     public FrcPdp pdp;
     public TrcRobotBattery battery;
     public AnalogInput pressureSensor;
+    // public FrcAnalogEncoder lfEnc, rfEnc, lbEnc, rbEnc;
 
     //
     // Miscellaneous hardware.
@@ -221,18 +222,18 @@ public class Robot extends FrcRobotBase
                     grabber = new Grabber();
                     grabber.release();
                 }
+
+                if (RobotParams.Preferences.useLift)
+                {
+                    lift = new Lift(this);
+                }
+
+                if (RobotParams.Preferences.useArm)
+                {
+                    arm = new Arm(this);
+                }
             }
         }
-
-        if (RobotParams.Preferences.useLift) {
-            lift = new Lift(this);
-        }    
-
-        if (RobotParams.Preferences.useArm) {
-            arm = new Arm(this);
-        }  
-
-
         //
         // Miscellaneous.
         //
@@ -240,6 +241,26 @@ public class Robot extends FrcRobotBase
         {
             pdp.registerEnergyUsedForAllUnregisteredChannels();
         }
+
+        // if (RobotParams.Preferences.debugAnalogEncoder)
+        // {
+        //     lfEnc = new FrcAnalogEncoder("lfEnc", 0);
+        //     rfEnc = new FrcAnalogEncoder("rfEnc", 1);
+        //     lbEnc = new FrcAnalogEncoder("lbEnc", 2);
+        //     rbEnc = new FrcAnalogEncoder("rbEnc", 3);
+        //     lfEnc.setInverted(true);
+        //     rfEnc.setInverted(true);
+        //     lbEnc.setInverted(true);
+        //     rbEnc.setInverted(true);
+        //     lfEnc.setScaleAndOffset(360.0, 0.0);
+        //     rfEnc.setScaleAndOffset(360.0, 0.0);
+        //     lbEnc.setScaleAndOffset(360.0, 0.0);
+        //     rbEnc.setScaleAndOffset(360.0, 0.0);
+        //     lfEnc.setEnabled(true);
+        //     rfEnc.setEnabled(true);
+        //     lbEnc.setEnabled(true);
+        //     rbEnc.setEnabled(true);
+        // }
 
         //
         // Create Robot Modes.
@@ -461,6 +482,16 @@ public class Robot extends FrcRobotBase
                     }
                 }
             }
+
+            // if (RobotParams.Preferences.debugAnalogEncoder)
+            // {
+            //     dashboard.displayPrintf(
+            //         14, "Raw: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
+            //         lfEnc.getRawPosition(), rfEnc.getRawPosition(), lbEnc.getRawPosition(), rbEnc.getRawPosition());
+            //     dashboard.displayPrintf(
+            //         15, "Adj: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
+            //         lfEnc.getPosition(), rfEnc.getPosition(), lbEnc.getPosition(), rbEnc.getPosition());
+            // }
 
             if (RobotParams.Preferences.showSubsystemStatus)
             {

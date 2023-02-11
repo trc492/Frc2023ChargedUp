@@ -101,7 +101,7 @@ public class SwerveDrive extends RobotDrive
         }
         else
         {
-            lfEncoder = rfEncoder = lbEncoder = rbEncoder = null;
+            throw new IllegalArgumentException("Must enable either useCANCoder or useAnalogEncoder.");
         }
 
         lfSteerMotor = createSteerMotor("lfSteer", RobotParams.CANID_LEFTFRONT_STEER, false);
@@ -272,7 +272,7 @@ public class SwerveDrive extends RobotDrive
         FrcEncoder encoder = new FrcAnalogEncoder(name, encoderId);
 
         encoder.setInverted(inverted);
-        encoder.setScaleAndOffset(360.0, steerZero);
+        encoder.setScaleAndOffset(RobotParams.ANALOG_ENCODER_SCALE, steerZero);
         return encoder;
     }   //createAnalogEncoder
 

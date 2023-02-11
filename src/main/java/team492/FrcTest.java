@@ -549,17 +549,28 @@ public class FrcTest extends FrcTeleOp
             robot.dashboard.displayPrintf(
                 9, "Sensors Test (Batt=%.1f/%.1f):", robot.battery.getVoltage(), robot.battery.getLowestVoltage());
         }
+
         if (robot.robotDrive != null)
         {
             robot.dashboard.displayPrintf(
                 10, "DriveBase: Pose=%s,Vel=%s", robot.robotDrive.driveBase.getFieldPosition(),
                 robot.robotDrive.driveBase.getFieldVelocity());
-            robot.dashboard.displayPrintf(11, "DriveEncoders: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
+            robot.dashboard.displayPrintf(
+                11, "DriveEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
                 robot.robotDrive.lfDriveMotor.getPosition(), robot.robotDrive.rfDriveMotor.getPosition(),
                 robot.robotDrive.lbDriveMotor.getPosition(), robot.robotDrive.rbDriveMotor.getPosition());
-            robot.dashboard.displayPrintf(12, "DrivePower: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
+            robot.dashboard.displayPrintf(
+                12, "DrivePwr: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
                 robot.robotDrive.lfDriveMotor.getMotorPower(), robot.robotDrive.rfDriveMotor.getMotorPower(),
                 robot.robotDrive.lbDriveMotor.getMotorPower(), robot.robotDrive.rbDriveMotor.getMotorPower());
+            if (robot.robotDrive instanceof SwerveDrive)
+            {
+                SwerveDrive swerveDrive = (SwerveDrive) robot.robotDrive;
+                robot.dashboard.displayPrintf(
+                    13, "SteerEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
+                    swerveDrive.lfSteerMotor.getPosition(), swerveDrive.rfSteerMotor.getPosition(),
+                    swerveDrive.lbSteerMotor.getPosition(), swerveDrive.rbSteerMotor.getPosition());
+            }
         }
         //
         // Display other subsystems and sensor info.
