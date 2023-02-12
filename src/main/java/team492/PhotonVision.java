@@ -44,35 +44,20 @@ public class PhotonVision extends FrcPhotonVision
     private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
     private static final boolean debugEnabled = true;
 
-    public enum Pipeline
+    public enum PipelineType
     {
-        CUBE(0),
-        CONE(1),
-        APRILTAG(2);
+        RETRO_TAPE(0),
+        CUBE(1),
+        CONE(2),
+        APRILTAG(3);
 
         public int pipelineIndex;
 
-        Pipeline(int index)
+        PipelineType(int value)
         {
-            pipelineIndex = index;
-        }   //pipeline
-
-        public static Pipeline getPipeline(int index)
-        {
-            Pipeline pipeline = null;
-
-            for (Pipeline pipelineType: Pipeline.values())
-            {
-                if (index == pipelineType.pipelineIndex)
-                {
-                    pipeline = pipelineType;
-                }
-            }
-
-            return pipeline;
-        }   //getPipeline
-
-    }   //enum Pipeline
+            pipelineIndex = value;
+        }
+    }
 
     private final AprilTagFieldLayout aprilTagFieldLayout;
     // private final AprilTagPoseEstimator poseEstimator;
@@ -85,6 +70,7 @@ public class PhotonVision extends FrcPhotonVision
      */
     public PhotonVision(String cameraName, TrcDbgTrace tracer)
     {
+
         super(cameraName, tracer);
 
         double startTime = TrcTimer.getModeElapsedTime();
@@ -103,31 +89,15 @@ public class PhotonVision extends FrcPhotonVision
                 moduleName, "[%.3f] Loading AprilTag field layout took %.3f sec.", endTime, endTime - startTime);
         }
 
+        setPipeline(PipelineType.RETRO_TAPE);
+    
+    
+
         // poseEstimator = new AprilTagPoseEstimator(
         //     new AprilTagPoseEstimator.Config(
         //         RobotParams.APRILTAG_SIZE, RobotParams.APRILTAG_FX, RobotParams.APRILTAG_FY,
         //         RobotParams.APRILTAG_CX, RobotParams.APRILTAG_CY));
     }   //FrcPhotonVision
-
-    /**
-     * This method sets the pipeline in the LimeLight.
-     *
-     * @param pipeline specifies the pipeline to switch to.
-     */
-    public void setPipeline(Pipeline pipeline)
-    {
-        setPipelineIndex(pipeline.pipelineIndex);
-    }   //setPipeline
-
-    /**
-     * This method returns the active pipeline of the LimeLight.
-     *
-     * @return active pipeline.
-     */
-    public Pipeline getPipeline()
-    {
-        return Pipeline.getPipeline(getPipelineIndex());
-    }   //getPipeline
 
     /**
      * This method returns the 3D field location of the AprilTag with its given ID.
@@ -185,5 +155,10 @@ public class PhotonVision extends FrcPhotonVision
         //             camPose.transformBy(Constants.kCameraToRobot).toPose2d(), imageCaptureTime);
         // }        
     }   //getRobotFieldPosition
+
+    public void setPipeline(PipelineType pipelineType)
+    {
+        setPipelineIndex(pipelineType.pipelineIndex);
+    }   
 
 }   //class PhotonVision
