@@ -53,7 +53,7 @@ public class RobotParams
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Robot
-        public static final boolean noRobot                     = true;
+        public static final boolean noRobot                     = false;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
         public static final boolean swerveRobot                 = true;
