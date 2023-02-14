@@ -164,8 +164,7 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
                           (robot.intake.acquireExclusiveAccess(ownerName) &&
                            robot.lift.acquireExclusiveAccess(ownerName) &&
                            robot.arm.acquireExclusiveAccess(ownerName) &&
-                           robot.robotDrive.acquireExclusiveAccess(ownerName) &&
-                           robot.grabber.acquireExclusiveAccess(ownerName));
+                           robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName));
 
         if (success)
         {
@@ -203,9 +202,8 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
                 //     ownershipMgr.getOwner(robot.robotDrive), ownershipMgr.getOwner(robot.ownershipMgr.getOwner(robot.grabber));
             }
             robot.intake.releaseExclusiveAccess(currOwner);
-            robot.robotDrive.releaseExclusiveAccess(currOwner);
+            robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
             robot.arm.releaseExclusiveAccess(currOwner);
-            robot.grabber.releaseExclusiveAccess(currOwner);
             robot.lift.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }

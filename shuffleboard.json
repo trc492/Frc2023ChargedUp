@@ -566,7 +566,7 @@
                     "1,0": {
                       "_type": "Camera Stream",
                       "_source0": "camera_server://trc-photonvision_Port_1182_MJPEG_Server",
-                      "_title": "trc-limelight",
+                      "_title": "trc-photonvision",
                       "_glyph": 148,
                       "_showGlyph": false,
                       "Crosshair/Show crosshair": true,

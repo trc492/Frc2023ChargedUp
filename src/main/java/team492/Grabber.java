@@ -22,12 +22,11 @@
 
 package team492;
 
-import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcFrcLib.frclib.FrcPWMTalonSRX;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
-public class Grabber implements TrcExclusiveSubsystem
+public class Grabber
 {
     private final FrcPneumatic leftGrabber;
     private final FrcPneumatic rightGrabber;
@@ -49,9 +48,13 @@ public class Grabber implements TrcExclusiveSubsystem
             "rightGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
             RobotParams.PNEUMATIC_RIGHT_GRABBER_RETRACT, RobotParams.PNEUMATIC_RIGHT_GRABBER_EXTEND);
         release();
-        if (RobotParams.Preferences.useVacuum) {
-            vacuum = new FrcPWMTalonSRX("vacuum", 1, null, null, null);
-        } else {
+
+        if (RobotParams.Preferences.useVacuum)
+        {
+            vacuum = new FrcPWMTalonSRX("vacuum", RobotParams.PWM_VACUUM, null, null, null);
+        }
+        else
+        {
             vacuum = null;
         }
     }   //Grabber
@@ -59,8 +62,10 @@ public class Grabber implements TrcExclusiveSubsystem
     //This method is called to grab a cube, extends the left pneumatic for a partial grab
     public void grabCube()
     {   
-        if(vacuum != null) {
-            if(vacuum.getMotorVelocity() == 0) { //this probably works
+        if (vacuum != null)
+        {
+            if (vacuum.getMotorVelocity() == 0)
+            { //this probably works
                 leftGrabber.extend();
             }
         } else {

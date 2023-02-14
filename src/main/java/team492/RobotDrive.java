@@ -31,7 +31,6 @@ import java.util.Scanner;
 import com.ctre.phoenix.ErrorCode;
 
 import TrcCommonLib.trclib.TrcDriveBase;
-import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcGyro;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPidDrive;
@@ -46,7 +45,7 @@ import edu.wpi.first.wpilibj.SPI;
 /**
  * This class is intended to be extended by subclasses implementing different robot drive bases.
  */
-public class RobotDrive implements TrcExclusiveSubsystem
+public class RobotDrive
 {
     public enum DriveOrientation
     {
@@ -73,10 +72,12 @@ public class RobotDrive implements TrcExclusiveSubsystem
     // PID Coefficients and Controllers.
     //
     public TrcPidController.PidCoefficients xPosPidCoeff, yPosPidCoeff, turnPidCoeff, velPidCoeff;
+    public TrcPidController.PidCoefficients gyroPitchPidCoeff;
     //
     // Drive Controllers.
     //
     public TrcPidDrive pidDrive;
+    public TrcPidDrive balancePidDrive;
     public TrcPurePursuitDrive purePursuitDrive;
     //
     // Miscellaneous.
@@ -169,6 +170,11 @@ public class RobotDrive implements TrcExclusiveSubsystem
         if (pidDrive != null && pidDrive.isActive())
         {
             pidDrive.cancel();
+        }
+
+        if (balancePidDrive != null && balancePidDrive.isActive())
+        {
+            balancePidDrive.cancel();
         }
 
         if (purePursuitDrive != null && purePursuitDrive.isActive())

@@ -57,7 +57,23 @@ public class PhotonVision extends FrcPhotonVision
         {
             pipelineIndex = value;
         }
-    }
+
+        public static PipelineType getType(int index)
+        {
+            PipelineType type = null;
+
+            for (PipelineType pipelineType: PipelineType.values())
+            {
+                if (index == pipelineType.pipelineIndex)
+                {
+                    type = pipelineType;
+                }
+            }
+
+            return type;
+        }   //getType
+
+    }   //enum PipelineType
 
     private final AprilTagFieldLayout aprilTagFieldLayout;
     // private final AprilTagPoseEstimator poseEstimator;
@@ -70,7 +86,6 @@ public class PhotonVision extends FrcPhotonVision
      */
     public PhotonVision(String cameraName, TrcDbgTrace tracer)
     {
-
         super(cameraName, tracer);
 
         double startTime = TrcTimer.getModeElapsedTime();
@@ -90,8 +105,6 @@ public class PhotonVision extends FrcPhotonVision
         }
 
         setPipeline(PipelineType.RETRO_TAPE);
-    
-    
 
         // poseEstimator = new AprilTagPoseEstimator(
         //     new AprilTagPoseEstimator.Config(
@@ -160,5 +173,15 @@ public class PhotonVision extends FrcPhotonVision
     {
         setPipelineIndex(pipelineType.pipelineIndex);
     }   
+
+    /**
+     * This method returns the active pipeline of the LimeLight.
+     *
+     * @return active pipeline.
+     */
+    public PipelineType getPipeline()
+    {
+        return PipelineType.getType(getPipelineIndex());
+    }   //getPipeline
 
 }   //class PhotonVision

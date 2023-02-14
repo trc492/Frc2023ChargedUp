@@ -46,7 +46,7 @@ public class RobotParams
         // Sensors
         public static final boolean useNavX                     = true;
         public static final boolean usePdp                      = false;
-        public static final boolean usePressureSensor           = false;
+        // public static final boolean usePressureSensor           = false;
         // Vision
         public static final boolean usePhotonVision             = true;
         public static final boolean useLimeLightVision          = false;
@@ -61,24 +61,31 @@ public class RobotParams
         public static final boolean useAnalogEncoder            = true;
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
+        public static final boolean useBalanceDrive             = true;
         // Subsystems
         public static final boolean useSubsystems               = false;
-        public static final boolean useGrabber                  = false;
-        public static final boolean useVacuum                   = false;
         public static final boolean useLift                     = false;
         public static final boolean useArm                      = false;
+        public static final boolean useGrabber                  = false;
+        public static final boolean useVacuum                   = false;
+        public static final boolean useIntake                   = false;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
-        public static final boolean showSubsystemStatus         = false;
-        public static final boolean showVisionStatus            = false;
         // Debug
         public static final boolean debugPowerConsumption       = false;
+
         public static final boolean debugDriveBase              = false;
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
-        public static final boolean debugSubsystems             = false;
+
         public static final boolean debugVision                 = false;
+        public static final boolean debugPhoton                 = false;
+        public static final boolean debugLimeLight              = false;
+        public static final boolean debugOpenCv                 = false;
+
+        public static final boolean debugSubsystems             = false;
+
         public static final boolean debugLoopTime               = false;
         // public static final boolean debugAnalogEncoder          = true;
     }   //class Preferences
@@ -127,21 +134,22 @@ public class RobotParams
     public static final int CANID_RIGHTFRONT_DRIVE              = 4;    // Yellow: 40A
     public static final int CANID_LEFTBACK_DRIVE                = 5;    // Green: 40A
     public static final int CANID_RIGHTBACK_DRIVE               = 6;    // Blue: 40A
-    public static final int CANID_INTAKE_LEFT                   = 27; 
-    public static final int CANID_INTAKE_RIGHT                  = 28;  
-    public static final int CANID_LIFT                          = 420; //random number (must find value)
-    public static final int CANID_ARM                           = 42; //random number (must find value)
+    public static final int CANID_LIFT                          = 7;
+    public static final int CANID_ARM                           = 8;
+    public static final int CANID_INTAKE_LEFT                   = 17;
+    public static final int CANID_INTAKE_RIGHT                  = 18;
 
     // Applicable only for Swerve Drive.
-    public static final int CANID_LEFTFRONT_STEER_ENCODER       = 7;    // Orange
-    public static final int CANID_RIGHTFRONT_STEER_ENCODER      = 8;    // Yellow
-    public static final int CANID_LEFTBACK_STEER_ENCODER        = 9;    // Green
-    public static final int CANID_RIGHTBACK_STEER_ENCODER       = 10;   // Blue
 
     public static final int CANID_LEFTFRONT_STEER               = 13;   // Orange: 40A
     public static final int CANID_RIGHTFRONT_STEER              = 14;   // Yellow: 40A
     public static final int CANID_LEFTBACK_STEER                = 15;   // Green: 40A
     public static final int CANID_RIGHTBACK_STEER               = 16;   // Blue: 40A
+
+    public static final int CANID_LEFTFRONT_STEER_ENCODER       = 23;    // Orange
+    public static final int CANID_RIGHTFRONT_STEER_ENCODER      = 24;    // Yellow
+    public static final int CANID_LEFTBACK_STEER_ENCODER        = 25;    // Green
+    public static final int CANID_RIGHTBACK_STEER_ENCODER       = 26;   // Blue
 
     public static final int CANID_PCM                           = 30;
     public static final int CANID_PDP                           = 31;
@@ -164,7 +172,7 @@ public class RobotParams
     //
     // Analog Input ports.
     //
-    public static final int AIN_PRESSURE_SENSOR                 = 0;
+    // public static final int AIN_PRESSURE_SENSOR                 = 0;
     public static final int AIN_LEFTFRONT_STEER_ENCODER         = 0;
     public static final int AIN_RIGHTFRONT_STEER_ENCODER        = 1;
     public static final int AIN_LEFTBACK_STEER_ENCODER          = 2;
@@ -173,13 +181,15 @@ public class RobotParams
     //
     // Digital Input/Output ports.
     //
+    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH         = 0;
+    public static final int DIO_ARM_LOWER_LIMIT_SWITCH          = 1;
 
     //
     // PWM channels.
     //
-    public static final int PWM_CHANNEL_LED                     = 0;
-    public static final int VACUUM                              = 1;
     public static final int NUM_LEDS                            = 60;
+    public static final int PWM_CHANNEL_LED                     = 0;
+    public static final int PWM_VACUUM                          = 1;
 
     //
     // Relay channels.
@@ -193,11 +203,11 @@ public class RobotParams
     public static final int PNEUMATIC_RIGHT_GRABBER_RETRACT     = 2;
     public static final int PNEUMATIC_RIGHT_GRABBER_EXTEND      = 3;
 
-    public static final int PNEUMATIC_INTAKE_EXTEND             = 4; 
-    public static final int PNEUMATIC_INTAKE_RETRACT            = 5; 
+    public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
+    public static final int PNEUMATIC_INTAKE_EXTEND             = 5;
 
-    public static final int PNEUMATIC_LIFT_RETRACT              = 422; //random number
-    public static final int PNEUMATIC_LIFT_EXTEND               = 423; //random number
+    // public static final int PNEUMATIC_LIFT_RETRACT              = 422; //random number
+    // public static final int PNEUMATIC_LIFT_EXTEND               = 423; //random number
 
     //
     // Ultrasonic sensors.
@@ -224,7 +234,6 @@ public class RobotParams
     public static final double WEBCAM_FY                        = 821.993;  // in pixels
     public static final double WEBCAM_CX                        = 330.489;  // in pixels
     public static final double WEBCAM_CY                        = 248.997;  // in pixels
-
     //
     // DriveBase subsystem.
     //
@@ -261,6 +270,15 @@ public class RobotParams
     public static final double GYRO_TURN_KD                     = 0.0;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
+
+    public static final double GYRO_PITCH_KP                    = 0.0095;
+    public static final double GYRO_PITCH_KI                    = 0.0;
+    public static final double GYRO_PITCH_KD                    = 0.001;
+    public static final double GYRO_PITCH_KF                    = 0.0;
+    public static final double GYRO_PITCH_TOLERANCE             = 2.0;
+    public static final double GYRO_PITCH_SETTLING_TIME         = 0.2;
+    public static final double GYRO_PITCH_MAX_PID_POWER         = 0.2;
+    public static final double GYRO_PITCH_PID_RAMP_RATE         = 0.2;
 
     public static final double GYRO_ASSIST_TURN_GAIN            = 0.1;
 
@@ -308,7 +326,6 @@ public class RobotParams
 
     // Zeroes are normalized offsets which are in the unit of percentage revolution (0.0 to 1.0).
     // This is a backup if file is not found: LF, RF, LB, RB.
-    // TODO: Put these numbers in the zero steer text file.
     public static final double[] STEER_ZEROS                    = new double[] {0.7126, 0.2858, 0.9098, 0.6480};
 
     public static final TrcPidController.PidCoefficients magicSteerCoeff =
@@ -326,48 +343,44 @@ public class RobotParams
     public static final double PPD_TURN_TOLERANCE               = 2.0;
     public static final double PPD_MOVE_DEF_OUTPUT_LIMIT        = 0.5;
     public static final double PPD_ROT_DEF_OUTPUT_LIMIT         = 0.3;
-
-    //
-    // Lift subsystem
-    //
-    public static final double LIFT_KP                       = 0.2;      //0.06;
-    public static final double LIFT_KI                       = 0.0;
-    public static final double LIFT_KD                       = 0.0;      //0.005;
-    public static final double LIFT_TOLERANCE                = 1.0;
-    public static final int LIFT_ENCODER_PPR                 = 4096;
-    public static final double LIFT_INCHES_PER_COUNT         = 1.392027924751009e-4;
-    public static final double LIFT_OFFSET                   = 29.6785;
-    public static final double LIFT_CAL_POWER                = 0.5;
-    public static final boolean LIFT_MOTOR_INVERTED          = true;
-    public static final double LIFT_MIN_POS                  = 20.0;
-    public static final double LIFT_MAX_POS                  = 65.0;    
-    public static final double LIFT_RAISED                   = 23.3; //random number
-    public static final double LIFT_LOWERED                  = 24.3; //random number
-    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH      = 5; //random number
-    public static final double LIFT_LEVEL_1_HEIGHT           = 0.0;
-    public static final double LIFT_LEVEL_2_HEIGHT           = 0.0;
-    public static final double LIFT_LEVEL_3_HEIGHT           = 0.0;
-    public static final double[] LIFT_PRESET_LEVELS = {0,LIFT_LEVEL_1_HEIGHT, LIFT_LEVEL_2_HEIGHT, LIFT_LEVEL_3_HEIGHT};
-
-
-
-    public static final double ARM_KP                       = 0.2;      //0.06;
-    public static final double ARM_KI                       = 0.0;
-    public static final double ARM_KD                       = 0.0;      //0.005;
-    public static final double ARM_TOLERANCE                = 1.0;
-    public static final int ARM_ENCODER_PPR                 = 4096;
-    public static final double ARM_INCHES_PER_COUNT         = 1.392027924751009e-4;
-    public static final double ARM_OFFSET                   = 29.6785;
-    public static final double ARM_CAL_POWER                = 0.5;
-    public static final double ARM_MIN_POS                  = 20.0;
-    public static final double ARM_MAX_POS                  = 65.0;
-    public static final boolean ARM_MOTOR_INVERTED          = true;
-    public static final int DIO_ARM_LOWER_LIMIT_SWITCH      = 7; //random
-    public static final double ARM_RAISED                   = 25.3; //random number
-    public static final double ARM_LOWERED                  = 28.3; //random number
-
     //
     // Other subsystems.
     //
+
+    // Lift subsystem.
+    public static final boolean LIFT_MOTOR_INVERTED             = true;
+    public static final boolean LIFT_LOWER_LIMIT_INVERTED       = false;
+    public static final double LIFT_MIN_POS                     = 20.0;
+    public static final double LIFT_MAX_POS                     = 65.0;
+    public static final double LIFT_INCHES_PER_COUNT            = 1.392027924751009e-4;
+    public static final double LIFT_OFFSET                      = 29.6785;
+    public static final double LIFT_KP                          = 0.2;      //0.06;
+    public static final double LIFT_KI                          = 0.0;
+    public static final double LIFT_KD                          = 0.0;      //0.005;
+    public static final double LIFT_TOLERANCE                   = 1.0;
+    public static final double LIFT_CAL_POWER                   = 0.5;
+    // public static final int LIFT_ENCODER_PPR                    = 4096;
+    // public static final double LIFT_RAISED                      = 23.3; //random number
+    // public static final double LIFT_LOWERED                     = 24.3; //random number
+    public static final double LIFT_LEVEL_1_HEIGHT              = 0.0;
+    public static final double LIFT_LEVEL_2_HEIGHT              = 0.0;
+    public static final double LIFT_LEVEL_3_HEIGHT              = 0.0;
+    public static final double[] LIFT_PRESET_LEVELS = {0,LIFT_LEVEL_1_HEIGHT, LIFT_LEVEL_2_HEIGHT, LIFT_LEVEL_3_HEIGHT};
+
+    // Arm subsystem.
+    public static final double ARM_KP                           = 0.2;      //0.06;
+    public static final double ARM_KI                           = 0.0;
+    public static final double ARM_KD                           = 0.0;      //0.005;
+    public static final double ARM_TOLERANCE                    = 1.0;
+    public static final int ARM_ENCODER_PPR                     = 4096;
+    public static final double ARM_DEGS_PER_COUNT               = 1.392027924751009e-4;
+    public static final double ARM_OFFSET                       = 29.6785;
+    public static final double ARM_CAL_POWER                    = 0.5;
+    public static final double ARM_MIN_POS                      = 20.0;
+    public static final double ARM_MAX_POS                      = 65.0;
+    public static final boolean ARM_MOTOR_INVERTED              = true;
+    public static final boolean ARM_LOWER_LIMIT_INVERTED        = false;
+    public static final double ARM_RAISED                       = 25.3; //random number
+    public static final double ARM_LOWERED                      = 28.3; //random number
 
 }   //class RobotParams

@@ -197,6 +197,24 @@ public class SwerveDrive extends RobotDrive
         pidDrive.setAbsoluteTargetModeEnabled(true);
         pidDrive.setMsgTracer(robot.globalTracer, logPoseEvents, tracePidInfo);
 
+        if (RobotParams.Preferences.useBalanceDrive)
+        {
+            gyroPitchPidCoeff = new TrcPidController.PidCoefficients(
+                RobotParams.GYRO_PITCH_KP, RobotParams.GYRO_PITCH_KI, RobotParams.GYRO_PITCH_KD,
+                RobotParams.GYRO_PITCH_KF);
+            TrcPidController.PidParameters gyroPitchPidParams = new TrcPidController.PidParameters(
+                yPosPidCoeff, RobotParams.GYRO_PITCH_TOLERANCE, this::getGyroPitch, this::getBalanceDriveCompensation);
+
+            balancePidDrive = new TrcPidDrive(
+                "balancePidDrive", driveBase, xPosPidParams, gyroPitchPidParams, turnPidParams);
+
+            balancePidDrive.getXPidCtrl().setAbsoluteSetPoint(true);
+            balancePidDrive.getYPidCtrl().setAbsoluteSetPoint(true);
+            balancePidDrive.getYPidCtrl().setOutputLimit(RobotParams.GYRO_PITCH_MAX_PID_POWER);
+            balancePidDrive.getYPidCtrl().setRampRate(RobotParams.GYRO_PITCH_PID_RAMP_RATE);
+            balancePidDrive.setMsgTracer(robot.globalTracer, logPoseEvents, tracePidInfo);
+        }
+
         purePursuitDrive = new TrcPurePursuitDrive(
             "purePursuitDrive", driveBase, RobotParams.PPD_FOLLOWING_DISTANCE, RobotParams.PPD_POS_TOLERANCE,
             RobotParams.PPD_TURN_TOLERANCE, xPosPidCoeff, yPosPidCoeff, turnPidCoeff, velPidCoeff);
@@ -467,5 +485,42 @@ public class SwerveDrive extends RobotDrive
             }
         }
     }   //setAntiDefenseEnabled
+
+    /**
+     * This method calculates the power compensation for balance PID drive.
+     *
+     * @param power specifies the drive power before compensation.
+     * @return compensation drive power.
+     */
+    private double getBalanceDriveCompensation(double power)
+    {
+        // double angle = robot.robotDrive.getGyroYHeading();
+        // if(Math.abs(angle) >= 10) {
+        //     double comp = -0.005*Math.sin(Math.PI*angle/40);
+        //     System.out.printf(">>> Angle:%.3f Comp: %.3f", angle, comp);
+        //     return comp;
+        // }
+        return 0.0;
+    }   //getBalanceDriveCompensation
+
+    /**
+     * This method returns the gyro pitch.
+     *
+     * @return gyro pitch.
+     */
+    public double getGyroPitch()
+    {
+        return gyro.getXHeading().value;
+    }   //getGyroPitch
+
+    /**
+     * This method returns the gyro roll.
+     * 
+     * @return gyro roll.
+     */
+    public double getGyroRoll()
+    {
+        return gyro.getYHeading().value;
+    }   //getGyroRoll
 
 }   //class SwerveDrive

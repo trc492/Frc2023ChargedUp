@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
+import TrcCommonLib.trclib.TrcPidActuator;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobotBattery;
 import TrcCommonLib.trclib.TrcTimer;
@@ -33,9 +34,11 @@ import TrcCommonLib.trclib.TrcVisionTargetInfo;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAHRSGyro;
 import TrcFrcLib.frclib.FrcDashboard;
+import TrcFrcLib.frclib.FrcFalconActuator;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcMatchInfo;
 import TrcFrcLib.frclib.FrcPdp;
+import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcRemoteVisionProcessor;
 import TrcFrcLib.frclib.FrcRobotBase;
 import TrcFrcLib.frclib.FrcRobotBattery;
@@ -98,10 +101,10 @@ public class Robot extends FrcRobotBase
     //
     // Other subsystems.
     //
-    public Grabber grabber;
-    public Lift lift;
-    public Arm arm;
+    public TrcPidActuator lift;
+    public TrcPidActuator arm;
     public Intake intake; 
+    public Grabber grabber;
 
     /**
      * Constructor: Create an instance of the object.
@@ -170,10 +173,10 @@ public class Robot extends FrcRobotBase
             battery = new FrcRobotBattery(pdp);
         }
 
-        if (RobotParams.Preferences.usePressureSensor)
-        {
-            pressureSensor = new AnalogInput(RobotParams.AIN_PRESSURE_SENSOR);
-        }
+        // if (RobotParams.Preferences.usePressureSensor)
+        // {
+        //     pressureSensor = new AnalogInput(RobotParams.AIN_PRESSURE_SENSOR);
+        // }
 
         //
         // Create and initialize miscellaneous hardware.
@@ -217,20 +220,49 @@ public class Robot extends FrcRobotBase
             //
             if (RobotParams.Preferences.useSubsystems)
             {
-                if (RobotParams.Preferences.useGrabber)
-                {
-                    grabber = new Grabber();
-                    grabber.release();
-                }
-
                 if (RobotParams.Preferences.useLift)
                 {
-                    lift = new Lift(this);
+                    final FrcFalconActuator.MotorParams motorParams = new FrcFalconActuator.MotorParams(
+                        RobotParams.LIFT_MOTOR_INVERTED,
+                        RobotParams.DIO_LIFT_LOWER_LIMIT_SWITCH, RobotParams.LIFT_LOWER_LIMIT_INVERTED, -1, false,
+                        false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
+                    final TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
+                        .setPosRange(RobotParams.LIFT_MIN_POS, RobotParams.LIFT_MAX_POS)
+                        .setScaleOffset(RobotParams.LIFT_INCHES_PER_COUNT, RobotParams.LIFT_OFFSET)
+                        .setPidParams(
+                            RobotParams.LIFT_KP, RobotParams.LIFT_KI, RobotParams.LIFT_KD, RobotParams.LIFT_TOLERANCE)
+                        .setZeroCalibratePower(RobotParams.LIFT_CAL_POWER);
+                    lift = new FrcFalconActuator(
+                        "Lift", RobotParams.CANID_LIFT, motorParams, actuatorParams).getPidActuator();
+                    lift.setMsgTracer(globalTracer);
                 }
 
                 if (RobotParams.Preferences.useArm)
                 {
-                    arm = new Arm(this);
+                    final FrcFalconActuator.MotorParams motorParams = new FrcFalconActuator.MotorParams(
+                        RobotParams.ARM_MOTOR_INVERTED,
+                        RobotParams.DIO_ARM_LOWER_LIMIT_SWITCH, RobotParams.ARM_LOWER_LIMIT_INVERTED, -1, false,
+                        false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
+                    final TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
+                        .setPosRange(RobotParams.ARM_MIN_POS, RobotParams.ARM_MAX_POS)
+                        .setScaleOffset(RobotParams.ARM_DEGS_PER_COUNT, RobotParams.ARM_OFFSET)
+                        .setPidParams(
+                            RobotParams.ARM_KP, RobotParams.ARM_KI, RobotParams.ARM_KD, RobotParams.ARM_TOLERANCE)
+                        .setZeroCalibratePower(RobotParams.ARM_CAL_POWER);
+                    arm = new FrcFalconActuator(
+                        "Arm", RobotParams.CANID_ARM, motorParams, actuatorParams).getPidActuator();
+                    arm.setMsgTracer(globalTracer);
+                }
+
+                if (RobotParams.Preferences.useIntake)
+                {
+                    intake = new Intake(globalTracer);
+                }
+
+                if (RobotParams.Preferences.useGrabber)
+                {
+                    grabber = new Grabber();
+                    grabber.release();
                 }
             }
         }
@@ -293,8 +325,7 @@ public class Robot extends FrcRobotBase
             setTraceLogEnabled(true);
         }
         globalTracer.traceInfo(
-            funcName, "[%.3f] %s: ***** %s *****", TrcTimer.getModeElapsedTime(),
-            matchInfo.eventDate, runMode);
+            funcName, "[%.3f] %s: ***** %s *****", TrcTimer.getModeElapsedTime(), matchInfo.eventDate, runMode);
 
         //
         // Start subsystems.
@@ -317,6 +348,7 @@ public class Robot extends FrcRobotBase
     {
         final String funcName = "robotStopMode";
 
+        globalTracer.traceInfo(funcName, "[%.3f] STOPPING: ***** %s *****", TrcTimer.getModeElapsedTime(), runMode);
         //
         // Stop subsystems.
         //
@@ -384,11 +416,68 @@ public class Robot extends FrcRobotBase
                     }
                 }
             }
+            else if (RobotParams.Preferences.debugVision)
+            {
+                if (RobotParams.Preferences.debugPhoton && photonVision != null)
+                {
+                    FrcPhotonVision.DetectedObject targetInfo = photonVision.getBestDetectedObject();
 
-            if (RobotParams.Preferences.debugDriveBase)
+                    if (targetInfo != null)
+                    {
+                        // robot.globalTracer.traceInfo("doVisionTest", "Photon: %s", targetInfo);
+                        dashboard.displayPrintf(8, "Photon: %s", targetInfo);
+
+                        TrcPose2D robotPose = photonVision.getRobotFieldPosition(targetInfo);
+                        if (robotPose != null)
+                        {
+                            dashboard.displayPrintf(9, "RobotPose: %s", robotPose);
+                        }
+                    }
+                }
+                else if (RobotParams.Preferences.debugLimeLight && limeLightVision != null)
+                {
+                    FrcRemoteVisionProcessor.RelativePose pose = limeLightVision.getLastPose();
+
+                    if (pose != null)
+                    {
+                        double horiAngle = limeLightVision.getTargetHorizontalAngle();
+                        double vertAngle = limeLightVision.getTargetVerticalAngle();
+                        double distanceToTarget = limeLightVision.getTargetDistance();
+                        dashboard.putNumber("Camera/distance", distanceToTarget);
+                        dashboard.putNumber("Camera/horiAngle", horiAngle);
+                        dashboard.putNumber("Camera/vertAngle", vertAngle);
+                        if (RobotParams.Preferences.debugVision)
+                        {
+                            dashboard.displayPrintf(
+                                8, "VisionTarget: x=%.1f,y=%.1f,depth=%.1f/%.1f,horiAngle=%.1f,vertAngle=%.1f",
+                                pose.x, pose.y, pose.r, distanceToTarget, horiAngle, vertAngle);
+                        }
+                    }
+                    else if (RobotParams.Preferences.debugVision)
+                    {
+                        dashboard.displayPrintf(8, "VisionTarget: No target found!");
+                    }
+                }
+                else if (RobotParams.Preferences.debugOpenCv && openCvVision != null)
+                {
+                    TrcVisionTargetInfo<TrcOpenCvDetector.DetectedObject<?>> targetInfo =
+                        openCvVision.getTargetInfo(null, null);
+
+                    if (targetInfo != null)
+                    {
+                        if (RobotParams.Preferences.debugVision)
+                        {
+                            dashboard.displayPrintf(
+                                8, "%s_Info: %s", openCvVision.getDetectObjectType(), targetInfo);
+                        }
+                    }
+                }
+            }
+            else if (RobotParams.Preferences.debugDriveBase)
             {
                 if (robotDrive != null)
                 {
+                    int lineNum = 8;
                     TrcPose2D robotPose = robotDrive.driveBase.getFieldPosition();
 
                     dashboard.putNumber("DriveBase/xPos", robotPose.x);
@@ -411,14 +500,23 @@ public class Robot extends FrcRobotBase
                     double rbDriveEnc = robotDrive.rbDriveMotor.getPosition();
 
                     dashboard.displayPrintf(
-                        8, "DriveBase: lf=%.0f, rf=%.0f, lb=%.0f, rb=%.0f, avg=%.0f",
+                        lineNum, "DriveEnc: lf=%.0f, rf=%.0f, lb=%.0f, rb=%.0f, avg=%.0f",
                         lfDriveEnc, rfDriveEnc, lbDriveEnc, rbDriveEnc,
                         (lfDriveEnc + rfDriveEnc + lbDriveEnc + rbDriveEnc) / 4.0);
-                    dashboard.displayPrintf(9, "DriveBase: pose=%s", robotPose);
+                    lineNum++;
+
+                    if (robotDrive instanceof SwerveDrive)
+                    {
+                        SwerveDrive swerveDrive = (SwerveDrive) robotDrive;
+                        dashboard.displayPrintf(
+                            lineNum, "SteerEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
+                            swerveDrive.lfSteerMotor.getPosition(), swerveDrive.rfSteerMotor.getPosition(),
+                            swerveDrive.lbSteerMotor.getPosition(), swerveDrive.rbSteerMotor.getPosition());
+                        lineNum++;
+                    }
 
                     if (RobotParams.Preferences.debugPurePursuitDrive)
                     {
-                        int lineNum = 10;
                         robotDrive.purePursuitDrive.getXPosPidCtrl().displayPidInfo(lineNum);
                         lineNum += 2;
                         robotDrive.purePursuitDrive.getYPosPidCtrl().displayPidInfo(lineNum);
@@ -427,7 +525,6 @@ public class Robot extends FrcRobotBase
                     }
                     else if (RobotParams.Preferences.debugPidDrive)
                     {
-                        int lineNum = 10;
                         if (robotDrive.pidDrive.getXPidCtrl() != null)
                         {
                             robotDrive.pidDrive.getXPidCtrl().displayPidInfo(lineNum);
@@ -439,48 +536,8 @@ public class Robot extends FrcRobotBase
                     }
                 }
             }
-
-            if (RobotParams.Preferences.showVisionStatus)
+            else if (RobotParams.Preferences.debugSubsystems)
             {
-                if (limeLightVision != null)
-                {
-                    FrcRemoteVisionProcessor.RelativePose pose = limeLightVision.getLastPose();
-
-                    if (pose != null)
-                    {
-                        double horiAngle = limeLightVision.getTargetHorizontalAngle();
-                        double vertAngle = limeLightVision.getTargetVerticalAngle();
-                        double distanceToTarget = limeLightVision.getTargetDistance();
-                        dashboard.putNumber("Camera/distance", distanceToTarget);
-                        dashboard.putNumber("Camera/horiAngle", horiAngle);
-                        dashboard.putNumber("Camera/vertAngle", vertAngle);
-                        if (RobotParams.Preferences.debugVision)
-                        {
-                            dashboard.displayPrintf(
-                                15, "VisionTarget: x=%.1f,y=%.1f,depth=%.1f/%.1f,horiAngle=%.1f,vertAngle=%.1f",
-                                pose.x, pose.y, pose.r, distanceToTarget, horiAngle, vertAngle);
-                        }
-                    }
-                    else if (RobotParams.Preferences.debugVision)
-                    {
-                        dashboard.displayPrintf(15, "VisionTarget: No target found!");
-                    }
-                }
-
-                if (openCvVision != null)
-                {
-                    TrcVisionTargetInfo<TrcOpenCvDetector.DetectedObject<?>> targetInfo =
-                        openCvVision.getTargetInfo(null, null);
-
-                    if (targetInfo != null)
-                    {
-                        if (RobotParams.Preferences.debugVision)
-                        {
-                            dashboard.displayPrintf(
-                                14, "%s_Info: %s", openCvVision.getDetectObjectType(), targetInfo);
-                        }
-                    }
-                }
             }
 
             // if (RobotParams.Preferences.debugAnalogEncoder)
@@ -492,10 +549,6 @@ public class Robot extends FrcRobotBase
             //         15, "Adj: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
             //         lfEnc.getPosition(), rfEnc.getPosition(), lbEnc.getPosition(), rbEnc.getPosition());
             // }
-
-            if (RobotParams.Preferences.showSubsystemStatus)
-            {
-            }
         }
     }   //updateStatus
 
