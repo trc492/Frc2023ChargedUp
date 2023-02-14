@@ -161,10 +161,10 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
     {
         final String funcName = "acquireSubsystemsOwnership";
         boolean success = ownerName == null ||
-                          (robot.intake.acquireExclusiveAccess(ownerName) &&
+                          (robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
                            robot.lift.acquireExclusiveAccess(ownerName) &&
                            robot.arm.acquireExclusiveAccess(ownerName) &&
-                           robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName));
+                           robot.intake.acquireExclusiveAccess(ownerName));
 
         if (success)
         {
@@ -196,15 +196,17 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
             if (msgTracer != null)
             {
                 TrcOwnershipMgr ownershipMgr = TrcOwnershipMgr.getInstance();
-                // msgTracer.traceInfo(
-                //     funcName, "%s: Releasing subsystem ownership (currOwner=%s, intake=%s, robotDrive=%s, grabber=%s, arm=%s).",
-                //     moduleName, currOwner, ownershipMgr.getOwner(robot.intake),
-                //     ownershipMgr.getOwner(robot.robotDrive), ownershipMgr.getOwner(robot.ownershipMgr.getOwner(robot.grabber));
+                msgTracer.traceInfo(
+                    funcName,
+                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, lift=%s, arm=%s, intake=%s).",
+                    moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase),
+                    ownershipMgr.getOwner(robot.lift), ownershipMgr.getOwner(robot.arm),
+                    ownershipMgr.getOwner(robot.intake));
             }
-            robot.intake.releaseExclusiveAccess(currOwner);
             robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
-            robot.arm.releaseExclusiveAccess(currOwner);
             robot.lift.releaseExclusiveAccess(currOwner);
+            robot.arm.releaseExclusiveAccess(currOwner);
+            robot.intake.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }
     }   //releaseSubsystemsOwnership

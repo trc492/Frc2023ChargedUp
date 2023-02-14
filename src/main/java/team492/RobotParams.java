@@ -182,7 +182,9 @@ public class RobotParams
     // Digital Input/Output ports.
     //
     public static final int DIO_LIFT_LOWER_LIMIT_SWITCH         = 0;
-    public static final int DIO_ARM_LOWER_LIMIT_SWITCH          = 1;
+    public static final int DIO_LIFT_UPPER_LIMIT_SWITCH         = 1;
+    public static final int DIO_ARM_LOWER_LIMIT_SWITCH          = 2;
+    public static final int DIO_ARM_UPPER_LIMIT_SWITCH          = 3;
 
     //
     // PWM channels.
@@ -350,6 +352,7 @@ public class RobotParams
     // Lift subsystem.
     public static final boolean LIFT_MOTOR_INVERTED             = true;
     public static final boolean LIFT_LOWER_LIMIT_INVERTED       = false;
+    public static final boolean LIFT_UPPER_LIMIT_INVERTED       = false;
     public static final double LIFT_MIN_POS                     = 20.0;
     public static final double LIFT_MAX_POS                     = 65.0;
     public static final double LIFT_INCHES_PER_COUNT            = 1.392027924751009e-4;
@@ -368,19 +371,20 @@ public class RobotParams
     public static final double[] LIFT_PRESET_LEVELS = {0,LIFT_LEVEL_1_HEIGHT, LIFT_LEVEL_2_HEIGHT, LIFT_LEVEL_3_HEIGHT};
 
     // Arm subsystem.
+    public static final boolean ARM_MOTOR_INVERTED              = true;
+    public static final boolean ARM_LOWER_LIMIT_INVERTED        = false;
+    public static final boolean ARM_UPPER_LIMIT_INVERTED        = false;
+    public static final double ARM_MIN_POS                      = 20.0;
+    public static final double ARM_MAX_POS                      = 65.0;
+    public static final double ARM_DEGS_PER_COUNT               = 1.392027924751009e-4;
+    public static final double ARM_OFFSET                       = 29.6785;
     public static final double ARM_KP                           = 0.2;      //0.06;
     public static final double ARM_KI                           = 0.0;
     public static final double ARM_KD                           = 0.0;      //0.005;
     public static final double ARM_TOLERANCE                    = 1.0;
-    public static final int ARM_ENCODER_PPR                     = 4096;
-    public static final double ARM_DEGS_PER_COUNT               = 1.392027924751009e-4;
-    public static final double ARM_OFFSET                       = 29.6785;
     public static final double ARM_CAL_POWER                    = 0.5;
-    public static final double ARM_MIN_POS                      = 20.0;
-    public static final double ARM_MAX_POS                      = 65.0;
-    public static final boolean ARM_MOTOR_INVERTED              = true;
-    public static final boolean ARM_LOWER_LIMIT_INVERTED        = false;
-    public static final double ARM_RAISED                       = 25.3; //random number
-    public static final double ARM_LOWERED                      = 28.3; //random number
+    // public static final int ARM_ENCODER_PPR                     = 4096;
+    // public static final double ARM_RAISED                       = 25.3; //random number
+    // public static final double ARM_LOWERED                      = 28.3; //random number
 
 }   //class RobotParams

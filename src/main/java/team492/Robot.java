@@ -33,10 +33,12 @@ import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcVisionTargetInfo;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAHRSGyro;
+import TrcFrcLib.frclib.FrcCANSparkMax;
+import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcDashboard;
-import TrcFrcLib.frclib.FrcFalconActuator;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcMatchInfo;
+import TrcFrcLib.frclib.FrcMotorActuator;
 import TrcFrcLib.frclib.FrcPdp;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcRemoteVisionProcessor;
@@ -222,35 +224,54 @@ public class Robot extends FrcRobotBase
             {
                 if (RobotParams.Preferences.useLift)
                 {
-                    final FrcFalconActuator.MotorParams motorParams = new FrcFalconActuator.MotorParams(
+                    FrcMotorActuator.MotorParams motorParams = new FrcMotorActuator.MotorParams(
                         RobotParams.LIFT_MOTOR_INVERTED,
-                        RobotParams.DIO_LIFT_LOWER_LIMIT_SWITCH, RobotParams.LIFT_LOWER_LIMIT_INVERTED, -1, false,
+                        RobotParams.DIO_LIFT_LOWER_LIMIT_SWITCH, RobotParams.LIFT_LOWER_LIMIT_INVERTED,
+                        RobotParams.DIO_LIFT_UPPER_LIMIT_SWITCH, RobotParams.LIFT_UPPER_LIMIT_INVERTED,
                         false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
-                    final TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
+                    TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
                         .setPosRange(RobotParams.LIFT_MIN_POS, RobotParams.LIFT_MAX_POS)
                         .setScaleOffset(RobotParams.LIFT_INCHES_PER_COUNT, RobotParams.LIFT_OFFSET)
                         .setPidParams(
                             RobotParams.LIFT_KP, RobotParams.LIFT_KI, RobotParams.LIFT_KD, RobotParams.LIFT_TOLERANCE)
                         .setZeroCalibratePower(RobotParams.LIFT_CAL_POWER);
-                    lift = new FrcFalconActuator(
-                        "Lift", RobotParams.CANID_LIFT, motorParams, actuatorParams).getPidActuator();
+                    FrcCANSparkMax actuatorMotor = new FrcCANSparkMax("LiftMotor", RobotParams.CANID_LIFT, true);
+
+                    actuatorMotor.motor.restoreFactoryDefaults();
+                    if (motorParams.batteryNominalVoltage > 0.0)
+                    {
+                        actuatorMotor.motor.enableVoltageCompensation(motorParams.batteryNominalVoltage);
+                    }
+
+                    lift = new FrcMotorActuator(
+                        "Lift", actuatorMotor, motorParams, actuatorParams).getPidActuator();
                     lift.setMsgTracer(globalTracer);
                 }
 
                 if (RobotParams.Preferences.useArm)
                 {
-                    final FrcFalconActuator.MotorParams motorParams = new FrcFalconActuator.MotorParams(
+                    FrcMotorActuator.MotorParams motorParams = new FrcMotorActuator.MotorParams(
                         RobotParams.ARM_MOTOR_INVERTED,
-                        RobotParams.DIO_ARM_LOWER_LIMIT_SWITCH, RobotParams.ARM_LOWER_LIMIT_INVERTED, -1, false,
+                        RobotParams.DIO_ARM_LOWER_LIMIT_SWITCH, RobotParams.ARM_LOWER_LIMIT_INVERTED,
+                        RobotParams.DIO_ARM_UPPER_LIMIT_SWITCH, RobotParams.ARM_UPPER_LIMIT_INVERTED,
                         false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
-                    final TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
+                    TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
                         .setPosRange(RobotParams.ARM_MIN_POS, RobotParams.ARM_MAX_POS)
                         .setScaleOffset(RobotParams.ARM_DEGS_PER_COUNT, RobotParams.ARM_OFFSET)
                         .setPidParams(
                             RobotParams.ARM_KP, RobotParams.ARM_KI, RobotParams.ARM_KD, RobotParams.ARM_TOLERANCE)
                         .setZeroCalibratePower(RobotParams.ARM_CAL_POWER);
-                    arm = new FrcFalconActuator(
-                        "Arm", RobotParams.CANID_ARM, motorParams, actuatorParams).getPidActuator();
+                    FrcCANTalon actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
+
+                    actuatorMotor.motor.configFactoryDefault();
+                    if (motorParams.batteryNominalVoltage > 0.0)
+                    {
+                        actuatorMotor.motor.configVoltageCompSaturation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
+                        actuatorMotor.motor.enableVoltageCompensation(true);
+                    }
+
+                    arm = new FrcMotorActuator(
+                        "Arm", actuatorMotor, motorParams, actuatorParams).getPidActuator();
                     arm.setMsgTracer(globalTracer);
                 }
 

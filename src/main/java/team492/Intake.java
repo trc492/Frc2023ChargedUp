@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2023 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,17 +25,16 @@ package team492;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcTimer;
-import TrcFrcLib.frclib.FrcCANFalcon;
+import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-//package and imports
 
 public class Intake implements TrcExclusiveSubsystem
 { 
     private static final String moduleName = "Intake";
 
-    private final FrcCANFalcon intakeLeftMotor; 
-    private final FrcCANFalcon intakeRightMotor; 
+    private final FrcCANTalon intakeLeftMotor;
+    private final FrcCANTalon intakeRightMotor;
     private final FrcPneumatic intakePneumatic; 
     private TrcDbgTrace msgTracer = null; 
 
@@ -43,19 +42,19 @@ public class Intake implements TrcExclusiveSubsystem
     {
         this.msgTracer = msgTracer;
 
-        intakeLeftMotor = new FrcCANFalcon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
+        intakeLeftMotor = new FrcCANTalon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
         intakeLeftMotor.motor.configFactoryDefault();
-        intakeRightMotor = new FrcCANFalcon(moduleName + ".rightMotor", RobotParams.CANID_INTAKE_RIGHT);
+
+        intakeRightMotor = new FrcCANTalon(moduleName + ".rightMotor", RobotParams.CANID_INTAKE_RIGHT);
         intakeRightMotor.motor.configFactoryDefault();
 
         intakeLeftMotor.addFollowingMotor(intakeRightMotor);
 
         intakePneumatic = new FrcPneumatic(
-            moduleName + ".pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
+            moduleName + ".pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_INTAKE_RETRACT, RobotParams.PNEUMATIC_INTAKE_EXTEND);
         intakePneumatic.retract();
-        //intake motors and pneumatics
-    }
+    }   //Intake
 
     public void cancel()
     {
@@ -93,5 +92,15 @@ public class Intake implements TrcExclusiveSubsystem
     {
         setPower(null, 0.0, power, 0.0);
     }   //setPower
+
+    public void extend()
+    {
+        intakePneumatic.extend();
+    }   //extend
+
+    public void retract()
+    {
+        intakePneumatic.retract();
+    }   //retract
 
 }   //class Intake
