@@ -56,9 +56,17 @@ public class Intake implements TrcExclusiveSubsystem
         intakePneumatic.retract();
     }   //Intake
 
+    public void cancel(String owner)
+    {
+        if (validateOwnership(owner))
+        {
+            intakeLeftMotor.stopMotor();
+        }
+    }   //cancel
+
     public void cancel()
     {
-        intakeLeftMotor.stopMotor();
+        cancel(null);
     }   //cancel
 
     public double getMotorPower()

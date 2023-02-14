@@ -32,11 +32,12 @@ import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 
 /**
- * This class implements auto-assist task to score a cone.
+ * This class implements auto-assist task to score a cone or cube.
  */
 public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
 {
-    private static final String moduleName = "TaskScoreCone";
+    private static final String moduleName = "TaskScoreObject";
+
     public enum State
     {
         START,
@@ -47,23 +48,22 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         RESET,
         DONE
     }   //enum State
-    public enum ObjectType{
+
+    public enum ObjectType
+    {
         CUBE, 
         CONE
-    }
+    }   //enum ObjectType
 
     private static class TaskParams
     {
-
         ObjectType objectType;
         int scoreLevel;
         double scanPower;
         double scanDuration;
         boolean useVision;
 
-        TaskParams(
-            ObjectType objectType, boolean useVision, int scoreLevel, double scanPower,
-            double scanDuration)
+        TaskParams(ObjectType objectType, boolean useVision, int scoreLevel, double scanPower, double scanDuration)
         {
             this.objectType = objectType;
             this.useVision = useVision;
@@ -71,6 +71,7 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
             this.scanPower = scanPower;
             this.scanDuration = scanDuration;
         }   //TaskParams
+
     }   //class TaskParams
 
     private final String ownerName;
@@ -95,41 +96,33 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         this.robot = robot;
         this.msgTracer = msgTracer;
         event = new TrcEvent(moduleName);
-    }   //TaskScoreCone
+    }   //TaskScoreObject
 
     /**
-     * This method turns the turret to the start location, raises the elevator to the score height and starts scanning
-     * for the pole by slowly turning the turret for a given maximum duration. If the pole is detected by the sensor,
-     * it will stop the turret, extend the arm on top of the pole, lower the elevator to cap the pole, release the cone
-     * and retract the arm and elevator.
+     * This method ...
      *
-     * @param startTarget specifies the absolute start turret position to go to before doing the slow scan.
-     * @param startPowerLimit specifies the turret power limit going to the startTarget.
-     * @param expectedTarget specifies the expect turret position where the target should be.
-     * @param scoreHeight specifies the elevator height to score the cone.
+     * @param objectType specifies the object type to score (cone or cube).
+     * @param useVision specifies true to use vision assist, false otherwise.
+     * @param scoreLevel specifies the level to score a cone (not applicable for cube).
      * @param scanPower specifies how fast to scan for target, positive to scan left and negative to scan right.
      * @param scanDuration specifies how long to scan for target in seconds, scan will stop early if detected target.
      * @param event specifies the event to signal when done, can be null if none provided.
      */
-    public void autoAssistScoreCone(
-        ObjectType objectType, boolean useVision, int scoreLevel, double scanPower,
-        double scanDuration, TrcEvent event)
+    public void autoAssistScoreObject(
+        ObjectType objectType, boolean useVision, int scoreLevel, double scanPower, double scanDuration,
+        TrcEvent event)
     {
-        final String funcName = "autoAssistScoreCone";
+        final String funcName = "autoAssistScoreObject";
+
         if (msgTracer != null)
         {
-            
             msgTracer.traceInfo(
-                funcName,
-                "%s: objectType=%s, scoreLevel=%.2f, scanPower=%.2f, " +
-                "scanDuration=%.3f, event=%s",
+                funcName, "%s: objectType=%s, scoreLevel=%.2f, scanPower=%.2f, scanDuration=%.3f, event=%s",
                 moduleName, objectType, scoreLevel, scanPower, scanDuration, event);
         }
 
-        startAutoTask(
-            State.START, new TaskParams(
-                objectType, useVision, scoreLevel, scanPower, scanDuration), event);
-    }   //autoAssistScoreCone
+        startAutoTask(State.START, new TaskParams(objectType, useVision, scoreLevel, scanPower, scanDuration), event);
+    }   //autoAssistScoreObject
     
     /**
      * This method cancels an in progress auto-assist operation if any.
@@ -140,7 +133,7 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
 
         if (msgTracer != null)
         {
-            msgTracer.traceInfo(funcName, "%s: Canceling auto-assist score cone.", moduleName);
+            msgTracer.traceInfo(funcName, "%s: Canceling auto-assist score object.", moduleName);
         }
         stopAutoTask(false);
     }   //autoAssistCancel
@@ -217,11 +210,11 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
     @Override
     protected void stopSubsystems()
     {
-        //todo write this
-        // robot.intake.cancel(currOwner);
-        // robot.robotDrive.cancel(currOwner);
-        // robot.arm.cancel(currOwner);
-    }   //stopSubsystems.
+        robot.robotDrive.cancel(currOwner);
+        robot.lift.cancel(currOwner);
+        robot.arm.cancel(currOwner);
+        robot.intake.cancel(currOwner);
+    }   //stopSubsystems
 
     /**
      * This methods is called periodically to run the auto-assist task.
@@ -248,9 +241,9 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
             case START:
                 sm.setState(taskParams.useVision? State.DETECT_TARGET : State.SCORE_OBJECT);
                 break; 
+
             case DETECT_TARGET:
                 detectedTarget = robot.photonVision.getBestDetectedObject();
-
                 //
                 // Intentionally falling through to the next state (FIND_POLE).
                 //
@@ -261,19 +254,20 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
                     //this would be apriltagpos - robotpos for x and y, heading would be absolute + or - 90
                 //eitherway go to PREPARE_TO_SCORE when done
                 TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
-
                 break;
+
             case PREPARE_TO_SCORE:
                 // set elevator, arm, claw, to the proper scoring positions
                 break; 
+
             case SCORE_OBJECT:
                 //outtake with the claw then go to RESET state
                 break;
 
             case RESET:
                 //retract elevator, arm, everything, back up a tiny bit, go to DONE state  
-
                 break;
+
             default:
             case DONE:
                 stopAutoTask(true);
@@ -281,4 +275,4 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         }
     }   //runTaskState
 
-}   //class TaskScoreCone
+}   //class TaskScoreObject

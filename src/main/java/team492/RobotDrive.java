@@ -164,25 +164,32 @@ public class RobotDrive
 
     /**
      * This method cancels any PIDDrive operation still in progress.
+     *
+     * @param owner specifies the owner that requested the cancel.
      */
-    public void cancel()
+    public void cancel(String owner)
     {
         if (pidDrive != null && pidDrive.isActive())
         {
-            pidDrive.cancel();
+            pidDrive.cancel(owner);
         }
 
         if (balancePidDrive != null && balancePidDrive.isActive())
         {
-            balancePidDrive.cancel();
+            balancePidDrive.cancel(owner);
         }
 
         if (purePursuitDrive != null && purePursuitDrive.isActive())
         {
-            purePursuitDrive.cancel();
+            purePursuitDrive.cancel(owner);
         }
 
-        driveBase.stop();
+        driveBase.stop(owner);
+    }   //cancel
+
+    public void cancel()
+    {
+        cancel(null);
     }   //cancel
 
     protected FrcCANFalcon createDriveMotor(String name, int motorCanID, boolean inverted)
