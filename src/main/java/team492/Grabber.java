@@ -28,8 +28,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 public class Grabber
 {
-    private final FrcPneumatic leftGrabber;
-    private final FrcPneumatic rightGrabber;
+    private final FrcPneumatic coneGrabber;
+    private final FrcPneumatic cubeGrabber;
     private final FrcPWMTalonSRX vacuum;
     
     /**
@@ -41,12 +41,12 @@ public class Grabber
     //Does not require robot param, may need to add
     public Grabber()
     {
-        leftGrabber = new FrcPneumatic(
-            "leftGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
-            RobotParams.PNEUMATIC_LEFT_GRABBER_RETRACT, RobotParams.PNEUMATIC_LEFT_GRABBER_EXTEND);
-        rightGrabber = new FrcPneumatic(
-            "rightGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
-            RobotParams.PNEUMATIC_RIGHT_GRABBER_RETRACT, RobotParams.PNEUMATIC_RIGHT_GRABBER_EXTEND);
+        coneGrabber = new FrcPneumatic(
+            "coneGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
+            RobotParams.PNEUMATIC_CONE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CONE_GRABBER_EXTEND);
+        cubeGrabber = new FrcPneumatic(
+            "cubeGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
+            RobotParams.PNEUMATIC_CUBE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CUBE_GRABBER_EXTEND);
         release();
 
         if (RobotParams.Preferences.useVacuum)
@@ -66,43 +66,46 @@ public class Grabber
         {
             if (vacuum.getMotorVelocity() == 0)
             { //this probably works
-                leftGrabber.extend();
+                cubeGrabber.extend();
             }
         } else {
-            leftGrabber.extend();
+            cubeGrabber.extend();
         }
     }   //grabCube
 
     //This method is called to grab a cone, extends both pneumatics for a complete grab
     public void grabCone()
     {
-        if (vacuum != null) {
-            if(vacuum.getMotorVelocity() == 0) { //this probably works
-                leftGrabber.extend();
-                rightGrabber.extend();
+        if (vacuum != null)
+        {
+            if(vacuum.getMotorVelocity() == 0)
+            { //this probably works
+                coneGrabber.extend();
             }
-        } else {
-            leftGrabber.extend();
-            rightGrabber.extend();
+        } else
+        {
+            coneGrabber.extend();
         }
     }   //grabCone
 
     //This method is called to open the grabber, retracting the pneumatics
     public void release()
     {
-        leftGrabber.retract();
-        rightGrabber.retract();
+        coneGrabber.retract();
+        cubeGrabber.retract();
     }   //release
 
     //This method is called to turn on the vacuum, used to grab a cube
     public void vacuumOn() {
-        if(!leftGrabber.isExtended() && vacuum != null) {
+        if(!cubeGrabber.isExtended() &&  !coneGrabber.isExtended() && vacuum != null)
+        {
             vacuum.set(1); //this is just a placeholder, unsure of vacuum strength
         }
     }   //vacuumOn
 
     //This method is called to turn off the vacuum, dropping any grabbed cube
-    public void vacuumOff() {
+    public void vacuumOff()
+    {
         if (vacuum != null) {
             vacuum.stopMotor();
         }
