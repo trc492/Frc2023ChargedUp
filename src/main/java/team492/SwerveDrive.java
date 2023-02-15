@@ -74,9 +74,9 @@ public class SwerveDrive extends RobotDrive
     {
         super(robot);
 
-        lfDriveMotor = createDriveMotor("lfDrive", RobotParams.CANID_LEFTFRONT_DRIVE, true);
+        lfDriveMotor = createDriveMotor("lfDrive", RobotParams.CANID_LEFTFRONT_DRIVE, false);
         rfDriveMotor = createDriveMotor("rfDrive", RobotParams.CANID_RIGHTFRONT_DRIVE, true);
-        lbDriveMotor = createDriveMotor("lbDrive", RobotParams.CANID_LEFTBACK_DRIVE, true);
+        lbDriveMotor = createDriveMotor("lbDrive", RobotParams.CANID_LEFTBACK_DRIVE, false);
         rbDriveMotor = createDriveMotor("rbDrive", RobotParams.CANID_RIGHTBACK_DRIVE, true);
 
         double[] zeros = getSteerZeroPositions();
@@ -403,7 +403,7 @@ public class SwerveDrive extends RobotDrive
     public void stopMode(RunMode runMode, RunMode nextMode)
     {
         super.stopMode(runMode, nextMode);
-        setSteerAngleZero(false);
+        // setSteerAngleZero(false);
     }   //stopMode
 
     /**

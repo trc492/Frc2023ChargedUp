@@ -42,7 +42,7 @@ public class RobotParams
         // Inputs
         public static final boolean useXboxController           = true;
         public static final boolean useButtonPanels             = true;
-        public static final boolean doOneStickDrive             = true;
+        public static final boolean doOneStickDrive             = false;
         // Sensors
         public static final boolean useNavX                     = true;
         public static final boolean usePdp                      = false;
@@ -53,7 +53,7 @@ public class RobotParams
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Robot
-        public static final boolean noRobot                     = false;
+        public static final boolean noRobot                     = true;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
         public static final boolean swerveRobot                 = true;
@@ -75,7 +75,7 @@ public class RobotParams
         // Debug
         public static final boolean debugPowerConsumption       = false;
 
-        public static final boolean debugDriveBase              = false;
+        public static final boolean debugDriveBase              = true;
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
@@ -87,7 +87,7 @@ public class RobotParams
         public static final boolean debugSubsystems             = false;
 
         public static final boolean debugLoopTime               = false;
-        // public static final boolean debugAnalogEncoder          = true;
+        public static final boolean debugAnalogEncoder          = true;
     }   //class Preferences
 
     public static final String ROBOT_NAME                       = "Generic_Robot";
@@ -332,9 +332,9 @@ public class RobotParams
 
     public static final TrcPidController.PidCoefficients magicSteerCoeff =
         new TrcPidController.PidCoefficients(2.0, 0.01, 0.0, 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS, 5.0 / STEER_DEGREES_PER_COUNT);
-    public static final double STEER_KP                         = 1.1;
+    public static final double STEER_KP                         = 0.5;
     public static final double STEER_KI                         = 0.0;
-    public static final double STEER_KD                         = 14.0;
+    public static final double STEER_KD                         = 0.0;
     public static final double STEER_KF                         = 0.0;
     public static final double STEER_CAL_POWER                  = 0.1;
     public static final TrcPidController.PidCoefficients steerCoeffs =

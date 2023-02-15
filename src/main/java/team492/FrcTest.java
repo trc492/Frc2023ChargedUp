@@ -599,6 +599,10 @@ public class FrcTest extends FrcTeleOp
                     13, "SteerEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
                     swerveDrive.lfSteerMotor.getPosition(), swerveDrive.rfSteerMotor.getPosition(),
                     swerveDrive.lbSteerMotor.getPosition(), swerveDrive.rbSteerMotor.getPosition());
+                robot.dashboard.displayPrintf(
+                    14, "SteerEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
+                    swerveDrive.lfSteerEncoder.getRawPosition(), swerveDrive.rfSteerEncoder.getRawPosition(),
+                    swerveDrive.lbSteerEncoder.getRawPosition(), swerveDrive.rbSteerEncoder.getRawPosition());
             }
         }
         //

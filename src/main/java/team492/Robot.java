@@ -22,7 +22,9 @@
 
 package team492;
 
+import java.io.FileReader;
 import java.util.Locale;
+import java.util.Scanner;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
@@ -33,6 +35,8 @@ import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcVisionTargetInfo;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAHRSGyro;
+import TrcFrcLib.frclib.FrcAnalogEncoder;
+import TrcFrcLib.frclib.FrcCANFalcon;
 import TrcFrcLib.frclib.FrcCANSparkMax;
 import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcDashboard;
@@ -48,6 +52,7 @@ import TrcFrcLib.frclib.FrcXboxController;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 /**
@@ -81,7 +86,8 @@ public class Robot extends FrcRobotBase
     public FrcPdp pdp;
     public TrcRobotBattery battery;
     public AnalogInput pressureSensor;
-    // public FrcAnalogEncoder lfEnc, rfEnc, lbEnc, rbEnc;
+    public FrcAnalogEncoder lfEnc, rfEnc, lbEnc, rbEnc;
+    public FrcCANFalcon lfMotor, rfMotor, lbMotor, rbMotor;
 
     //
     // Miscellaneous hardware.
@@ -295,25 +301,35 @@ public class Robot extends FrcRobotBase
             pdp.registerEnergyUsedForAllUnregisteredChannels();
         }
 
-        // if (RobotParams.Preferences.debugAnalogEncoder)
-        // {
-        //     lfEnc = new FrcAnalogEncoder("lfEnc", 0);
-        //     rfEnc = new FrcAnalogEncoder("rfEnc", 1);
-        //     lbEnc = new FrcAnalogEncoder("lbEnc", 2);
-        //     rbEnc = new FrcAnalogEncoder("rbEnc", 3);
-        //     lfEnc.setInverted(true);
-        //     rfEnc.setInverted(true);
-        //     lbEnc.setInverted(true);
-        //     rbEnc.setInverted(true);
-        //     lfEnc.setScaleAndOffset(360.0, 0.0);
-        //     rfEnc.setScaleAndOffset(360.0, 0.0);
-        //     lbEnc.setScaleAndOffset(360.0, 0.0);
-        //     rbEnc.setScaleAndOffset(360.0, 0.0);
-        //     lfEnc.setEnabled(true);
-        //     rfEnc.setEnabled(true);
-        //     lbEnc.setEnabled(true);
-        //     rbEnc.setEnabled(true);
-        // }
+        if (RobotParams.Preferences.debugAnalogEncoder)
+        {
+            lfMotor = new FrcCANFalcon("lfMotor", RobotParams.CANID_LEFTFRONT_DRIVE);
+            rfMotor = new FrcCANFalcon("rfMotor", RobotParams.CANID_RIGHTFRONT_DRIVE);
+            lbMotor = new FrcCANFalcon("lbMotor", RobotParams.CANID_LEFTBACK_DRIVE);
+            rbMotor = new FrcCANFalcon("rbMotor", RobotParams.CANID_RIGHTBACK_DRIVE);
+            lfMotor.setInverted(false);
+            rfMotor.setInverted(true);
+            lbMotor.setInverted(false);
+            rbMotor.setInverted(true);
+            lfEnc = new FrcAnalogEncoder("lfEnc", RobotParams.AIN_LEFTFRONT_STEER_ENCODER);
+            rfEnc = new FrcAnalogEncoder("rfEnc", RobotParams.AIN_RIGHTFRONT_STEER_ENCODER);
+            lbEnc = new FrcAnalogEncoder("lbEnc", RobotParams.AIN_LEFTBACK_STEER_ENCODER);
+            rbEnc = new FrcAnalogEncoder("rbEnc", RobotParams.AIN_RIGHTBACK_STEER_ENCODER);
+            lfEnc.setInverted(true);
+            rfEnc.setInverted(true);
+            lbEnc.setInverted(true);
+            rbEnc.setInverted(true);
+            double[] zeros = getSteerZeroPositions();
+            dashboard.displayPrintf(12, "Zeros: lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f", zeros[0], zeros[1], zeros[2], zeros[3]);
+            lfEnc.setScaleAndOffset(360.0, zeros[0]);
+            rfEnc.setScaleAndOffset(360.0, zeros[1]);
+            lbEnc.setScaleAndOffset(360.0, zeros[2]);
+            rbEnc.setScaleAndOffset(360.0, zeros[3]);
+            lfEnc.setEnabled(true);
+            rfEnc.setEnabled(true);
+            lbEnc.setEnabled(true);
+            rbEnc.setEnabled(true);
+        }
 
         //
         // Create Robot Modes.
@@ -561,15 +577,20 @@ public class Robot extends FrcRobotBase
             {
             }
 
-            // if (RobotParams.Preferences.debugAnalogEncoder)
-            // {
-            //     dashboard.displayPrintf(
-            //         14, "Raw: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
-            //         lfEnc.getRawPosition(), rfEnc.getRawPosition(), lbEnc.getRawPosition(), rbEnc.getRawPosition());
-            //     dashboard.displayPrintf(
-            //         15, "Adj: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
-            //         lfEnc.getPosition(), rfEnc.getPosition(), lbEnc.getPosition(), rbEnc.getPosition());
-            // }
+            if (RobotParams.Preferences.debugAnalogEncoder)
+            {
+                dashboard.displayPrintf(11, "Volt(%.3f): lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f",
+                    RobotController.getVoltage5V(), lfEnc.getRawVoltage(), rfEnc.getRawVoltage(), lbEnc.getRawVoltage(), rbEnc.getRawVoltage());
+                dashboard.displayPrintf(
+                    13, "Motor: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
+                    lfMotor.getPosition(), rfMotor.getPosition(), lbMotor.getPosition(), rbMotor.getPosition());
+                dashboard.displayPrintf(
+                    14, "Raw: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
+                    lfEnc.getRawPosition(), rfEnc.getRawPosition(), lbEnc.getRawPosition(), rbEnc.getRawPosition());
+                dashboard.displayPrintf(
+                    15, "Adj: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
+                    lfEnc.getPosition(), rfEnc.getPosition(), lbEnc.getPosition(), rbEnc.getPosition());
+            }
         }
     }   //updateStatus
 
@@ -630,5 +651,27 @@ public class Robot extends FrcRobotBase
     {
         return (pressureSensor.getVoltage() - 0.5) * 50.0;
     }   //getPressure
+
+    private double[] getSteerZeroPositions()
+    {
+        final String funcName = "getSteerZeroPositions";
+
+        try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/steerzeros.txt")))
+        {
+            double[] steerZeros = new double[4];
+
+            for (int i = 0; i < steerZeros.length; i++)
+            {
+                steerZeros[i] = in.nextDouble();
+            }
+
+            return steerZeros;
+        }
+        catch (Exception e)
+        {
+            globalTracer.traceWarn(funcName, "Steer zero position file not found, using built-in defaults.");
+            return RobotParams.STEER_ZEROS;
+        }
+    }   //getSteerZeroPositions
 
 }   //class Robot
