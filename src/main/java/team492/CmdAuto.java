@@ -26,7 +26,10 @@ class CmdAuto implements TrcRobot.RobotCommand
 
     private final Robot robot;
     private final TrcTimer timer;
-    private final TrcEvent event;
+    private final TrcEvent timerEvent;
+    private final TrcEvent grabberEvent;
+    private final TrcEvent driveEvent;
+    private final TrcEvent intakeEvent;
     private final TrcStateMachine<State> sm;
 
     private int piecesScored = 0;
@@ -45,7 +48,10 @@ class CmdAuto implements TrcRobot.RobotCommand
 
         this.robot = robot;
         timer = new TrcTimer(moduleName + ".timer");
-        event = new TrcEvent(moduleName + ".event");
+        timerEvent = new TrcEvent(moduleName + ".timer");
+        grabberEvent = new TrcEvent(moduleName + ".timer");
+        driveEvent = new TrcEvent(moduleName + ".event");
+        intakeEvent = new TrcEvent(moduleName + ".event");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START_DELAY);
     }   //CmdAuto
@@ -96,17 +102,17 @@ class CmdAuto implements TrcRobot.RobotCommand
             robot.dashboard.displayPrintf(8, "State: %s", state);
             switch (state)
             {
-                case SCORE: //Scores a game piece, the precondition being that it is already in the scoring position, with a game piece in the robot, depending on if its a cone or cube
-                    //calls autoscore
+                case SCORE: //Scores a game piece, the precondition being that it is already in the scoring position, with a game piece in the robot, broadacasting grabberEvent when complete
+                    //robot.grabber.score(grabberEvent) **WHEN DONE
                     piecesScored++;
                     if (piecesScored == 1) {
-                        sm.waitForSingleEvent(event, State.START_DELAY);
+                        sm.waitForSingleEvent(grabberEvent, State.START_DELAY);
                     }
                     else if (piecesScored ==2 && !park){
-                        sm.waitForSingleEvent(event, State.GO_TO_GAME_PIECE);
+                        sm.waitForSingleEvent(grabberEvent, State.GO_TO_GAME_PIECE);
                     }
                     else {
-                        sm.waitForSingleEvent(event, State.GO_TO_PARK);
+                        sm.waitForSingleEvent(grabberEvent, State.GO_TO_PARK);
                     }
                 
                     break;
@@ -117,8 +123,8 @@ class CmdAuto implements TrcRobot.RobotCommand
                         sm.setState(State.GO_TO_GAME_PIECE);
                     }
                     else {
-                        sm.waitForSingleEvent(event, State.GO_TO_GAME_PIECE);
-                        timer.set(startDelay, event);
+                        sm.waitForSingleEvent(timerEvent, State.GO_TO_GAME_PIECE);
+                        timer.set(startDelay, timerEvent);
                     }
                     break;
 
@@ -127,13 +133,13 @@ class CmdAuto implements TrcRobot.RobotCommand
                         //drives to 3ft behind the right most piece from the init scoring pos
                         if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 85.0, 45.0),
                                 new TrcPose2D(-33.0, 238.0, 0.0));
                         }
                         else {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 564.0, 225.0),
                                 new TrcPose2D(-33.0, 404.0, 180.0));
                         }
@@ -142,7 +148,7 @@ class CmdAuto implements TrcRobot.RobotCommand
                         //drives to the location of the second right most piece from second scoring pos (shelf closest to scoring table)
                         if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 85.0, 45.0),
                                 new TrcPose2D(-33.0, 220.0, 0.0),
                                 new TrcPose2D(-82.0, 238.0, 0.0));
@@ -150,21 +156,23 @@ class CmdAuto implements TrcRobot.RobotCommand
                         }
                         else {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 564.0, 225.0),
                                 new TrcPose2D(-33.0, 429.0, 180.0),
                                 new TrcPose2D(-82.0, 404.0, 180.0));
                         }
                     }
-                    sm.waitForSingleEvent(event, State.PICKUP_PIECE);
+                    sm.waitForSingleEvent(driveEvent, State.PICKUP_PIECE);
                     break;
                     
                 case PICKUP_PIECE: //Drives forward while running intake until it picks up a game piece, the precondition being that we already at the correct location
-                    //runs intake
-                    //drives forward
+                    //robot.intake.pickup(intakeEvent) **WHEN DONE
+                    robot.robotDrive.purePursuitDrive.start(
+                        null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0, 50, 0));
                     //stops running intake when piece detected in robot and broadcasts event
                     //OR drives forward are runs autopickup
-                    sm.waitForSingleEvent(event, State.GO_TO_SCORE_POSITION);
+                    sm.waitForSingleEvent(intakeEvent, State.GO_TO_SCORE_POSITION);
                     break;
 
                 case GO_TO_SCORE_POSITION: //Drives to the scoring position, determining the location based on how many pieces we have already scored
@@ -172,13 +180,13 @@ class CmdAuto implements TrcRobot.RobotCommand
                         //drives to the right most shelf from the right most game piece
                         if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 85.0, 180.0),
                                 new TrcPose2D(-40.0, 65.0, 180.0));
                         }
                         else {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 564.0, 0.0),
                                 new TrcPose2D(-40.0, 584.0, 0.0));
                         }
@@ -187,42 +195,41 @@ class CmdAuto implements TrcRobot.RobotCommand
                         //drives to the right most shelf from the second right most game piece
                         if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 220.0, 225),
                                 new TrcPose2D(-33.0, 85.0, 180.0),
                                 new TrcPose2D(-40.0, 65.0, 180.0));
                         }
                         else {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(-33.0, 429, 315),
                                 new TrcPose2D(-33.0, 564.0, 0.0),
                                 new TrcPose2D(-40.0, 580.0, 0.0));
                         }
                     }
-                    sm.waitForSingleEvent(event, State.SCORE);
+                    sm.waitForSingleEvent(driveEvent, State.SCORE);
                     break;
 
-                case GO_TO_PARK: //Drives to just behind the parking platform from the scoring position
+                case GO_TO_PARK: //Drives to just behind and then onto the parking platform from the scoring position
                     if (FrcAuto.autoChoices.getAlliance().equals("Blue")) {
                         robot.robotDrive.purePursuitDrive.start(
-                            event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                            driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                             new TrcPose2D(-107.0, 85.0, 0),
                             new TrcPose2D(-107.0, 145.0, 0));
                     }
                     else {
                         robot.robotDrive.purePursuitDrive.start(
-                            event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                            driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                             new TrcPose2D(-107.0, 550.0, 180),
                             new TrcPose2D(-107.0, 490.0, 180));
                     }
-                    sm.waitForSingleEvent(event, State.PARK);
+                    sm.waitForSingleEvent(driveEvent, State.PARK);
                     break;
 
                 case PARK: //Parks
-                    //drives forward
                     //autoparks
-                    sm.waitForSingleEvent(event, State.DONE);
+                    sm.waitForSingleEvent(driveEvent, State.DONE);
                     break;
                 case DONE:
                 default:
