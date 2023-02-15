@@ -161,6 +161,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 if (RobotParams.Preferences.useSubsystems)
                 {
+                    if (robot.intake != null)
+                    {
+                        double intakeLeftPower = robot.driverController.getLeftTriggerWithDeadband(true);
+                        double intakeRightPower = robot.driverController.getRightTriggerWithDeadband(true);
+                        robot.intake.setPower(intakeLeftPower, intakeRightPower);
+                    }
                 }
             }
             //

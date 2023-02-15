@@ -53,7 +53,7 @@ public class RobotParams
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Robot
-        public static final boolean noRobot                     = true;
+        public static final boolean noRobot                     = false;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
         public static final boolean swerveRobot                 = true;
@@ -63,12 +63,12 @@ public class RobotParams
         public static final boolean useGyroAssist               = false;
         public static final boolean useBalanceDrive             = true;
         // Subsystems
-        public static final boolean useSubsystems               = false;
+        public static final boolean useSubsystems               = true;
         public static final boolean useLift                     = false;
         public static final boolean useArm                      = false;
         public static final boolean useGrabber                  = false;
         public static final boolean useVacuum                   = false;
-        public static final boolean useIntake                   = false;
+        public static final boolean useIntake                   = true;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
@@ -78,6 +78,7 @@ public class RobotParams
         public static final boolean debugDriveBase              = true;
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
+        public static final boolean debugAnalogEncoder          = false;
 
         public static final boolean debugVision                 = false;
         public static final boolean debugPhoton                 = false;
@@ -87,7 +88,6 @@ public class RobotParams
         public static final boolean debugSubsystems             = false;
 
         public static final boolean debugLoopTime               = false;
-        public static final boolean debugAnalogEncoder          = true;
     }   //class Preferences
 
     public static final String ROBOT_NAME                       = "Generic_Robot";

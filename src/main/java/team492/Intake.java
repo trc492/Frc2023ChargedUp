@@ -44,11 +44,11 @@ public class Intake implements TrcExclusiveSubsystem
 
         intakeLeftMotor = new FrcCANTalon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
         intakeLeftMotor.motor.configFactoryDefault();
+        intakeLeftMotor.setInverted(true);
 
         intakeRightMotor = new FrcCANTalon(moduleName + ".rightMotor", RobotParams.CANID_INTAKE_RIGHT);
         intakeRightMotor.motor.configFactoryDefault();
-
-        intakeLeftMotor.addFollowingMotor(intakeRightMotor);
+        intakeRightMotor.setInverted(true);
 
         intakePneumatic = new FrcPneumatic(
             moduleName + ".pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
@@ -61,6 +61,7 @@ public class Intake implements TrcExclusiveSubsystem
         if (validateOwnership(owner))
         {
             intakeLeftMotor.stopMotor();
+            intakeRightMotor.stopMotor();
         }
     }   //cancel
 
@@ -69,36 +70,42 @@ public class Intake implements TrcExclusiveSubsystem
         cancel(null);
     }   //cancel
 
-    public double getMotorPower()
+    public double getLeftMotorPower()
     {
         return intakeLeftMotor.getMotorPower();
-    }   //getMotorPower
+    }   //getLeftMotorPower
 
-    public void setPower(String owner, double delay, double power, double duration)
+    public double getRightMotorPower()
+    {
+        return intakeRightMotor.getMotorPower();
+    }   //getRightMotorPower
+
+    public void setPower(String owner, double delay, double leftPower, double rightPower, double duration)
     {
         final String funcName = "setPower";
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-            funcName, "[%.3f] owner=%s, delay=%.1f, power=%.1f, duration=%.3f",
-            TrcTimer.getModeElapsedTime(), owner, delay, power, duration);
+            funcName, "[%.3f] owner=%s, delay=%.1f, leftPower=%.1f, rightPower=%.1f, duration=%.3f",
+            TrcTimer.getModeElapsedTime(), owner, delay, leftPower, rightPower, duration);
         }
 
         if (validateOwnership(owner))
         {
-            intakeLeftMotor.set(delay, power, duration);
+            intakeLeftMotor.set(delay, leftPower, duration);
+            intakeRightMotor.set(delay, rightPower, duration);
         }
     }   //setPower
 
-    public void setPower(double delay, double power, double duration)
+    public void setPower(double delay, double leftPower, double rightPower, double duration)
     {
-        setPower(null, delay, power, duration);
+        setPower(null, delay, leftPower, rightPower, duration);
     }   //setPower
 
-    public void setPower(double power)
+    public void setPower(double leftPower, double rightPower)
     {
-        setPower(null, 0.0, power, 0.0);
+        setPower(null, 0.0, leftPower, rightPower, 0.0);
     }   //setPower
 
     public void extend()

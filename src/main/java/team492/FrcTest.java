@@ -471,14 +471,19 @@ public class FrcTest extends FrcTeleOp
                     if (robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
                     {
                         SwerveDrive swerveDrive = (SwerveDrive) robot.robotDrive;
+                        double[] rawPos = new double[steerZeros.length];
 
                         for (int i = 0; i < steerZeros.length; i++)
                         {
-                            steerZeros[i] += swerveDrive.steerEncoders[i].getRawPosition();
+                            rawPos[i] = swerveDrive.steerEncoders[i].getRawPosition();
+                            steerZeros[i] += rawPos[i];
                         }
                         steerZeroSumCount++;
                         robot.dashboard.displayPrintf(
-                            9, "SteerZeros: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
+                            9, "SteerZeros.Raw: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
+                            rawPos[0], rawPos[1], rawPos[2], rawPos[3]);
+                        robot.dashboard.displayPrintf(
+                            10, "SteerZeros.Avg: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
                             steerZeros[0]/steerZeroSumCount, steerZeros[1]/steerZeroSumCount,
                             steerZeros[2]/steerZeroSumCount, steerZeros[3]/steerZeroSumCount);
                     }
