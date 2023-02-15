@@ -23,6 +23,11 @@
 package team492;
 
 import TrcCommonLib.trclib.TrcAutoTask;
+import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcEvent;
+import TrcCommonLib.trclib.TrcRobot.RunMode;
+import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 
 
 public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
@@ -46,9 +51,24 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         CONE
     }   //enum ObjectType
     
-    protected void acquireSubsystemsOwnership() 
-    {
+    private final String owner;
+    private final Robot robot;
+    private final TrcDbgTrace msgTracer;
+    private final TrcEvent event;
+    private String currOwner = null;
 
+    public TaskAutoPickup(String owner, Robot robot, TrcDbgTrace msgTracer)
+    {
+        super(moduleName, owner, TrcTaskMgr.TaskType.POST_PERIODIC_TASK, msgTracer);
+        this.owner = owner;
+        this.robot = robot;
+        this.msgTracer = msgTracer;
+        event = new TrcEvent(moduleName);
+    }
+
+    protected boolean acquireSubsystemsOwnership() 
+    {
+        return true; // just says true for now, get rid of error
     }
 
     protected void releaseSubsystemsOwnership()
@@ -59,9 +79,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     protected void stopSubsystems()
     {
         //stop stuff ig
-    }
+    }  
 
-    private void runTaskState(State state)
+    protected void runTaskState(
+        Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
 
 
