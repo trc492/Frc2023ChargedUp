@@ -75,7 +75,7 @@ public class RobotParams
         // Debug
         public static final boolean debugPowerConsumption       = false;
 
-        public static final boolean debugDriveBase              = true;
+        public static final boolean debugDriveBase              = false;
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
         public static final boolean debugAnalogEncoder          = false;
@@ -214,10 +214,11 @@ public class RobotParams
     public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 0;
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
     public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
-    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 3;
+    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 9;
 
-    public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
-    public static final int PNEUMATIC_INTAKE_EXTEND             = 5;
+    public static final int PNEUMATIC_INTAKE_RETRACT            = 3;
+    public static final int PNEUMATIC_INTAKE_EXTEND             = 4
+    ;
 
     // public static final int PNEUMATIC_LIFT_RETRACT              = 422; //random number
     // public static final int PNEUMATIC_LIFT_EXTEND               = 423; //random number
@@ -327,7 +328,7 @@ public class RobotParams
     public static final double STEER_ENCODER_SCALE              = FALCON_CPR / CANCODER_CPR;
     public static final double STEER_GEAR_RATIO                 = (24.0/12.0) * (72.0/14.0);
 
-    public static final double ANALOG_ENCODER_SCALE             = 360.0;//FALCON_CPR;
+    public static final double ANALOG_ENCODER_SCALE             = FALCON_CPR * STEER_GEAR_RATIO;
 
     public static final double STEER_DEGREES_PER_TICK           = 360.0 / CANCODER_CPR;
     public static final double STEER_DEGREES_PER_COUNT          = 360.0 / (FALCON_CPR*STEER_GEAR_RATIO);

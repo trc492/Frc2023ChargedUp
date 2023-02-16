@@ -75,7 +75,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         //
         if (robot.robotDrive != null)
         {
-            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
+            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.ROBOT);
         }
     }   //startMode
 
@@ -286,6 +286,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
+                if(pressed) {
+                    if(robot.intake.isExtended()) {
+                        robot.intake.retract();
+                    } else {
+                        robot.intake.extend();
+                    }
+                }
                 break;
 
             case FrcXboxController.BACK:

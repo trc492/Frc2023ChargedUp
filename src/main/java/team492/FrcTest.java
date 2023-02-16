@@ -601,13 +601,17 @@ public class FrcTest extends FrcTeleOp
             {
                 SwerveDrive swerveDrive = (SwerveDrive) robot.robotDrive;
                 robot.dashboard.displayPrintf(
-                    13, "SteerEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
+                    13, "SteerMotorPos: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
                     swerveDrive.lfSteerMotor.getPosition(), swerveDrive.rfSteerMotor.getPosition(),
                     swerveDrive.lbSteerMotor.getPosition(), swerveDrive.rbSteerMotor.getPosition());
                 robot.dashboard.displayPrintf(
-                    14, "SteerEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
-                    swerveDrive.lfSteerEncoder.getRawPosition(), swerveDrive.rfSteerEncoder.getRawPosition(),
-                    swerveDrive.lbSteerEncoder.getRawPosition(), swerveDrive.rbSteerEncoder.getRawPosition());
+                    14, "SteerEncPos: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
+                    swerveDrive.lfSteerEncoder.getPosition(), swerveDrive.rfSteerEncoder.getPosition(),
+                    swerveDrive.lbSteerEncoder.getPosition(), swerveDrive.rbSteerEncoder.getPosition());
+                robot.dashboard.displayPrintf(
+                    15, "SteerAngle: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
+                    swerveDrive.lfWheel.getSteerAngle(), swerveDrive.rfWheel.getSteerAngle(),
+                    swerveDrive.lbWheel.getSteerAngle(), swerveDrive.rbWheel.getSteerAngle());
             }
         }
         //

@@ -118,4 +118,9 @@ public class Intake implements TrcExclusiveSubsystem
         intakePneumatic.retract();
     }   //retract
 
+    public boolean isExtended()
+    {
+        return intakePneumatic.isExtended();
+    }
+
 }   //class Intake

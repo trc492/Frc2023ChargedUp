@@ -350,6 +350,7 @@ public class SwerveDrive extends RobotDrive
     {
         final String funcName = "createSwerveModule";
         double encoderPos = steerEncoder.getPosition();
+        // encoderPos should be in Falcon Ticks (0-2048.0)
         ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);
         if (errCode != ErrorCode.OK)
         {
@@ -363,6 +364,7 @@ public class SwerveDrive extends RobotDrive
         FrcFalconServo servo = new FrcFalconServo(
             name + ".servo", steerMotor, RobotParams.steerCoeffs, RobotParams.STEER_DEGREES_PER_COUNT, 0.0,
             RobotParams.STEER_MAX_REQ_VEL, RobotParams.STEER_MAX_ACCEL);
+        servo.setPhysicalRange(0.0, 360.0);
         TrcSwerveModule module = new TrcSwerveModule(name, driveMotor, servo);
         module.disableSteeringLimits();
 
