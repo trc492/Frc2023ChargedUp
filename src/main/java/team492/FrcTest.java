@@ -29,6 +29,7 @@ import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import team492.OpenCvVision.ObjectType;
+import team492.PhotonVision.PipelineType;
 import TrcFrcLib.frclib.FrcChoiceMenu;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcUserChoices;
@@ -434,9 +435,9 @@ public class FrcTest extends FrcTeleOp
                 prevTime = currTime;
                 prevVelocity = velocity;
 
-                robot.dashboard.displayPrintf(9, "Drive Vel: (%.1f/%.1f)", velocity, maxDriveVelocity);
-                robot.dashboard.displayPrintf(10, "Drive Accel: (%.1f/%.1f)", acceleration, maxDriveAcceleration);
-                robot.dashboard.displayPrintf(11, "Turn Rate: (%.1f/%.1f)", turnRate, maxTurnRate);
+                robot.dashboard.displayPrintf(8, "Drive Vel: (%.1f/%.1f)", velocity, maxDriveVelocity);
+                robot.dashboard.displayPrintf(9, "Drive Accel: (%.1f/%.1f)", acceleration, maxDriveAcceleration);
+                robot.dashboard.displayPrintf(10, "Turn Rate: (%.1f/%.1f)", turnRate, maxTurnRate);
                 break;
 
             default:
@@ -480,10 +481,10 @@ public class FrcTest extends FrcTeleOp
                         }
                         steerZeroSumCount++;
                         robot.dashboard.displayPrintf(
-                            9, "SteerZeros.Raw: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
+                            8, "SteerZeros.Raw: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
                             rawPos[0], rawPos[1], rawPos[2], rawPos[3]);
                         robot.dashboard.displayPrintf(
-                            10, "SteerZeros.Avg: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
+                            9, "SteerZeros.Avg: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
                             steerZeros[0]/steerZeroSumCount, steerZeros[1]/steerZeroSumCount,
                             steerZeros[2]/steerZeroSumCount, steerZeros[3]/steerZeroSumCount);
                     }
@@ -495,10 +496,10 @@ public class FrcTest extends FrcTeleOp
                     double rfEnc = robot.robotDrive.rfDriveMotor.getPosition();
                     double lbEnc = robot.robotDrive.lbDriveMotor.getPosition();
                     double rbEnc = robot.robotDrive.rbDriveMotor.getPosition();
-                    robot.dashboard.displayPrintf(9, "Enc:lf=%.0f,rf=%.0f", lfEnc, rfEnc);
-                    robot.dashboard.displayPrintf(10, "Enc:lb=%.0f,rb=%.0f", lbEnc, rbEnc);
-                    robot.dashboard.displayPrintf(11, "EncAverage=%f", (lfEnc + rfEnc + lbEnc + rbEnc) / 4.0);
-                    robot.dashboard.displayPrintf(12, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
+                    robot.dashboard.displayPrintf(8, "Enc:lf=%.0f,rf=%.0f", lfEnc, rfEnc);
+                    robot.dashboard.displayPrintf(9, "Enc:lb=%.0f,rb=%.0f", lbEnc, rbEnc);
+                    robot.dashboard.displayPrintf(10, "EncAverage=%f", (lfEnc + rfEnc + lbEnc + rbEnc) / 4.0);
+                    robot.dashboard.displayPrintf(11, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
                     break;
 
                 case PP_DRIVE:
@@ -507,7 +508,7 @@ public class FrcTest extends FrcTeleOp
                 case TUNE_Y_PID:
                 case TUNE_TURN_PID:
                     TrcPidController xPidCtrl, yPidCtrl, turnPidCtrl;
-                    int lineNum = 10;
+                    int lineNum = 9;
 
                     if (testChoices.getTest() == Test.PP_DRIVE)
                     {
@@ -522,7 +523,7 @@ public class FrcTest extends FrcTeleOp
                         turnPidCtrl = robot.robotDrive.pidDrive.getTurnPidCtrl();
                     }
 
-                    robot.dashboard.displayPrintf(9, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
+                    robot.dashboard.displayPrintf(8, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
                     if (xPidCtrl != null)
                     {
                         xPidCtrl.displayPidInfo(lineNum);
@@ -575,48 +576,78 @@ public class FrcTest extends FrcTeleOp
      */
     private void displaySensorStates()
     {
+        int lineNum = 8;
         //
         // Display drivebase info.
         //
-        if (robot.battery != null)
-        {
-            robot.dashboard.displayPrintf(
-                9, "Sensors Test (Batt=%.1f/%.1f):", robot.battery.getVoltage(), robot.battery.getLowestVoltage());
-        }
-
         if (robot.robotDrive != null)
         {
+            // line 8
             robot.dashboard.displayPrintf(
-                10, "DriveBase: Pose=%s,Vel=%s", robot.robotDrive.driveBase.getFieldPosition(),
-                robot.robotDrive.driveBase.getFieldVelocity());
+                lineNum, "DriveBase: Pose=%s,Vel=%s",
+                robot.robotDrive.driveBase.getFieldPosition(), robot.robotDrive.driveBase.getFieldVelocity());
+            lineNum++;
+            // line 9
             robot.dashboard.displayPrintf(
-                11, "DriveEnc: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
-                robot.robotDrive.lfDriveMotor.getPosition(), robot.robotDrive.rfDriveMotor.getPosition(),
-                robot.robotDrive.lbDriveMotor.getPosition(), robot.robotDrive.rbDriveMotor.getPosition());
-            robot.dashboard.displayPrintf(
-                12, "DrivePwr: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
-                robot.robotDrive.lfDriveMotor.getMotorPower(), robot.robotDrive.rfDriveMotor.getMotorPower(),
-                robot.robotDrive.lbDriveMotor.getMotorPower(), robot.robotDrive.rbDriveMotor.getMotorPower());
+                lineNum, "Drive(Pwr/Enc): lf=%.2f/%.0f,rf=%.2f/%.0f,lb=%.2f/%.0f,rb=%.2f/%.0f",
+                robot.robotDrive.lfDriveMotor.getMotorPower(), robot.robotDrive.lfDriveMotor.getPosition(),
+                robot.robotDrive.rfDriveMotor.getMotorPower(), robot.robotDrive.rfDriveMotor.getPosition(),
+                robot.robotDrive.lbDriveMotor.getMotorPower(), robot.robotDrive.lbDriveMotor.getPosition(),
+                robot.robotDrive.rbDriveMotor.getMotorPower(), robot.robotDrive.rbDriveMotor.getPosition());
+            lineNum++;
             if (robot.robotDrive instanceof SwerveDrive)
             {
                 SwerveDrive swerveDrive = (SwerveDrive) robot.robotDrive;
+                // line 10
                 robot.dashboard.displayPrintf(
-                    13, "SteerMotorPos: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
-                    swerveDrive.lfSteerMotor.getPosition(), swerveDrive.rfSteerMotor.getPosition(),
-                    swerveDrive.lbSteerMotor.getPosition(), swerveDrive.rbSteerMotor.getPosition());
-                robot.dashboard.displayPrintf(
-                    14, "SteerEncPos: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
-                    swerveDrive.lfSteerEncoder.getPosition(), swerveDrive.rfSteerEncoder.getPosition(),
-                    swerveDrive.lbSteerEncoder.getPosition(), swerveDrive.rbSteerEncoder.getPosition());
-                robot.dashboard.displayPrintf(
-                    15, "SteerAngle: lf=%.2f,rf=%.2f,lb=%.2f,rb=%.2f",
-                    swerveDrive.lfWheel.getSteerAngle(), swerveDrive.rfWheel.getSteerAngle(),
-                    swerveDrive.lbWheel.getSteerAngle(), swerveDrive.rbWheel.getSteerAngle());
+                    lineNum, "Steer(Enc/Angle): lf=%.3f/%.3f,rf=%.3f/%.3f,lb=%.3f/%.3f,rb=%.3f/%.3f",
+                    swerveDrive.lfSteerEncoder.getPosition(), swerveDrive.lfWheel.getSteerAngle(),
+                    swerveDrive.rfSteerEncoder.getPosition(), swerveDrive.rfWheel.getSteerAngle(),
+                    swerveDrive.lbSteerEncoder.getPosition(), swerveDrive.lbWheel.getSteerAngle(),
+                    swerveDrive.rbSteerEncoder.getPosition(), swerveDrive.rbWheel.getSteerAngle());
+                lineNum++;
             }
         }
         //
         // Display other subsystems and sensor info.
         //
+        if (robot.lift != null && robot.arm != null)
+        {
+            // line 11
+            robot.dashboard.displayPrintf(
+                lineNum, "Lift/Arm: Pwr=%.1f/%.1f,Pos=%.1f/%.1f,LowerLimit=%s/%s,UpperLimit=%s/%s",
+                robot.lift.getPower(), robot.arm.getPower(), robot.lift.getPosition(), robot.arm.getPosition(),
+                robot.lift.isLowerLimitSwitchActive(), robot.lift.isUpperLimitSwitchActive(),
+                robot.arm.isLowerLimitSwitchActive(), robot.arm.isUpperLimitSwitchActive());
+            lineNum++;
+        }
+
+        if (robot.intake != null)
+        {
+            // line 12
+            robot.dashboard.displayPrintf(
+                lineNum, "Intake: Pwr=%.1f/%.1f,Deployed=%s",
+                robot.intake.getLeftMotorPower(), robot.intake.getRightMotorPower(), robot.intake.isExtended());
+            lineNum++;
+        }
+
+        if (robot.grabber != null)
+        {
+            // line 13
+            robot.dashboard.displayPrintf(
+                lineNum, "Grabber: CubeGrabber=%s,ConeGrabber=%s",
+                robot.grabber.grabbedCube(), robot.grabber.grabbedCone());
+            lineNum++;
+        }
+
+        if (robot.battery != null)
+        {
+            // line 14
+            robot.dashboard.displayPrintf(
+                lineNum, "Batt(Curr/Lowest): Volt=%.1f/%.1f",
+                robot.battery.getVoltage(), robot.battery.getLowestVoltage());
+            lineNum++;
+        }
     }   //displaySensorStates
 
     /**
@@ -625,6 +656,8 @@ public class FrcTest extends FrcTeleOp
      */
     private void doVisionTest()
     {
+        int lineNum = 8;
+
         if (robot.photonVision != null)
         {
             FrcPhotonVision.DetectedObject targetInfo = robot.photonVision.getBestDetectedObject();
@@ -632,12 +665,19 @@ public class FrcTest extends FrcTeleOp
             if (targetInfo != null)
             {
                 // robot.globalTracer.traceInfo("doVisionTest", "Photon: %s", targetInfo);
-                robot.dashboard.displayPrintf(14, "Photon: %s", targetInfo);
+                // line 8
+                robot.dashboard.displayPrintf(lineNum, "PhotonTarget: %s", targetInfo);
+                lineNum++;
 
-                TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
-                if (robotPose != null)
+                if (robot.photonVision.getPipeline() == PipelineType.APRILTAG)
                 {
-                    robot.dashboard.displayPrintf(15, "RobotPose: %s", robotPose);
+                    TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
+                    if (robotPose != null)
+                    {
+                        // line 9
+                        robot.dashboard.displayPrintf(lineNum, "RobotPose: %s", robotPose);
+                        lineNum++;
+                    }
                 }
             }
         }
@@ -648,7 +688,9 @@ public class FrcTest extends FrcTeleOp
                 robot.openCvVision.getTargetInfo(null, null);
             if (targetInfo != null)
             {
-                robot.dashboard.displayPrintf(15, "AprilTag: %s", targetInfo);
+                // line 10
+                robot.dashboard.displayPrintf(lineNum, "OpenCvTarget: %s", targetInfo);
+                lineNum++;
                 // if (robot.openCvVision.getDetectObjectType() == ObjectType.APRILTAG)
                 // {
                 //     FrcOpenCvAprilTagPipeline aprilTagVision =

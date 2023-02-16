@@ -86,8 +86,9 @@ public class Robot extends FrcRobotBase
     public FrcPdp pdp;
     public TrcRobotBattery battery;
     public AnalogInput pressureSensor;
-    public FrcAnalogEncoder lfEnc, rfEnc, lbEnc, rbEnc;
-    public FrcCANFalcon lfMotor, rfMotor, lbMotor, rbMotor;
+    // For debugging Swerve steering.
+    public FrcAnalogEncoder lfSteerEnc, rfSteerEnc, lbSteerEnc, rbSteerEnc;
+    public FrcCANFalcon lfDriveMotor, rfDriveMotor, lbDriveMotor, rbDriveMotor;
 
     //
     // Miscellaneous hardware.
@@ -301,34 +302,35 @@ public class Robot extends FrcRobotBase
             pdp.registerEnergyUsedForAllUnregisteredChannels();
         }
 
-        if (RobotParams.Preferences.debugAnalogEncoder)
+        if (RobotParams.Preferences.debugSwerveSteering)
         {
-            lfMotor = new FrcCANFalcon("lfMotor", RobotParams.CANID_LEFTFRONT_DRIVE);
-            rfMotor = new FrcCANFalcon("rfMotor", RobotParams.CANID_RIGHTFRONT_DRIVE);
-            lbMotor = new FrcCANFalcon("lbMotor", RobotParams.CANID_LEFTBACK_DRIVE);
-            rbMotor = new FrcCANFalcon("rbMotor", RobotParams.CANID_RIGHTBACK_DRIVE);
-            lfMotor.setInverted(false);
-            rfMotor.setInverted(true);
-            lbMotor.setInverted(false);
-            rbMotor.setInverted(true);
-            lfEnc = new FrcAnalogEncoder("lfEnc", RobotParams.AIN_LEFTFRONT_STEER_ENCODER);
-            rfEnc = new FrcAnalogEncoder("rfEnc", RobotParams.AIN_RIGHTFRONT_STEER_ENCODER);
-            lbEnc = new FrcAnalogEncoder("lbEnc", RobotParams.AIN_LEFTBACK_STEER_ENCODER);
-            rbEnc = new FrcAnalogEncoder("rbEnc", RobotParams.AIN_RIGHTBACK_STEER_ENCODER);
-            lfEnc.setInverted(true);
-            rfEnc.setInverted(true);
-            lbEnc.setInverted(true);
-            rbEnc.setInverted(true);
+            lfDriveMotor = new FrcCANFalcon("lfDriveMotor", RobotParams.CANID_LEFTFRONT_DRIVE);
+            rfDriveMotor = new FrcCANFalcon("rfDriveMotor", RobotParams.CANID_RIGHTFRONT_DRIVE);
+            lbDriveMotor = new FrcCANFalcon("lbDriveMotor", RobotParams.CANID_LEFTBACK_DRIVE);
+            rbDriveMotor = new FrcCANFalcon("rbDriveMotor", RobotParams.CANID_RIGHTBACK_DRIVE);
+            lfDriveMotor.setInverted(false);
+            rfDriveMotor.setInverted(true);
+            lbDriveMotor.setInverted(false);
+            rbDriveMotor.setInverted(true);
+            lfSteerEnc = new FrcAnalogEncoder("lfSteerEnc", RobotParams.AIN_LEFTFRONT_STEER_ENCODER);
+            rfSteerEnc = new FrcAnalogEncoder("rfSteerEnc", RobotParams.AIN_RIGHTFRONT_STEER_ENCODER);
+            lbSteerEnc = new FrcAnalogEncoder("lbSteerEnc", RobotParams.AIN_LEFTBACK_STEER_ENCODER);
+            rbSteerEnc = new FrcAnalogEncoder("rbSteerEnc", RobotParams.AIN_RIGHTBACK_STEER_ENCODER);
+            lfSteerEnc.setInverted(true);
+            rfSteerEnc.setInverted(true);
+            lbSteerEnc.setInverted(true);
+            rbSteerEnc.setInverted(true);
             double[] zeros = getSteerZeroPositions();
-            dashboard.displayPrintf(12, "Zeros: lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f", zeros[0], zeros[1], zeros[2], zeros[3]);
-            lfEnc.setScaleAndOffset(360.0, zeros[0]);
-            rfEnc.setScaleAndOffset(360.0, zeros[1]);
-            lbEnc.setScaleAndOffset(360.0, zeros[2]);
-            rbEnc.setScaleAndOffset(360.0, zeros[3]);
-            lfEnc.setEnabled(true);
-            rfEnc.setEnabled(true);
-            lbEnc.setEnabled(true);
-            rbEnc.setEnabled(true);
+            dashboard.displayPrintf(
+                8, "SteerZeros: lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f", zeros[0], zeros[1], zeros[2], zeros[3]);
+            lfSteerEnc.setScaleAndOffset(360.0, zeros[0]);
+            rfSteerEnc.setScaleAndOffset(360.0, zeros[1]);
+            lbSteerEnc.setScaleAndOffset(360.0, zeros[2]);
+            rbSteerEnc.setScaleAndOffset(360.0, zeros[3]);
+            lfSteerEnc.setEnabled(true);
+            rfSteerEnc.setEnabled(true);
+            lbSteerEnc.setEnabled(true);
+            rbSteerEnc.setEnabled(true);
         }
 
         //
@@ -573,23 +575,26 @@ public class Robot extends FrcRobotBase
                     }
                 }
             }
+            else if (RobotParams.Preferences.debugSwerveSteering)
+            {
+                dashboard.displayPrintf(9, "SteerEncVolt(%.3f): lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f",
+                    RobotController.getVoltage5V(), lfSteerEnc.getRawVoltage(), rfSteerEnc.getRawVoltage(),
+                    lbSteerEnc.getRawVoltage(), rbSteerEnc.getRawVoltage());
+                dashboard.displayPrintf(
+                    10, "SteerEncRaw: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
+                    lfSteerEnc.getRawPosition(), rfSteerEnc.getRawPosition(),
+                    lbSteerEnc.getRawPosition(), rbSteerEnc.getRawPosition());
+                dashboard.displayPrintf(
+                    11, "SteerEncPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
+                    lfSteerEnc.getPosition(), rfSteerEnc.getPosition(),
+                    lbSteerEnc.getPosition(), rbSteerEnc.getPosition());
+                dashboard.displayPrintf(
+                    12, "DriveMotorPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
+                    lfDriveMotor.getPosition(), rfDriveMotor.getPosition(),
+                    lbDriveMotor.getPosition(), rbDriveMotor.getPosition());
+            }
             else if (RobotParams.Preferences.debugSubsystems)
             {
-            }
-
-            if (RobotParams.Preferences.debugAnalogEncoder)
-            {
-                dashboard.displayPrintf(11, "Volt(%.3f): lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f",
-                    RobotController.getVoltage5V(), lfEnc.getRawVoltage(), rfEnc.getRawVoltage(), lbEnc.getRawVoltage(), rbEnc.getRawVoltage());
-                dashboard.displayPrintf(
-                    13, "Motor: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
-                    lfMotor.getPosition(), rfMotor.getPosition(), lbMotor.getPosition(), rbMotor.getPosition());
-                dashboard.displayPrintf(
-                    14, "Raw: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
-                    lfEnc.getRawPosition(), rfEnc.getRawPosition(), lbEnc.getRawPosition(), rbEnc.getRawPosition());
-                dashboard.displayPrintf(
-                    15, "Adj: lfEnc=%.3f, rfEnc=%.3f, lbEnc=%.3f, rbEnc=%.3f",
-                    lfEnc.getPosition(), rfEnc.getPosition(), lbEnc.getPosition(), rbEnc.getPosition());
             }
         }
     }   //updateStatus

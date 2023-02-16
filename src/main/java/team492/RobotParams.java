@@ -75,18 +75,17 @@ public class RobotParams
         // Debug
         public static final boolean debugPowerConsumption       = false;
 
-        public static final boolean debugDriveBase              = false;
-        public static final boolean debugPurePursuitDrive       = false;
-        public static final boolean debugPidDrive               = false;
-        public static final boolean debugAnalogEncoder          = false;
-
         public static final boolean debugVision                 = false;
         public static final boolean debugPhoton                 = false;
         public static final boolean debugLimeLight              = false;
         public static final boolean debugOpenCv                 = false;
 
-        public static final boolean debugSubsystems             = false;
+        public static final boolean debugDriveBase              = false;
+        public static final boolean debugPurePursuitDrive       = false;
+        public static final boolean debugPidDrive               = false;
 
+        public static final boolean debugSwerveSteering         = false;
+        public static final boolean debugSubsystems             = false;
         public static final boolean debugLoopTime               = false;
     }   //class Preferences
 

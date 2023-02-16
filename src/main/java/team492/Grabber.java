@@ -95,6 +95,16 @@ public class Grabber
         cubeGrabber.retract();
     }   //release
 
+    public boolean grabbedCube()
+    {
+        return cubeGrabber.isExtended();
+    }   //grabbedCube
+
+    public boolean grabbedCone()
+    {
+        return coneGrabber.isExtended();
+    }   //grabbedCone
+
     //This method is called to turn on the vacuum, used to grab a cube
     public void vacuumOn() {
         if(!cubeGrabber.isExtended() &&  !coneGrabber.isExtended() && vacuum != null)
