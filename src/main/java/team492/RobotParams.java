@@ -90,7 +90,7 @@ public class RobotParams
         public static final boolean debugLoopTime               = false;
     }   //class Preferences
 
-    public static final String ROBOT_NAME                       = "Generic_Robot";
+    public static final String ROBOT_NAME                       = "Robot2023_ChargedUp";
     public static final String TEAM_FOLDER                      = "/home/lvuser/trc492";
     public static final double DASHBOARD_UPDATE_INTERVAL        = 0.1;          // in msec
 
@@ -103,11 +103,11 @@ public class RobotParams
     //
     // Robot dimensions in inches.
     //
-    public static final double ROBOT_WIDTH                      = 34.5;     // Frame dimensions, including bumpers.
-    public static final double ROBOT_LENGTH                     = 37.0;     // Frame dimensions, including bumpers.
+    public static final double ROBOT_WIDTH                      = (27.0 + 6.0); // Frame dimensions, including bumpers.
+    public static final double ROBOT_LENGTH                     = (30.5 + 6.0); // Frame dimensions, including bumpers.
 
-    public static final double ROBOT_DRIVE_WIDTH                = 23.25;    // Required by swerve drive base.
-    public static final double ROBOT_DRIVE_LENGTH               = 25.625;   // Required by swerve drive base.
+    public static final double ROBOT_DRIVE_WIDTH                = 23.25;        // Required by swerve drive base.
+    public static final double ROBOT_DRIVE_LENGTH               = 22.44;        // Required by swerve drive base.
 
     //
     // Robot starting positions.
@@ -130,10 +130,11 @@ public class RobotParams
     //
     // CAN IDs.
     //
-    public static final int CANID_LEFTFRONT_DRIVE               = 3;    // Orange: 40A
-    public static final int CANID_RIGHTFRONT_DRIVE              = 4;    // Yellow: 40A
-    public static final int CANID_LEFTBACK_DRIVE                = 5;    // Green: 40A
-    public static final int CANID_RIGHTBACK_DRIVE               = 6;    // Blue: 40A
+    public static final int CANID_LEFTFRONT_DRIVE               = 3;
+    public static final int CANID_RIGHTFRONT_DRIVE              = 4;
+    public static final int CANID_LEFTBACK_DRIVE                = 5;
+    public static final int CANID_RIGHTBACK_DRIVE               = 6;
+
     public static final int CANID_LIFT                          = 7;
     public static final int CANID_ARM                           = 8;
     public static final int CANID_INTAKE_LEFT                   = 17;
@@ -141,15 +142,15 @@ public class RobotParams
 
     // Applicable only for Swerve Drive.
 
-    public static final int CANID_LEFTFRONT_STEER               = 13;   // Orange: 40A
-    public static final int CANID_RIGHTFRONT_STEER              = 14;   // Yellow: 40A
-    public static final int CANID_LEFTBACK_STEER                = 15;   // Green: 40A
-    public static final int CANID_RIGHTBACK_STEER               = 16;   // Blue: 40A
+    public static final int CANID_LEFTFRONT_STEER               = 13;
+    public static final int CANID_RIGHTFRONT_STEER              = 14;
+    public static final int CANID_LEFTBACK_STEER                = 15;
+    public static final int CANID_RIGHTBACK_STEER               = 16;
 
-    public static final int CANID_LEFTFRONT_STEER_ENCODER       = 23;    // Orange
-    public static final int CANID_RIGHTFRONT_STEER_ENCODER      = 24;    // Yellow
-    public static final int CANID_LEFTBACK_STEER_ENCODER        = 25;    // Green
-    public static final int CANID_RIGHTBACK_STEER_ENCODER       = 26;   // Blue
+    public static final int CANID_LEFTFRONT_STEER_ENCODER       = 23;
+    public static final int CANID_RIGHTFRONT_STEER_ENCODER      = 24;
+    public static final int CANID_LEFTBACK_STEER_ENCODER        = 25;
+    public static final int CANID_RIGHTBACK_STEER_ENCODER       = 26;
 
     public static final int CANID_PCM                           = 30;
     public static final int CANID_PDP                           = 31;
@@ -157,14 +158,24 @@ public class RobotParams
     //
     // PDP Channels.
     //
-    public static final int PDP_CHANNEL_LEFT_FRONT_DRIVE        = 11;   // Orange: 40A
-    public static final int PDP_CHANNEL_RIGHT_FRONT_DRIVE       = 5;    // Yellow: 40A
-    public static final int PDP_CHANNEL_LEFT_BACK_DRIVE         = 13;   // Green: 40A
-    public static final int PDP_CHANNEL_RIGHT_BACK_DRIVE        = 3;    // Blue: 40A
-    public static final int PDP_CHANNEL_LEFT_FRONT_STEER        = 10;   // Orange: 40A
-    public static final int PDP_CHANNEL_RIGHT_FRONT_STEER       = 6;    // Yellow: 40A
-    public static final int PDP_CHANNEL_LEFT_BACK_STEER         = 12;   // Green: 40A
-    public static final int PDP_CHANNEL_RIGHT_BACK_STEER        = 4;    // Blue: 40A
+    public static final int PDP_CHANNEL_LEFT_FRONT_DRIVE        = 17;   // Orange: 40A
+    public static final int PDP_CHANNEL_RIGHT_FRONT_DRIVE       = 12;   // Yellow: 40A
+    public static final int PDP_CHANNEL_LEFT_BACK_DRIVE         = 4;    // Green: 40A
+    public static final int PDP_CHANNEL_RIGHT_BACK_DRIVE        = 8;    // Blue: 40A
+
+    public static final int PDP_CHANNEL_LEFT_FRONT_STEER        = 16;   // Orange: 40A
+    public static final int PDP_CHANNEL_RIGHT_FRONT_STEER       = 13;   // Yellow: 40A
+    public static final int PDP_CHANNEL_LEFT_BACK_STEER         = 3;    // Green: 40A
+    public static final int PDP_CHANNEL_RIGHT_BACK_STEER        = 9;    // Blue: 40A
+
+    public static final int PDP_CHANNEL_LIFT                    = 2;    // Purple: 40A
+    public static final int PDP_CHANNEL_ARM                     = 1;    // Gray: 40A
+    public static final int PDP_CHANNEL_INTAKE_LEFT             = 15;   // Purple: 30A
+    public static final int PDP_CHANNEL_INTAKE_RIGHT            = 14;   // Gray: 30A
+
+    public static final int PDP_CHANNEL_ROBORIO                 = 20;   // 10A
+    public static final int PDP_CHANNEL_VRM                     = 21;   // 10A
+    public static final int PDP_CHANNEL_RADIO_POE               = 22;   // 10A
 
     public static final double BATTERY_NOMINAL_VOLTAGE          = 12.0;
     public static final double BATTERY_CAPACITY_WATT_HOUR       = 18.0*12.0;
@@ -173,18 +184,18 @@ public class RobotParams
     // Analog Input ports.
     //
     // public static final int AIN_PRESSURE_SENSOR                 = 0;
-    public static final int AIN_LEFTFRONT_STEER_ENCODER         = 0;
-    public static final int AIN_RIGHTFRONT_STEER_ENCODER        = 1;
-    public static final int AIN_LEFTBACK_STEER_ENCODER          = 2;
-    public static final int AIN_RIGHTBACK_STEER_ENCODER         = 3;
+    public static final int AIN_LEFTFRONT_STEER_ENCODER         = 0;    // Black
+    public static final int AIN_RIGHTFRONT_STEER_ENCODER        = 1;    // Brown
+    public static final int AIN_LEFTBACK_STEER_ENCODER          = 2;    // Red
+    public static final int AIN_RIGHTBACK_STEER_ENCODER         = 3;    // Orange
 
     //
     // Digital Input/Output ports.
     //
-    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH         = 0;
-    public static final int DIO_LIFT_UPPER_LIMIT_SWITCH         = 1;
-    public static final int DIO_ARM_LOWER_LIMIT_SWITCH          = 2;
-    public static final int DIO_ARM_UPPER_LIMIT_SWITCH          = 3;
+    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH         = 0;    // Black
+    public static final int DIO_LIFT_UPPER_LIMIT_SWITCH         = 1;    // Brown
+    public static final int DIO_ARM_LOWER_LIMIT_SWITCH          = 2;    // Red
+    public static final int DIO_ARM_UPPER_LIMIT_SWITCH          = 3;    // Orange
 
     //
     // PWM channels.
@@ -202,8 +213,8 @@ public class RobotParams
     //
     public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 0;
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
-    public static final int PNEUMATIC_CUBE_GRABBER_RETRACT     = 2;
-    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND      = 3;
+    public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
+    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 3;
 
     public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
     public static final int PNEUMATIC_INTAKE_EXTEND             = 5;
