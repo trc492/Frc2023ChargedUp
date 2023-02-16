@@ -273,9 +273,8 @@ public class SwerveDrive extends RobotDrive
         }
         // Configure the sensor direction to match the steering motor direction.
         encoder.setInverted(inverted);
-        encoder.setScaleAndOffset(
-            RobotParams.FALCON_CPR * RobotParams.STEER_GEAR_RATIO / RobotParams.CANCODER_CPR,
-            steerZero);
+        // Normalize encoder to the range of 0 to 1.0 for a revolution (revolution per count).
+        encoder.setScaleAndOffset(1.0 / RobotParams.CANCODER_CPR, steerZero);
 
         return encoder;
     }   //createCANCoder
@@ -294,7 +293,8 @@ public class SwerveDrive extends RobotDrive
         FrcEncoder encoder = new FrcAnalogEncoder(name, encoderId);
 
         encoder.setInverted(inverted);
-        encoder.setScaleAndOffset(RobotParams.ANALOG_ENCODER_SCALE, steerZero);
+        // Analog Encoder is already normalized to the range of 0 to 1.0 for a revolutionn (revolution per count).
+        encoder.setScaleAndOffset(1.0, steerZero);
         return encoder;
     }   //createAnalogEncoder
 
@@ -349,8 +349,8 @@ public class SwerveDrive extends RobotDrive
         String name, FrcCANFalcon driveMotor, FrcCANFalcon steerMotor, FrcEncoder steerEncoder)
     {
         final String funcName = "createSwerveModule";
-        double encoderPos = steerEncoder.getPosition();
-        // encoderPos should be in Falcon Ticks (0-2048.0)
+        // getPosition returns a value in the range of 0 to 1.0 of one revolution.
+        double encoderPos = steerEncoder.getPosition() * RobotParams.STEER_MOTOR_CPR;
         ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);
         if (errCode != ErrorCode.OK)
         {

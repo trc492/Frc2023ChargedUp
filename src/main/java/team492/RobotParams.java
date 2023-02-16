@@ -325,32 +325,32 @@ public class RobotParams
     // Applicable only for Swerve Drive.
     public static final double CANCODER_CPR                     = 4096.0;
     public static final double FALCON_CPR                       = 2048.0;
-    public static final double STEER_ENCODER_SCALE              = FALCON_CPR / CANCODER_CPR;
+    public static final double FALCON_MAX_RPM                   = 6380.0;
     public static final double STEER_GEAR_RATIO                 = (24.0/12.0) * (72.0/14.0);
+    public static final double STEER_MOTOR_CPR                  = FALCON_CPR * STEER_GEAR_RATIO;
+    public static final double STEER_DEGREES_PER_COUNT          = 360.0 / STEER_MOTOR_CPR;
+    // ((theoretical max rpm * speed loss constant / gear ratio) / 60 sec/min) * 360 deg/rev
+    public static final double STEER_MAX_VEL                    = (FALCON_MAX_RPM*0.81/STEER_GEAR_RATIO/60.0)*360.0;
 
-    public static final double ANALOG_ENCODER_SCALE             = FALCON_CPR * STEER_GEAR_RATIO;
-
-    public static final double STEER_DEGREES_PER_TICK           = 360.0 / CANCODER_CPR;
-    public static final double STEER_DEGREES_PER_COUNT          = 360.0 / (FALCON_CPR*STEER_GEAR_RATIO);
     public static final double STEER_MAX_REQ_VEL                = 1000.0;   // deg/sec. max commanded velocity, not necessarily max vel
     public static final double STEER_MAX_ACCEL                  = 5000.0;   // deg/sec^2
-    // ((theoretical max rpm * speed loss constant / gear ratio) / 60 sec/min) * 360 deg/rev
-    public static final double STEER_MAX_VEL                    = ((18700.0 * 0.81 / 56.67) / 60.0) * 360.0;        // deg/sec
-    public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0; // count/100ms
 
     // Zeroes are normalized offsets which are in the unit of percentage revolution (0.0 to 1.0).
     // This is a backup if file is not found: LF, RF, LB, RB.
     public static final double[] STEER_ZEROS                    = new double[] {0.7126, 0.2858, 0.9098, 0.6480};
 
-    public static final TrcPidController.PidCoefficients magicSteerCoeff =
-        new TrcPidController.PidCoefficients(2.0, 0.01, 0.0, 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS, 5.0 / STEER_DEGREES_PER_COUNT);
+    public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0;
+    // public static final TrcPidController.PidCoefficients magicSteerCoeff =
+    //     new TrcPidController.PidCoefficients(2.0, 0.01, 0.0, 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS, 5.0 / STEER_DEGREES_PER_COUNT);
     public static final double STEER_KP                         = 0.5;
-    public static final double STEER_KI                         = 0.0;
+    public static final double STEER_KI                         = 0.01;
     public static final double STEER_KD                         = 0.0;
-    public static final double STEER_KF                         = 0.0;
-    public static final double STEER_CAL_POWER                  = 0.1;
+    // kF set to Motion Magic recommendation.
+    public static final double STEER_KF                         = 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS;
+    // iZone set to within 5 steering degrees.
+    public static final double STEER_IZONE                      = 5.0 / STEER_DEGREES_PER_COUNT;
     public static final TrcPidController.PidCoefficients steerCoeffs =
-        new TrcPidController.PidCoefficients(STEER_KP, STEER_KI, STEER_KD, STEER_KF);
+        new TrcPidController.PidCoefficients(STEER_KP, STEER_KI, STEER_KD, STEER_KF, STEER_IZONE);
 
     public static final double PPD_FOLLOWING_DISTANCE           = 12.0;
     public static final double PPD_POS_TOLERANCE                = 2.0;
