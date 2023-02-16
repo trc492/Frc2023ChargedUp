@@ -42,10 +42,10 @@ public class Grabber
     public Grabber()
     {
         coneGrabber = new FrcPneumatic(
-            "coneGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
+            "coneGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_CONE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CONE_GRABBER_EXTEND);
         cubeGrabber = new FrcPneumatic(
-            "cubeGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.CTREPCM,
+            "cubeGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_CUBE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CUBE_GRABBER_EXTEND);
         release();
 

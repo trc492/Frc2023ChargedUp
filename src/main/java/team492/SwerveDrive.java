@@ -372,7 +372,10 @@ public class SwerveDrive extends RobotDrive
     }   //createSwerveModule
 
     /**
-     * This method is called to set all swerve wheels to zero degrees without optimization.
+     * This method is called to set all swerve wheels to zero degrees.
+     *
+     * @param optimize specifies true to optimize the shortest way to point the wheels forward, could end up at
+     *        180-degree instead of zero, false to set wheel angle to absolute zero.
      */
     public void setSteerAngleZero(boolean optimize)
     {
