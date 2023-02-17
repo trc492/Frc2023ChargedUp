@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2023 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@ package team492;
 import java.io.FileReader;
 import java.util.Locale;
 import java.util.Scanner;
+
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
@@ -70,7 +72,6 @@ public class Robot extends FrcRobotBase
     public final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
     private double nextDashboardUpdateTime = TrcTimer.getModeElapsedTime();
     private boolean traceLogOpened = false;
-
     //
     // Inputs.
     //
@@ -79,7 +80,6 @@ public class Robot extends FrcRobotBase
     public FrcJoystick buttonPanel;
     public FrcJoystick switchPanel;
     public FrcXboxController driverController;
-
     //
     // Sensors.
     //
@@ -89,24 +89,20 @@ public class Robot extends FrcRobotBase
     // For debugging Swerve steering.
     public FrcAnalogEncoder lfSteerEnc, rfSteerEnc, lbSteerEnc, rbSteerEnc;
     public FrcCANFalcon lfDriveMotor, rfDriveMotor, lbDriveMotor, rbDriveMotor;
-
     //
     // Miscellaneous hardware.
     //
     public LEDIndicator ledIndicator;
-
     //
     // Vision subsystem.
     //
     public PhotonVision photonVision;
     public LimeLightVision limeLightVision;
     public OpenCvVision openCvVision;
-
     //
     // DriveBase subsystem.
     //
-    public RobotDrive robotDrive;
-
+    public SwerveDrive robotDrive;
     //
     // Other subsystems.
     //
@@ -164,7 +160,6 @@ public class Robot extends FrcRobotBase
             buttonPanel = new FrcJoystick("buttonPanel", RobotParams.JSPORT_BUTTON_PANEL);
             switchPanel = new FrcJoystick("switchPanel", RobotParams.JSPORT_SWITCH_PANEL);
         }
-
         //
         // Create and initialize sensors.
         //
@@ -191,7 +186,6 @@ public class Robot extends FrcRobotBase
         // Create and initialize miscellaneous hardware.
         //
         ledIndicator = new LEDIndicator();
-
         //
         // Create and initialize Vision subsystem.
         //
@@ -222,7 +216,7 @@ public class Robot extends FrcRobotBase
             //
             // Create and initialize RobotDrive subsystem.
             //
-            robotDrive = RobotParams.Preferences.swerveRobot? new SwerveDrive(this): new WestCoastDrive(this);
+            robotDrive = new SwerveDrive(this);
 
             //
             // Create and initialize other subsystems.
@@ -276,6 +270,7 @@ public class Robot extends FrcRobotBase
                         actuatorMotor.motor.configVoltageCompSaturation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
                         actuatorMotor.motor.enableVoltageCompensation(true);
                     }
+                    actuatorMotor.motor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
 
                     arm = new FrcMotorActuator(
                         "Arm", actuatorMotor, motorParams, actuatorParams).getPidActuator();
@@ -332,7 +327,6 @@ public class Robot extends FrcRobotBase
             lbSteerEnc.setEnabled(true);
             rbSteerEnc.setEnabled(true);
         }
-
         //
         // Create Robot Modes.
         //

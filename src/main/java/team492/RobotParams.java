@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2023 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,6 @@ public class RobotParams
         public static final boolean noRobot                     = false;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
-        public static final boolean swerveRobot                 = true;
         public static final boolean useCANCoder                 = false;
         public static final boolean useAnalogEncoder            = true;
         public static final boolean useVelocityControl          = false;

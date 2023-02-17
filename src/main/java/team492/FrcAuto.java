@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Titan Robotics Club (http://www.titanrobotics.com)
+ * Copyright (c) 2023 Titan Robotics Club (http://www.titanrobotics.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,6 +52,7 @@ public class FrcAuto implements TrcRobot.RobotMode
 
     public static enum AutoStrategy
     {
+        CHARGEDUP_AUTO,
         PP_DRIVE,
         PID_DRIVE,
         TIMED_DRIVE,
@@ -115,6 +116,7 @@ public class FrcAuto implements TrcRobot.RobotMode
             allianceMenu.addChoice("Red", DriverStation.Alliance.Red, true, false);
             allianceMenu.addChoice("Blue", DriverStation.Alliance.Blue, false, true);
 
+            autoStrategyMenu.addChoice("ChargedUp Auto", AutoStrategy.CHARGEDUP_AUTO);
             autoStrategyMenu.addChoice("Pure Pursuit Drive", AutoStrategy.PP_DRIVE);
             autoStrategyMenu.addChoice("PID Drive", AutoStrategy.PID_DRIVE);
             autoStrategyMenu.addChoice("Timed Drive", AutoStrategy.TIMED_DRIVE);
@@ -289,6 +291,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         switch (autoChoices.getStrategy())
         {
+            case CHARGEDUP_AUTO:
+                autoCommand = new CmdAuto(robot);
+                break;
+
             case PP_DRIVE:
                 autoCommand = new CmdPurePursuitDrive(
                     robot.robotDrive.driveBase, robot.robotDrive.xPosPidCoeff, robot.robotDrive.yPosPidCoeff,
