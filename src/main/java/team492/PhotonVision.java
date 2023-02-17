@@ -169,10 +169,15 @@ public class PhotonVision extends FrcPhotonVision
         // }        
     }   //getRobotFieldPosition
 
+    /**
+     * This method sets the active pipeline type used in the LimeLight.
+     *
+     * @param pipelineType specifies the pipeline to activate in the LimeLight.
+     */
     public void setPipeline(PipelineType pipelineType)
     {
         setPipelineIndex(pipelineType.pipelineIndex);
-    }   
+    }   //setPipeline
 
     /**
      * This method returns the active pipeline of the LimeLight.
