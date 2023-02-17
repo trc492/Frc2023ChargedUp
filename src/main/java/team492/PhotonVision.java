@@ -86,7 +86,7 @@ public class PhotonVision extends FrcPhotonVision
      */
     public PhotonVision(String cameraName, TrcDbgTrace tracer)
     {
-        super(cameraName, tracer);
+        super(cameraName, RobotParams.CAMERA_HEIGHT, RobotParams.CAMERA_PITCH, tracer);
 
         double startTime = TrcTimer.getModeElapsedTime();
         try

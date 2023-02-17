@@ -35,7 +35,7 @@ public class LimeLightVision extends FrcLimeLightVision
         setDepthApproximator(
             "ty",
             y -> (RobotParams.VISION_TARGET_HEIGHT - RobotParams.CAMERA_HEIGHT) /
-                 Math.tan(Math.toRadians(y + RobotParams.CAMERA_ANGLE)));
+                 Math.tan(Math.toRadians(y + RobotParams.CAMERA_PITCH)));
         setOffsets(RobotParams.CAMERA_X_OFFSET, RobotParams.CAMERA_Y_OFFSET);
         setFreshnessTimeout(RobotParams.CAMERA_DATA_TIMEOUT);
         setRingLightEnabled(RingLightMode.OFF);
@@ -53,7 +53,7 @@ public class LimeLightVision extends FrcLimeLightVision
 
     public double getTargetVerticalAngle()
     {
-        return getElevation() + RobotParams.CAMERA_ANGLE;
+        return getElevation() + RobotParams.CAMERA_PITCH;
     }   //getTargetVerticalAngle
 
     public double getTargetDistance()

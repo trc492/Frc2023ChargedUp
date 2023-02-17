@@ -238,10 +238,10 @@ public class RobotParams
     public static final double CAMERA_Y_OFFSET                  = 0.0;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot
     public static final double CAMERA_HEIGHT                    = 0.0;  // Inches from the floor
-    public static final double CAMERA_ANGLE                     = 0.0;  // Degrees from horizontal
+    public static final double CAMERA_PITCH                     = 0.0;  // Degrees from horizontal
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_X_OFFSET, CAMERA_Y_OFFSET, CAMERA_HEIGHT),
-        new Rotation3d(0.0, CAMERA_ANGLE, 0.0));
+        new Rotation3d(0.0, CAMERA_PITCH, 0.0));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
     public static final double WEBCAM_FX                        = 821.993;  // in pixels
     public static final double WEBCAM_FY                        = 821.993;  // in pixels
