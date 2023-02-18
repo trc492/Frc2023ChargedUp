@@ -236,8 +236,8 @@ public class RobotParams
     public static final double VISION_TARGET_HEIGHT             = 104.0;// Inches from the floor
     public static final double CAMERA_Y_OFFSET                  = 0.0;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot
-    public static final double CAMERA_HEIGHT                    = 0.0;  // Inches from the floor
-    public static final double CAMERA_PITCH                     = 0.0;  // Degrees from horizontal
+    public static final double CAMERA_HEIGHT                    = 5.5;  // Inches from the floor
+    public static final double CAMERA_PITCH                     = -5.0; // Degrees from horizontal
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_X_OFFSET, CAMERA_Y_OFFSET, CAMERA_HEIGHT),
         new Rotation3d(0.0, CAMERA_PITCH, 0.0));
@@ -246,6 +246,7 @@ public class RobotParams
     public static final double WEBCAM_FY                        = 821.993;  // in pixels
     public static final double WEBCAM_CX                        = 330.489;  // in pixels
     public static final double WEBCAM_CY                        = 248.997;  // in pixels
+    public static final double POLE_TAG_HEIGHT                  = 2.5;      // in inches
     //
     // DriveBase subsystem.
     //

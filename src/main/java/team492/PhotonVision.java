@@ -25,6 +25,8 @@ package team492;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.photonvision.common.hardware.VisionLEDMode;
+
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcTimer;
@@ -46,8 +48,8 @@ public class PhotonVision extends FrcPhotonVision
 
     public enum PipelineType
     {
-        RETRO_TAPE(0),
-        CUBE(1),
+        CUBE(0),
+        POLE(1),
         CONE(2),
         APRILTAG(3);
 
@@ -104,7 +106,8 @@ public class PhotonVision extends FrcPhotonVision
                 moduleName, "[%.3f] Loading AprilTag field layout took %.3f sec.", endTime, endTime - startTime);
         }
 
-        setPipeline(PipelineType.RETRO_TAPE);
+        setPipeline(PipelineType.POLE);
+        setLED(VisionLEDMode.kOn);
 
         // poseEstimator = new AprilTagPoseEstimator(
         //     new AprilTagPoseEstimator.Config(

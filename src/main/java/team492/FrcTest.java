@@ -660,47 +660,51 @@ public class FrcTest extends FrcTeleOp
 
         if (robot.photonVision != null)
         {
+            PipelineType pipelineType = robot.photonVision.getPipeline();
             FrcPhotonVision.DetectedObject targetInfo = robot.photonVision.getBestDetectedObject();
 
             if (targetInfo != null)
             {
-                // robot.globalTracer.traceInfo("doVisionTest", "Photon: %s", targetInfo);
                 // line 8
-                robot.dashboard.displayPrintf(lineNum, "PhotonTarget: %s", targetInfo);
+                robot.dashboard.displayPrintf(lineNum, "PhotonVision[%s]: targetInfo=%s", pipelineType, targetInfo);
                 lineNum++;
 
-                if (robot.photonVision.getPipeline() == PipelineType.APRILTAG)
+                if (pipelineType == PipelineType.APRILTAG)
                 {
+                    // line 9
                     TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
+
                     if (robotPose != null)
                     {
-                        // line 9
                         robot.dashboard.displayPrintf(lineNum, "RobotPose: %s", robotPose);
-                        lineNum++;
                     }
+                    lineNum++;
+                }
+                else
+                {
+                    // line 9
+                    double targetHeight = pipelineType == PipelineType.POLE? RobotParams.POLE_TAG_HEIGHT: 0.0;
+                    TrcPose2D targetPose = robot.photonVision.getTargetPose2D(targetInfo, targetHeight);
+
+                    if (targetPose != null)
+                    {
+                        robot.dashboard.displayPrintf(lineNum, "TargetPose: %s", targetPose);
+                    }
+                    lineNum++;
                 }
             }
         }
-
-        if (robot.openCvVision != null)
+        else if (robot.openCvVision != null)
         {
             TrcVisionTargetInfo<TrcOpenCvDetector.DetectedObject<?>> targetInfo =
                 robot.openCvVision.getTargetInfo(null, null);
+
             if (targetInfo != null)
             {
-                // line 10
-                robot.dashboard.displayPrintf(lineNum, "OpenCvTarget: %s", targetInfo);
+                // line 8
+                robot.dashboard.displayPrintf(
+                    lineNum, "OpenCvVision[%s]: targetInfo=%s", robot.openCvVision.getPipeline(), targetInfo);
                 lineNum++;
-                // if (robot.openCvVision.getDetectObjectType() == ObjectType.APRILTAG)
-                // {
-                //     FrcOpenCvAprilTagPipeline aprilTagVision =
-                //         (FrcOpenCvAprilTagPipeline) robot.openCvVision.getPipeline();
-                //     Pose3d aprilTagPose = aprilTagVision.getTargetPosition(
-                //         (FrcOpenCvAprilTagPipeline.DetectedObject) targetInfo.detectedObj);
-                //     robot.dashboard.displayPrintf(14, "AprilTagPose=%s", aprilTagPose);
-                //     // robot.globalTracer.traceInfo(
-                //     //     "VisionTest", "[%.3f] AprilTagPose=%s", TrcTimer.getModeElapsedTime(), aprilTagPose);
-                // }
             }
         }
     }   //doVisionTest
