@@ -174,8 +174,6 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 robot.robotDrive.balancePidDrive.setSensorTarget(
                     currOwner, robot.robotDrive.driveBase.getXPosition(), 0.0,
                     robot.robotDrive.driveBase.getHeading(), true, event, 0.0);
-                //TODO: Event never fires
-                // CodeReview: this is now fixed.
                 sm.waitForSingleEvent(event, State.DONE);
                 break;
 

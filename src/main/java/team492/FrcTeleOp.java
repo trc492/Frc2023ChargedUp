@@ -255,9 +255,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BUTTON_B:
+                if(pressed) {
+                    robot.grabber.grabCone();
+                }
                 break;
 
             case FrcXboxController.BUTTON_X:
+                if(pressed) {
+                    robot.grabber.grabCube();
+                }
                 break;
 
             case FrcXboxController.BUTTON_Y:
@@ -296,6 +302,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BACK:
+                if(pressed) {
+                    robot.grabber.release();
+                }
                 break;
 
             case FrcXboxController.START:

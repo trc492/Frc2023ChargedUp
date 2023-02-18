@@ -65,7 +65,7 @@ public class RobotParams
         public static final boolean useSubsystems               = true;
         public static final boolean useLift                     = false;
         public static final boolean useArm                      = false;
-        public static final boolean useGrabber                  = false;
+        public static final boolean useGrabber                  = true;
         public static final boolean useVacuum                   = false;
         public static final boolean useIntake                   = true;
         // Miscellaneous
@@ -209,10 +209,10 @@ public class RobotParams
     //
     // Pneumatic channels.
     //
-    public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 0;
+    public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 6;
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
-    public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
-    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 9;
+    public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 5;
+    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 2;
 
     public static final int PNEUMATIC_INTAKE_RETRACT            = 3;
     public static final int PNEUMATIC_INTAKE_EXTEND             = 4
