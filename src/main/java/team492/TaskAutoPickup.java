@@ -64,22 +64,43 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.robot = robot;
         this.msgTracer = msgTracer;
         event = new TrcEvent(moduleName);
-    }
+    }   //TaskAutoPickup
+
+    public void autoAssistCancel()
+    {
+        stopAutoTask(false);
+    }   //autoAssistCancel
 
     protected boolean acquireSubsystemsOwnership() 
     {
-        return true; // just says true for now, get rid of error
-    }
+        boolean success = owner == null || robot.robotDrive.driveBase.acquireExclusiveAccess(owner);
+        if (success)
+        {
+            currOwner = owner;
+        }
+        else
+        {
+            releaseSubsystemsOwnership();
+        }
+        return success;
+    }   //acquireSubsystemsOwnership
 
     protected void releaseSubsystemsOwnership()
     {
-
-    }
+        if(owner != null)
+        {
+            robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
+            currOwner = null;
+        }
+    }   //releaseSubsystemsOwnership
 
     protected void stopSubsystems()
     {
-        //stop stuff ig
-    }  
+        robot.robotDrive.cancel(currOwner);
+        robot.lift.cancel(currOwner);
+        robot.arm.cancel(currOwner);
+        robot.intake.cancel(currOwner);
+    }   //stopSubsystems
 
     protected void runTaskState(
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
@@ -89,26 +110,37 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         switch(state)
         {
             case START:
+                sm.setState(RobotParams.Preferences.useLimeLightVision? State.LOOK_FOR_TARGET: State.INTAKE_OBJECT);
                 break;
 
             case LOOK_FOR_TARGET:
+                
+                sm.setState(State.DRIVE_TO_TARGET);
                 break;
             
             case DRIVE_TO_TARGET:
+
+                sm.setState(State.APPROACH_OBJECT);
                 break;
             
             case APPROACH_OBJECT:
+
+                sm.setState(State.INTAKE_OBJECT);
                 break;
             
             case INTAKE_OBJECT:
+
+                sm.setState(State.PICKUP_OBJECT);
                 break;
             
             case PICKUP_OBJECT:
+
+                sm.setState(State.DONE);
                 break;
             
             case DONE:
                 stopAutoTask(true);
                 break;
         }
-    }
+    }   //runTaskState
 }
