@@ -53,7 +53,7 @@ public class RobotParams
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Robot
-        public static final boolean noRobot                     = true;
+        public static final boolean noRobot                     = false;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
         public static final boolean useCANCoder                 = false;
@@ -62,9 +62,9 @@ public class RobotParams
         public static final boolean useGyroAssist               = false;
         public static final boolean useBalanceDrive             = true;
         // Subsystems
-        public static final boolean useSubsystems               = false;
-        public static final boolean useLift                     = false;
-        public static final boolean useArm                      = false;
+        public static final boolean useSubsystems               = true;
+        public static final boolean useLift                     = true;
+        public static final boolean useArm                      = true;
         public static final boolean useGrabber                  = true;
         public static final boolean useVacuum                   = false;
         public static final boolean useIntake                   = true;
@@ -83,9 +83,9 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSubsystems             = false;
+        public static final boolean debugSubsystems             = true;
         public static final boolean debugSwerveSteering         = false;
-        public static final boolean debugArmEncoder             = true;
+        public static final boolean debugArmEncoder             = false;
         public static final boolean debugLoopTime               = false;
     }   //class Preferences
 
@@ -343,12 +343,12 @@ public class RobotParams
     // public static final TrcPidController.PidCoefficients magicSteerCoeff =
     //     new TrcPidController.PidCoefficients(2.0, 0.01, 0.0, 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS, 5.0 / STEER_DEGREES_PER_COUNT);
     public static final double STEER_KP                         = 0.5;
-    public static final double STEER_KI                         = 0.01;
+    public static final double STEER_KI                         = 0.0;//0.01;
     public static final double STEER_KD                         = 0.0;
     // kF set to Motion Magic recommendation.
-    public static final double STEER_KF                         = 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS;
+    public static final double STEER_KF                         = 0.0;//1023.0 / STEER_MAX_VEL_COUNT_PER_100MS;
     // iZone set to within 5 steering degrees.
-    public static final double STEER_IZONE                      = 5.0 / STEER_DEGREES_PER_COUNT;
+    public static final double STEER_IZONE                      = 0.0;//5.0 / STEER_DEGREES_PER_COUNT;
     public static final TrcPidController.PidCoefficients steerCoeffs =
         new TrcPidController.PidCoefficients(STEER_KP, STEER_KI, STEER_KD, STEER_KF, STEER_IZONE);
 
@@ -383,20 +383,21 @@ public class RobotParams
     public static final double[] LIFT_PRESET_LEVELS = {0,LIFT_LEVEL_1_HEIGHT, LIFT_LEVEL_2_HEIGHT, LIFT_LEVEL_3_HEIGHT};
 
     // Arm subsystem.
-    public static final boolean ARM_MOTOR_INVERTED              = true;
-    public static final boolean ARM_LOWER_LIMIT_INVERTED        = false;
+    public static final boolean ARM_MOTOR_INVERTED              = false;
+    public static final boolean ARM_LOWER_LIMIT_INVERTED
+            = true;
     public static final boolean ARM_UPPER_LIMIT_INVERTED        = false;
-    public static final double ARM_MIN_POS                      = 20.0;
+    public static final int ARM_ENCODER_CPR                     = 4096;
+    public static final int ARM_ZERO                            = 1635;
+    public static final double ARM_MIN_POS                      = 20.0;   
     public static final double ARM_MAX_POS                      = 65.0;
-    public static final double ARM_DEGS_PER_COUNT               = 1.392027924751009e-4;
+    public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
     public static final double ARM_OFFSET                       = 29.6785;
     public static final double ARM_KP                           = 0.2;      //0.06;
     public static final double ARM_KI                           = 0.0;
     public static final double ARM_KD                           = 0.0;      //0.005;
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = 0.5;
-    public static final int ARM_ENCODER_CPR                     = 4096;
-    public static final int ARM_ZERO                            = 0;
     // public static final double ARM_RAISED                       = 25.3; //random number
     // public static final double ARM_LOWERED                      = 28.3; //random number
 

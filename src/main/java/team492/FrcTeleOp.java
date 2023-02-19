@@ -38,6 +38,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private boolean controlsEnabled = false;
+    private boolean armControl = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -143,7 +144,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
 
-                if (robot.robotDrive != null)
+                if (robot.robotDrive != null && !armControl)
                 {
                     double[] inputs = robot.robotDrive.getDriveInputs();
 
@@ -166,6 +167,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         double intakeLeftPower = robot.driverController.getLeftTriggerWithDeadband(true);
                         double intakeRightPower = robot.driverController.getRightTriggerWithDeadband(true);
                         robot.intake.setPower(intakeLeftPower, intakeRightPower);
+                    }
+                    if(armControl)
+                    {
+                        robot.arm.setPower(robot.driverController.getLeftY(), 0.0, 0.25);
                     }
                 }
             }
@@ -283,12 +288,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcXboxController.LEFT_BUMPER:
                 if (pressed)
                 {
-                    robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.INVERTED);
+                    armControl = true;
+                } else {
+                    armControl = false;
                 }
-                else
-                {
-                    robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
-                }
+                    
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
