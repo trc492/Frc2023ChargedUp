@@ -53,7 +53,7 @@ public class RobotParams
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Robot
-        public static final boolean noRobot                     = false;
+        public static final boolean noRobot                     = true;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
         public static final boolean useCANCoder                 = false;
@@ -62,7 +62,7 @@ public class RobotParams
         public static final boolean useGyroAssist               = false;
         public static final boolean useBalanceDrive             = true;
         // Subsystems
-        public static final boolean useSubsystems               = true;
+        public static final boolean useSubsystems               = false;
         public static final boolean useLift                     = false;
         public static final boolean useArm                      = false;
         public static final boolean useGrabber                  = true;
@@ -83,8 +83,9 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSwerveSteering         = false;
         public static final boolean debugSubsystems             = false;
+        public static final boolean debugSwerveSteering         = false;
+        public static final boolean debugArmEncoder             = true;
         public static final boolean debugLoopTime               = false;
     }   //class Preferences
 
@@ -230,8 +231,8 @@ public class RobotParams
     //
     // Vision subsystem.
     //
-    public static final int CAMERA_IMAGE_WIDTH                  = 160;
-    public static final int CAMERA_IMAGE_HEIGHT                 = 120;
+    public static final int CAMERA_IMAGE_WIDTH                  = 320;
+    public static final int CAMERA_IMAGE_HEIGHT                 = 240;
     public static final double CAMERA_DATA_TIMEOUT              = 0.5;  // 500ms
     public static final double VISION_TARGET_HEIGHT             = 104.0;// Inches from the floor
     public static final double CAMERA_Y_OFFSET                  = 0.0;  // Inches from the center of the robot
@@ -373,7 +374,7 @@ public class RobotParams
     public static final double LIFT_KD                          = 0.0;      //0.005;
     public static final double LIFT_TOLERANCE                   = 1.0;
     public static final double LIFT_CAL_POWER                   = 0.5;
-    // public static final int LIFT_ENCODER_PPR                    = 4096;
+    // public static final int LIFT_ENCODER_CPR                    = 4096;
     // public static final double LIFT_RAISED                      = 23.3; //random number
     // public static final double LIFT_LOWERED                     = 24.3; //random number
     public static final double LIFT_LEVEL_1_HEIGHT              = 0.0;
@@ -394,7 +395,8 @@ public class RobotParams
     public static final double ARM_KD                           = 0.0;      //0.005;
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = 0.5;
-    // public static final int ARM_ENCODER_PPR                     = 4096;
+    public static final int ARM_ENCODER_CPR                     = 4096;
+    public static final int ARM_ZERO                            = 0;
     // public static final double ARM_RAISED                       = 25.3; //random number
     // public static final double ARM_LOWERED                      = 28.3; //random number
 

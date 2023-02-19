@@ -35,6 +35,7 @@ import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 
+import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPidDrive;
 import TrcCommonLib.trclib.TrcPurePursuitDrive;
@@ -416,7 +417,7 @@ public class SwerveDrive extends RobotDrive
      *
      * @return calibration data of all four swerve modules.
      */
-    private double[] getSteerZeroPositions()
+    public static double[] getSteerZeroPositions()
     {
         final String funcName = "getSteerZeroPositions";
 
@@ -433,7 +434,7 @@ public class SwerveDrive extends RobotDrive
         }
         catch (Exception e)
         {
-            robot.globalTracer.traceWarn(funcName, "Steer zero position file not found, using built-in defaults.");
+            TrcDbgTrace.globalTraceWarn(funcName, "Steer zero position file not found, using built-in defaults.");
             return RobotParams.STEER_ZEROS;
         }
     }   //getSteerZeroPositions
@@ -443,7 +444,7 @@ public class SwerveDrive extends RobotDrive
      *
      * @param steerZeros specifies the steering zero calibration data to be saved.
      */
-    public void saveSteerZeroPositions(double[] steerZeros)
+    public static void saveSteerZeroPositions(double[] steerZeros)
     {
         final String funcName = "saveSteerZeroPositions";
 
@@ -453,7 +454,7 @@ public class SwerveDrive extends RobotDrive
             {
                 out.printf("%f\n", zero);
             }
-            robot.globalTracer.traceInfo(funcName, "Saved steer zeros: %s!", Arrays.toString(steerZeros));
+            TrcDbgTrace.globalTraceInfo(funcName, "Saved steer zeros: %s!", Arrays.toString(steerZeros));
         }
         catch (FileNotFoundException e)
         {

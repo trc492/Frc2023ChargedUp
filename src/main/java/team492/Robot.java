@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
@@ -87,8 +88,11 @@ public class Robot extends FrcRobotBase
     public TrcRobotBattery battery;
     public AnalogInput pressureSensor;
     // For debugging Swerve steering.
-    public FrcAnalogEncoder lfSteerEnc, rfSteerEnc, lbSteerEnc, rbSteerEnc;
-    public FrcCANFalcon lfDriveMotor, rfDriveMotor, lbDriveMotor, rbDriveMotor;
+    private FrcAnalogEncoder lfSteerEnc, rfSteerEnc, lbSteerEnc, rbSteerEnc;
+    private FrcCANFalcon lfDriveMotor, rfDriveMotor, lbDriveMotor, rbDriveMotor;
+    // For debugging arm encoder.
+    private FrcCANTalon armMotor;
+    private SensorCollection sensorCollection;
     //
     // Miscellaneous hardware.
     //
@@ -238,10 +242,9 @@ public class Robot extends FrcRobotBase
                         .setZeroCalibratePower(RobotParams.LIFT_CAL_POWER);
                     FrcCANSparkMax actuatorMotor = new FrcCANSparkMax("LiftMotor", RobotParams.CANID_LIFT, true);
 
-                    actuatorMotor.motor.restoreFactoryDefaults();
                     if (motorParams.batteryNominalVoltage > 0.0)
                     {
-                        actuatorMotor.motor.enableVoltageCompensation(motorParams.batteryNominalVoltage);
+                        actuatorMotor.enableVoltageCompensation(motorParams.batteryNominalVoltage);
                     }
 
                     lift = new FrcMotorActuator(
@@ -264,13 +267,15 @@ public class Robot extends FrcRobotBase
                         .setZeroCalibratePower(RobotParams.ARM_CAL_POWER);
                     FrcCANTalon actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
 
-                    actuatorMotor.motor.configFactoryDefault();
                     if (motorParams.batteryNominalVoltage > 0.0)
                     {
-                        actuatorMotor.motor.configVoltageCompSaturation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
-                        actuatorMotor.motor.enableVoltageCompensation(true);
+                        actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
                     }
-                    actuatorMotor.motor.configSelectedFeedbackSensor(FeedbackDevice.Analog);
+
+                    int zeroOffset = getArmZeroPosition();
+                    actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
+                    actuatorMotor.configRevLimitSwitchNormallyOpen(RobotParams.ARM_LOWER_LIMIT_INVERTED);
+                    actuatorMotor.configFwdLimitSwitchNormallyOpen(RobotParams.ARM_UPPER_LIMIT_INVERTED);
 
                     arm = new FrcMotorActuator(
                         "Arm", actuatorMotor, motorParams, actuatorParams).getPidActuator();
@@ -315,7 +320,7 @@ public class Robot extends FrcRobotBase
             rfSteerEnc.setInverted(true);
             lbSteerEnc.setInverted(true);
             rbSteerEnc.setInverted(true);
-            double[] zeros = getSteerZeroPositions();
+            double[] zeros = SwerveDrive.getSteerZeroPositions();
             dashboard.displayPrintf(
                 8, "SteerZeros: lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f", zeros[0], zeros[1], zeros[2], zeros[3]);
             lfSteerEnc.setScaleAndOffset(360.0, zeros[0]);
@@ -326,6 +331,14 @@ public class Robot extends FrcRobotBase
             rfSteerEnc.setEnabled(true);
             lbSteerEnc.setEnabled(true);
             rbSteerEnc.setEnabled(true);
+        }
+
+        if (RobotParams.Preferences.debugArmEncoder)
+        {
+            armMotor = new FrcCANTalon("armMotor", RobotParams.CANID_ARM);
+            sensorCollection = armMotor.motor.getSensorCollection();
+            sensorCollection.syncQuadratureWithPulseWidth(0, 4095, false, -1650, 10);
+            armMotor.motor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
         }
         //
         // Create Robot Modes.
@@ -569,26 +582,71 @@ public class Robot extends FrcRobotBase
                     }
                 }
             }
+            else if (RobotParams.Preferences.debugSubsystems)
+            {
+                int lineNum = 8;
+
+                if (lift != null)
+                {
+                    dashboard.displayPrintf(
+                        lineNum, "Lift: Pwr=%.1f, Pos=%.1f, LimitSw=%s/%s",
+                        lift.getPower(), lift.getPosition(),
+                        lift.isLowerLimitSwitchActive(), lift.isUpperLimitSwitchActive());
+                    lineNum++;
+                }
+
+                if (arm != null)
+                {
+                    dashboard.displayPrintf(
+                        lineNum, "Arm: Pwr=%.1f, Pos=%.1f, LimitSw=%s/%s",
+                        arm.getPower(), arm.getPosition(),
+                        arm.isLowerLimitSwitchActive(), arm.isUpperLimitSwitchActive());
+                    lineNum++;
+                }
+
+                if (intake != null)
+                {
+                    dashboard.displayPrintf(
+                        lineNum, "Intake: LeftPwr=%.1f, RightPwr=%.1f, Deployer=%s",
+                        intake.getLeftMotorPower(), intake.getRightMotorPower(), intake.isExtended());
+                    lineNum++;
+                }
+
+                if (grabber != null)
+                {
+                    dashboard.displayPrintf(
+                        lineNum, "Grabber: GrabbedCube=%s, GrabbedConer=%s",
+                        grabber.grabbedCube(), grabber.grabbedCone());
+                    lineNum++;
+                }
+            }
             else if (RobotParams.Preferences.debugSwerveSteering)
             {
-                dashboard.displayPrintf(9, "SteerEncVolt(%.3f): lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f",
+                dashboard.displayPrintf(8, "SteerEncVolt(%.3f): lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f",
                     RobotController.getVoltage5V(), lfSteerEnc.getRawVoltage(), rfSteerEnc.getRawVoltage(),
                     lbSteerEnc.getRawVoltage(), rbSteerEnc.getRawVoltage());
                 dashboard.displayPrintf(
-                    10, "SteerEncRaw: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
+                    9, "SteerEncRaw: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
                     lfSteerEnc.getRawPosition(), rfSteerEnc.getRawPosition(),
                     lbSteerEnc.getRawPosition(), rbSteerEnc.getRawPosition());
                 dashboard.displayPrintf(
-                    11, "SteerEncPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
+                    10, "SteerEncPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
                     lfSteerEnc.getPosition(), rfSteerEnc.getPosition(),
                     lbSteerEnc.getPosition(), rbSteerEnc.getPosition());
                 dashboard.displayPrintf(
-                    12, "DriveMotorPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
+                    11, "DriveMotorPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
                     lfDriveMotor.getPosition(), rfDriveMotor.getPosition(),
                     lbDriveMotor.getPosition(), rbDriveMotor.getPosition());
             }
-            else if (RobotParams.Preferences.debugSubsystems)
+            else if (RobotParams.Preferences.debugArmEncoder)
             {
+                dashboard.displayPrintf(
+                    8, "ArmEnc: pwmPos=%d, quadPos=%d, sensorPos=%.1f",
+                    sensorCollection.getQuadraturePosition(), sensorCollection.getQuadraturePosition(),
+                    armMotor.motor.getSelectedSensorPosition());
+                dashboard.displayPrintf(
+                    9, "ArmLimitSW: Rev=%s, Fwd=%s",
+                    armMotor.isRevLimitSwitchActive(), armMotor.isFwdLimitSwitchActive());
             }
         }
     }   //updateStatus
@@ -651,26 +709,24 @@ public class Robot extends FrcRobotBase
         return (pressureSensor.getVoltage() - 0.5) * 50.0;
     }   //getPressure
 
-    private double[] getSteerZeroPositions()
+    /**
+     * This method retrieves the arm zero calibration data from the calibration data file.
+     *
+     * @return zero calibration data of the arm.
+     */
+    private int getArmZeroPosition()
     {
-        final String funcName = "getSteerZeroPositions";
+        final String funcName = "getArmZeroPosition";
 
-        try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/steerzeros.txt")))
+        try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/armzero.txt")))
         {
-            double[] steerZeros = new double[4];
-
-            for (int i = 0; i < steerZeros.length; i++)
-            {
-                steerZeros[i] = in.nextDouble();
-            }
-
-            return steerZeros;
+            return in.nextInt();
         }
         catch (Exception e)
         {
-            globalTracer.traceWarn(funcName, "Steer zero position file not found, using built-in defaults.");
-            return RobotParams.STEER_ZEROS;
+            globalTracer.traceWarn(funcName, "Arm zero position file not found, using built-in defaults.");
+            return RobotParams.ARM_ZERO;
         }
-    }   //getSteerZeroPositions
+    }   //getArmZeroPosition
 
 }   //class Robot

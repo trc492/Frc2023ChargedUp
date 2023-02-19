@@ -372,7 +372,7 @@ public class FrcTest extends FrcTeleOp
             {
                 steerZeros[i] /= steerZeroSumCount;
             }
-            ((SwerveDrive) robot.robotDrive).saveSteerZeroPositions(steerZeros);
+            SwerveDrive.saveSteerZeroPositions(steerZeros);
         }
     }   //stopMode
 
