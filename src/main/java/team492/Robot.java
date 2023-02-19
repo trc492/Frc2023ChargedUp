@@ -42,6 +42,7 @@ import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
 import TrcFrcLib.frclib.FrcCANSparkMax;
 import TrcFrcLib.frclib.FrcCANTalon;
+import TrcFrcLib.frclib.FrcCANTalonLimitSwitch;
 import TrcFrcLib.frclib.FrcDashboard;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcMatchInfo;
@@ -277,8 +278,16 @@ public class Robot extends FrcRobotBase
                     actuatorMotor.configRevLimitSwitchNormallyOpen(RobotParams.ARM_LOWER_LIMIT_INVERTED);
                     actuatorMotor.configFwdLimitSwitchNormallyOpen(RobotParams.ARM_UPPER_LIMIT_INVERTED);
 
+                    FrcCANTalonLimitSwitch lowerLimitSw = new FrcCANTalonLimitSwitch(
+                        "ArmLowerLimitSw", actuatorMotor, false);
+                    FrcCANTalonLimitSwitch upperLimitSw = new FrcCANTalonLimitSwitch(
+                        "ArmUpperLimitSw", actuatorMotor, false);
+                    lowerLimitSw.setInverted(motorParams.lowerLimitSwitchInverted);
+                    upperLimitSw.setInverted(motorParams.upperLimitSwitchInverted);
+
                     arm = new FrcMotorActuator(
-                        "Arm", actuatorMotor, motorParams, actuatorParams).getPidActuator();
+                        "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, motorParams, actuatorParams)
+                            .getPidActuator();
                     arm.setMsgTracer(globalTracer);
                 }
 
