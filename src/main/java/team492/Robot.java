@@ -275,8 +275,6 @@ public class Robot extends FrcRobotBase
 
                     int zeroOffset = getArmZeroPosition();
                     actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
-                    actuatorMotor.configRevLimitSwitchNormallyOpen(RobotParams.ARM_LOWER_LIMIT_INVERTED);
-                    actuatorMotor.configFwdLimitSwitchNormallyOpen(RobotParams.ARM_UPPER_LIMIT_INVERTED);
 
                     FrcCANTalonLimitSwitch lowerLimitSw = new FrcCANTalonLimitSwitch(
                         "ArmLowerLimitSw", actuatorMotor, false);
