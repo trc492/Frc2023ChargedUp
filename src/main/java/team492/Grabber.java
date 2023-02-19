@@ -22,12 +22,15 @@
 
 package team492;
 
+import java.util.Locale;
+
 import TrcFrcLib.frclib.FrcPWMTalonSRX;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 public class Grabber
 {
+    private static final String moduleName = "Grabber";
     private final FrcPneumatic coneGrabber;
     private final FrcPneumatic cubeGrabber;
     private final FrcPWMTalonSRX vacuum;
@@ -58,6 +61,16 @@ public class Grabber
             vacuum = null;
         }
     }   //Grabber
+
+    /**
+     * This method returns the state of the Arm in a string.
+     */
+    @Override
+    public String toString()
+    {
+        return String.format(
+            Locale.US, "%s: grabbedCube=%s, grabbedCone=%s", moduleName, grabbedCube(), grabbedCone());
+    }   //toString
 
     //This method is called to grab a cube, extends the left pneumatic for a partial grab
     public void grabCube()

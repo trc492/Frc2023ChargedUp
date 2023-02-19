@@ -155,8 +155,8 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         final String funcName = "acquireSubsystemsOwnership";
         boolean success = ownerName == null ||
                           (robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
-                           robot.lift.acquireExclusiveAccess(ownerName) &&
-                           robot.arm.acquireExclusiveAccess(ownerName) &&
+                           robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
+                           robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
                            robot.intake.acquireExclusiveAccess(ownerName));
 
         if (success)
@@ -193,12 +193,12 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
                     funcName,
                     "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, lift=%s, arm=%s, intake=%s).",
                     moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase),
-                    ownershipMgr.getOwner(robot.lift), ownershipMgr.getOwner(robot.arm),
+                    ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator),
                     ownershipMgr.getOwner(robot.intake));
             }
             robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
-            robot.lift.releaseExclusiveAccess(currOwner);
-            robot.arm.releaseExclusiveAccess(currOwner);
+            robot.elevatorPidActuator.releaseExclusiveAccess(currOwner);
+            robot.armPidActuator.releaseExclusiveAccess(currOwner);
             robot.intake.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }
@@ -211,8 +211,8 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
     protected void stopSubsystems()
     {
         robot.robotDrive.cancel(currOwner);
-        robot.lift.cancel(currOwner);
-        robot.arm.cancel(currOwner);
+        robot.elevatorPidActuator.cancel(currOwner);
+        robot.armPidActuator.cancel(currOwner);
         robot.intake.cancel(currOwner);
     }   //stopSubsystems
 

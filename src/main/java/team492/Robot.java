@@ -22,9 +22,7 @@
 
 package team492;
 
-import java.io.FileReader;
 import java.util.Locale;
-import java.util.Scanner;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
@@ -40,13 +38,10 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAHRSGyro;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
-import TrcFrcLib.frclib.FrcCANSparkMax;
 import TrcFrcLib.frclib.FrcCANTalon;
-import TrcFrcLib.frclib.FrcCANTalonLimitSwitch;
 import TrcFrcLib.frclib.FrcDashboard;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcMatchInfo;
-import TrcFrcLib.frclib.FrcMotorActuator;
 import TrcFrcLib.frclib.FrcPdp;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcRemoteVisionProcessor;
@@ -111,8 +106,10 @@ public class Robot extends FrcRobotBase
     //
     // Other subsystems.
     //
-    public TrcPidActuator lift;
-    public TrcPidActuator arm;
+    public Elevator elevator;
+    public TrcPidActuator elevatorPidActuator;
+    public Arm arm;
+    public TrcPidActuator armPidActuator;
     public Intake intake; 
     public Grabber grabber;
 
@@ -228,65 +225,16 @@ public class Robot extends FrcRobotBase
             //
             if (RobotParams.Preferences.useSubsystems)
             {
-                if (RobotParams.Preferences.useLift)
+                if (RobotParams.Preferences.useElevator)
                 {
-                    FrcMotorActuator.MotorParams motorParams = new FrcMotorActuator.MotorParams(
-                        RobotParams.LIFT_MOTOR_INVERTED,
-                        RobotParams.DIO_LIFT_LOWER_LIMIT_SWITCH, RobotParams.LIFT_LOWER_LIMIT_INVERTED,
-                        RobotParams.DIO_LIFT_UPPER_LIMIT_SWITCH, RobotParams.LIFT_UPPER_LIMIT_INVERTED,
-                        false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
-                    TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
-                        .setPosRange(RobotParams.LIFT_MIN_POS, RobotParams.LIFT_MAX_POS)
-                        .setScaleOffset(RobotParams.LIFT_INCHES_PER_COUNT, RobotParams.LIFT_OFFSET)
-                        .setPidParams(
-                            RobotParams.LIFT_KP, RobotParams.LIFT_KI, RobotParams.LIFT_KD, RobotParams.LIFT_TOLERANCE)
-                        .setZeroCalibratePower(RobotParams.LIFT_CAL_POWER);
-                    FrcCANSparkMax actuatorMotor = new FrcCANSparkMax("LiftMotor", RobotParams.CANID_LIFT, true);
-
-                    if (motorParams.batteryNominalVoltage > 0.0)
-                    {
-                        actuatorMotor.enableVoltageCompensation(motorParams.batteryNominalVoltage);
-                    }
-
-                    lift = new FrcMotorActuator(
-                        "Lift", actuatorMotor, motorParams, actuatorParams).getPidActuator();
-                    lift.setMsgTracer(globalTracer);
+                    elevator = new Elevator(globalTracer);
+                    elevatorPidActuator = elevator.getPidActuator();
                 }
 
                 if (RobotParams.Preferences.useArm)
                 {
-                    FrcMotorActuator.MotorParams motorParams = new FrcMotorActuator.MotorParams(
-                        RobotParams.ARM_MOTOR_INVERTED,
-                        RobotParams.DIO_ARM_LOWER_LIMIT_SWITCH, RobotParams.ARM_LOWER_LIMIT_INVERTED,
-                        RobotParams.DIO_ARM_UPPER_LIMIT_SWITCH, RobotParams.ARM_UPPER_LIMIT_INVERTED,
-                        false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
-                    TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
-                        .setPosRange(RobotParams.ARM_MIN_POS, RobotParams.ARM_MAX_POS)
-                        .setScaleOffset(RobotParams.ARM_DEGS_PER_COUNT, RobotParams.ARM_OFFSET)
-                        .setPidParams(
-                            RobotParams.ARM_KP, RobotParams.ARM_KI, RobotParams.ARM_KD, RobotParams.ARM_TOLERANCE)
-                        .setZeroCalibratePower(RobotParams.ARM_CAL_POWER);
-                    FrcCANTalon actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
-
-                    if (motorParams.batteryNominalVoltage > 0.0)
-                    {
-                        actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
-                    }
-
-                    int zeroOffset = getArmZeroPosition();
-                    actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
-
-                    FrcCANTalonLimitSwitch lowerLimitSw = new FrcCANTalonLimitSwitch(
-                        "ArmLowerLimitSw", actuatorMotor, false);
-                    FrcCANTalonLimitSwitch upperLimitSw = new FrcCANTalonLimitSwitch(
-                        "ArmUpperLimitSw", actuatorMotor, false);
-                    lowerLimitSw.setInverted(motorParams.lowerLimitSwitchInverted);
-                    upperLimitSw.setInverted(motorParams.upperLimitSwitchInverted);
-
-                    arm = new FrcMotorActuator(
-                        "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, motorParams, actuatorParams)
-                            .getPidActuator();
-                    arm.setMsgTracer(globalTracer);
+                    arm = new Arm(globalTracer);
+                    armPidActuator = arm.getPidActuator();
                 }
 
                 if (RobotParams.Preferences.useIntake)
@@ -593,37 +541,27 @@ public class Robot extends FrcRobotBase
             {
                 int lineNum = 8;
 
-                if (lift != null)
+                if (elevator != null)
                 {
-                    dashboard.displayPrintf(
-                        lineNum, "Lift: Pwr=%.1f, Pos=%.1f, LimitSw=%s/%s",
-                        lift.getPower(), lift.getPosition(),
-                        lift.isLowerLimitSwitchActive(), lift.isUpperLimitSwitchActive());
+                    dashboard.displayPrintf(lineNum, elevator.toString());
                     lineNum++;
                 }
 
                 if (arm != null)
                 {
-                    dashboard.displayPrintf(
-                        lineNum, "Arm: Pwr=%.1f, Pos=%.1f, LimitSw=%s/%s",
-                        arm.getPower(), arm.getPosition(),
-                        arm.isLowerLimitSwitchActive(), arm.isUpperLimitSwitchActive());
+                    dashboard.displayPrintf(lineNum, arm.toString());
                     lineNum++;
                 }
 
                 if (intake != null)
                 {
-                    dashboard.displayPrintf(
-                        lineNum, "Intake: LeftPwr=%.1f, RightPwr=%.1f, Deployer=%s",
-                        intake.getLeftMotorPower(), intake.getRightMotorPower(), intake.isExtended());
+                    dashboard.displayPrintf(lineNum, intake.toString());
                     lineNum++;
                 }
 
                 if (grabber != null)
                 {
-                    dashboard.displayPrintf(
-                        lineNum, "Grabber: GrabbedCube=%s, GrabbedConer=%s",
-                        grabber.grabbedCube(), grabber.grabbedCone());
+                    dashboard.displayPrintf(lineNum, grabber.toString());
                     lineNum++;
                 }
             }
@@ -715,25 +653,5 @@ public class Robot extends FrcRobotBase
     {
         return (pressureSensor.getVoltage() - 0.5) * 50.0;
     }   //getPressure
-
-    /**
-     * This method retrieves the arm zero calibration data from the calibration data file.
-     *
-     * @return zero calibration data of the arm.
-     */
-    private int getArmZeroPosition()
-    {
-        final String funcName = "getArmZeroPosition";
-
-        try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/armzero.txt")))
-        {
-            return in.nextInt();
-        }
-        catch (Exception e)
-        {
-            globalTracer.traceWarn(funcName, "Arm zero position file not found, using built-in defaults.");
-            return RobotParams.ARM_ZERO;
-        }
-    }   //getArmZeroPosition
 
 }   //class Robot

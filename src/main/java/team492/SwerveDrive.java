@@ -56,6 +56,7 @@ import TrcFrcLib.frclib.FrcPdp;
  */
 public class SwerveDrive extends RobotDrive
 {
+    private static final String ZERO_CAL_FILE = "steerzeros.txt";
     private static final boolean logPoseEvents = false;
     private static final boolean tracePidInfo = false;
     //
@@ -421,7 +422,7 @@ public class SwerveDrive extends RobotDrive
     {
         final String funcName = "getSteerZeroPositions";
 
-        try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/steerzeros.txt")))
+        try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/" + ZERO_CAL_FILE)))
         {
             double[] steerZeros = new double[4];
 
@@ -448,7 +449,7 @@ public class SwerveDrive extends RobotDrive
     {
         final String funcName = "saveSteerZeroPositions";
 
-        try (PrintStream out = new PrintStream(new FileOutputStream(RobotParams.TEAM_FOLDER + "/steerzeros.txt")))
+        try (PrintStream out = new PrintStream(new FileOutputStream(RobotParams.TEAM_FOLDER + "/" + ZERO_CAL_FILE)))
         {
             for (double zero : steerZeros)
             {

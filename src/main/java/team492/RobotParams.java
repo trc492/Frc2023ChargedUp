@@ -63,7 +63,7 @@ public class RobotParams
         public static final boolean useBalanceDrive             = true;
         // Subsystems
         public static final boolean useSubsystems               = true;
-        public static final boolean useLift                     = true;
+        public static final boolean useElevator                 = true;
         public static final boolean useArm                      = true;
         public static final boolean useGrabber                  = true;
         public static final boolean useVacuum                   = false;
@@ -134,7 +134,7 @@ public class RobotParams
     public static final int CANID_LEFTBACK_DRIVE                = 5;
     public static final int CANID_RIGHTBACK_DRIVE               = 6;
 
-    public static final int CANID_LIFT                          = 7;
+    public static final int CANID_ELEVATOR                      = 7;
     public static final int CANID_ARM                           = 8;
     public static final int CANID_INTAKE_LEFT                   = 17;
     public static final int CANID_INTAKE_RIGHT                  = 18;
@@ -167,7 +167,7 @@ public class RobotParams
     public static final int PDP_CHANNEL_LEFT_BACK_STEER         = 3;    // Green: 40A
     public static final int PDP_CHANNEL_RIGHT_BACK_STEER        = 9;    // Blue: 40A
 
-    public static final int PDP_CHANNEL_LIFT                    = 2;    // Purple: 40A
+    public static final int PDP_CHANNEL_ELEVATOR                = 2;    // Purple: 40A
     public static final int PDP_CHANNEL_ARM                     = 1;    // Gray: 40A
     public static final int PDP_CHANNEL_INTAKE_LEFT             = 15;   // Purple: 30A
     public static final int PDP_CHANNEL_INTAKE_RIGHT            = 14;   // Gray: 30A
@@ -191,10 +191,6 @@ public class RobotParams
     //
     // Digital Input/Output ports.
     //
-    public static final int DIO_LIFT_LOWER_LIMIT_SWITCH         = 0;    // Black
-    public static final int DIO_LIFT_UPPER_LIMIT_SWITCH         = 1;    // Brown
-    public static final int DIO_ARM_LOWER_LIMIT_SWITCH          = 2;    // Red
-    public static final int DIO_ARM_UPPER_LIMIT_SWITCH          = 3;    // Orange
 
     //
     // PWM channels.
@@ -216,11 +212,7 @@ public class RobotParams
     public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 2;
 
     public static final int PNEUMATIC_INTAKE_RETRACT            = 3;
-    public static final int PNEUMATIC_INTAKE_EXTEND             = 4
-    ;
-
-    // public static final int PNEUMATIC_LIFT_RETRACT              = 422; //random number
-    // public static final int PNEUMATIC_LIFT_EXTEND               = 423; //random number
+    public static final int PNEUMATIC_INTAKE_EXTEND             = 4;
 
     //
     // Ultrasonic sensors.
@@ -361,26 +353,32 @@ public class RobotParams
     // Other subsystems.
     //
 
-    // Lift subsystem.
-    public static final boolean LIFT_MOTOR_INVERTED             = true;
-    public static final boolean LIFT_LOWER_LIMIT_INVERTED       = false;
-    public static final boolean LIFT_UPPER_LIMIT_INVERTED       = false;
-    public static final double LIFT_MIN_POS                     = 20.0;
-    public static final double LIFT_MAX_POS                     = 65.0;
-    public static final double LIFT_INCHES_PER_COUNT            = 1.392027924751009e-4;
-    public static final double LIFT_OFFSET                      = 29.6785;
-    public static final double LIFT_KP                          = 0.2;      //0.06;
-    public static final double LIFT_KI                          = 0.0;
-    public static final double LIFT_KD                          = 0.0;      //0.005;
-    public static final double LIFT_TOLERANCE                   = 1.0;
-    public static final double LIFT_CAL_POWER                   = 0.5;
-    // public static final int LIFT_ENCODER_CPR                    = 4096;
-    // public static final double LIFT_RAISED                      = 23.3; //random number
-    // public static final double LIFT_LOWERED                     = 24.3; //random number
-    public static final double LIFT_LEVEL_1_HEIGHT              = 0.0;
-    public static final double LIFT_LEVEL_2_HEIGHT              = 0.0;
-    public static final double LIFT_LEVEL_3_HEIGHT              = 0.0;
-    public static final double[] LIFT_PRESET_LEVELS = {0,LIFT_LEVEL_1_HEIGHT, LIFT_LEVEL_2_HEIGHT, LIFT_LEVEL_3_HEIGHT};
+    // Elevator subsystem.
+    public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
+    public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = false;
+    public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = false;
+    public static final double ELEVATOR_MIN_POS                 = 20.0;
+    public static final double ELEVATOR_MAX_POS                 = 65.0;
+    public static final double ELEVATOR_INCHES_PER_COUNT        = 1.392027924751009e-4;
+    public static final double ELEVATOR_OFFSET                  = 29.6785;
+    public static final double ELEVATOR_KP                      = 0.2;      //0.06;
+    public static final double ELEVATOR_KI                      = 0.0;
+    public static final double ELEVATOR_KD                      = 0.0;      //0.005;
+    public static final double ELEVATOR_TOLERANCE               = 1.0;
+    public static final double ELEVATOR_CAL_POWER               = 0.5;
+    // public static final int ELEVATOR_ENCODER_CPR                = 4096;
+    // public static final double ELEVATOR_RAISED                  = 23.3; //random number
+    // public static final double ELEVATOR_LOWERED                 = 24.3; //random number
+    public static final double ELEVATOR_LEVEL_1_HEIGHT          = 0.0;
+    public static final double ELEVATOR_LEVEL_2_HEIGHT          = 0.0;
+    public static final double ELEVATOR_LEVEL_3_HEIGHT          = 0.0;
+    public static final double[] ELEVATOR_PRESET_LEVELS         =
+    {
+        0.0,
+        ELEVATOR_LEVEL_1_HEIGHT,
+        ELEVATOR_LEVEL_2_HEIGHT,
+        ELEVATOR_LEVEL_3_HEIGHT
+    };
 
     // Arm subsystem.
     public static final boolean ARM_MOTOR_INVERTED              = false;

@@ -22,6 +22,8 @@
 
 package team492;
 
+import java.util.Locale;
+
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcTimer;
@@ -55,6 +57,17 @@ public class Intake implements TrcExclusiveSubsystem
             RobotParams.PNEUMATIC_INTAKE_RETRACT, RobotParams.PNEUMATIC_INTAKE_EXTEND);
         intakePneumatic.retract();
     }   //Intake
+
+    /**
+     * This method returns the state of the Arm in a string.
+     */
+    @Override
+    public String toString()
+    {
+        return String.format(
+            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployer=%s",
+            moduleName, getLeftMotorPower(), getRightMotorPower(), isExtended());
+    }   //toString
 
     public void cancel(String owner)
     {

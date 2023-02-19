@@ -170,7 +170,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     if(armControl)
                     {
-                        robot.arm.setPower(robot.driverController.getLeftY(), 0.0, 0.25);
+                        robot.armPidActuator.setPower(robot.driverController.getLeftY(), 0.0, 0.25);
                     }
                 }
             }

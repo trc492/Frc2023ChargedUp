@@ -97,16 +97,14 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     protected void stopSubsystems()
     {
         robot.robotDrive.cancel(currOwner);
-        robot.lift.cancel(currOwner);
-        robot.arm.cancel(currOwner);
+        robot.elevatorPidActuator.cancel(currOwner);
+        robot.armPidActuator.cancel(currOwner);
         robot.intake.cancel(currOwner);
     }   //stopSubsystems
 
     protected void runTaskState(
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
-
-
         switch(state)
         {
             case START:

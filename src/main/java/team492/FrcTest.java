@@ -611,41 +611,38 @@ public class FrcTest extends FrcTeleOp
         //
         // Display other subsystems and sensor info.
         //
-        if (robot.lift != null && robot.arm != null)
+        if (robot.elevator != null)
         {
             // line 11
-            robot.dashboard.displayPrintf(
-                lineNum, "Lift/Arm: Pwr=%.1f/%.1f,Pos=%.1f/%.1f,LowerLimit=%s/%s,UpperLimit=%s/%s",
-                robot.lift.getPower(), robot.arm.getPower(), robot.lift.getPosition(), robot.arm.getPosition(),
-                robot.lift.isLowerLimitSwitchActive(), robot.lift.isUpperLimitSwitchActive(),
-                robot.arm.isLowerLimitSwitchActive(), robot.arm.isUpperLimitSwitchActive());
+            robot.dashboard.displayPrintf(lineNum, robot.elevator.toString());
+            lineNum++;
+        }
+
+        if (robot.arm != null)
+        {
+            // line 12
+            robot.dashboard.displayPrintf(lineNum, robot.arm.toString());
             lineNum++;
         }
 
         if (robot.intake != null)
         {
-            // line 12
-            robot.dashboard.displayPrintf(
-                lineNum, "Intake: Pwr=%.1f/%.1f,Deployed=%s",
-                robot.intake.getLeftMotorPower(), robot.intake.getRightMotorPower(), robot.intake.isExtended());
+            // line 13
+            robot.dashboard.displayPrintf(lineNum, robot.intake.toString());
             lineNum++;
         }
 
         if (robot.grabber != null)
         {
-            // line 13
-            robot.dashboard.displayPrintf(
-                lineNum, "Grabber: CubeGrabber=%s,ConeGrabber=%s",
-                robot.grabber.grabbedCube(), robot.grabber.grabbedCone());
+            // line 14
+            robot.dashboard.displayPrintf(lineNum, robot.grabber.toString());
             lineNum++;
         }
 
         if (robot.battery != null)
         {
-            // line 14
-            robot.dashboard.displayPrintf(
-                lineNum, "Batt(Curr/Lowest): Volt=%.1f/%.1f",
-                robot.battery.getVoltage(), robot.battery.getLowestVoltage());
+            // line 15
+            robot.dashboard.displayPrintf(lineNum, robot.battery.toString());
             lineNum++;
         }
     }   //displaySensorStates
