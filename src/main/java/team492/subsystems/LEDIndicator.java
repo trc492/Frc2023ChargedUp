@@ -20,11 +20,13 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.subsystems;
 
 import TrcCommonLib.trclib.TrcAddressableLED;
 import TrcFrcLib.frclib.FrcAddressableLED;
 import TrcFrcLib.frclib.FrcColor;
+import team492.RobotParams;
+import team492.drivebases.RobotDrive;
 
 public class LEDIndicator
 {

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.autotasks;
 
 import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
@@ -30,6 +30,7 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
+import team492.Robot;
 
 /**
  * This class implements auto-assist task to score a cone or cube.

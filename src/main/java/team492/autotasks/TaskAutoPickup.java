@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.autotasks;
 
 import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
@@ -28,6 +28,9 @@ import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
+import team492.Robot;
+import team492.RobotParams;
+import team492.RobotParams.Preferences;
 
 
 public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>

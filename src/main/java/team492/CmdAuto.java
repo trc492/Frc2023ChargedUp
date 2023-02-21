@@ -28,6 +28,9 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import team492.autotasks.TaskAutoBalance;
+import team492.autotasks.TaskAutoPickup;
+import team492.autotasks.TaskScoreObject;
 
 class CmdAuto implements TrcRobot.RobotCommand
 {

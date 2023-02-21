@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.vision;
 
 import java.util.Comparator;
 
@@ -37,6 +37,7 @@ import TrcFrcLib.frclib.FrcOpenCvDetector;
 import edu.wpi.first.apriltag.AprilTagPoseEstimator;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
+import team492.RobotParams;
 
 public class OpenCvVision extends FrcOpenCvDetector
 {

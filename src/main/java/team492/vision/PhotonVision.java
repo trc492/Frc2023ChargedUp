@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.vision;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -36,6 +36,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import team492.RobotParams;
 
 /**
  * This class is a thin wrapper extending FrcPhotonVision that provides additional game specific functionalities.

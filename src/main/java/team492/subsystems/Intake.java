@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.subsystems;
 
 import java.util.Locale;
 
@@ -30,6 +30,7 @@ import TrcCommonLib.trclib.TrcTimer;
 import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import team492.RobotParams;
 
 public class Intake implements TrcExclusiveSubsystem
 { 

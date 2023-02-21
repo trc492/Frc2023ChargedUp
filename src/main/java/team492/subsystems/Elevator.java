@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.subsystems;
 
 import java.util.Locale;
 
@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcPidActuator;
 import TrcFrcLib.frclib.FrcCANSparkMax;
 import TrcFrcLib.frclib.FrcCANSparkMaxLimitSwitch;
 import TrcFrcLib.frclib.FrcMotorActuator;
+import team492.RobotParams;
 
 public class Elevator
 {

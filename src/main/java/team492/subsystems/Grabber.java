@@ -20,13 +20,14 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.subsystems;
 
 import java.util.Locale;
 
 import TrcFrcLib.frclib.FrcPWMTalonSRX;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import team492.RobotParams;
 
 public class Grabber
 {

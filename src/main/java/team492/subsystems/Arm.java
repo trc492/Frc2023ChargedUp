@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.subsystems;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -35,6 +35,7 @@ import TrcCommonLib.trclib.TrcPidActuator;
 import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcCANTalonLimitSwitch;
 import TrcFrcLib.frclib.FrcMotorActuator;
+import team492.RobotParams;
 
 public class Arm
 {

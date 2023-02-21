@@ -20,11 +20,12 @@
  * SOFTWARE.
  */
 
-package team492;
+package team492.vision;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcFrcLib.frclib.FrcLimeLightVision;
 import TrcFrcLib.frclib.FrcRemoteVisionProcessor;
+import team492.RobotParams;
 
 public class LimeLightVision extends FrcLimeLightVision
 {
