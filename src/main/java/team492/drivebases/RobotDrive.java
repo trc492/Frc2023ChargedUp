@@ -44,7 +44,6 @@ import edu.wpi.first.wpilibj.SPI;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
-import team492.RobotParams.Preferences;
 
 /**
  * This class is intended to be extended by subclasses implementing different robot drive bases.

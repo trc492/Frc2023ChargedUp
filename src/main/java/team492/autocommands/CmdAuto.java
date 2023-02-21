@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
- package team492;
+ package team492.autocommands;
 
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPose2D;
@@ -28,11 +28,14 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import team492.FrcAuto;
+import team492.Robot;
+import team492.RobotParams;
 import team492.autotasks.TaskAutoBalance;
 import team492.autotasks.TaskAutoPickup;
 import team492.autotasks.TaskScoreObject;
 
-class CmdAuto implements TrcRobot.RobotCommand
+public class CmdAuto implements TrcRobot.RobotCommand
 {
     private static final String moduleName = "CmdAuto";
 
@@ -69,7 +72,7 @@ class CmdAuto implements TrcRobot.RobotCommand
      *
      * @param robot specifies the robot object for providing access to various global objects.
      */
-    CmdAuto(Robot robot)
+    public CmdAuto(Robot robot)
     {
         robot.globalTracer.traceInfo(moduleName, ">>> robot=%s, choices=%s", robot, FrcAuto.autoChoices);
 

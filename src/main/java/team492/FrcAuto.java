@@ -34,6 +34,7 @@ import TrcFrcLib.frclib.FrcChoiceMenu;
 import TrcFrcLib.frclib.FrcMatchInfo;
 import TrcFrcLib.frclib.FrcUserChoices;
 import edu.wpi.first.wpilibj.DriverStation;
+import team492.autocommands.CmdAuto;
 
 /**
  * This class implements the code to run in Autonomous Mode.
