@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcDigitalInputTrigger;
 import TrcCommonLib.trclib.TrcPidActuator;
 import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcCANTalonLimitSwitch;
@@ -39,8 +40,11 @@ public class Arm
 {
     private static final String moduleName = "Arm";
     private static final String ZERO_CAL_FILE = "armzero.txt";
+
+    private final TrcDbgTrace msgTracer;
     private final FrcCANTalon actuatorMotor;
     private final TrcPidActuator pidActuator;
+    private final TrcDigitalInputTrigger zeroTrigger;
 
     /**
      * Constructor: Create an instance of the object.
@@ -49,23 +53,27 @@ public class Arm
      */
     public Arm(TrcDbgTrace msgTracer)
     {
+        this.msgTracer = msgTracer;
+
         FrcMotorActuator.MotorParams motorParams = new FrcMotorActuator.MotorParams(
             RobotParams.ARM_MOTOR_INVERTED,
             -1, RobotParams.ARM_LOWER_LIMIT_INVERTED, -1, RobotParams.ARM_UPPER_LIMIT_INVERTED,
             false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
         TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
-            .setPosRange(RobotParams.ARM_MIN_POS, RobotParams.ARM_MAX_POS)
             .setScaleOffset(RobotParams.ARM_DEGS_PER_COUNT, RobotParams.ARM_OFFSET)
+            .setPosRange(RobotParams.ARM_MIN_POS, RobotParams.ARM_MAX_POS)
             .setPidParams(
-                RobotParams.ARM_KP, RobotParams.ARM_KI, RobotParams.ARM_KD, RobotParams.ARM_TOLERANCE)
-            .setZeroCalibratePower(RobotParams.ARM_CAL_POWER);
-        actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
+                RobotParams.ARM_KP, RobotParams.ARM_KI, RobotParams.ARM_KD, RobotParams.ARM_KF,
+                RobotParams.ARM_IZONE, RobotParams.ARM_TOLERANCE)
+            .setPosPresets(RobotParams.ARM_PRESET_TOLERANCE, RobotParams.armPresets)
+            .setPowerCompensation(this::getGravityCompensation);
 
+        actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
+        actuatorMotor.setBrakeModeEnabled(true);
         if (motorParams.batteryNominalVoltage > 0.0)
         {
             actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
         }
-
         int zeroOffset = getArmZeroPosition();
         actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
 
@@ -79,6 +87,8 @@ public class Arm
         pidActuator = new FrcMotorActuator(
             "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, motorParams, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer);
+
+        zeroTrigger = new TrcDigitalInputTrigger(moduleName, lowerLimitSw, this::zeroCalCompletion);
     }   //Arm
 
     /**
@@ -88,7 +98,7 @@ public class Arm
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.1f, pos=%.1f, LimitSw=%s/%s",
+            Locale.US, "%s: pwr=%.3f, pos=%.1f, LimitSw=%s/%s",
             moduleName, pidActuator.getPower(), pidActuator.getPosition(), pidActuator.isLowerLimitSwitchActive(),
             pidActuator.isUpperLimitSwitchActive());
     }   //toString
@@ -108,7 +118,7 @@ public class Arm
      */
     public void zeroCalibrate()
     {
-        pidActuator.zeroCalibrate(this::zeroCalCompletion, null);
+        zeroTrigger.setEnabled(true);
     }   //zeroCalibrate
 
     /**
@@ -118,7 +128,15 @@ public class Arm
      */
     private void zeroCalCompletion(Object context)
     {
-        saveArmZeroPosition(actuatorMotor.motor.getSensorCollection().getPulseWidthPosition());
+        final String funcName = "zeroCalCompletion";
+        int zeroPos = actuatorMotor.motor.getSensorCollection().getPulseWidthPosition();
+
+        zeroTrigger.setEnabled(false);
+        saveArmZeroPosition(zeroPos);
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(funcName, "ArmZeroCalibrate: zeroPos = %d", zeroPos);
+        }
     }   //zeroCalCompletion
 
     /**
@@ -160,5 +178,17 @@ public class Arm
             e.printStackTrace();
         }
     }   //saveArmZeroPosition
+
+    /**
+     * This method calculates the power required to hold the arm against gravity.
+     *
+     * @param currPower specifies the current arm power (not used).
+     * @return power value to hold arm against gravity.
+     */
+    public double getGravityCompensation(double currPower)
+    {
+        // return RobotParams.ARM_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()));
+        return 0.0;
+    }   //getGravityCompensation
 
 }   //class Arm

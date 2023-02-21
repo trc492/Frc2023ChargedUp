@@ -67,7 +67,7 @@ public class Robot extends FrcRobotBase
     //
     public final FrcDashboard dashboard = FrcDashboard.getInstance();
     public final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
-    private double nextDashboardUpdateTime = TrcTimer.getModeElapsedTime();
+    private double nextDashboardUpdateTime = TrcTimer.getCurrentTime();
     private boolean traceLogOpened = false;
     //
     // Inputs.
@@ -394,7 +394,7 @@ public class Robot extends FrcRobotBase
     public void updateStatus()
     {
         final String funcName = "updateStatus";
-        double currTime = TrcTimer.getModeElapsedTime();
+        double currTime = TrcTimer.getCurrentTime();
         RunMode runMode = getCurrentRunMode();
 
         if (currTime >= nextDashboardUpdateTime)
@@ -426,7 +426,7 @@ public class Robot extends FrcRobotBase
                     if (targetInfo != null)
                     {
                         // robot.globalTracer.traceInfo("doVisionTest", "Photon: %s", targetInfo);
-                        dashboard.displayPrintf(8, "Photon: %s", targetInfo);
+                        dashboard.displayPrintf(9, "Photon: %s", targetInfo);
 
                         TrcPose2D robotPose = photonVision.getRobotFieldPosition(targetInfo);
                         if (robotPose != null)
@@ -450,13 +450,13 @@ public class Robot extends FrcRobotBase
                         if (RobotParams.Preferences.debugVision)
                         {
                             dashboard.displayPrintf(
-                                8, "VisionTarget: x=%.1f,y=%.1f,depth=%.1f/%.1f,horiAngle=%.1f,vertAngle=%.1f",
+                                9, "VisionTarget: x=%.1f,y=%.1f,depth=%.1f/%.1f,horiAngle=%.1f,vertAngle=%.1f",
                                 pose.x, pose.y, pose.r, distanceToTarget, horiAngle, vertAngle);
                         }
                     }
                     else if (RobotParams.Preferences.debugVision)
                     {
-                        dashboard.displayPrintf(8, "VisionTarget: No target found!");
+                        dashboard.displayPrintf(9, "VisionTarget: No target found!");
                     }
                 }
                 else if (RobotParams.Preferences.debugOpenCv && openCvVision != null)
@@ -469,7 +469,7 @@ public class Robot extends FrcRobotBase
                         if (RobotParams.Preferences.debugVision)
                         {
                             dashboard.displayPrintf(
-                                8, "%s_Info: %s", openCvVision.getDetectObjectType(), targetInfo);
+                                9, "%s_Info: %s", openCvVision.getDetectObjectType(), targetInfo);
                         }
                     }
                 }
@@ -539,7 +539,7 @@ public class Robot extends FrcRobotBase
             }
             else if (RobotParams.Preferences.debugSubsystems)
             {
-                int lineNum = 8;
+                int lineNum = 9;
 
                 if (elevator != null)
                 {

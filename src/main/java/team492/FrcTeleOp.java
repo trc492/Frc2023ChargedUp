@@ -168,9 +168,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         double intakeRightPower = robot.driverController.getRightTriggerWithDeadband(true);
                         robot.intake.setPower(intakeLeftPower, intakeRightPower);
                     }
+
                     if(armControl)
                     {
-                        robot.armPidActuator.setPower(robot.driverController.getLeftY(), 0.0, 0.25);
+                        double armPower = robot.driverController.getLeftYWithDeadband(true);
+                        robot.armPidActuator.setPidPower(armPower, false);
+                        robot.dashboard.displayPrintf(
+                            9, "Arm: Pwr=%.3f, Pos=%.3f, LimitSw=%s/%s",
+                            robot.armPidActuator.getPower(), robot.armPidActuator.getPosition(),
+                            robot.armPidActuator.isLowerLimitSwitchActive(),
+                            robot.armPidActuator.isUpperLimitSwitchActive());
                     }
                 }
             }
@@ -251,17 +258,31 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcXboxController.BUTTON_A:
-                if (pressed)
+                if (armControl)
                 {
-                    TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
-                    robotPose.angle = 0.0;
-                    robot.robotDrive.driveBase.setFieldPosition(robotPose);
+                    robot.armPidActuator.presetPositionDown();
+                }
+                else
+                {
+                    if (pressed)
+                    {
+                        TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
+                        robotPose.angle = 0.0;
+                        robot.robotDrive.driveBase.setFieldPosition(robotPose);
+                    }
                 }
                 break;
 
             case FrcXboxController.BUTTON_B:
-                if(pressed) {
-                    robot.grabber.grabCone();
+                if (armControl)
+                {
+                    robot.armPidActuator.presetPositionUp();
+                }
+                else
+                {
+                    if(pressed) {
+                        robot.grabber.grabCone();
+                    }
                 }
                 break;
 
@@ -291,6 +312,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     armControl = true;
                 } else {
                     armControl = false;
+                    robot.armPidActuator.setPower(0.0);
                 }
                     
                 break;
