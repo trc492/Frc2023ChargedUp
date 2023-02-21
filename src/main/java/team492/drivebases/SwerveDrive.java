@@ -41,7 +41,6 @@ import TrcCommonLib.trclib.TrcPidDrive;
 import TrcCommonLib.trclib.TrcPurePursuitDrive;
 import TrcCommonLib.trclib.TrcSwerveDriveBase;
 import TrcCommonLib.trclib.TrcSwerveModule;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANCoder;
@@ -113,11 +112,8 @@ public class SwerveDrive extends RobotDrive
         steerEncoders = new FrcEncoder[] {lfSteerEncoder, rfSteerEncoder, lbSteerEncoder, rbSteerEncoder};
 
         lfSteerMotor = createSteerMotor("lfSteer", RobotParams.CANID_LEFTFRONT_STEER, false);
-        TrcTimer.sleep(50);
         rfSteerMotor = createSteerMotor("rfSteer", RobotParams.CANID_RIGHTFRONT_STEER, false);
-        TrcTimer.sleep(50);
         lbSteerMotor = createSteerMotor("lbSteer", RobotParams.CANID_LEFTBACK_STEER, false);
-        TrcTimer.sleep(50);
         rbSteerMotor = createSteerMotor("rbSteer", RobotParams.CANID_RIGHTBACK_STEER, false);
 
         lfWheel = createSwerveModule("lfWheel", lfDriveMotor, lfSteerMotor, lfSteerEncoder);
