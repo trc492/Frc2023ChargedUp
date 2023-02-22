@@ -40,6 +40,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     protected final Robot robot;
     private boolean controlsEnabled = false;
     private boolean armControl = false;
+    private boolean elevatorControl = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -145,7 +146,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
 
-                if (robot.robotDrive != null && !armControl)
+                if (robot.robotDrive != null && !armControl && !elevatorControl)
                 {
                     double[] inputs = robot.robotDrive.getDriveInputs();
 
@@ -170,15 +171,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         robot.intake.setPower(intakeLeftPower, intakeRightPower);
                     }
 
-                    if(armControl)
+                    if (armControl)
                     {
                         double armPower = robot.driverController.getLeftYWithDeadband(true);
-                        robot.armPidActuator.setPidPower(armPower, false);
-                        robot.dashboard.displayPrintf(
-                            9, "Arm: Pwr=%.3f, Pos=%.3f, LimitSw=%s/%s",
-                            robot.armPidActuator.getPower(), robot.armPidActuator.getPosition(),
-                            robot.armPidActuator.isLowerLimitSwitchActive(),
-                            robot.armPidActuator.isUpperLimitSwitchActive());
+                        robot.armPidActuator.setPidPower(armPower, true);
+                    }
+
+                    if (elevatorControl)
+                    {
+                        double elevatorPower = robot.driverController.getLeftYWithDeadband(true);
+                        robot.elevatorPidActuator.setPidPower(elevatorPower, true);
                     }
                 }
             }
@@ -263,6 +265,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     robot.armPidActuator.presetPositionDown();
                 }
+                else if (elevatorControl)
+                {
+                    robot.elevatorPidActuator.presetPositionDown();
+                }
                 else
                 {
                     if (pressed)
@@ -278,6 +284,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (armControl)
                 {
                     robot.armPidActuator.presetPositionUp();
+                }
+                else if (elevatorControl)
+                {
+                    robot.elevatorPidActuator.presetPositionUp();
                 }
                 else
                 {
@@ -308,14 +318,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.LEFT_BUMPER:
-                if (pressed)
+                if (!pressed)
                 {
-                    armControl = true;
-                } else {
-                    armControl = false;
-                    robot.armPidActuator.setPower(0.0);
+                    // robot.armPidActuator.setPower(0.0);
+                    robot.elevatorPidActuator.setPower(0.0);
                 }
-                    
+                // armControl = pressed;
+                elevatorControl = pressed;
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
@@ -329,8 +338,19 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BACK:
-                if(pressed) {
-                    robot.grabber.release();
+                if (elevatorControl)
+                {
+                    if (pressed)
+                    {
+                        robot.elevatorPidActuator.zeroCalibrate();
+                    }
+                }
+                else
+                {
+                    if (pressed)
+                    {
+                        robot.grabber.release();
+                    }
                 }
                 break;
 

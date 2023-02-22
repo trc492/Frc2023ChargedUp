@@ -83,7 +83,7 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSubsystems             = false;
+        public static final boolean debugSubsystems             = true;
         public static final boolean debugSwerveSteering         = false;
         public static final boolean debugArmEncoder             = false;
         public static final boolean debugLoopTime               = false;
@@ -354,30 +354,31 @@ public class RobotParams
     //
 
     // Elevator subsystem.
+    public static final int ELEVATOR_ZERO                       = 1635;
+    public static final int NEO_CPR                             = 42;
+    public static final double NEO_NOLOAD_RPM                   = 5676.0;
     public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
     public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = false;
     public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = false;
-    public static final double ELEVATOR_INCHES_PER_COUNT        = 1.392027924751009e-4;
-    public static final double ELEVATOR_OFFSET                  = 29.6785;
-    public static final double ELEVATOR_MIN_POS                 = 20.0;
-    public static final double ELEVATOR_MAX_POS                 = 65.0;
-    public static final double ELEVATOR_KP                      = 0.2;      //0.06;
+    // public static final double ELEVATOR_CHAIN_PITCH             = 0.25;     // in inches
+    // public static final double ELEVATOR_SPROCKET_TEETH          = 16.0;
+    // public static final double ELEVATOR_GEAR_RATIO              = 5.0;
+    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.16;
+        // (ELEVATOR_CHAIN_PITCH * ELEVATOR_SPROCKET_TEETH) / (ELEVATOR_GEAR_RATIO * NEO_CPR);
+    public static final double ELEVATOR_OFFSET                  = 0.0;
+    public static final double ELEVATOR_MIN_POS                 = 0.0;
+    public static final double ELEVATOR_MAX_POS                 = 29.0;
+    public static final double ELEVATOR_KP                      = 0.5;
     public static final double ELEVATOR_KI                      = 0.0;
-    public static final double ELEVATOR_KD                      = 0.0;      //0.005;
+    public static final double ELEVATOR_KD                      = 0.0;
+    public static final double ELEVATOR_KF                      = 0.0;
+    public static final double ELEVATOR_IZONE                   = 0.0;
     public static final double ELEVATOR_TOLERANCE               = 1.0;
-    public static final double ELEVATOR_CAL_POWER               = 0.5;
-    // public static final int ELEVATOR_ENCODER_CPR                = 4096;
-    // public static final double ELEVATOR_RAISED                  = 23.3; //random number
-    // public static final double ELEVATOR_LOWERED                 = 24.3; //random number
-    public static final double ELEVATOR_LEVEL_1_HEIGHT          = 0.0;
-    public static final double ELEVATOR_LEVEL_2_HEIGHT          = 0.0;
-    public static final double ELEVATOR_LEVEL_3_HEIGHT          = 0.0;
-    public static final double[] ELEVATOR_PRESET_LEVELS         =
+    public static final double ELEVATOR_CAL_POWER               = -0.2;
+    public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
+    public static final double[] elevatorPresets                =
     {
-        0.0,
-        ELEVATOR_LEVEL_1_HEIGHT,
-        ELEVATOR_LEVEL_2_HEIGHT,
-        ELEVATOR_LEVEL_3_HEIGHT
+        0.0, 6.0, 12.0, 18.0, 24.0, 28.0
     };
 
     // Arm subsystem.

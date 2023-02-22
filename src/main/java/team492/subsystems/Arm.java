@@ -73,9 +73,9 @@ public class Arm
         actuatorMotor.setBrakeModeEnabled(true);
         if (motorParams.batteryNominalVoltage > 0.0)
         {
-            actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
+            actuatorMotor.enableVoltageCompensation(motorParams.batteryNominalVoltage);
         }
-        int zeroOffset = getArmZeroPosition();
+        int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
         actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
 
         FrcCANTalonLimitSwitch lowerLimitSw = new FrcCANTalonLimitSwitch(
@@ -99,9 +99,9 @@ public class Arm
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, pos=%.1f, LimitSw=%s/%s",
+            Locale.US, "%s: pwr=%.3f, pos=%.1f, LimitSw=%s/%s, Enc=%.0f",
             moduleName, pidActuator.getPower(), pidActuator.getPosition(), pidActuator.isLowerLimitSwitchActive(),
-            pidActuator.isUpperLimitSwitchActive());
+            pidActuator.isUpperLimitSwitchActive(), actuatorMotor.motor.getSelectedSensorPosition());
     }   //toString
 
     /**
@@ -133,7 +133,7 @@ public class Arm
         int zeroPos = actuatorMotor.motor.getSensorCollection().getPulseWidthPosition();
 
         zeroTrigger.setEnabled(false);
-        saveArmZeroPosition(zeroPos);
+        saveZeroPosition(zeroPos);
         if (msgTracer != null)
         {
             msgTracer.traceInfo(funcName, "ArmZeroCalibrate: zeroPos = %d", zeroPos);
@@ -141,13 +141,14 @@ public class Arm
     }   //zeroCalCompletion
 
     /**
-     * This method retrieves the arm zero calibration data from the calibration data file.
+     * This method retrieves the zero calibration data from the calibration data file.
      *
-     * @return zero calibration data of the arm.
+     * @param defZeroPos specifies the default zero position to return if failed to read zero calibration file.
+     * @return zero calibration data.
      */
-    private int getArmZeroPosition()
+    private int getZeroPosition(int defZeroPos)
     {
-        final String funcName = "getArmZeroPosition";
+        final String funcName = "getZeroPosition";
 
         try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/" + ZERO_CAL_FILE)))
         {
@@ -155,30 +156,30 @@ public class Arm
         }
         catch (Exception e)
         {
-            TrcDbgTrace.globalTraceWarn(funcName, "Arm zero position file not found, using built-in defaults.");
-            return RobotParams.ARM_ZERO;
+            TrcDbgTrace.globalTraceWarn(funcName, "Zero position file not found, using built-in defaults.");
+            return defZeroPos;
         }
-    }   //getArmZeroPosition
+    }   //getZeroPosition
 
     /**
      * This method saves the zero calibration data to the calibration data file.
      *
-     * @param armZero specifies the zero calibration data to be saved.
+     * @param zeroPos specifies the zero calibration data to be saved.
      */
-    private void saveArmZeroPosition(int armZero)
+    private void saveZeroPosition(int zeroPos)
     {
-        final String funcName = "saveArmZeroPosition";
+        final String funcName = "saveZeroPosition";
 
         try (PrintStream out = new PrintStream(new FileOutputStream(RobotParams.TEAM_FOLDER + "/" + ZERO_CAL_FILE)))
         {
-            out.printf("%d\n", armZero);
-            TrcDbgTrace.globalTraceInfo(funcName, "Saved arm zero: %d!", armZero);
+            out.printf("%d\n", zeroPos);
+            TrcDbgTrace.globalTraceInfo(funcName, "Saved zero position: %d!", zeroPos);
         }
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
         }
-    }   //saveArmZeroPosition
+    }   //saveZeroPosition
 
     /**
      * This method calculates the power required to hold the arm against gravity.
@@ -188,8 +189,7 @@ public class Arm
      */
     public double getGravityCompensation(double currPower)
     {
-        // return RobotParams.ARM_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()));
-        return 0.0;
+        return RobotParams.ARM_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()));
     }   //getGravityCompensation
 
 }   //class Arm
