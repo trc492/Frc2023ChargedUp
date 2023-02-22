@@ -143,7 +143,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // Scores a game piece, the precondition being that it is already in the scoring position, with
                     // a game piece in the robot, broadacasting grabberEvent when complete.
                     // autoScoreTask.autoAssistScoreObject(...);
-                    autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, true, 3, 0.0, 2.0, grabberEvent);
+                    autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, true, 2, grabberEvent);
                     piecesScored++;
                     if (piecesScored == 1) {
                         sm.waitForSingleEvent(grabberEvent, State.START_DELAY);

@@ -60,17 +60,13 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
     {
         ObjectType objectType;
         int scoreLevel;
-        double scanPower;
-        double scanDuration;
         boolean useVision;
 
-        TaskParams(ObjectType objectType, boolean useVision, int scoreLevel, double scanPower, double scanDuration)
+        TaskParams(ObjectType objectType, boolean useVision, int scoreLevel)
         {
             this.objectType = objectType;
             this.useVision = useVision;
             this.scoreLevel = scoreLevel;
-            this.scanPower = scanPower;
-            this.scanDuration = scanDuration;
         }   //TaskParams
 
     }   //class TaskParams
@@ -110,19 +106,18 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
      * @param event specifies the event to signal when done, can be null if none provided.
      */
     public void autoAssistScoreObject(
-        ObjectType objectType, boolean useVision, int scoreLevel, double scanPower, double scanDuration,
-        TrcEvent event)
+        ObjectType objectType, boolean useVision, int scoreLevel, TrcEvent event)
     {
         final String funcName = "autoAssistScoreObject";
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, scoreLevel=%.2f, scanPower=%.2f, scanDuration=%.3f, event=%s",
-                moduleName, objectType, scoreLevel, scanPower, scanDuration, event);
+                funcName, "%s: objectType=%s, scoreLevel=%.2f, scanDuration=%.3f, event=%s",
+                moduleName, objectType, scoreLevel, event);
         }
 
-        startAutoTask(State.START, new TaskParams(objectType, useVision, scoreLevel, scanPower, scanDuration), event);
+        startAutoTask(State.START, new TaskParams(objectType, useVision, scoreLevel), event);
     }   //autoAssistScoreObject
     
     /**
