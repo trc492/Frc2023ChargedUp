@@ -71,6 +71,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         event = new TrcEvent(moduleName + ".event");
     }   //TaskAutoPickup
 
+    public void start(TrcEvent startEvent, double timeout) {
+
+    }
+    
     public void autoAssistCancel()
     {
         stopAutoTask(false);
@@ -113,6 +117,11 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         switch(state)
         {
             case START:
+                robot.grabber.release();
+                double elevatorPidPower = 1.0;
+                robot.elevatorPidActuator.setPidPower(elevatorPidPower);
+                robot.elevatorPidActuator.setPresetPosition(0);
+                //need code here to move arm to 0, no presets for it currently?
                 sm.setState(RobotParams.Preferences.useLimeLightVision? State.LOOK_FOR_TARGET: State.INTAKE_OBJECT);
                 break;
 
@@ -139,7 +148,13 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 break;
             
             case PICKUP_OBJECT:
+                robot.intake.retract();
 
+                //if (cone) {
+                //    robot.grabber.grabCone();
+                //} else {
+                //    robot.grabber.grabCube();
+                //}
                 sm.setState(State.DONE);
                 break;
             
