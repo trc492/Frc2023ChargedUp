@@ -25,6 +25,7 @@ package team492.autotasks;
 import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
@@ -56,6 +57,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final String owner;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
+    private final TrcTimer timer;
     private final TrcEvent event;
     private String currOwner = null;
 
@@ -65,7 +67,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.owner = owner;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        event = new TrcEvent(moduleName);
+        timer = new TrcTimer(moduleName + ".timer");
+        event = new TrcEvent(moduleName + ".event");
     }   //TaskAutoPickup
 
     public void autoAssistCancel()
@@ -129,8 +132,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 break;
             
             case INTAKE_OBJECT:
-
-                sm.setState(State.PICKUP_OBJECT);
+                double pickupTime = 1.0;
+                robot.intake.extend();
+                sm.waitForSingleEvent(event, State.PICKUP_OBJECT);
+                timer.set(pickupTime, event);
                 break;
             
             case PICKUP_OBJECT:
