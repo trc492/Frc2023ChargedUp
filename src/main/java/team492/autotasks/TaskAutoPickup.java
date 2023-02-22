@@ -31,6 +31,7 @@ import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import team492.Robot;
 import team492.RobotParams;
+import team492.FrcAuto.ObjectType;
 
 
 public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
@@ -48,12 +49,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         DONE
     }   //enum State
 
-    public enum ObjectType
-    {
-        CUBE, 
-        CONE
-    }   //enum ObjectType
-    
     private final String owner;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
@@ -71,7 +66,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         event = new TrcEvent(moduleName + ".event");
     }   //TaskAutoPickup
 
-    public void start(TrcEvent startEvent, double timeout) {
+    public void autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
+    {
 
     }
     

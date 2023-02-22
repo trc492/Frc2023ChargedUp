@@ -31,6 +31,7 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import team492.Robot;
+import team492.FrcAuto.ObjectType;
 
 /**
  * This class implements auto-assist task to score a cone or cube.
@@ -50,23 +51,17 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         DONE
     }   //enum State
 
-    public enum ObjectType
-    {
-        CUBE, 
-        CONE
-    }   //enum ObjectType
-
     private static class TaskParams
     {
         ObjectType objectType;
         int scoreLevel;
         boolean useVision;
 
-        TaskParams(ObjectType objectType, boolean useVision, int scoreLevel)
+        TaskParams(ObjectType objectType, int scoreLevel, boolean useVision)
         {
             this.objectType = objectType;
-            this.useVision = useVision;
             this.scoreLevel = scoreLevel;
+            this.useVision = useVision;
         }   //TaskParams
 
     }   //class TaskParams
@@ -103,21 +98,21 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
      * @param scoreLevel specifies the level to score a cone (not applicable for cube).
      * @param scanPower specifies how fast to scan for target, positive to scan left and negative to scan right.
      * @param scanDuration specifies how long to scan for target in seconds, scan will stop early if detected target.
-     * @param event specifies the event to signal when done, can be null if none provided.
+     * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
     public void autoAssistScoreObject(
-        ObjectType objectType, boolean useVision, int scoreLevel, TrcEvent event)
+        ObjectType objectType, int scoreLevel, boolean useVision, TrcEvent completionEvent)
     {
         final String funcName = "autoAssistScoreObject";
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, scoreLevel=%.2f, scanDuration=%.3f, event=%s",
-                moduleName, objectType, scoreLevel, event);
+                funcName, "%s: objectType=%s, scoreLevel=%d, useVision=%s, event=%s",
+                moduleName, objectType, scoreLevel, useVision, completionEvent);
         }
 
-        startAutoTask(State.START, new TaskParams(objectType, useVision, scoreLevel), event);
+        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, useVision), completionEvent);
     }   //autoAssistScoreObject
     
     /**

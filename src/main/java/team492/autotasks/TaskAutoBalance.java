@@ -74,11 +74,11 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     /**
      * This method starts the auto-assist task to climb and balance on the charging station.
      *
-     * @param event specifies the event to signal when done, can be null if none provided.
+     * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void autoAssistBalance(TrcEvent event)
+    public void autoAssistBalance(TrcEvent completionEvent)
     {
-        startAutoTask(State.MOVE_FORWARD, null, event);
+        startAutoTask(State.MOVE_FORWARD, null, completionEvent);
     }   //autoAssistBalance
 
     /**

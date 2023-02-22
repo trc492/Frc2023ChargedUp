@@ -73,6 +73,25 @@ public class FrcAuto implements TrcRobot.RobotMode
         }   //AutoStartPos
     }   //enum AutoStartPos
 
+    public static enum ObjectType
+    {
+        CUBE,
+        CONE
+    }   //enum ObjectType
+
+    public static enum ScoringLevel
+    {
+        GROUND(0),
+        LEVEL_1(1),
+        LEVEL_2(2);
+        // The value can be used as index into arrays if necessary.
+        int value;
+        ScoringLevel(int value)
+        {
+            this.value = value;
+        }   //ScoringLevel
+    }   //enum ScoringLevel
+
     /**
      * This class encapsulates all user choices for autonomous mode from the smart dashboard.
      *
@@ -91,6 +110,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         private static final String DBKEY_AUTO_STRATEGY = "Auto/Strategy";
         private static final String DBKEY_AUTO_START_POS = "Auto/StartPos";
         private static final String DBKEY_AUTO_START_DELAY = "Auto/StartDelay";
+        private static final String DBKEY_AUTO_PRELOADED_OBJECT = "Auto/PreloadedObj";
+        private static final String DBKEY_AUTO_SCORING_LEVEL = "Auto/ScoringLevel";
+        private static final String DBKEY_AUTO_USE_VISION = "Auto/UseVision";
+        private static final String DBKEY_AUTO_DO_AUTO_BALANCE = "Auto/DoAutoBalance";
         private static final String DBKEY_AUTO_PATHFILE = "Auto/PathFile";
         private static final String DBKEY_AUTO_X_DRIVE_DISTANCE = "Auto/XDriveDistance";
         private static final String DBKEY_AUTO_Y_DRIVE_DISTANCE = "Auto/YDriveDistance";
@@ -102,6 +125,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         private final FrcChoiceMenu<DriverStation.Alliance> allianceMenu;
         private final FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
         private final FrcChoiceMenu<AutoStartPos> autoStartPosMenu;
+        private final FrcChoiceMenu<ObjectType> autoPreloadedObjMenu;
+        private final FrcChoiceMenu<ScoringLevel> autoScoringLevelMenu;
 
         public AutoChoices()
         {
@@ -111,21 +136,30 @@ public class FrcAuto implements TrcRobot.RobotMode
             allianceMenu = new FrcChoiceMenu<>(DBKEY_AUTO_ALLIANCE);
             autoStrategyMenu = new FrcChoiceMenu<>(DBKEY_AUTO_STRATEGY);
             autoStartPosMenu = new FrcChoiceMenu<>(DBKEY_AUTO_START_POS);
+            autoPreloadedObjMenu = new FrcChoiceMenu<>(DBKEY_AUTO_PRELOADED_OBJECT);
+            autoScoringLevelMenu = new FrcChoiceMenu<>(DBKEY_AUTO_SCORING_LEVEL);
             //
             // Populate autonomous mode choice menus.
             //
             allianceMenu.addChoice("Red", DriverStation.Alliance.Red, true, false);
             allianceMenu.addChoice("Blue", DriverStation.Alliance.Blue, false, true);
 
-            autoStrategyMenu.addChoice("ChargedUp Auto", AutoStrategy.CHARGEDUP_AUTO);
+            autoStrategyMenu.addChoice("ChargedUp Auto", AutoStrategy.CHARGEDUP_AUTO, true, false);
             autoStrategyMenu.addChoice("Pure Pursuit Drive", AutoStrategy.PP_DRIVE);
             autoStrategyMenu.addChoice("PID Drive", AutoStrategy.PID_DRIVE);
             autoStrategyMenu.addChoice("Timed Drive", AutoStrategy.TIMED_DRIVE);
-            autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, true, true);
+            autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
             autoStartPosMenu.addChoice("Start Position 1", AutoStartPos.POS_1, true, false);
             autoStartPosMenu.addChoice("Start Position 2", AutoStartPos.POS_2);
             autoStartPosMenu.addChoice("Start Position 3", AutoStartPos.POS_3, false, true);
+
+            autoPreloadedObjMenu.addChoice("Cube", ObjectType.CUBE, true, false);
+            autoPreloadedObjMenu.addChoice("Cone", ObjectType.CONE, false, true);
+
+            autoScoringLevelMenu.addChoice("Ground Level", ScoringLevel.GROUND);
+            autoScoringLevelMenu.addChoice("Level 1", ScoringLevel.LEVEL_1);
+            autoScoringLevelMenu.addChoice("Level 2", ScoringLevel.LEVEL_2, true, true);
             //
             // Initialize dashboard with default choice values.
             //
@@ -133,6 +167,10 @@ public class FrcAuto implements TrcRobot.RobotMode
             userChoices.addChoiceMenu(DBKEY_AUTO_STRATEGY, autoStrategyMenu);
             userChoices.addChoiceMenu(DBKEY_AUTO_START_POS, autoStartPosMenu);
             userChoices.addNumber(DBKEY_AUTO_START_DELAY, 0.0);
+            userChoices.addChoiceMenu(DBKEY_AUTO_PRELOADED_OBJECT, autoPreloadedObjMenu);
+            userChoices.addChoiceMenu(DBKEY_AUTO_SCORING_LEVEL, autoScoringLevelMenu);
+            userChoices.addBoolean(DBKEY_AUTO_USE_VISION, true);
+            userChoices.addBoolean(DBKEY_AUTO_DO_AUTO_BALANCE, true);
             userChoices.addString(DBKEY_AUTO_PATHFILE, "DrivePath.csv");
             userChoices.addNumber(DBKEY_AUTO_X_DRIVE_DISTANCE, 6.0);    // in feet
             userChoices.addNumber(DBKEY_AUTO_Y_DRIVE_DISTANCE, 6.0);    // in feet
@@ -161,6 +199,26 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             return autoStartPosMenu.getCurrentChoiceObject().value;
         }   //getStartPos
+
+        public ObjectType getPreloadedObjType()
+        {
+            return autoPreloadedObjMenu.getCurrentChoiceObject();
+        }   //getPreloadedObjType
+
+        public int getScoringLevel()
+        {
+            return autoScoringLevelMenu.getCurrentChoiceObject().value;
+        }   //getScoringLevel
+
+        public boolean getUseVision()
+        {
+            return userChoices.getUserBoolean(DBKEY_AUTO_USE_VISION);
+        }   //getUseVision
+
+        public boolean getDoAutoBalance()
+        {
+            return userChoices.getUserBoolean(DBKEY_AUTO_DO_AUTO_BALANCE);
+        }   //getDoAutoBalance
 
         public double getStartDelay()
         {
@@ -205,6 +263,10 @@ public class FrcAuto implements TrcRobot.RobotMode
                 "alliance=\"%s\" " +
                 "strategy=\"%s\" " +
                 "startPos=\"%s\" " +
+                "preloadedObj=\"%s\" " +
+                "scoringLevel=\"%s\" " +
+                "useVision=\"%s\" " +
+                "doAutoBalance=\"%s\" " +
                 "startDelay=%.0f sec " +
                 "pathFile=\"%s\" " +
                 "xDistance=%.1f ft " +
@@ -212,8 +274,9 @@ public class FrcAuto implements TrcRobot.RobotMode
                 "turnDegrees=%.0f deg " +
                 "driveTime=%.0f sec " +
                 "drivePower=%.1f",
-                getAlliance(), getStrategy(), getStartPos(), getStartDelay(), getPathFile(), getXDriveDistance(),
-                getYDriveDistance(), getTurnAngle(), getDriveTime(), getDrivePower());
+                getAlliance(), getStrategy(), getStartPos(), getPreloadedObjType(), getScoringLevel(), getUseVision(),
+                getDoAutoBalance(), getStartDelay(), getPathFile(), getXDriveDistance(), getYDriveDistance(),
+                getTurnAngle(), getDriveTime(), getDrivePower());
         }   //toString
 
     }   //class AutoChoices
