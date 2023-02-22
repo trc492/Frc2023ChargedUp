@@ -34,6 +34,7 @@ import team492.RobotParams;
 import team492.autotasks.TaskAutoBalance;
 import team492.autotasks.TaskAutoPickup;
 import team492.autotasks.TaskScoreObject;
+import team492.autotasks.TaskScoreObject.ObjectType;
 
 public class CmdAuto implements TrcRobot.RobotCommand
 {
@@ -142,11 +143,12 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // Scores a game piece, the precondition being that it is already in the scoring position, with
                     // a game piece in the robot, broadacasting grabberEvent when complete.
                     // autoScoreTask.autoAssistScoreObject(...);
+                    autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, true, 3, 0.0, 2.0, grabberEvent);
                     piecesScored++;
                     if (piecesScored == 1) {
                         sm.waitForSingleEvent(grabberEvent, State.START_DELAY);
                     }
-                    else if (piecesScored ==2 && !autoBalance) {
+                    else if (piecesScored == 2 && !autoBalance) {
                         sm.waitForSingleEvent(grabberEvent, State.GO_TO_GAME_PIECE);
                     }
                     else {
@@ -175,13 +177,13 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue) {
                             robot.robotDrive.purePursuitDrive.start(
                                 driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 85.0, 45.0),   //CodeReview: why 45-deg, we are on swerve???
+                                new TrcPose2D(-33.0, 85.0, 0.0),
                                 new TrcPose2D(-33.0, 238.0, 0.0));
                         }
                         else {
                             robot.robotDrive.purePursuitDrive.start(
                                 driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 564.0, 225.0),
+                                new TrcPose2D(-33.0, 564.0, 180.0),
                                 new TrcPose2D(-33.0, 404.0, 180.0));
                         }
                     }
@@ -190,7 +192,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue) {
                             robot.robotDrive.purePursuitDrive.start(
                                 driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 85.0, 45.0),
+                                new TrcPose2D(-33.0, 85.0, 0.0),
                                 new TrcPose2D(-33.0, 220.0, 0.0),
                                 new TrcPose2D(-82.0, 238.0, 0.0));
 
@@ -198,7 +200,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         else {
                             robot.robotDrive.purePursuitDrive.start(
                                 driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 564.0, 225.0),
+                                new TrcPose2D(-33.0, 564.0, 180.0),
                                 new TrcPose2D(-33.0, 429.0, 180.0),
                                 new TrcPose2D(-82.0, 404.0, 180.0));
                         }
@@ -209,12 +211,11 @@ public class CmdAuto implements TrcRobot.RobotCommand
                 case PICKUP_GAME_PIECE:
                     // Drives forward while running intake until it picks up a game piece, the precondition being that
                     // we already at the correct location
-                    // autoPickupTask.autoAssistPickup();
-                    robot.robotDrive.purePursuitDrive.start(
-                        null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0, 50, 0));
-                    // stops running intake when piece detected in robot and broadcasts event
-                    // OR drives forward are runs autopickup
+                    autoPickupTask.start(intakeEvent, 2.0);
+                    //we dont need the folowing lines, keeping it just in case
+                    // robot.robotDrive.purePursuitDrive.start(
+                    //     null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    //     new TrcPose2D(0, 50, 0));
                     sm.waitForSingleEvent(intakeEvent, State.GO_TO_SCORE_POSITION);
                     break;
 
@@ -241,14 +242,14 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue) {
                             robot.robotDrive.purePursuitDrive.start(
                                 driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 220.0, 225),
+                                new TrcPose2D(-33.0, 220.0, 180.0),
                                 new TrcPose2D(-33.0, 85.0, 180.0),
                                 new TrcPose2D(-40.0, 65.0, 180.0));
                         }
                         else {
                             robot.robotDrive.purePursuitDrive.start(
                                 driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 429, 315),
+                                new TrcPose2D(-33.0, 429, 0.0),
                                 new TrcPose2D(-33.0, 564.0, 0.0),
                                 new TrcPose2D(-40.0, 580.0, 0.0));
                         }
