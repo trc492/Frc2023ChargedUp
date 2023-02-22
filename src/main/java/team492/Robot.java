@@ -156,6 +156,7 @@ public class Robot extends FrcRobotBase
         {
             driverController = new FrcXboxController("DriverController", RobotParams.XBOX_DRIVERCONTROLLER);
             driverController.setLeftYInverted(true);
+            driverController.setRightYInverted(true);
         }
         else
         {

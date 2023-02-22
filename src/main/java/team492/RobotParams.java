@@ -360,11 +360,12 @@ public class RobotParams
     public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
     public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = false;
     public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = false;
+    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.16;
     // public static final double ELEVATOR_CHAIN_PITCH             = 0.25;     // in inches
     // public static final double ELEVATOR_SPROCKET_TEETH          = 16.0;
-    // public static final double ELEVATOR_GEAR_RATIO              = 5.0;
-    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.16;
-        // (ELEVATOR_CHAIN_PITCH * ELEVATOR_SPROCKET_TEETH) / (ELEVATOR_GEAR_RATIO * NEO_CPR);
+    // public static final double ELEVATOR_GEAR_RATIO              = 25.0;
+    // public static final double ELEVATOR_INCHES_PER_COUNT        =
+    //    (ELEVATOR_CHAIN_PITCH * ELEVATOR_SPROCKET_TEETH) / (ELEVATOR_GEAR_RATIO * NEO_CPR);
     public static final double ELEVATOR_OFFSET                  = 0.0;
     public static final double ELEVATOR_MIN_POS                 = 0.0;
     public static final double ELEVATOR_MAX_POS                 = 29.0;
@@ -392,9 +393,9 @@ public class RobotParams
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_MIN_POS                      = ARM_OFFSET;
     public static final double ARM_MAX_POS                      = 90.0;
-    public static final double ARM_KP                           = 0.025;
-    public static final double ARM_KI                           = 0.01;
-    public static final double ARM_KD                           = 0.0025;
+    public static final double ARM_KP                           = 0.018;
+    public static final double ARM_KI                           = 0.0;
+    public static final double ARM_KD                           = 0.0018;
     public static final double ARM_KF                           = 0.0;
     public static final double ARM_IZONE                        = 5.0;
     public static final double ARM_TOLERANCE                    = 1.0;

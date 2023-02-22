@@ -39,8 +39,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private boolean controlsEnabled = false;
-    private boolean armControl = false;
-    private boolean elevatorControl = false;
+    private boolean subsystemControl = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -146,7 +145,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
 
-                if (robot.robotDrive != null && !armControl && !elevatorControl)
+                if (robot.robotDrive != null && !subsystemControl)
                 {
                     double[] inputs = robot.robotDrive.getDriveInputs();
 
@@ -171,14 +170,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         robot.intake.setPower(intakeLeftPower, intakeRightPower);
                     }
 
-                    if (armControl)
+                    if (subsystemControl)
                     {
-                        double armPower = robot.driverController.getLeftYWithDeadband(true);
+                        double armPower = robot.driverController.getRightYWithDeadband(true);
                         robot.armPidActuator.setPidPower(armPower, true);
-                    }
 
-                    if (elevatorControl)
-                    {
                         double elevatorPower = robot.driverController.getLeftYWithDeadband(true);
                         robot.elevatorPidActuator.setPidPower(elevatorPower, true);
                     }
@@ -261,11 +257,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcXboxController.BUTTON_A:
-                if (armControl)
-                {
-                    robot.armPidActuator.presetPositionDown();
-                }
-                else if (elevatorControl)
+                if (subsystemControl)
                 {
                     robot.elevatorPidActuator.presetPositionDown();
                 }
@@ -281,38 +273,50 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BUTTON_B:
-                if (armControl)
-                {
-                    robot.armPidActuator.presetPositionUp();
-                }
-                else if (elevatorControl)
+                if (subsystemControl)
                 {
                     robot.elevatorPidActuator.presetPositionUp();
                 }
                 else
                 {
-                    if(pressed) {
+                    if(pressed)
+                    {
                         robot.grabber.grabCone();
                     }
                 }
                 break;
 
             case FrcXboxController.BUTTON_X:
-                if(pressed) {
-                    robot.grabber.grabCube();
+                if (subsystemControl)
+                {
+                    robot.armPidActuator.presetPositionDown();
+                }
+                else
+                {
+                    if (pressed)
+                    {
+                        robot.grabber.grabCube();
+                    }
                 }
                 break;
 
             case FrcXboxController.BUTTON_Y:
-                if (pressed)
+                if (subsystemControl)
                 {
-                    if (robot.robotDrive.driveOrientation != RobotDrive.DriveOrientation.FIELD)
+                    robot.armPidActuator.presetPositionUp();
+                }
+                else
+                {
+                    if (pressed)
                     {
-                        robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
-                    }
-                    else
-                    {
-                        robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.ROBOT);
+                        if (robot.robotDrive.driveOrientation != RobotDrive.DriveOrientation.FIELD)
+                        {
+                            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
+                        }
+                        else
+                        {
+                            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.ROBOT);
+                        }
                     }
                 }
                 break;
@@ -320,11 +324,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcXboxController.LEFT_BUMPER:
                 if (!pressed)
                 {
-                    // robot.armPidActuator.setPower(0.0);
+                    robot.armPidActuator.setPower(0.0);
                     robot.elevatorPidActuator.setPower(0.0);
                 }
-                // armControl = pressed;
-                elevatorControl = pressed;
+                subsystemControl = pressed;
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
@@ -338,7 +341,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BACK:
-                if (elevatorControl)
+                if (subsystemControl)
                 {
                     if (pressed)
                     {
