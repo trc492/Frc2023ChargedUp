@@ -60,6 +60,7 @@ public class RobotParams
         public static final boolean useAnalogEncoder            = true;
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
+        public static final boolean useAntiTipping              = false;
         public static final boolean useBalanceDrive             = true;
         // Subsystems
         public static final boolean useSubsystems               = true;
@@ -306,6 +307,18 @@ public class RobotParams
     public static final double GYRO_PITCH_PID_RAMP_RATE         = 0.2;
 
     public static final double GYRO_ASSIST_TURN_GAIN            = 0.1;
+
+    public static final double X_TIPPING_KP                     = 0.01;
+    public static final double X_TIPPING_KI                     = 0.0;
+    public static final double X_TIPPING_KD                     = 0.0;
+    public static final double X_TIPPING_TOLERANCE              = 10.0;
+    public static final double X_TIPPING_SETTLING_TIME          = 0.2;
+
+    public static final double Y_TIPPING_KP                     = 0.01;
+    public static final double Y_TIPPING_KI                     = 0.0;
+    public static final double Y_TIPPING_KD                     = 0.0;
+    public static final double Y_TIPPING_TOLERANCE              = 10.0;
+    public static final double Y_TIPPING_SETTLING_TIME          = 0.2;
 
     public static final double ROBOT_MAX_VELOCITY               = 180.0;
     public static final double ROBOT_MAX_ACCELERATION           = 2100.0;

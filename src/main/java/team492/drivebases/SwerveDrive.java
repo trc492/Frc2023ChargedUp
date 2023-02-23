@@ -127,6 +127,16 @@ public class SwerveDrive extends RobotDrive
         driveBase.setSynchronizeOdometriesEnabled(false);
         driveBase.setOdometryScales(RobotParams.SWERVE_INCHES_PER_COUNT);
 
+        if (RobotParams.Preferences.useAntiTipping)
+        {
+            driveBase.enableAntiTipping(
+                new TrcPidController.PidParameters(
+                    RobotParams.X_TIPPING_KP, RobotParams.X_TIPPING_KI, RobotParams.X_TIPPING_KD,
+                    RobotParams.X_TIPPING_TOLERANCE, this::getGyroRoll),
+                new TrcPidController.PidParameters(
+                    RobotParams.Y_TIPPING_KP, RobotParams.Y_TIPPING_KI, RobotParams.Y_TIPPING_KD,
+                    RobotParams.Y_TIPPING_TOLERANCE, this::getGyroPitch));
+        }
         // if (RobotParams.Preferences.useExternalOdometry)
         // {
         //     //

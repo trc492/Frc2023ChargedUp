@@ -149,8 +149,7 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         boolean success = ownerName == null ||
                           (robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
                            robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
-                           robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
-                           robot.intake.acquireExclusiveAccess(ownerName));
+                           robot.armPidActuator.acquireExclusiveAccess(ownerName));
 
         if (success)
         {
@@ -184,15 +183,13 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
                 TrcOwnershipMgr ownershipMgr = TrcOwnershipMgr.getInstance();
                 msgTracer.traceInfo(
                     funcName,
-                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, lift=%s, arm=%s, intake=%s).",
+                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, lift=%s, arm=%s).",
                     moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase),
-                    ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator),
-                    ownershipMgr.getOwner(robot.intake));
+                    ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator));
             }
             robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
             robot.elevatorPidActuator.releaseExclusiveAccess(currOwner);
             robot.armPidActuator.releaseExclusiveAccess(currOwner);
-            robot.intake.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }
     }   //releaseSubsystemsOwnership
@@ -206,7 +203,6 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         robot.robotDrive.cancel(currOwner);
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);
-        robot.intake.cancel(currOwner);
     }   //stopSubsystems
 
     /**
@@ -234,33 +230,35 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
             case START:
                 //if using vision, go to DETECT_TARGET state, otherwise go to PREPARE_TO_SCORE
                 sm.setState(taskParams.useVision? State.DETECT_TARGET : State.SCORE_OBJECT);
-                break; 
-
+                //
+                // Intentionally falling through to the DETECT_TARGET state.
+                //
             case DETECT_TARGET:
                 robot.photonVision.setPipeline(PipelineType.APRILTAG);
                 robot.photonVision.detectBestObject(event, 0.5);
                 sm.waitForSingleEvent(event, State.ALIGN_TO_TARGET);
+                break;
 
             case ALIGN_TO_TARGET:
                 detectedTarget = robot.photonVision.getLastDetectedBestObject();
-                
-                if(detectedTarget == null){
+                if (detectedTarget == null)
+                {
+                    // TODO (Code Review): If vision doesn't see the target, what do you do?
                     sm.setState(State.PREPARE_TO_SCORE);
                 }
-                else{
+                else
+                {
                     robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
                     robot.robotDrive.setFieldPosition(robotPose, false);
-                    TrcPose2D scoringPose = getScoringPos(detectedTarget, taskParams.objectType); 
-                    robot.robotDrive.purePursuitDrive.start(currOwner, event, 0, robot.robotDrive.driveBase.getFieldPosition(), 
-                        false, scoringPose);
+                    robot.robotDrive.purePursuitDrive.start(
+                        currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                        getScoringPos(detectedTarget, taskParams.objectType));
                     sm.waitForSingleEvent(event, State.PREPARE_TO_SCORE);
-
                 }
-
                 break;
 
             case PREPARE_TO_SCORE:
-                // set elevator, arm, claw, to the proper scoring positions
+                // set elevator, arm to the proper scoring positions
                 break; 
 
             case SCORE_OBJECT:
@@ -277,17 +275,24 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
                 break;
         }
     }   //runTaskState
-    //absolute field coordinate for where the robot should be before score 
-    //adjust y by half of robot length, x if its cone 
-    public TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType){
-        
-        int aprilTagId = aprilTagObj.target.getFiducialId(); 
-        Pose3d aprilTagLocation = robot.photonVision.getAprilTagPose(aprilTagId);
-        double heading = (aprilTagLocation.getRotation().getZ() + 180) % 360; 
-        //for now always score on the junction to the right(red alliance)
-        double x = aprilTagLocation.getX() + (objectType == ObjectType.CONE? 22 : 0);
-        double y = aprilTagLocation.getY() + (FrcAuto.autoChoices.getAlliance() == Alliance.Red? - RobotParams.ROBOT_LENGTH/2: RobotParams.ROBOT_LENGTH/2);
-        return new TrcPose2D(x, y, heading);
 
-    }
+    /**
+     * This method returns the absolute field location for the robot to be at to score the game element.
+     *
+     * @param aprilTagObj specifies the nearest detected AprilTag object.
+     * @parm objectType specifies the game element type to score.
+     */
+    private TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType)
+    {
+        Pose3d aprilTagPos = robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId());
+        // Make the robot face the AprilTag.
+        double heading = (aprilTagPos.getRotation().getZ() + 180.0) % 360.0; 
+        // For now, always score on the junction to the right (for red alliance).
+        double x = aprilTagPos.getX() + (objectType == ObjectType.CONE? 22.0 : 0.0);
+        double y = aprilTagPos.getY() +
+                   (FrcAuto.autoChoices.getAlliance() == Alliance.Blue?
+                        RobotParams.STARTPOS_BLUE_Y: RobotParams.STARTPOS_RED_Y);
+        return new TrcPose2D(x, y, heading);
+    }   //getScoringPos
+
 }   //class TaskScoreObject
