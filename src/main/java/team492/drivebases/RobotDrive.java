@@ -41,6 +41,7 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAHRSGyro;
 import TrcFrcLib.frclib.FrcCANFalcon;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
@@ -353,7 +354,12 @@ public class RobotDrive
         if (robotPose == null)
         {
             int startPos = FrcAuto.autoChoices.getStartPos();
-            robotPose = RobotParams.startPos[startPos];
+            if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue) {
+                robotPose = RobotParams.startPos[0][startPos];
+            }
+            else {
+                robotPose = RobotParams.startPos[1][startPos];
+            }
         }
 
         if (useCompassHeading)

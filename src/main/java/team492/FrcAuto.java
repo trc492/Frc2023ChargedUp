@@ -204,7 +204,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             return autoPreloadedObjMenu.getCurrentChoiceObject();
         }   //getPreloadedObjType
-
+        
         public int getScoringLevel()
         {
             return autoScoringLevelMenu.getCurrentChoiceObject().value;

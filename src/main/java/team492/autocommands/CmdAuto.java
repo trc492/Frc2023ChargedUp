@@ -61,8 +61,8 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private final TaskAutoPickup autoPickupTask;
     private final TaskScoreObject autoScoreTask;
     private final TaskAutoBalance autoBalanceTask;
-
     private ObjectType preloadedObjType;
+    private TrcPose2D startPos;
     private int scoringLevel;
     private boolean useVision;
     private boolean doAutoBalance;  //if true, we auto-balance, if false, we try to score a third piece
@@ -141,6 +141,15 @@ public class CmdAuto implements TrcRobot.RobotCommand
             {
                 case START:
                     preloadedObjType = FrcAuto.autoChoices.getPreloadedObjType();
+
+                    if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue) {
+                        startPos = RobotParams.startPos[0][FrcAuto.autoChoices.getStartPos()];
+                    }
+                    else {
+                        startPos = RobotParams.startPos[1][FrcAuto.autoChoices.getStartPos()];
+                    }
+                    robot.robotDrive.setFieldPosition(startPos, false);
+
                     scoringLevel = FrcAuto.autoChoices.getScoringLevel();
                     useVision = FrcAuto.autoChoices.getUseVision();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
@@ -239,7 +248,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // Something like this: autoPickupTask.autoAssistPickup(ObjectType, useVision, event)
                     // The following is just an example how it should look, you need to determine what object type
                     // is at the "pickup" location.
-                    autoPickupTask.autoAssistPickup(ObjectType.CONE, useVision, event);
+                    autoPickupTask.autoAssistPickup(ObjectType.CUBE, useVision, event);
                     //we dont need the folowing lines, keeping it just in case
                     // robot.robotDrive.purePursuitDrive.start(
                     //     null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,

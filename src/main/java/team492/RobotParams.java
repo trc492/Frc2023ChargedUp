@@ -111,11 +111,15 @@ public class RobotParams
     //
     // Robot starting positions.
     //
-    public static final TrcPose2D STARTPOS_1 = new TrcPose2D(  86.534,  -14.869,  -80.250);
-    public static final TrcPose2D STARTPOS_2 = new TrcPose2D(  62.800,  -62.800,  -45.000);
-    public static final TrcPose2D STARTPOS_3 = new TrcPose2D( -46.861,  -74.281,   32.250);
-    public static final TrcPose2D[] startPos = {STARTPOS_1, STARTPOS_2, STARTPOS_3};
-
+    public static final TrcPose2D BLUE_STARTPOS_1 = new TrcPose2D(-40.0, 65.0,180.0);
+    public static final TrcPose2D BLUE_STARTPOS_2 = new TrcPose2D(-107.0, 65.0,180.0);
+    public static final TrcPose2D BLUE_STARTPOS_3 = new TrcPose2D(-175.0, 65.0,180.0);
+    public static final TrcPose2D RED_STARTPOS_1 = new TrcPose2D(-40.0, 576.5, 0.0);
+    public static final TrcPose2D RED_STARTPOS_2 = new TrcPose2D(-107.0, 576.5, 0.0);
+    public static final TrcPose2D RED_STARTPOS_3 = new TrcPose2D(-175.0, 576.5, 0.0);
+    public static final TrcPose2D[][] startPos = {{BLUE_STARTPOS_1, BLUE_STARTPOS_2, BLUE_STARTPOS_3},
+                                                  {RED_STARTPOS_1, RED_STARTPOS_2, RED_STARTPOS_3}
+                                                 };
     //
     // Joystick ports.
     //
