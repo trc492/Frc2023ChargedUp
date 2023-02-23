@@ -92,13 +92,11 @@ public class RobotParams
     public static final String ROBOT_NAME                       = "Robot2023_ChargedUp";
     public static final String TEAM_FOLDER                      = "/home/lvuser/trc492";
     public static final double DASHBOARD_UPDATE_INTERVAL        = 0.1;          // in msec
-
     //
     // Field dimensions in inches.
     //
-    public static final double FIELD_LENGTH                     = 54.0*12.0;
-    public static final double FIELD_WIDTH                      = 27.0*12.0;
-
+    public static final double FIELD_LENGTH                     = 54.0*12.0 + 3.25;
+    public static final double FIELD_WIDTH                      = 26.0*12.0 + 3.5;
     //
     // Robot dimensions in inches.
     //
@@ -107,19 +105,43 @@ public class RobotParams
 
     public static final double ROBOT_WHEELBASE_WIDTH            = 23.25;        // Required by swerve drive base.
     public static final double ROBOT_WHEELBASE_LENGTH           = 22.44;        // Required by swerve drive base.
+    //
+    // Robot starting positions. All dimensions are from Game Manual, do not adjust.
+    //
+    public static final double GRID_TAPE_EDGE_BLUE_Y            = 54.25;
+    public static final double STARTPOS_BLUE_Y                  = GRID_TAPE_EDGE_BLUE_Y + RobotParams.ROBOT_LENGTH/2.0;
+    public static final double STARTPOS_RED_Y                   = FIELD_LENGTH - STARTPOS_BLUE_Y;
+    public static final TrcPose2D STARTPOS_BLUE_1 = new TrcPose2D(-42.19, STARTPOS_BLUE_Y, 180.0);
+    public static final TrcPose2D STARTPOS_BLUE_2 = new TrcPose2D(-108.19, STARTPOS_BLUE_Y, 180.0);
+    public static final TrcPose2D STARTPOS_BLUE_3 = new TrcPose2D(-174.19, STARTPOS_BLUE_Y, 180.0);
+    public static final TrcPose2D STARTPOS_RED_1 = new TrcPose2D(-42.19, STARTPOS_RED_Y, 0.0);
+    public static final TrcPose2D STARTPOS_RED_2 = new TrcPose2D(-108.19, STARTPOS_RED_Y, 0.0);
+    public static final TrcPose2D STARTPOS_RED_3 = new TrcPose2D(-174.19, STARTPOS_RED_Y, 0.0);
+    public static final TrcPose2D[][] startPos =
+    {
+        {STARTPOS_BLUE_1, STARTPOS_BLUE_2, STARTPOS_BLUE_3},
+        {STARTPOS_RED_1, STARTPOS_RED_2, STARTPOS_RED_3}
+    };
+    //
+    // Game element locations and dimensions.
+    //
+    public static final double GAME_PIECE_1_X_CUBE              = -36.25;
+    public static final double GAME_PIECE_2_X_CONE              = GAME_PIECE_1_X_CUBE - 48.0;
+    public static final double GAME_PIECE_3_X_CONE              = GAME_PIECE_2_X_CONE - 48.0;
+    public static final double GAME_PIECE_4_X_CUBE              = GAME_PIECE_3_X_CONE - 48.0;
+    public static final double GAME_PIECE_BLUE_Y                = GRID_TAPE_EDGE_BLUE_Y + 18*12.0 + 8.0;
+    public static final double GAME_PIECE_RED_Y                 = FIELD_LENGTH - GAME_PIECE_BLUE_Y;
 
-    //
-    // Robot starting positions.
-    //
-    public static final TrcPose2D BLUE_STARTPOS_1 = new TrcPose2D(-40.0, 65.0,180.0);
-    public static final TrcPose2D BLUE_STARTPOS_2 = new TrcPose2D(-107.0, 65.0,180.0);
-    public static final TrcPose2D BLUE_STARTPOS_3 = new TrcPose2D(-175.0, 65.0,180.0);
-    public static final TrcPose2D RED_STARTPOS_1 = new TrcPose2D(-40.0, 576.5, 0.0);
-    public static final TrcPose2D RED_STARTPOS_2 = new TrcPose2D(-107.0, 576.5, 0.0);
-    public static final TrcPose2D RED_STARTPOS_3 = new TrcPose2D(-175.0, 576.5, 0.0);
-    public static final TrcPose2D[][] startPos = {{BLUE_STARTPOS_1, BLUE_STARTPOS_2, BLUE_STARTPOS_3},
-                                                  {RED_STARTPOS_1, RED_STARTPOS_2, RED_STARTPOS_3}
-                                                 };
+    public static final double CHARGING_STATION_WIDTH           = 8.0*12.0 + 1.25;
+    public static final double CHARGING_STATION_DEPTH           = 6.0*12.0 + 4.125;
+    public static final double CHARGING_STATION_CENTER_X        = -9.0*12.0;
+    public static final double CHARGING_STATION_CENTER_BLUE_Y   = GRID_TAPE_EDGE_BLUE_Y + 8.0*12.0 + 2.625;
+    public static final double CHARGING_STATION_CENTER_RED_Y    = FIELD_LENGTH - CHARGING_STATION_CENTER_BLUE_Y;
+
+    public static final double HIGH_POLE_HEIGHT                 = 3.0*12.0 + 10.0;
+    public static final double LOW_POLE_HEIGHT                  = 2.0*12.0 + 10.0;
+    public static final double HIGH_POLE_TAPE_HEIGHT            = HIGH_POLE_HEIGHT - 2.1875;
+    public static final double LOW_POLE_TAPE_HEIGHT             = LOW_POLE_HEIGHT - 10.0;
     //
     // Joystick ports.
     //
@@ -129,7 +151,6 @@ public class RobotParams
     public static final int JSPORT_BUTTON_PANEL                 = 3;
     public static final int JSPORT_SWITCH_PANEL                 = 4;
     public static final int XBOX_DRIVERCONTROLLER               = 5;
-
     //
     // CAN IDs.
     //
@@ -142,9 +163,7 @@ public class RobotParams
     public static final int CANID_ARM                           = 8;
     public static final int CANID_INTAKE_LEFT                   = 17;
     public static final int CANID_INTAKE_RIGHT                  = 18;
-
     // Applicable only for Swerve Drive.
-
     public static final int CANID_LEFTFRONT_STEER               = 13;
     public static final int CANID_RIGHTFRONT_STEER              = 14;
     public static final int CANID_LEFTBACK_STEER                = 15;
@@ -157,7 +176,6 @@ public class RobotParams
 
     public static final int CANID_PCM                           = 30;
     public static final int CANID_PDP                           = 31;
-
     //
     // PDP Channels.
     //
@@ -182,7 +200,6 @@ public class RobotParams
 
     public static final double BATTERY_NOMINAL_VOLTAGE          = 12.0;
     public static final double BATTERY_CAPACITY_WATT_HOUR       = 18.0*12.0;
-
     //
     // Analog Input ports.
     //
@@ -191,7 +208,6 @@ public class RobotParams
     public static final int AIN_RIGHTFRONT_STEER_ENCODER        = 1;    // Brown
     public static final int AIN_LEFTBACK_STEER_ENCODER          = 2;    // Red
     public static final int AIN_RIGHTBACK_STEER_ENCODER         = 3;    // Orange
-
     //
     // Digital Input/Output ports.
     //
@@ -199,10 +215,11 @@ public class RobotParams
     //
     // PWM channels.
     //
-    public static final int NUM_LEDS                            = 60;
-    public static final int PWM_CHANNEL_LED                     = 0;
-    public static final int PWM_VACUUM                          = 1;
-
+    public static final int NUM_LEFT_LEDS                       = 60;
+    public static final int NUM_RIGHT_LEDS                      = 60;
+    public static final int PWM_CHANNEL_LEFT_LED                = 0;
+    public static final int PWM_CHANNEL_RIGHT_LED               = 1;
+    public static final int PWM_VACUUM                          = 2;
     //
     // Relay channels.
     //
@@ -214,10 +231,8 @@ public class RobotParams
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 6;
     public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 5;
     public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 2;
-
     public static final int PNEUMATIC_INTAKE_RETRACT            = 3;
     public static final int PNEUMATIC_INTAKE_EXTEND             = 4;
-
     //
     // Ultrasonic sensors.
     //
@@ -356,7 +371,6 @@ public class RobotParams
     //
     // Other subsystems.
     //
-
     // Elevator subsystem.
     public static final int ELEVATOR_ZERO                       = 1635;
     public static final int NEO_CPR                             = 42;
@@ -385,7 +399,6 @@ public class RobotParams
     {
         0.0, 6.0, 12.0, 18.0, 24.0, 28.0
     };
-
     // Arm subsystem.
     public static final int ARM_ENCODER_CPR                     = 4096;
     public static final int ARM_ZERO                            = 1635;

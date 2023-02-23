@@ -61,13 +61,12 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private final TaskAutoPickup autoPickupTask;
     private final TaskScoreObject autoScoreTask;
     private final TaskAutoBalance autoBalanceTask;
+
     private ObjectType preloadedObjType;
-    private TrcPose2D startPos;
     private int scoringLevel;
     private boolean useVision;
     private boolean doAutoBalance;  //if true, we auto-balance, if false, we try to score a third piece
     private int piecesScored = 0;
-    //TODO: not sure if we should connect with auto choices or pass in as a parameter
 
     /**
      * Constructor: Create an instance of the object.
@@ -139,20 +138,19 @@ public class CmdAuto implements TrcRobot.RobotCommand
             robot.dashboard.displayPrintf(8, "State: %s", state);
             switch (state)
             {
+                // TODO (Code Review): Eventually, need to change the paths according to the starting position.
+                // StartPos1: Go to the path by the field rail side to fetch 2nd game piece.
+                // StartPos2: Go to balance on Charging Station after scoring preloaded piece.
+                // StartPos3: Go to the path by the substation side to fetch 2nd game piece.
+                // Also, need to add code to check match time in order to determine if we have enough time
+                // to fetch 2nd piece. If not, check if we can go balance.
                 case START:
                     preloadedObjType = FrcAuto.autoChoices.getPreloadedObjType();
-
-                    if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue) {
-                        startPos = RobotParams.startPos[0][FrcAuto.autoChoices.getStartPos()];
-                    }
-                    else {
-                        startPos = RobotParams.startPos[1][FrcAuto.autoChoices.getStartPos()];
-                    }
-                    robot.robotDrive.setFieldPosition(startPos, false);
-
                     scoringLevel = FrcAuto.autoChoices.getScoringLevel();
                     useVision = FrcAuto.autoChoices.getUseVision();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // Set robot's start position according to autoChoices.
+                    robot.robotDrive.setFieldPosition(null, false);
                     sm.setState(State.SCORE_GAME_PIECE);
                     //
                     // Intentionally falling through to SCORE_GAME_PIECE state (i.e. no break).
@@ -194,6 +192,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     break;
 
                 case GO_TO_GAME_PIECE:
+                    // TODO (Code Review): Please use the dimensions defined in RobotParams.
                     // Drives to a few feet (3ft from the center of the robot to the ball) behind the game piece we
                     // want to pick up, determining the location by how many pieces we have already scored
                     if (piecesScored == 1)
@@ -244,11 +243,9 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // Drives forward while running intake until it picks up a game piece, the precondition being that
                     // we already at the correct location
                     sm.waitForSingleEvent(event, State.GO_TO_SCORE_POSITION);
-                    // Code Review: autoPickupTask should have an autoAssistPickup method.
-                    // Something like this: autoPickupTask.autoAssistPickup(ObjectType, useVision, event)
-                    // The following is just an example how it should look, you need to determine what object type
-                    // is at the "pickup" location.
-                    autoPickupTask.autoAssistPickup(ObjectType.CUBE, useVision, event);
+                    // Second game piece will be a cube, third game piece will be a cone.
+                    autoPickupTask.autoAssistPickup(
+                        piecesScored == 1? ObjectType.CUBE: ObjectType.CONE, useVision, event);
                     //we dont need the folowing lines, keeping it just in case
                     // robot.robotDrive.purePursuitDrive.start(
                     //     null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -256,6 +253,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     break;
 
                 case GO_TO_SCORE_POSITION:
+                    // TODO (Code Review): Please use the dimensions defined in RobotParams.
                     // Drives to the scoring position, determining the location based on how many pieces we have
                     // already scored
                     if (piecesScored == 1)

@@ -68,7 +68,6 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
             this.scoreLevel = scoreLevel;
             this.useVision = useVision;
         }   //TaskParams
-
     }   //class TaskParams
 
     private final String ownerName;
@@ -76,9 +75,8 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event;
     private String currOwner = null;
-    private DetectedObject detectedTarget; 
-    private TrcPose2D robotPose; 
-    private Pose3d aprilTagPose; 
+    private DetectedObject detectedTarget;
+    private TrcPose2D robotPose;
 
     /**
      * Constructor: Create an instance of the object.
@@ -97,13 +95,11 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
     }   //TaskScoreObject
 
     /**
-     * This method ...
+     * This method starts the auto-assist operation to score an object.
      *
      * @param objectType specifies the object type to score (cone or cube).
+     * @param scoreLevel specifies the level to score a cone.
      * @param useVision specifies true to use vision assist, false otherwise.
-     * @param scoreLevel specifies the level to score a cone (not applicable for cube).
-     * @param scanPower specifies how fast to scan for target, positive to scan left and negative to scan right.
-     * @param scanDuration specifies how long to scan for target in seconds, scan will stop early if detected target.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
     public void autoAssistScoreObject(

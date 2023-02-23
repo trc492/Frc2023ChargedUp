@@ -354,12 +354,8 @@ public class RobotDrive
         if (robotPose == null)
         {
             int startPos = FrcAuto.autoChoices.getStartPos();
-            if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue) {
-                robotPose = RobotParams.startPos[0][startPos];
-            }
-            else {
-                robotPose = RobotParams.startPos[1][startPos];
-            }
+            robotPose = FrcAuto.autoChoices.getAlliance() == Alliance.Blue?
+                RobotParams.startPos[0][startPos]: RobotParams.startPos[1][startPos];
         }
 
         if (useCompassHeading)
