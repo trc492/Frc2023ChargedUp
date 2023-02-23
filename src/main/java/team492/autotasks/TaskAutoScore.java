@@ -41,9 +41,9 @@ import team492.vision.PhotonVision.PipelineType;
 /**
  * This class implements auto-assist task to score a cone or cube.
  */
-public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
+public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 {
-    private static final String moduleName = "TaskScoreObject";
+    private static final String moduleName = "TaskAutoScore";
 
     public enum State
     {
@@ -85,14 +85,14 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
      * @param robot specifies the robot object that contains all the necessary subsystems.
      * @param msgTracer specifies the tracer to use to log events, can be null if not provided.
      */
-    public TaskScoreObject(String ownerName, Robot robot, TrcDbgTrace msgTracer)
+    public TaskAutoScore(String ownerName, Robot robot, TrcDbgTrace msgTracer)
     {
         super(moduleName, ownerName, TrcTaskMgr.TaskType.POST_PERIODIC_TASK, msgTracer);
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
         event = new TrcEvent(moduleName);
-    }   //TaskScoreObject
+    }   //TaskAutoScore
 
     /**
      * This method starts the auto-assist operation to score an object.
@@ -295,4 +295,4 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         return new TrcPose2D(x, y, heading);
     }   //getScoringPos
 
-}   //class TaskScoreObject
+}   //class TaskAutoScore

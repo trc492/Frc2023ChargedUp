@@ -34,7 +34,7 @@ import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
 import team492.autotasks.TaskAutoBalance;
 import team492.autotasks.TaskAutoPickup;
-import team492.autotasks.TaskScoreObject;
+import team492.autotasks.TaskAutoScore;
 
 public class CmdAuto implements TrcRobot.RobotCommand
 {
@@ -59,7 +59,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private final TrcEvent event;
     private final TrcStateMachine<State> sm;
     private final TaskAutoPickup autoPickupTask;
-    private final TaskScoreObject autoScoreTask;
+    private final TaskAutoScore autoScoreTask;
     private final TaskAutoBalance autoBalanceTask;
 
     private ObjectType preloadedObjType;
@@ -83,7 +83,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
         autoPickupTask = new TaskAutoPickup(moduleName, robot, robot.globalTracer);
-        autoScoreTask = new TaskScoreObject(moduleName, robot, robot.globalTracer);
+        autoScoreTask = new TaskAutoScore(moduleName, robot, robot.globalTracer);
         autoBalanceTask = new TaskAutoBalance(moduleName, robot, robot.globalTracer);
     }   //CmdAuto
 
