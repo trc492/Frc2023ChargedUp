@@ -105,8 +105,8 @@ public class RobotParams
     public static final double ROBOT_WIDTH                      = (27.0 + 6.0); // Frame dimensions, including bumpers.
     public static final double ROBOT_LENGTH                     = (30.5 + 6.0); // Frame dimensions, including bumpers.
 
-    public static final double ROBOT_DRIVEBASE_WIDTH            = 23.25;        // Required by swerve drive base.
-    public static final double ROBOT_DRIVEBASE_LENGTH           = 22.44;        // Required by swerve drive base.
+    public static final double ROBOT_WHEELBASE_WIDTH            = 23.25;        // Required by swerve drive base.
+    public static final double ROBOT_WHEELBASE_LENGTH           = 22.44;        // Required by swerve drive base.
 
     //
     // Robot starting positions.

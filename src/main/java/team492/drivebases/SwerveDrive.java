@@ -123,7 +123,7 @@ public class SwerveDrive extends RobotDrive
 
         driveBase = new TrcSwerveDriveBase(
             lfWheel, lbWheel, rfWheel, rbWheel, gyro,
-            RobotParams.ROBOT_DRIVEBASE_WIDTH, RobotParams.ROBOT_DRIVEBASE_LENGTH);
+            RobotParams.ROBOT_WHEELBASE_WIDTH, RobotParams.ROBOT_WHEELBASE_LENGTH);
         driveBase.setSynchronizeOdometriesEnabled(false);
         driveBase.setOdometryScales(RobotParams.SWERVE_INCHES_PER_COUNT);
 
