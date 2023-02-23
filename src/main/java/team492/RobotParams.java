@@ -105,8 +105,8 @@ public class RobotParams
     public static final double ROBOT_WIDTH                      = (27.0 + 6.0); // Frame dimensions, including bumpers.
     public static final double ROBOT_LENGTH                     = (30.5 + 6.0); // Frame dimensions, including bumpers.
 
-    public static final double ROBOT_DRIVE_WIDTH                = 23.25;        // Required by swerve drive base.
-    public static final double ROBOT_DRIVE_LENGTH               = 22.44;        // Required by swerve drive base.
+    public static final double ROBOT_DRIVEBASE_WIDTH            = 23.25;        // Required by swerve drive base.
+    public static final double ROBOT_DRIVEBASE_LENGTH           = 22.44;        // Required by swerve drive base.
 
     //
     // Robot starting positions.
@@ -206,8 +206,8 @@ public class RobotParams
     //
     // Pneumatic channels.
     //
-    public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 6;
-    public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
+    public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 1;
+    public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 6;
     public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 5;
     public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 2;
 
