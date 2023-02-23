@@ -122,7 +122,7 @@ public class PhotonVision extends FrcPhotonVision
      * @param aprilTagId sepcifies the AprilTag ID to retrieve its field location.
      * @return 3D location of the 
      */
-    private Pose3d getAprilTagPose(int aprilTagId)
+    public Pose3d getAprilTagPose(int aprilTagId)
     {
         Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(aprilTagId);
         return tagPose.isPresent()? tagPose.get(): null;

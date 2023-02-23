@@ -30,8 +30,13 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import team492.FrcAuto;
 import team492.Robot;
+import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
+import team492.vision.PhotonVision.PipelineType;
 
 /**
  * This class implements auto-assist task to score a cone or cube.
@@ -73,6 +78,7 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
     private String currOwner = null;
     private DetectedObject detectedTarget; 
     private TrcPose2D robotPose; 
+    private Pose3d aprilTagPose; 
 
     /**
      * Constructor: Create an instance of the object.
@@ -230,21 +236,31 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
         switch (state)
         {
             case START:
+                //if using vision, go to DETECT_TARGET state, otherwise go to PREPARE_TO_SCORE
                 sm.setState(taskParams.useVision? State.DETECT_TARGET : State.SCORE_OBJECT);
                 break; 
 
             case DETECT_TARGET:
-                detectedTarget = robot.photonVision.getBestDetectedObject();
-                //
-                // Intentionally falling through to the next state (FIND_POLE).
-                //
+                robot.photonVision.setPipeline(PipelineType.APRILTAG);
+                robot.photonVision.detectBestObject(event, 0.5);
+                sm.waitForSingleEvent(event, State.ALIGN_TO_TARGET);
+
             case ALIGN_TO_TARGET:
-                //Option 1: make input from photonVision the input for the drive pidController like shooter from last year
-                    //just in the x direction(rel to robot) first, heading target is + or - 90
-                //Option 2: set a relative purePursuit target for how far away the robot should be from the target
-                    //this would be apriltagpos - robotpos for x and y, heading would be absolute + or - 90
-                //eitherway go to PREPARE_TO_SCORE when done
-                TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
+                detectedTarget = robot.photonVision.getLastDetectedBestObject();
+                
+                if(detectedTarget == null){
+                    sm.setState(State.PREPARE_TO_SCORE);
+                }
+                else{
+                    robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
+                    robot.robotDrive.setFieldPosition(robotPose, false);
+                    TrcPose2D scoringPose = getScoringPos(detectedTarget, taskParams.objectType); 
+                    robot.robotDrive.purePursuitDrive.start(currOwner, event, 0, robot.robotDrive.driveBase.getFieldPosition(), 
+                        false, scoringPose);
+                    sm.waitForSingleEvent(event, State.PREPARE_TO_SCORE);
+
+                }
+
                 break;
 
             case PREPARE_TO_SCORE:
@@ -265,5 +281,17 @@ public class TaskScoreObject extends TrcAutoTask<TaskScoreObject.State>
                 break;
         }
     }   //runTaskState
+    //absolute field coordinate for where the robot should be before score 
+    //adjust y by half of robot length, x if its cone 
+    public TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType){
+        
+        int aprilTagId = aprilTagObj.target.getFiducialId(); 
+        Pose3d aprilTagLocation = robot.photonVision.getAprilTagPose(aprilTagId);
+        double heading = (aprilTagLocation.getRotation().getZ() + 180) % 360; 
+        //for now always score on the junction to the right(red alliance)
+        double x = aprilTagLocation.getX() + (objectType == ObjectType.CONE? 22 : 0);
+        double y = aprilTagLocation.getY() + (FrcAuto.autoChoices.getAlliance() == Alliance.Red? - RobotParams.ROBOT_LENGTH/2: RobotParams.ROBOT_LENGTH/2);
+        return new TrcPose2D(x, y, heading);
 
+    }
 }   //class TaskScoreObject
