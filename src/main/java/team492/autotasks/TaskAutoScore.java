@@ -116,7 +116,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
         startAutoTask(State.START, new TaskParams(objectType, scoreLevel, useVision), completionEvent);
     }   //autoAssistScoreObject
-    
+
     /**
      * This method cancels an in progress auto-assist operation if any.
      */
@@ -183,7 +183,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 TrcOwnershipMgr ownershipMgr = TrcOwnershipMgr.getInstance();
                 msgTracer.traceInfo(
                     funcName,
-                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, lift=%s, arm=%s).",
+                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, elevator=%s, arm=%s).",
                     moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase),
                     ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator));
             }
