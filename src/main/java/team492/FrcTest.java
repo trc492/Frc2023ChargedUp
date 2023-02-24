@@ -36,6 +36,7 @@ import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcUserChoices;
 import TrcCommonLib.trclib.TrcMotor;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
+import TrcCommonLib.trclib.TrcPidActuator;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
@@ -65,6 +66,8 @@ public class FrcTest extends FrcTeleOp
         SWERVE_CALIBRATION,
         DRIVE_SPEED_TEST,
         DRIVE_MOTORS_TEST,
+        TUNE_ARM_PID,
+        TUNE_ELEVATOR_PID,
         X_TIMED_DRIVE,
         Y_TIMED_DRIVE,
         PP_DRIVE,
@@ -215,6 +218,9 @@ public class FrcTest extends FrcTeleOp
     private double[] steerZeros = new double[4];
     private long steerZeroSumCount = 0;
 
+    private TrcPidController tunePidCtrl = null;
+    private TrcPidController.PidCoefficients savedPidCoeffs = null;
+
     public FrcTest(Robot robot)
     {
         //
@@ -290,6 +296,20 @@ public class FrcTest extends FrcTeleOp
                         robot.robotDrive.lfDriveMotor, robot.robotDrive.rfDriveMotor,
                         robot.robotDrive.lbDriveMotor, robot.robotDrive.rbDriveMotor},
                     5.0, 0.5);
+                break;
+
+            case TUNE_ARM_PID:
+                if (robot.arm != null)
+                {
+                    tunePidActuator(robot.armPidActuator);
+                }
+                break;
+
+            case TUNE_ELEVATOR_PID:
+                if (robot.elevator != null)
+                {
+                    tunePidActuator(robot.elevatorPidActuator);
+                }
                 break;
 
             case X_TIMED_DRIVE:
@@ -559,6 +579,23 @@ public class FrcTest extends FrcTeleOp
 
         return test == Test.SUBSYSTEMS_TEST || test == Test.DRIVE_SPEED_TEST;
     }   //allowTeleOp
+
+    /**
+     * This method sets the PID coefficients of the given PID Actuator to values entered from ShuffleBoard for PID
+     * tuning. If there was already a previous tuning PID Actuator, its PID coefficients are restored before enabling
+     * the tuning of the new PID Actuator.
+     */
+    private void tunePidActuator(TrcPidActuator pidActuator)
+    {
+        if (tunePidCtrl != null && savedPidCoeffs != null)
+        {
+            tunePidCtrl.setPidCoefficients(savedPidCoeffs);
+        }
+
+        tunePidCtrl = pidActuator.getPidController();
+        savedPidCoeffs = tunePidCtrl.getPidCoefficients();
+        tunePidCtrl.setPidCoefficients(testChoices.getTunePidCoefficients());
+    }   //tunePidActuator
 
     //
     // Overriding ButtonEvent here if necessary.
