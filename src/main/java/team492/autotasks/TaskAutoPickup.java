@@ -32,7 +32,6 @@ import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import team492.Robot;
-import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
 import team492.vision.PhotonVision.PipelineType;
 
@@ -149,7 +148,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 } else {
                     robot.photonVision.setPipeline(PipelineType.CUBE);
                 }
-                boolean success = robot.photonVision.detectBestObject(event, 0.1);
+                boolean success = robot.photonVision.detectBestObject(event, 0.5);
                 sm.waitForSingleEvent(event, (success? State.DRIVE_TO_TARGET: State.DONE)); //if fails to detect, goes to DONE
                 break;
             
