@@ -216,11 +216,9 @@ public class RobotParams
     //
     // PWM channels.
     //
-    public static final int NUM_LEFT_LEDS                       = 60;
-    public static final int NUM_RIGHT_LEDS                      = 60;
-    public static final int PWM_CHANNEL_LEFT_LED                = 0;
-    public static final int PWM_CHANNEL_RIGHT_LED               = 1;
-    public static final int PWM_VACUUM                          = 2;
+    public static final int NUM_LEDS                            = 60;
+    public static final int PWM_CHANNEL_LED                     = 0;
+    public static final int PWM_VACUUM                          = 9;
     //
     // Relay channels.
     //
@@ -429,7 +427,7 @@ public class RobotParams
     public static final double ARM_KF                           = 0.0;
     public static final double ARM_IZONE                        = 5.0;
     public static final double ARM_TOLERANCE                    = 1.0;
-    public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.06;
+    public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double[] armPresets                     =
     {

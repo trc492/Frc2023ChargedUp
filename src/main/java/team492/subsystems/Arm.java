@@ -99,9 +99,10 @@ public class Arm
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, pos=%.1f, LimitSw=%s/%s, Enc=%.0f",
-            moduleName, pidActuator.getPower(), pidActuator.getPosition(), pidActuator.isLowerLimitSwitchActive(),
-            pidActuator.isUpperLimitSwitchActive(), actuatorMotor.motor.getSelectedSensorPosition());
+            Locale.US, "%s: pwr=%.3f, pos=%.1f/%.1f, LimitSw=%s/%s, Enc=%.0f",
+            moduleName, pidActuator.getPower(), pidActuator.getPosition(), pidActuator.getPidController().getTarget(),
+            pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive(),
+            actuatorMotor.motor.getSelectedSensorPosition());
     }   //toString
 
     /**

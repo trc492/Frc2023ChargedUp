@@ -31,16 +31,16 @@ import team492.drivebases.RobotDrive;
 public class LEDIndicator
 {
     private static final TrcAddressableLED.Pattern nominalPattern = // Black
-        new TrcAddressableLED.Pattern("Nominal", new FrcColor(0, 0, 0), RobotParams.NUM_LEFT_LEDS);
+        new TrcAddressableLED.Pattern("Nominal", new FrcColor(0, 0, 0), RobotParams.NUM_LEDS);
 
     private static final TrcAddressableLED.Pattern fieldOrientedPattern = // Cyan
-        new TrcAddressableLED.Pattern("FieldOriented", new FrcColor(0, 63, 63), RobotParams.NUM_LEFT_LEDS);
+        new TrcAddressableLED.Pattern("FieldOriented", new FrcColor(0, 63, 63), RobotParams.NUM_LEDS);
     private static final TrcAddressableLED.Pattern robotOrientedPattern = // Red
-        new TrcAddressableLED.Pattern("RobotOriented", new FrcColor(63, 0, 0), RobotParams.NUM_LEFT_LEDS);
+        new TrcAddressableLED.Pattern("RobotOriented", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
     private static final TrcAddressableLED.Pattern inverseOrientedPattern = // Magenta
-        new TrcAddressableLED.Pattern("InverseOriented", new FrcColor(63, 0, 63), RobotParams.NUM_LEFT_LEDS);
+        new TrcAddressableLED.Pattern("InverseOriented", new FrcColor(63, 0, 63), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern[] leftPriorities =
+    private static final TrcAddressableLED.Pattern[] priorities =
         new TrcAddressableLED.Pattern[]
         {
             nominalPattern,
@@ -48,21 +48,15 @@ public class LEDIndicator
             robotOrientedPattern,
             fieldOrientedPattern,
         };
-    private static final TrcAddressableLED.Pattern[] rightPriorities =
-        new TrcAddressableLED.Pattern[]
-        {
-        };
 
-    private final FrcAddressableLED leftLed;
-    private final FrcAddressableLED rightLed;
+    private final FrcAddressableLED led;
 
     /**
      * Constructor: Create an instance of the object.
      */
     public LEDIndicator()
     {
-        leftLed = new FrcAddressableLED("LeftLED", RobotParams.NUM_LEFT_LEDS, RobotParams.PWM_CHANNEL_LEFT_LED);
-        rightLed = new FrcAddressableLED("RightLED", RobotParams.NUM_RIGHT_LEDS, RobotParams.PWM_CHANNEL_RIGHT_LED);
+        led = new FrcAddressableLED("LED", RobotParams.NUM_LEDS, RobotParams.PWM_CHANNEL_LED);
         reset();
     }   //LEDIndicator
 
@@ -71,16 +65,11 @@ public class LEDIndicator
      */
     public void reset()
     {
-        leftLed.setEnabled(true);
-        leftLed.setPatternPriorities(leftPriorities);
-        leftLed.reset();
-        leftLed.resetAllPatternStates();
-        leftLed.setPatternState(nominalPattern, true);
-        rightLed.setEnabled(true);
-        rightLed.setPatternPriorities(rightPriorities);
-        rightLed.reset();
-        rightLed.resetAllPatternStates();
-        rightLed.setPatternState(nominalPattern, true);
+        led.setEnabled(true);
+        led.setPatternPriorities(priorities);
+        led.reset();
+        led.resetAllPatternStates();
+        led.setPatternState(nominalPattern, true);
     }   //reset
 
     /**
@@ -93,21 +82,21 @@ public class LEDIndicator
         switch (orientation)
         {
             case INVERTED:
-                leftLed.setPatternState(inverseOrientedPattern, true);
-                leftLed.setPatternState(robotOrientedPattern, false);
-                leftLed.setPatternState(fieldOrientedPattern, false);
+                led.setPatternState(inverseOrientedPattern, true);
+                led.setPatternState(robotOrientedPattern, false);
+                led.setPatternState(fieldOrientedPattern, false);
                 break;
 
             case ROBOT:
-                leftLed.setPatternState(inverseOrientedPattern, false);
-                leftLed.setPatternState(robotOrientedPattern, true);
-                leftLed.setPatternState(fieldOrientedPattern, false);
+                led.setPatternState(inverseOrientedPattern, false);
+                led.setPatternState(robotOrientedPattern, true);
+                led.setPatternState(fieldOrientedPattern, false);
                 break;
 
             case FIELD:
-                leftLed.setPatternState(inverseOrientedPattern, false);
-                leftLed.setPatternState(robotOrientedPattern, false);
-                leftLed.setPatternState(fieldOrientedPattern, true);
+                led.setPatternState(inverseOrientedPattern, false);
+                led.setPatternState(robotOrientedPattern, false);
+                led.setPatternState(fieldOrientedPattern, true);
                 break;
         }
     }   //setDriveOrientation
