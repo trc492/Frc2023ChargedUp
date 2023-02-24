@@ -324,7 +324,7 @@ public class SwerveDrive extends RobotDrive
         FrcCANFalcon steerMotor = new FrcCANFalcon(name, motorCanID);
         ErrorCode errCode;
         // Reset motor back to factory default to clear potential previous mis-configurations.
-        errCode = steerMotor.motor.configFactoryDefault(10);
+        errCode = steerMotor.motor.configFactoryDefault(30);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
@@ -332,7 +332,7 @@ public class SwerveDrive extends RobotDrive
                 name, errCode);
         }
 
-        errCode = steerMotor.motor.configVoltageCompSaturation(RobotParams.BATTERY_NOMINAL_VOLTAGE, 10);
+        errCode = steerMotor.motor.configVoltageCompSaturation(RobotParams.BATTERY_NOMINAL_VOLTAGE, 30);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
