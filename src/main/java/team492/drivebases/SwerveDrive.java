@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
@@ -375,6 +376,7 @@ public class SwerveDrive extends RobotDrive
         FrcFalconServo servo = new FrcFalconServo(
             name + ".servo", steerMotor, RobotParams.steerCoeffs, RobotParams.STEER_DEGREES_PER_COUNT, 0.0,
             RobotParams.STEER_MAX_REQ_VEL, RobotParams.STEER_MAX_ACCEL);
+        servo.setControlMode(TalonFXControlMode.MotionMagic);
         servo.setPhysicalRange(0.0, 360.0);
         TrcSwerveModule module = new TrcSwerveModule(name, driveMotor, servo);
         module.disableSteeringLimits();
