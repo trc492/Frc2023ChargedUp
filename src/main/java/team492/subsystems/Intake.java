@@ -23,11 +23,15 @@
 package team492.subsystems;
 
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcDigitalInputTrigger;
+import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcFrcLib.frclib.FrcCANTalon;
+import TrcFrcLib.frclib.FrcDigitalInput;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import team492.RobotParams;
@@ -36,10 +40,14 @@ public class Intake implements TrcExclusiveSubsystem
 { 
     private static final String moduleName = "Intake";
 
+    private TrcDbgTrace msgTracer = null; 
     private final FrcCANTalon intakeLeftMotor;
     private final FrcCANTalon intakeRightMotor;
-    private final FrcPneumatic intakePneumatic; 
-    private TrcDbgTrace msgTracer = null; 
+    private final FrcPneumatic intakePneumatic;
+    private final FrcDigitalInput intakeSensor;
+    private final TrcDigitalInputTrigger intakeTrigger;
+    private boolean sensorActive = false;
+    private TrcEvent triggerEvent = null;
 
     public Intake(TrcDbgTrace msgTracer)
     {
@@ -57,6 +65,9 @@ public class Intake implements TrcExclusiveSubsystem
             moduleName + ".pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_INTAKE_RETRACT, RobotParams.PNEUMATIC_INTAKE_EXTEND);
         intakePneumatic.retract();
+
+        intakeSensor = new FrcDigitalInput("intakeSensor", RobotParams.DIO_INTAKE_SENSOR);
+        intakeTrigger = new TrcDigitalInputTrigger("intakeTrigger", intakeSensor, this::intakeEvent);
     }   //Intake
 
     /**
@@ -136,5 +147,56 @@ public class Intake implements TrcExclusiveSubsystem
     {
         return intakePneumatic.isExtended();
     }
+
+    /**
+     * This method checks if the intake sensor is active.
+     *
+     * @return true if intake sensor is active, false otherwise.
+     */
+    public boolean hasObject()
+    {
+        return sensorActive;
+    }   //hasObject
+
+    /**
+     * This method enables/disables the sensor trigger.
+     *
+     * @param enabled specifies true to enable trigger, false to disable.
+     * @param triggerEvent specifies the event to signal if the sensor is triggered.
+     */
+    public void setTriggerEnabled(boolean enabled, TrcEvent triggerEvent)
+    {
+        if (enabled)
+        {
+            triggerEvent.clear();
+            this.triggerEvent = triggerEvent;
+        }
+        else
+        {
+            this.triggerEvent = null;
+        }
+        intakeTrigger.setEnabled(enabled);
+    }   //setTriggerEnabled
+
+    /**
+     * This method is called when the intake sensor is triggered.
+     *
+     * @param context specifies true if an object is captured, false otherwise.
+     */
+    private void intakeEvent(Object context)
+    {
+        final String funcName = "intakeEvent";
+        sensorActive = ((AtomicBoolean) context).get();
+
+        if (triggerEvent != null)
+        {
+            triggerEvent.signal();
+        }
+
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(funcName, "[%.3f] active=%s", TrcTimer.getModeElapsedTime(), sensorActive);
+        }
+    }   //intakeEvent
 
 }   //class Intake

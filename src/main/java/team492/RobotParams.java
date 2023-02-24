@@ -212,7 +212,7 @@ public class RobotParams
     //
     // Digital Input/Output ports.
     //
-
+    public static final int DIO_INTAKE_SENSOR                   = 0;    // Black
     //
     // PWM channels.
     //
