@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
+import com.fasterxml.jackson.core.sym.Name;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
@@ -53,6 +54,8 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import team492.autotasks.TaskAutoBalance;
+import team492.autotasks.TaskAutoPickup;
 import team492.drivebases.SwerveDrive;
 import team492.subsystems.Arm;
 import team492.subsystems.Elevator;
@@ -123,6 +126,8 @@ public class Robot extends FrcRobotBase
     public TrcPidActuator armPidActuator;
     public Intake intake; 
     public Grabber grabber;
+    public TaskAutoBalance autoBalance;
+    public TaskAutoPickup autoPickup;
 
     /**
      * Constructor: Create an instance of the object.
@@ -259,6 +264,8 @@ public class Robot extends FrcRobotBase
                     grabber = new Grabber();
                     grabber.releaseAll();
                 }
+                autoBalance = new TaskAutoBalance("TaskAutoBalance", this, globalTracer);
+                autoPickup = new TaskAutoPickup("TaskAutoPickup", this, globalTracer);
             }
         }
         //

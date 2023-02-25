@@ -27,6 +27,7 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
+import team492.FrcAuto.ObjectType;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -272,6 +273,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BUTTON_X:
+                robot.robotDrive.setAntiDefenseEnabled("TeleOp", pressed);
                 break;
 
             case FrcXboxController.BUTTON_Y:
@@ -298,6 +300,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.START:
+                if (pressed)
+                {
+                    if(robot.autoBalance.isActive()) {
+                        robot.autoBalance.autoAssistCancel();
+                    } else {
+                        robot.autoBalance.autoAssistBalance(null);
+                    }
+                }
                 break;
 
             case FrcXboxController.LEFT_STICK_BUTTON:
@@ -422,6 +432,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
+                if (pressed)
+                {
+                    robot.autoPickup.autoAssistPickup(ObjectType.CUBE, false, null);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
@@ -542,6 +556,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
+                if (pressed)
+                {
+                    robot.autoPickup.autoAssistCancel();
+                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:

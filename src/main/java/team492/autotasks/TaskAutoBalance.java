@@ -54,6 +54,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event;
     private String currOwner = null;
+    private double prevPitch;
 
     /**
      * Constructor: Create an instance of the object.
@@ -78,6 +79,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
      */
     public void autoAssistBalance(TrcEvent completionEvent)
     {
+        prevPitch = 0.0;
         startAutoTask(State.MOVE_FORWARD, null, completionEvent);
     }   //autoAssistBalance
 
@@ -157,17 +159,27 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         switch (state)
         {
             case MOVE_FORWARD:
-                // Move forward slowly until the robot is tipping backward.
-                // CodeReview: should not use Math.abs, just check the sign when it's tilting backward.
-                if (Math.abs(robot.robotDrive.getGyroPitch()) < 2.0)
-                {
-                    robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.0, 0.2, 0.0);
-                }
-                else
-                {
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.0, 0.5, 0.0);
+                // Check if our angle is decerasing (approaching zero)
+                if(Math.abs(robot.robotDrive.getGyroPitch()) < prevPitch) {
                     robot.robotDrive.driveBase.stop(currOwner);
-                    sm.setState(State.BALANCING);
+                    sm.setState(State.DONE);
+                } else {
+                    prevPitch = Math.abs(robot.robotDrive.getGyroPitch());
                 }
+
+
+                // // Move forward slowly until the robot is tipping backward.
+                // // CodeReview: should not use Math.abs, just check the sign when it's tilting backward.
+                // if (Math.abs(robot.robotDrive.getGyroPitch()) < 2.0)
+                // {
+                //     robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.0, 0.2, 0.0);
+                // }
+                // else
+                // {
+                //     robot.robotDrive.driveBase.stop(currOwner);
+                //     sm.setState(State.BALANCING);
+                // }
                 break;
 
             case BALANCING:
