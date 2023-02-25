@@ -263,7 +263,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     // DONE, needs review
                     // TODO (Code Review): Giving up so easily??? If vision doesn't see it, you may want to just go
                     // forward for a distance hoping to grab it anyway.
-                    relative = new TrcPose2D(0, 150);
+                    relative = new TrcPose2D(0, 60);
                 }
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
