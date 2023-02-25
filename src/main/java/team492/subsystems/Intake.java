@@ -67,7 +67,9 @@ public class Intake implements TrcExclusiveSubsystem
         intakePneumatic.retract();
 
         intakeSensor = new FrcDigitalInput("intakeSensor", RobotParams.DIO_INTAKE_SENSOR);
+        intakeSensor.setInverted(true);
         intakeTrigger = new TrcDigitalInputTrigger("intakeTrigger", intakeSensor, this::intakeEvent);
+        intakeTrigger.setEnabled(true);
     }   //Intake
 
     /**
@@ -77,8 +79,8 @@ public class Intake implements TrcExclusiveSubsystem
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployer=%s",
-            moduleName, getLeftMotorPower(), getRightMotorPower(), isExtended());
+            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployer=%s, Break=%s",
+            moduleName, getLeftMotorPower(), getRightMotorPower(), isExtended(), hasObject());
     }   //toString
 
     public void cancel(String owner)

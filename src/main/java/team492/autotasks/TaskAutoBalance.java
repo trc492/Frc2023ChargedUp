@@ -54,7 +54,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event;
     private String currOwner = null;
-    private double prevPitch;
+    private double prevAngle;
 
     /**
      * Constructor: Create an instance of the object.
@@ -79,7 +79,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
      */
     public void autoAssistBalance(TrcEvent completionEvent)
     {
-        prevPitch = 0.0;
+        prevAngle = 0.0;
         startAutoTask(State.MOVE_FORWARD, null, completionEvent);
     }   //autoAssistBalance
 
@@ -159,13 +159,15 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         switch (state)
         {
             case MOVE_FORWARD:
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.0, 0.5, 0.0);
+                robot.dashboard.displayPrintf(
+                    15, "Balance: roll:%.2f", Math.abs(robot.robotDrive.getGyroRoll()));
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.25, 0.0, 0.0);
                 // Check if our angle is decerasing (approaching zero)
-                if(Math.abs(robot.robotDrive.getGyroPitch()) < prevPitch) {
+                if(Math.abs(robot.robotDrive.getGyroRoll()) < prevAngle) {
                     robot.robotDrive.driveBase.stop(currOwner);
                     sm.setState(State.DONE);
                 } else {
-                    prevPitch = Math.abs(robot.robotDrive.getGyroPitch());
+                    prevAngle = Math.abs(robot.robotDrive.getGyroRoll());
                 }
 
 

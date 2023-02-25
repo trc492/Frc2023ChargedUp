@@ -84,7 +84,7 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSubsystems             = false;
+        public static final boolean debugSubsystems             = true;
         public static final boolean debugSwerveSteering         = false;
         public static final boolean debugArmEncoder             = false;
         public static final boolean debugLoopTime               = false;
@@ -132,8 +132,6 @@ public class RobotParams
     public static final double GAME_PIECE_4_X_CUBE              = GAME_PIECE_3_X_CONE - 48.0;
     public static final double GAME_PIECE_BLUE_Y                = GRID_TAPE_EDGE_BLUE_Y + 18*12.0 + 8.0;
     public static final double GAME_PIECE_RED_Y                 = FIELD_LENGTH - GAME_PIECE_BLUE_Y;
-    public static final double 
-    CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X            = (RobotParams.CHARGING_STATION_CENTER_X + (RobotParams.CHARGING_STATION_WIDTH/2))/2;
 
     public static final double CHARGING_STATION_WIDTH           = 8.0*12.0 + 1.25;
     public static final double CHARGING_STATION_DEPTH           = 6.0*12.0 + 4.125;
@@ -232,8 +230,8 @@ public class RobotParams
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 6;
     public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 5;
     public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 2;
-    public static final int PNEUMATIC_INTAKE_RETRACT            = 3;
-    public static final int PNEUMATIC_INTAKE_EXTEND             = 4;
+    public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
+    public static final int PNEUMATIC_INTAKE_EXTEND             = 3;
     //
     // Ultrasonic sensors.
     //
