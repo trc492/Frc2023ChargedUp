@@ -237,34 +237,41 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             
             case DRIVE_TO_TARGET:
                 // Check if vision has detected a target.
+                robot.intake.extend();
+                robot.intake.setTriggerEnabled(true, event);
+                robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
+                robot.robotDrive.setFieldPosition(robotPose, false); //is this needed?
                 detectedTarget = robot.photonVision.getLastDetectedBestObject();
+                TrcPose2D relative;
                 if (detectedTarget != null)
                 {
+                    // DONE, needs review
                     // TODO (Code Review): In your scenario, it is different from AutoScore because vision detecting
                     // cones and cubes are not as reliable as AprilTag. So you should just get the relative position
                     // of the target from the camera and use "incremental" purePursuit to approach the object.
                     // The following code needs to be rewritten. Let's talk about how to approach this.
-                    robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
-                    robot.robotDrive.setFieldPosition(robotPose, false); //is this needed?
-                    detectedTarget = robot.photonVision.getLastDetectedBestObject();
                     TrcPose2D target;
                     if (taskParams.objectType == ObjectType.CONE) {
                         target = robot.photonVision.getTargetPose2D(detectedTarget, 12.81); //12 + 13/16
                     } else {
                         target = robot.photonVision.getTargetPose2D(detectedTarget, 9.5);  //9.5 +- 0.5
                     }
-                    robot.robotDrive.purePursuitDrive.start(
-                        currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                        target);
-                    sm.waitForSingleEvent(event, State.INTAKE_OBJECT);
+                    relative = target.relativeTo(robotPose);
                 }
                 else
                 {
+                    // DONE, needs review
                     // TODO (Code Review): Giving up so easily??? If vision doesn't see it, you may want to just go
                     // forward for a distance hoping to grab it anyway.
+                    relative = new TrcPose2D(0, 150);
                 }
+                robot.robotDrive.purePursuitDrive.start(
+                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    relative);
+                sm.waitForEvents(State.PICKUP_OBJECT);
                 break;
 
+            // DONE, needs review
             // TODO (Code Review): Intake (aka Weedwhacker) will have a sensor to detect if intake has something.
             // Therefore, don't use a timer, use the sensor to generate the event instead. Also, turning on the
             // weedwhacker must be accompanied by moving forward. Therefore, this state should really be combined
@@ -274,16 +281,15 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             // - If it did, use the detected distance info, otherwise just go forward some distance.
             // - Do a waitForEvents for two events, purePursuit completed the "moving forward" or weedwhacker has
             //   detected something in possession. In either case, move to the next state to "pick up".
-            case INTAKE_OBJECT:
-                double pickupTime = 2.0;
-                robot.intake.extend();
-                sm.waitForSingleEvent(event, State.PICKUP_OBJECT);
-                timer.set(pickupTime, event);
-                break;
+            //case INTAKE_OBJECT:
+            //    double pickupTime = 2.0;
+            //    robot.intake.extend();
+            //    sm.waitForSingleEvent(event, State.PICKUP_OBJECT);
+            //    timer.set(pickupTime, event);
+            //    break;
             
             case PICKUP_OBJECT:
                 robot.intake.retract();
-
                 if (taskParams.objectType == ObjectType.CONE) {
                     robot.grabber.grabCone();
                 } else {
