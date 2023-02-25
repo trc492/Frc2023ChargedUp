@@ -132,6 +132,8 @@ public class RobotParams
     public static final double GAME_PIECE_4_X_CUBE              = GAME_PIECE_3_X_CONE - 48.0;
     public static final double GAME_PIECE_BLUE_Y                = GRID_TAPE_EDGE_BLUE_Y + 18*12.0 + 8.0;
     public static final double GAME_PIECE_RED_Y                 = FIELD_LENGTH - GAME_PIECE_BLUE_Y;
+    public static final double 
+    CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X            = (RobotParams.CHARGING_STATION_CENTER_X + (RobotParams.CHARGING_STATION_WIDTH/2))/2;
 
     public static final double CHARGING_STATION_WIDTH           = 8.0*12.0 + 1.25;
     public static final double CHARGING_STATION_DEPTH           = 6.0*12.0 + 4.125;

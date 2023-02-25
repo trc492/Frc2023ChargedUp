@@ -203,37 +203,36 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 85.0, 0.0),
-                                new TrcPose2D(-33.0, 238.0, 0.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 0.0),
+                                new TrcPose2D(RobotParams.GAME_PIECE_1_X_CUBE, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0));
                         }
                         else
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 564.0, 180.0),
-                                new TrcPose2D(-33.0, 404.0, 180.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 180.0),
+                                new TrcPose2D(RobotParams.GAME_PIECE_1_X_CUBE, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
                         }
                     }
                     else if (piecesScored == 2)
                     {
                         // We are going for the third game piece.
-                        // drives to the location of the second right most piece from second scoring pos (shelf
-                        // closest to scoring table)
+                        // drives to the location of the second right most piece
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 85.0, 0.0),
-                                new TrcPose2D(-33.0, 220.0, 0.0),
-                                new TrcPose2D(-82.0, 238.0, 0.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 0.0),
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 220.0, 0.0),
+                                new TrcPose2D(RobotParams.GAME_PIECE_2_X_CONE, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0));
                         }
                         else
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 564.0, 180.0),
-                                new TrcPose2D(-33.0, 429.0, 180.0),
-                                new TrcPose2D(-82.0, 404.0, 180.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 180.0),
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 429.0, 180.0),
+                                new TrcPose2D(RobotParams.GAME_PIECE_2_X_CONE, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
                         }
                     }
                     sm.waitForSingleEvent(event, State.PICKUP_GAME_PIECE);
@@ -258,20 +257,18 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // already scored
                     if (piecesScored == 1)
                     {
-                        //drives to the right most shelf from the right most game piece
+                        //drives to the right most pole from the right most game piece
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 85.0, 180.0),
-                                new TrcPose2D(-40.0, 65.0, 180.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 180.0));
                         }
                         else
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 564.0, 0.0),
-                                new TrcPose2D(-40.0, 584.0, 0.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 0.0));
                         }
                     }
                     else if (piecesScored == 2)
@@ -281,17 +278,15 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 220.0, 180.0),
-                                new TrcPose2D(-33.0, 85.0, 180.0),
-                                new TrcPose2D(-40.0, 65.0, 180.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 220.0, 180.0),
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 180.0));
                         }
                         else
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(-33.0, 429, 0.0),
-                                new TrcPose2D(-33.0, 564.0, 0.0),
-                                new TrcPose2D(-40.0, 580.0, 0.0));
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 429, 0.0),
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 0.0));
                         }
                     }
                     sm.waitForSingleEvent(event, State.SCORE_GAME_PIECE);
