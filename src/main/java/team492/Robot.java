@@ -94,6 +94,8 @@ public class Robot extends FrcRobotBase
     public AnalogInput pressureSensor;
     // For debugging Swerve steering.
     private FrcAnalogEncoder lfSteerEnc, rfSteerEnc, lbSteerEnc, rbSteerEnc;
+    private double lfSteerEncSum, rfSteerEncSum, lbSteerEncSum, rbSteerEncSum;
+    private long encSumCount;
     private FrcCANFalcon lfDriveMotor, rfDriveMotor, lbDriveMotor, rbDriveMotor;
     // For debugging arm encoder.
     private FrcCANTalon armMotor;
@@ -296,6 +298,8 @@ public class Robot extends FrcRobotBase
             rfSteerEnc.setEnabled(true);
             lbSteerEnc.setEnabled(true);
             rbSteerEnc.setEnabled(true);
+            lfSteerEncSum = rfSteerEncSum = lbSteerEncSum = rbSteerEncSum = 0.0;
+            encSumCount = 0;
         }
 
         if (RobotParams.Preferences.debugArmEncoder)
@@ -577,13 +581,22 @@ public class Robot extends FrcRobotBase
             }
             else if (RobotParams.Preferences.debugSwerveSteering)
             {
+                double lfRawEnc = lfSteerEnc.getRawPosition();
+                double rfRawEnc = rfSteerEnc.getRawPosition();
+                double lbRawEnc = lbSteerEnc.getRawPosition();
+                double rbRawEnc = rbSteerEnc.getRawPosition();
+                lfSteerEncSum += lfRawEnc;
+                rfSteerEncSum += rfRawEnc;
+                lbSteerEncSum += lbRawEnc;
+                rbSteerEncSum += rbRawEnc;
+                encSumCount++;
                 dashboard.displayPrintf(8, "SteerEncVolt(%.3f): lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f",
                     RobotController.getVoltage5V(), lfSteerEnc.getRawVoltage(), rfSteerEnc.getRawVoltage(),
                     lbSteerEnc.getRawVoltage(), rbSteerEnc.getRawVoltage());
                 dashboard.displayPrintf(
-                    9, "SteerEncRaw: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
-                    lfSteerEnc.getRawPosition(), rfSteerEnc.getRawPosition(),
-                    lbSteerEnc.getRawPosition(), rbSteerEnc.getRawPosition());
+                    9, "SteerEncRaw: lf=%.3f/%f, rf=%.3f/%f, lb=%.3f/%f, rb=%.3f/%f",
+                    lfRawEnc, lfSteerEncSum/encSumCount, rfRawEnc, rfSteerEncSum/encSumCount,
+                    lbRawEnc, lbSteerEncSum/encSumCount, rbRawEnc, rbSteerEncSum/encSumCount);
                 dashboard.displayPrintf(
                     10, "SteerEncPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
                     lfSteerEnc.getPosition(), rfSteerEnc.getPosition(),
