@@ -51,7 +51,6 @@ public class Grabber
         cubeGrabber = new FrcPneumatic(
             "cubeGrabber", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_CUBE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CUBE_GRABBER_EXTEND);
-        release();
 
         if (RobotParams.Preferences.useVacuum)
         {
@@ -87,6 +86,11 @@ public class Grabber
         }
     }   //grabCube
 
+    public void releaseCube()
+    {
+        cubeGrabber.retract();
+    }   //releaseCube
+
     //This method is called to grab a cone, extends both pneumatics for a complete grab
     public void grabCone()
     {
@@ -102,12 +106,17 @@ public class Grabber
         }
     }   //grabCone
 
+    public void releaseCone()
+    {
+        coneGrabber.retract();
+    }   //releaseCone
+
     //This method is called to open the grabber, retracting the pneumatics
-    public void release()
+    public void releaseAll()
     {
         coneGrabber.retract();
         cubeGrabber.retract();
-    }   //release
+    }   //releaseAll
 
     public boolean grabbedCube()
     {

@@ -411,6 +411,7 @@ public class RobotParams
         0.0, 6.0, 12.0, 18.0, 24.0, 28.0
     };
     // Arm subsystem.
+    // public static final double ARM_MAX_VEL                      = (FALCON_MAX_RPM*0.81/STEER_GEAR_RATIO/60.0)*360.0;
     public static final int ARM_ENCODER_CPR                     = 4096;
     public static final int ARM_ZERO                            = 1635;
 

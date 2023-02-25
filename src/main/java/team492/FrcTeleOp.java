@@ -39,7 +39,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private boolean controlsEnabled = false;
-    private boolean subsystemControl = false;
+    private boolean armControl = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -145,7 +145,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
 
-                if (robot.robotDrive != null && !subsystemControl)
+                if (robot.robotDrive != null)
                 {
                     double[] inputs = robot.robotDrive.getDriveInputs();
 
@@ -163,20 +163,27 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 if (RobotParams.Preferences.useSubsystems)
                 {
+                    if (robot.elevator != null && !armControl)
+                    {
+                        double elevatorPower = robot.operatorStick.getYWithDeadband(true);
+                        robot.elevatorPidActuator.setPidPower(elevatorPower, true);
+                    }
+
+                    if (robot.arm != null && armControl)
+                    {
+                        double armPower = robot.operatorStick.getYWithDeadband(true);
+                        robot.armPidActuator.setPidPower(armPower, true);
+                    }
+
                     if (robot.intake != null)
                     {
                         double intakeLeftPower = robot.driverController.getLeftTriggerWithDeadband(true);
                         double intakeRightPower = robot.driverController.getRightTriggerWithDeadband(true);
+                        if ((intakeLeftPower != 0.0 || intakeRightPower != 0.0) && !robot.intake.isExtended())
+                        {
+                            robot.intake.extend();
+                        }
                         robot.intake.setPower(intakeLeftPower, intakeRightPower);
-                    }
-
-                    if (subsystemControl)
-                    {
-                        double armPower = robot.driverController.getRightYWithDeadband(true);
-                        robot.armPidActuator.setPidPower(armPower, true);
-
-                        double elevatorPower = robot.driverController.getLeftYWithDeadband(true);
-                        robot.elevatorPidActuator.setPidPower(elevatorPower, true);
                     }
                 }
             }
@@ -257,104 +264,41 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcXboxController.BUTTON_A:
-                if (subsystemControl)
+                if (pressed)
                 {
-                    robot.elevatorPidActuator.presetPositionDown();
-                }
-                else
-                {
-                    if (pressed)
-                    {
-                        TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
-                        robotPose.angle = 0.0;
-                        robot.robotDrive.driveBase.setFieldPosition(robotPose);
-                    }
+                    TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
+                    robotPose.angle = 0.0;
+                    robot.robotDrive.driveBase.setFieldPosition(robotPose);
                 }
                 break;
 
             case FrcXboxController.BUTTON_B:
-                if (subsystemControl)
-                {
-                    robot.elevatorPidActuator.presetPositionUp();
-                }
-                else
-                {
-                    if(pressed)
-                    {
-                        robot.grabber.grabCone();
-                    }
-                }
                 break;
 
             case FrcXboxController.BUTTON_X:
-                if (subsystemControl)
-                {
-                    robot.armPidActuator.presetPositionDown();
-                }
-                else
-                {
-                    if (pressed)
-                    {
-                        robot.grabber.grabCube();
-                    }
-                }
                 break;
 
             case FrcXboxController.BUTTON_Y:
-                if (subsystemControl)
+                if (pressed)
                 {
-                    robot.armPidActuator.presetPositionUp();
-                }
-                else
-                {
-                    if (pressed)
+                    if (robot.robotDrive.driveOrientation != RobotDrive.DriveOrientation.FIELD)
                     {
-                        if (robot.robotDrive.driveOrientation != RobotDrive.DriveOrientation.FIELD)
-                        {
-                            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
-                        }
-                        else
-                        {
-                            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.ROBOT);
-                        }
+                        robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
+                    }
+                    else
+                    {
+                        robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.ROBOT);
                     }
                 }
                 break;
 
             case FrcXboxController.LEFT_BUMPER:
-                if (!pressed)
-                {
-                    robot.armPidActuator.setPower(0.0);
-                    robot.elevatorPidActuator.setPower(0.0);
-                }
-                subsystemControl = pressed;
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
-                if(pressed) {
-                    if(robot.intake.isExtended()) {
-                        robot.intake.retract();
-                    } else {
-                        robot.intake.extend();
-                    }
-                }
                 break;
 
             case FrcXboxController.BACK:
-                if (subsystemControl)
-                {
-                    if (pressed)
-                    {
-                        robot.elevatorPidActuator.zeroCalibrate();
-                    }
-                }
-                else
-                {
-                    if (pressed)
-                    {
-                        robot.grabber.release();
-                    }
-                }
                 break;
 
             case FrcXboxController.START:
@@ -485,33 +429,79 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
+                if (robot.arm != null)
+                {
+                    armControl = pressed;
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
+                if (robot.grabber != null && pressed)
+                {
+                    if (robot.grabber.grabbedCube())
+                    {
+                        robot.grabber.releaseCube();
+                    }
+                    else
+                    {
+                        robot.grabber.grabCube();
+                    }
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON5:
+                if (robot.grabber != null && pressed)
+                {
+                    if (robot.grabber.grabbedCone())
+                    {
+                        robot.grabber.releaseCone();
+                    }
+                    else
+                    {
+                        robot.grabber.grabCone();
+                    }
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
+                if (robot.arm != null && pressed)
+                {
+                    robot.armPidActuator.presetPositionUp();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
+                if (robot.arm != null && pressed)
+                {
+                    robot.armPidActuator.presetPositionDown();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
+                if (robot.elevator != null && pressed)
+                {
+                    robot.elevatorPidActuator.zeroCalibrate();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
+                if (robot.elevator != null && pressed)
+                {
+                    robot.elevatorPidActuator.presetPositionDown();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
+                if (robot.elevator != null && pressed)
+                {
+                    robot.elevatorPidActuator.presetPositionUp();
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:

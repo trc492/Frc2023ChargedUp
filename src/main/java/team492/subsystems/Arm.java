@@ -29,6 +29,9 @@ import java.io.PrintStream;
 import java.util.Locale;
 import java.util.Scanner;
 
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcDigitalInputTrigger;
 import TrcCommonLib.trclib.TrcPidActuator;
@@ -70,6 +73,7 @@ public class Arm
             .setPowerCompensation(this::getGravityCompensation);
 
         actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
+        configMotionMagic(actuatorMotor.motor);
         actuatorMotor.setBrakeModeEnabled(true);
         if (motorParams.batteryNominalVoltage > 0.0)
         {
@@ -104,6 +108,31 @@ public class Arm
             pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive(),
             actuatorMotor.motor.getSelectedSensorPosition());
     }   //toString
+
+    void configMotionMagic(TalonSRX motor)
+    {
+        // Set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %).
+        motor.configNeutralDeadband(0.001, 30);
+        // Set relevant frame periods to be at least as fast as periodic rate.
+        motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 30);
+        motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 30);
+        // Set the peak and nominal outputs.
+        motor.configNominalOutputForward(0, 30);
+        motor.configNominalOutputReverse(0, 30);
+        motor.configPeakOutputForward(1, 30);
+        motor.configPeakOutputReverse(-1, 30);
+        // Set Motion Magic gains in slot0 - see documentation.
+        motor.selectProfileSlot(0, 0);
+        motor.config_kP(0, 1.0, 30);
+        motor.config_kI(0, 0.0, 30);
+        motor.config_kD(0, 0.0, 30);
+        motor.config_kF(0, 0.05, 30);
+        motor.config_IntegralZone(0, 100, 30);
+        motor.configAllowableClosedloopError(0, 10.0, 30);
+        // Set acceleration and vcruise velocity - see documentation.
+        motor.configMotionCruiseVelocity(1000, 30);
+        motor.configMotionAcceleration(1000, 30);
+    }   //configMotionMagic
 
     /**
      * This method returns the PidActuator object created.

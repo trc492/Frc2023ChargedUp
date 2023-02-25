@@ -222,7 +222,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         {
             case START:
                 // Setup subsystems.
-                robot.grabber.release();
+                robot.grabber.releaseAll();
                 robot.elevatorPidActuator.setTarget(currOwner, 0.0, true, 1.0, null, 0.0);
                 robot.armPidActuator.setTarget(currOwner, 0.0, true, 1.0, null, 0.0);
                 sm.setState(taskParams.useVision? State.LOOK_FOR_TARGET: State.INTAKE_OBJECT);
