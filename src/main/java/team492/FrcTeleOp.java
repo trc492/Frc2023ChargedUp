@@ -171,7 +171,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
                     if (robot.arm != null && armControl)
                     {
-                        double armPower = robot.operatorStick.getYWithDeadband(true);
+                        double armPower = robot.operatorStick.getYWithDeadband(true) * 0.5;
                         robot.armPidActuator.setPidPower(armPower, true);
                     }
 
@@ -179,10 +179,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     {
                         double intakeLeftPower = robot.driverController.getLeftTriggerWithDeadband(true);
                         double intakeRightPower = robot.driverController.getRightTriggerWithDeadband(true);
-                        if ((intakeLeftPower != 0.0 || intakeRightPower != 0.0) && !robot.intake.isExtended())
-                        {
-                            robot.intake.extend();
-                        }
                         robot.intake.setPower(intakeLeftPower, intakeRightPower);
                     }
                 }
@@ -436,6 +432,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
+                if (robot.intake != null && pressed)
+                {
+                    if (robot.intake.isExtended())
+                    {
+                        robot.intake.retract();
+                    }
+                    else
+                    {
+                        robot.intake.extend();
+                    }
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
