@@ -256,11 +256,11 @@ public class RobotParams
         new Translation3d(CAMERA_X_OFFSET, CAMERA_Y_OFFSET, CAMERA_HEIGHT),
         new Rotation3d(0.0, CAMERA_PITCH, 0.0));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
+    // Camera: Logitech C310
     public static final double WEBCAM_FX                        = 821.993;  // in pixels
     public static final double WEBCAM_FY                        = 821.993;  // in pixels
     public static final double WEBCAM_CX                        = 330.489;  // in pixels
     public static final double WEBCAM_CY                        = 248.997;  // in pixels
-    public static final double POLE_TAG_HEIGHT                  = 2.5;      // in inches
     //
     // DriveBase subsystem.
     //
@@ -364,7 +364,6 @@ public class RobotParams
     // This is a backup if file is not found: LF, RF, LB, RB.
     public static final double[] STEER_ZEROS                    = new double[] {0.705251, 0.282917, 0.902077, 0.443488};
 
-
     public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0;
     // public static final TrcPidController.PidCoefficients magicSteerCoeff =
     //     new TrcPidController.PidCoefficients(2.0, 0.01, 0.0, 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS, 5.0 / STEER_DEGREES_PER_COUNT);
@@ -393,12 +392,11 @@ public class RobotParams
     public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
     public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = false;
     public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = false;
-    public static final double ELEVATOR_INCHES_PER_COUNT        = 0.16;
-    // public static final double ELEVATOR_CHAIN_PITCH             = 0.25;     // in inches
-    // public static final double ELEVATOR_SPROCKET_TEETH          = 16.0;
-    // public static final double ELEVATOR_GEAR_RATIO              = 25.0;
-    // public static final double ELEVATOR_INCHES_PER_COUNT        =
-    //    (ELEVATOR_CHAIN_PITCH * ELEVATOR_SPROCKET_TEETH) / (ELEVATOR_GEAR_RATIO * NEO_CPR);
+    public static final double ELEVATOR_CHAIN_PITCH             = 0.25;     // in inches
+    public static final double ELEVATOR_SPROCKET_TEETH          = 16.0;
+    public static final double ELEVATOR_GEAR_RATIO              = 25.0;
+    public static final double ELEVATOR_INCHES_PER_COUNT        =
+       (ELEVATOR_CHAIN_PITCH * ELEVATOR_SPROCKET_TEETH) / ELEVATOR_GEAR_RATIO;
     public static final double ELEVATOR_OFFSET                  = 0.0;
     public static final double ELEVATOR_MIN_POS                 = 0.0;
     public static final double ELEVATOR_MAX_POS                 = 29.0;

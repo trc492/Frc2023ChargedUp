@@ -219,7 +219,7 @@ public class RobotDrive
         }
 
         driveMotor.motor.enableVoltageCompensation(true);
-        driveMotor.setInverted(inverted);
+        driveMotor.setMotorInverted(inverted);
         driveMotor.setBrakeModeEnabled(true);
 
         return driveMotor;

@@ -718,7 +718,7 @@ public class FrcTest extends FrcTeleOp
                 else
                 {
                     // line 9
-                    double targetHeight = pipelineType == PipelineType.POLE? RobotParams.POLE_TAG_HEIGHT: 0.0;
+                    double targetHeight = pipelineType == PipelineType.POLE? RobotParams.LOW_POLE_TAPE_HEIGHT: 0.0;
                     TrcPose2D targetPose = robot.photonVision.getTargetPose2D(targetInfo, targetHeight);
 
                     if (targetPose != null)

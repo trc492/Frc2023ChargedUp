@@ -342,7 +342,7 @@ public class SwerveDrive extends RobotDrive
 
         steerMotor.motor.enableVoltageCompensation(true);
 
-        steerMotor.setInverted(inverted);
+        steerMotor.setMotorInverted(inverted);
         steerMotor.setBrakeModeEnabled(true);
 
         return steerMotor;

@@ -282,10 +282,10 @@ public class Robot extends FrcRobotBase
             rfDriveMotor = new FrcCANFalcon("rfDriveMotor", RobotParams.CANID_RIGHTFRONT_DRIVE);
             lbDriveMotor = new FrcCANFalcon("lbDriveMotor", RobotParams.CANID_LEFTBACK_DRIVE);
             rbDriveMotor = new FrcCANFalcon("rbDriveMotor", RobotParams.CANID_RIGHTBACK_DRIVE);
-            lfDriveMotor.setInverted(false);
-            rfDriveMotor.setInverted(true);
-            lbDriveMotor.setInverted(false);
-            rbDriveMotor.setInverted(true);
+            lfDriveMotor.setMotorInverted(false);
+            rfDriveMotor.setMotorInverted(true);
+            lbDriveMotor.setMotorInverted(false);
+            rbDriveMotor.setMotorInverted(true);
             lfSteerEnc = new FrcAnalogEncoder("lfSteerEnc", RobotParams.AIN_LEFTFRONT_STEER_ENCODER);
             rfSteerEnc = new FrcAnalogEncoder("rfSteerEnc", RobotParams.AIN_RIGHTFRONT_STEER_ENCODER);
             lbSteerEnc = new FrcAnalogEncoder("lbSteerEnc", RobotParams.AIN_LEFTBACK_STEER_ENCODER);
