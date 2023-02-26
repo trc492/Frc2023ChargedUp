@@ -62,7 +62,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private final TaskAutoScore autoScoreTask;
     private final TaskAutoBalance autoBalanceTask;
 
-    private ObjectType preloadedObjType;
+    private ObjectType loadedObjType;
     private int scoringLevel;
     private boolean useVision;
     private boolean doAutoBalance;  //if true, we auto-balance, if false, we try to score a third piece
@@ -145,7 +145,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                 // Also, need to add code to check match time in order to determine if we have enough time
                 // to fetch 2nd piece. If not, check if we can go balance.
                 case START:
-                    preloadedObjType = FrcAuto.autoChoices.getPreloadedObjType();
+                    loadedObjType = FrcAuto.autoChoices.getPreloadedObjType();
                     scoringLevel = FrcAuto.autoChoices.getScoringLevel();
                     useVision = FrcAuto.autoChoices.getUseVision();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
@@ -174,7 +174,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         nextState = State.GO_TO_CHARGING_STATION;
                     }
                     sm.waitForSingleEvent(event, nextState);
-                    autoScoreTask.autoAssistScoreObject(preloadedObjType, scoringLevel, useVision, event);
+                    autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                     piecesScored++;
                     break;
 
@@ -245,6 +245,12 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // Second game piece will be a cube, third game piece will be a cone.
                     autoPickupTask.autoAssistPickup(
                         piecesScored == 1? ObjectType.CUBE: ObjectType.CONE, useVision, event);
+                    if (piecesScored == 1) {
+                        loadedObjType = ObjectType.CUBE;
+                    }
+                    else {
+                        loadedObjType = ObjectType.CONE;
+                    }
                     //we dont need the folowing lines, keeping it just in case
                     // robot.robotDrive.purePursuitDrive.start(
                     //     null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -257,7 +263,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // already scored
                     if (piecesScored == 1)
                     {
-                        //drives to the right most pole from the right most game piece
+                        //drives to the score precondition position from the right most game piece
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
                         {
                             robot.robotDrive.purePursuitDrive.start(
@@ -273,7 +279,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     }
                     else if (piecesScored == 2)
                     {
-                        // drives to the right most shelf from the second right most game piece
+                        // drives to the score precondition position from the second right most game piece
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
                         {
                             robot.robotDrive.purePursuitDrive.start(

@@ -139,6 +139,9 @@ public class RobotParams
     public static final double CHARGING_STATION_CENTER_BLUE_Y   = GRID_TAPE_EDGE_BLUE_Y + 8.0*12.0 + 2.625;
     public static final double CHARGING_STATION_CENTER_RED_Y    = FIELD_LENGTH - CHARGING_STATION_CENTER_BLUE_Y;
 
+    public static final double 
+    CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X            = (RobotParams.CHARGING_STATION_CENTER_X + (RobotParams.CHARGING_STATION_WIDTH/2))/2;
+
     public static final double HIGH_POLE_HEIGHT                 = 3.0*12.0 + 10.0;
     public static final double LOW_POLE_HEIGHT                  = 2.0*12.0 + 10.0;
     public static final double HIGH_POLE_TAPE_HEIGHT            = HIGH_POLE_HEIGHT - 2.1875;
