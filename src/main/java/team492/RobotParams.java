@@ -247,6 +247,7 @@ public class RobotParams
     public static final int CAMERA_IMAGE_WIDTH                  = 320;
     public static final int CAMERA_IMAGE_HEIGHT                 = 240;
     public static final double CAMERA_DATA_TIMEOUT              = 0.5;  // 500ms
+    public static final double VISION_TIMEOUT                   = 0.5;  // 500ms
     public static final double VISION_TARGET_HEIGHT             = 104.0;// Inches from the floor
     public static final double CAMERA_Y_OFFSET                  = 0.0;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot

@@ -27,16 +27,18 @@ import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import team492.Robot;
+import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
 import team492.vision.PhotonVision.PipelineType;
 
-
+/**
+ * This class implements auto-assist task to pick up a cube or a cone from the ground.
+ */
 public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 {
     private static final String moduleName = "TaskAutoPickup";
@@ -46,7 +48,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         START,
         LOOK_FOR_TARGET,
         DRIVE_TO_TARGET,
-        INTAKE_OBJECT,
         PICKUP_OBJECT,
         DONE
     }   //enum State
@@ -66,11 +67,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcTimer timer;
-    private final TrcEvent event, armEvent, elevatorEvent;
+    private final TrcEvent event, intakeEvent;
     private String currOwner = null;
-    private DetectedObject detectedTarget;
-    private TrcPose2D robotPose;
 
     /**
      * Constructor: Create an instance of the object.
@@ -85,10 +83,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        timer = new TrcTimer(moduleName);
         event = new TrcEvent(moduleName);
-        armEvent = new TrcEvent(moduleName);
-        elevatorEvent = new TrcEvent(moduleName);
+        intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
     }   //TaskAutoPickup
 
     /**
@@ -146,7 +142,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                            robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
                            robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
                            robot.intake.acquireExclusiveAccess(ownerName));
-
         if (success)
         {
             currOwner = ownerName;
@@ -220,94 +215,73 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         TaskParams taskParams = (TaskParams) params;
 
-        switch(state)
+        switch (state)
         {
             case START:
-                // Setup subsystems.
                 robot.grabber.releaseAll();
-                robot.elevatorPidActuator.zeroCalibrate();
-                robot.armPidActuator.zeroCalibrate();
+                // TODO (Code Review): Why do zero calibration on elevator? We just need to do it once at the
+                // beginning of the match. Definitely do not do zero calibration on the arm. Arm has absolute
+                // encoder, zero calibration on the arm is to determine the arm's absolute zero. We just need
+                // to do it once as long as we do not muck around the encoder.
+                // robot.elevatorPidActuator.zeroCalibrate();
+                // robot.armPidActuator.zeroCalibrate();
                 sm.setState(taskParams.useVision? State.LOOK_FOR_TARGET: State.DRIVE_TO_TARGET);
                 break;
 
             case LOOK_FOR_TARGET:
                 robot.photonVision.setPipeline(
                     taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
-                robot.photonVision.detectBestObject(event, 0.5);
+                robot.photonVision.detectBestObject(event, RobotParams.VISION_TIMEOUT);
                 sm.waitForSingleEvent(event, State.DRIVE_TO_TARGET);
                 break;
             
             case DRIVE_TO_TARGET:
-                // Check if vision has detected a target.
-                robot.intake.extend();
-                robot.intake.setPower(currOwner, 0.0, 1.0, 1.0, 0.0);
-                // robot.intake.setTriggerEnabled(true, event);
-               TrcPose2D relative;
+                TrcPose2D target = null;
                 if (taskParams.useVision)
                 {
-                    robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
+                    // Check if vision has detected a target.
+                    // robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
                     //robot.robotDrive.setFieldPosition(robotPose, false); is this needed?
-                    detectedTarget = robot.photonVision.getLastDetectedBestObject();
+                    DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
                     if (detectedTarget != null)
                     {
-                        // DONE, needs review
-                        // TODO (Code Review): In your scenario, it is different from AutoScore because vision detecting
-                        // cones and cubes are not as reliable as AprilTag. So you should just get the relative position
-                        // of the target from the camera and use "incremental" purePursuit to approach the object.
-                        // The following code needs to be rewritten. Let's talk about how to approach this.
-                        TrcPose2D target;
-                        if (taskParams.objectType == ObjectType.CONE) {
-                            target = robot.photonVision.getTargetPose2D(detectedTarget, 12.81); //12 + 13/16
-                        } else {
-                            target = robot.photonVision.getTargetPose2D(detectedTarget, 9.5);  //9.5 +- 0.5
-                        }
-                        relative = target.relativeTo(robotPose);
+                        // Cone center height: 12+13/16, Cube center height: 9.5 +/- 0.5.
+                        target = robot.photonVision.getTargetPose2D(
+                            detectedTarget, taskParams.objectType == ObjectType.CONE? 12.81: 9.5);
+                        target.angle = 0.0;     // Just need x and y but maintain the current heading.
                     }
-                    else
-                    {
-                        // DONE, needs review
-                        // TODO (Code Review): Giving up so easily??? If vision doesn't see it, you may want to just go
-                        // forward for a distance hoping to grab it anyway.
-                        relative = new TrcPose2D(0, 60);
-                    }
+                }
+
+                if (target == null)
+                {
+                    // TODO (Code Review): 60 inches is 5 feet. Do you need to go that far?
+                    target = new TrcPose2D(0.0, 60.0);
+                }
+
+                robot.intake.extend();
+                robot.intake.setPower(currOwner, 0.0, 1.0, 1.0, 0.0);
+                robot.intake.setTriggerEnabled(true, intakeEvent);
+                sm.addEvent(intakeEvent);
+
+                robot.robotDrive.purePursuitDrive.start(
+                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, target);
+                sm.addEvent(event);
+
+                sm.waitForEvents(State.PICKUP_OBJECT);
+                break;
+
+            case PICKUP_OBJECT:
+                // TODO (Code Review): Picking up an object requires a sequence that Eric has published a document for.
+                // Please consult Eric's document. It's not as simple as this.
+                robot.intake.cancel(currOwner);
+                robot.intake.retract();
+
+                if (taskParams.objectType == ObjectType.CONE)
+                {
+                    robot.grabber.grabCone();
                 }
                 else
                 {
-                    // DONE, needs review
-                    // TODO (Code Review): Giving up so easily??? If vision doesn't see it, you may want to just go
-                    // forward for a distance hoping to grab it anyway.
-                    relative = new TrcPose2D(0, 60);
-                }
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    relative);
-                sm.waitForSingleEvent(event, State.PICKUP_OBJECT);
-                // sm.waitForEvents(State.PICKUP_OBJECT);
-                break;
-
-            // DONE, needs review
-            // TODO (Code Review): Intake (aka Weedwhacker) will have a sensor to detect if intake has something.
-            // Therefore, don't use a timer, use the sensor to generate the event instead. Also, turning on the
-            // weedwhacker must be accompanied by moving forward. Therefore, this state should really be combined
-            // with the previous state. The previous state should do the following:
-            // - Turn on the weedwhacker.
-            // - Check if vision has detected something.
-            // - If it did, use the detected distance info, otherwise just go forward some distance.
-            // - Do a waitForEvents for two events, purePursuit completed the "moving forward" or weedwhacker has
-            //   detected something in possession. In either case, move to the next state to "pick up".
-            //case INTAKE_OBJECT:
-            //    double pickupTime = 2.0;
-            //    robot.intake.extend();
-            //    sm.waitForSingleEvent(event, State.PICKUP_OBJECT);
-            //    timer.set(pickupTime, event);
-            //    break;
-            
-            case PICKUP_OBJECT:
-                robot.intake.cancel(currOwner);
-                robot.intake.retract();
-                if (taskParams.objectType == ObjectType.CONE) {
-                    robot.grabber.grabCone();
-                } else {
                     robot.grabber.grabCube();
                 }
                 sm.setState(State.DONE);
@@ -318,4 +292,5 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 break;
         }
     }   //runTaskState
-}
+
+}   //class TaskAutoPickup

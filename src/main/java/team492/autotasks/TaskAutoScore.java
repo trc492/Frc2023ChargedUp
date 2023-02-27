@@ -62,7 +62,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         ObjectType objectType;
         int scoreLevel;
         boolean useVision;
-        ScoreLocation scoreLocation; 
+        ScoreLocation scoreLocation;
+
         TaskParams(ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision)
         {
             this.objectType = objectType;
@@ -77,8 +78,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event;
     private String currOwner = null;
-    private DetectedObject detectedTarget;
-    private TrcPose2D robotPose;
 
     /**
      * Constructor: Create an instance of the object.
@@ -112,8 +111,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, scoreLevel=%d, useVision=%s, event=%s",
-                moduleName, objectType, scoreLevel, useVision, completionEvent);
+                funcName, "%s: objectType=%s, scoreLevel=%d, scoreLocation=%s, useVision=%s, event=%s",
+                moduleName, objectType, scoreLevel, scoreLocation, useVision, completionEvent);
         }
 
         startAutoTask(State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision), completionEvent);
@@ -152,7 +151,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                           (robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
                            robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
                            robot.armPidActuator.acquireExclusiveAccess(ownerName));
-
         if (success)
         {
             currOwner = ownerName;
@@ -221,7 +219,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     protected void runTaskState(
         Object params, State state, TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode, boolean slowPeriodicLoop)
     {
-        final String funcName = "runTaskState";
         TaskParams taskParams = (TaskParams) params;
         //
         // Preconditions:
@@ -230,32 +227,44 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         switch (state)
         {
             case START:
-                //if using vision, go to DETECT_TARGET state, otherwise go to PREPARE_TO_SCORE
                 sm.setState(taskParams.useVision? State.DETECT_TARGET : State.SCORE_OBJECT);
-                //
-                // Intentionally falling through to the DETECT_TARGET state.
-                //
+                break;
+
             case DETECT_TARGET:
                 robot.photonVision.setPipeline(PipelineType.APRILTAG);
-                robot.photonVision.detectBestObject(event, 0.5);
+                robot.photonVision.detectBestObject(event, RobotParams.VISION_TIMEOUT);
                 sm.waitForSingleEvent(event, State.ALIGN_TO_TARGET);
                 break;
 
             case ALIGN_TO_TARGET:
-                detectedTarget = robot.photonVision.getLastDetectedBestObject();
-                if (detectedTarget == null)
+                // We are using vision.
+                DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
+                if (detectedTarget != null)
                 {
-                    // TODO (Code Review): If vision doesn't see the target, what do you do?
-                    sm.setState(State.PREPARE_TO_SCORE);
-                }
-                else
-                {
-                    robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
+                    // Vision sees the target.
+                    TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
                     robot.robotDrive.setFieldPosition(robotPose, false);
                     robot.robotDrive.purePursuitDrive.start(
                         currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                         getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation));
                     sm.waitForSingleEvent(event, State.PREPARE_TO_SCORE);
+                }
+                else
+                {
+                    // Vision does not see the target.
+                    // TODO (Code Review): If not using vision or vision doesn't see the target, what do you do?
+                    // You should navigate to pre-determined location for scoring. Two possibilities:
+                    // 1) Scoring pre-load: don't need to go anywhere, you are just there.
+                    // 2) Scoring picked up objects either in auto or in teleop: you need to determine the scoring
+                    //    position according to your current location because according to pre-condition you should
+                    //    be right in front of your scoring "Grid" so you know where the nearest scoring position is.
+                    // Alternatively, if you said CmdAuto must call you with useVision == false for preloaded object
+                    // and must call you with useVision == true for subsequenet objects and TeleOp must call you with
+                    // useVision == true. Then your current logic is fine. If that's the case, you need to make sure
+                    // Nathan and Isaac know that and put that as pre-condition comment above.
+                    // However, if useVision == true and it doesn't see the target for some reason (i.e. vision failed),
+                    // your current logic is to score regardless without any navigation. This must be fixed.
+                    sm.setState(State.PREPARE_TO_SCORE);    // This need to be fixed.
                 }
                 break;
 
@@ -283,22 +292,25 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      *
      * @param aprilTagObj specifies the nearest detected AprilTag object.
      * @parm objectType specifies the game element type to score.
+     * @param scoreLocation specifies the scoring location (shelf, left pole or right pole).
      */
     private TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType, ScoreLocation scoreLocation)
     {
         Pose3d aprilTagPos = robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId());
         // Make the robot face the AprilTag.
         double heading = (aprilTagPos.getRotation().getZ() + 180.0) % 360.0; 
-        // For now, always score on the junction to the right (for red alliance).
         //x + 22 if red right or blue left
-        int xOffset = 0; 
-        if(objectType == ObjectType.CONE){
-            if((FrcAuto.autoChoices.getAlliance() == Alliance.Red && scoreLocation == ScoreLocation.RIGHT) || 
-                FrcAuto.autoChoices.getAlliance() == Alliance.Blue && scoreLocation == ScoreLocation.LEFT){
-                xOffset = 22; 
+        double xOffset = 0.0;
+        if(objectType == ObjectType.CONE)
+        {
+            if ((FrcAuto.autoChoices.getAlliance() == Alliance.Red && scoreLocation == ScoreLocation.RIGHT) ||
+                 FrcAuto.autoChoices.getAlliance() == Alliance.Blue && scoreLocation == ScoreLocation.LEFT)
+            {
+                xOffset = 22.0;
             }
-            else{
-                xOffset = -22; 
+            else
+            {
+                xOffset = -22.0;
             }
         }
         double x = aprilTagPos.getX() + xOffset;
