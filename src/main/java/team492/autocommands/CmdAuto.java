@@ -32,6 +32,7 @@ import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
+import team492.FrcAuto.ScoreLocation;
 import team492.autotasks.TaskAutoBalance;
 import team492.autotasks.TaskAutoPickup;
 import team492.autotasks.TaskAutoScore;
@@ -67,6 +68,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private boolean useVision;
     private boolean doAutoBalance;  //if true, we auto-balance, if false, we try to score a third piece
     private int piecesScored = 0;
+    private ScoreLocation scoreLocation;
 
     /**
      * Constructor: Create an instance of the object.
@@ -160,7 +162,8 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // a game piece in the robot, broadacasting grabberEvent when complete.
                     if (piecesScored == 0)
                     {
-                        // Scoring first game piece, doing delay next.
+                        // Scoring first game piece(cube, so scoreLocation is CENTER), doing delay next.
+                        
                         nextState = State.START_DELAY;
                     }
                     else if (piecesScored == 1 && !doAutoBalance)
@@ -174,7 +177,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         nextState = State.GO_TO_CHARGING_STATION;
                     }
                     sm.waitForSingleEvent(event, nextState);
-                    autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+                    autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, scoreLocation, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                     piecesScored++;
                     break;
 

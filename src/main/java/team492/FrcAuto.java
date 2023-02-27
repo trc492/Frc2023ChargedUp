@@ -79,6 +79,13 @@ public class FrcAuto implements TrcRobot.RobotMode
         CONE
     }   //enum ObjectType
 
+    public static enum ScoreLocation
+    {
+        LEFT, //pole to the left of the apriltag
+        MIDDLE, //for cubes
+        RIGHT //pole to the right of the aprilag 
+    }
+
     public static enum ScoringLevel
     {
         GROUND(0),

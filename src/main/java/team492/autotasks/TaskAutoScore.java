@@ -36,6 +36,7 @@ import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
+import team492.FrcAuto.ScoreLocation;
 import team492.vision.PhotonVision.PipelineType;
 
 /**
@@ -61,12 +62,13 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         ObjectType objectType;
         int scoreLevel;
         boolean useVision;
-
-        TaskParams(ObjectType objectType, int scoreLevel, boolean useVision)
+        ScoreLocation scoreLocation; 
+        TaskParams(ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision)
         {
             this.objectType = objectType;
             this.scoreLevel = scoreLevel;
             this.useVision = useVision;
+            this.scoreLocation = scoreLocation; 
         }   //TaskParams
     }   //class TaskParams
 
@@ -103,7 +105,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
     public void autoAssistScoreObject(
-        ObjectType objectType, int scoreLevel, boolean useVision, TrcEvent completionEvent)
+        ObjectType objectType, int scoreLevel, ScoreLocation scoreLocation, boolean useVision, TrcEvent completionEvent)
     {
         final String funcName = "autoAssistScoreObject";
 
@@ -114,7 +116,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 moduleName, objectType, scoreLevel, useVision, completionEvent);
         }
 
-        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, useVision), completionEvent);
+        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision), completionEvent);
     }   //autoAssistScoreObject
 
     /**
@@ -252,7 +254,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.robotDrive.setFieldPosition(robotPose, false);
                     robot.robotDrive.purePursuitDrive.start(
                         currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                        getScoringPos(detectedTarget, taskParams.objectType));
+                        getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation));
                     sm.waitForSingleEvent(event, State.PREPARE_TO_SCORE);
                 }
                 break;
@@ -282,13 +284,24 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      * @param aprilTagObj specifies the nearest detected AprilTag object.
      * @parm objectType specifies the game element type to score.
      */
-    private TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType)
+    private TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType, ScoreLocation scoreLocation)
     {
         Pose3d aprilTagPos = robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId());
         // Make the robot face the AprilTag.
         double heading = (aprilTagPos.getRotation().getZ() + 180.0) % 360.0; 
         // For now, always score on the junction to the right (for red alliance).
-        double x = aprilTagPos.getX() + (objectType == ObjectType.CONE? 22.0 : 0.0);
+        //x + 22 if red right or blue left
+        int xOffset = 0; 
+        if(objectType == ObjectType.CONE){
+            if((FrcAuto.autoChoices.getAlliance() == Alliance.Red && scoreLocation == ScoreLocation.RIGHT) || 
+                FrcAuto.autoChoices.getAlliance() == Alliance.Blue && scoreLocation == ScoreLocation.LEFT){
+                xOffset = 22; 
+            }
+            else{
+                xOffset = -22; 
+            }
+        }
+        double x = aprilTagPos.getX() + xOffset;
         double y = aprilTagPos.getY() +
                    (FrcAuto.autoChoices.getAlliance() == Alliance.Blue?
                         RobotParams.STARTPOS_BLUE_Y: RobotParams.STARTPOS_RED_Y);
