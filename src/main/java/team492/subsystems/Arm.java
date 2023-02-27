@@ -109,7 +109,7 @@ public class Arm
             actuatorMotor.motor.getSelectedSensorPosition());
     }   //toString
 
-    void configMotionMagic(TalonSRX motor)
+    private void configMotionMagic(TalonSRX motor)
     {
         // Set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %).
         motor.configNeutralDeadband(0.001, 30);

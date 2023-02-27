@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
-import com.fasterxml.jackson.core.sym.Name;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcOpenCvDetector;

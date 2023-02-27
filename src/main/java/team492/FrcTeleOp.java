@@ -35,6 +35,7 @@ import team492.drivebases.RobotDrive;
  */
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
+    private static final String moduleName = "FrcTeleOp";
     //
     // Global objects.
     //
@@ -490,14 +491,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON6:
                 if (robot.arm != null && pressed)
                 {
-                    robot.armPidActuator.presetPositionUp();
+                    // Must acquire ownership to override analog control of the arm.
+                    robot.armPidActuator.presetPositionUp(moduleName);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
                 if (robot.arm != null && pressed)
                 {
-                    robot.armPidActuator.presetPositionDown();
+                    // Must acquire ownership to override analog control of the arm.
+                    robot.armPidActuator.presetPositionDown(moduleName);
                 }
                 break;
 
@@ -514,14 +517,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON10:
                 if (robot.elevator != null && pressed)
                 {
-                    robot.elevatorPidActuator.presetPositionDown();
+                    // Must acquire ownership to override analog control of the elevator.
+                    robot.elevatorPidActuator.presetPositionDown(moduleName);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
                 if (robot.elevator != null && pressed)
                 {
-                    robot.elevatorPidActuator.presetPositionUp();
+                    // Must acquire ownership to override analog control of the elevator.
+                    robot.elevatorPidActuator.presetPositionUp(moduleName);
                 }
                 break;
 
