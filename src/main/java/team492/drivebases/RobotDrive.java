@@ -237,7 +237,7 @@ public class RobotDrive
         double mag;
         double newMag;
 
-        if (RobotParams.Preferences.useXboxController)
+        if (RobotParams.Preferences.useDriverXboxController)
         {
             x = robot.driverController.getLeftXWithDeadband(false);
             y = robot.driverController.getLeftYWithDeadband(false);

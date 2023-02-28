@@ -40,7 +40,8 @@ public class RobotParams
     public static class Preferences
     {
         // Inputs
-        public static final boolean useXboxController           = true;
+        public static final boolean useDriverXboxController     = true;
+        public static final boolean useOperatorXboxController   = false;
         public static final boolean useButtonPanels             = true;
         public static final boolean doOneStickDrive             = false;
         // Sensors
@@ -84,7 +85,7 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSubsystems             = true;
+        public static final boolean debugSubsystems             = false;
         public static final boolean debugSwerveSteering         = false;
         public static final boolean debugArmEncoder             = false;
         public static final boolean debugLoopTime               = false;
@@ -151,6 +152,7 @@ public class RobotParams
     //
     public static final int JSPORT_DRIVER_LEFTSTICK             = 0;
     public static final int JSPORT_DRIVER_RIGHTSTICK            = 1;
+    public static final int XBOX_OPERATORCONTROLLER             = 1;
     public static final int JSPORT_OPERATORSTICK                = 2;
     public static final int JSPORT_BUTTON_PANEL                 = 3;
     public static final int JSPORT_SWITCH_PANEL                 = 4;
@@ -391,8 +393,8 @@ public class RobotParams
     public static final int NEO_CPR                             = 42;
     public static final double NEO_NOLOAD_RPM                   = 5676.0;
     public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
-    public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = false;
-    public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = false;
+    public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = true;
+    public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = true;
     public static final double ELEVATOR_CHAIN_PITCH             = 0.25;     // in inches
     public static final double ELEVATOR_SPROCKET_TEETH          = 16.0;
     public static final double ELEVATOR_GEAR_RATIO              = 25.0;
@@ -418,7 +420,7 @@ public class RobotParams
     public static final int ARM_ENCODER_CPR                     = 4096;
     public static final int ARM_ZERO                            = 1635;
 
-    public static final boolean ARM_MOTOR_INVERTED              = false;
+    public static final boolean ARM_MOTOR_INVERTED              = true;
     public static final boolean ARM_LOWER_LIMIT_INVERTED        = true;
     public static final boolean ARM_UPPER_LIMIT_INVERTED        = true;
     public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
@@ -437,5 +439,9 @@ public class RobotParams
     {
         -30.0, -15.0, 0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0
     };
+
+    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.3; 
+    public static final double INTAKE_CONE_PICKUP_POWER         = 0.8;
+    public static final double INTAKE_SPIT_POWER                = -0.5; 
 
 }   //class RobotParams

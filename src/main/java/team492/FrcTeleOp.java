@@ -25,6 +25,7 @@ package team492;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
+import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.ObjectType;
@@ -41,7 +42,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private boolean controlsEnabled = false;
-    private boolean armControl = false;
+    private boolean intakeReversed = false;
+    private int elevatorPresetIndex = 0;
+    private boolean fastIntake = false; 
 
     /**
      * Constructor: Create an instance of the object.
@@ -79,7 +82,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         //
         if (robot.robotDrive != null)
         {
-            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.ROBOT);
+            robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
         }
     }   //startMode
 
@@ -165,23 +168,50 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 if (RobotParams.Preferences.useSubsystems)
                 {
-                    if (robot.elevator != null && !armControl)
+                    if (robot.elevator != null)
                     {
-                        double elevatorPower = robot.operatorStick.getYWithDeadband(true);
+                        double elevatorPower;
+                        if (RobotParams.Preferences.useOperatorXboxController)
+                        {
+                            elevatorPower = robot.operatorController.getRightYWithDeadband(true);
+                        }
+                        else
+                        {
+                            elevatorPower = robot.operatorStick.getYWithDeadband(true);
+                        }
+                        // robot.elevatorPidActuator.setPower(elevatorPower);
                         robot.elevatorPidActuator.setPidPower(elevatorPower, true);
                     }
 
-                    if (robot.arm != null && armControl)
+                    if (robot.arm != null)
                     {
-                        double armPower = robot.operatorStick.getYWithDeadband(true) * 0.5;
-                        robot.armPidActuator.setPidPower(armPower, true);
+                        double armPower;
+                        if(RobotParams.Preferences.useOperatorXboxController)
+                        {
+                            armPower = robot.operatorController.getLeftYWithDeadband(true);
+                        }
+                        else
+                        {
+                            armPower = -robot.operatorStick.getZWithDeadband(true);
+                        }
+                        robot.armPidActuator.setPower(Math.min(0.25, armPower));
+                        // arm min power -0.2
+                        // robot.armPidActuator.setPidPower(armPower, true);
                     }
+
 
                     if (robot.intake != null)
                     {
-                        double intakeLeftPower = robot.driverController.getLeftTriggerWithDeadband(true);
-                        double intakeRightPower = robot.driverController.getRightTriggerWithDeadband(true);
-                        robot.intake.setPower(intakeLeftPower, intakeRightPower);
+                        // double intakeLeftPower = robot.operatorController.getLeftTriggerWithDeadband(true);
+                        // double intakeRightPower = robot.operatorController.getRightTriggerWithDeadband(true);
+                        // if(intakeRightPower > 0 ){
+                        //     robot.intake.setPower(RobotParams.INTAKE_CONE_PICKUP_POWER, RobotParams.INTAKE_CONE_PICKUP_POWER);
+                        // }
+                        // if(intakeLeftPower > 0){
+                        //     robot.intake.setPower(RobotParams.INTAKE_CUBE_PICKUP_POWER, RobotParams.INTAKE_CUBE_PICKUP_POWER);
+
+                        // }
+
                     }
                 }
             }
@@ -204,7 +234,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     {
         controlsEnabled = enabled;
 
-        if (RobotParams.Preferences.useXboxController)
+        if (RobotParams.Preferences.useDriverXboxController)
         {
             robot.driverController.setButtonHandler(enabled? this::driverControllerButtonEvent: null);
         }
@@ -214,7 +244,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.rightDriveStick.setButtonHandler(enabled? this::rightDriveStickButtonEvent: null);
         }
 
-        robot.operatorStick.setButtonHandler(enabled? this::operatorStickButtonEvent: null);
+        if (RobotParams.Preferences.useOperatorXboxController)
+        {
+            robot.operatorController.setButtonHandler(enabled? this::operatorControllerButtonEvent: null);
+        }
+        else
+        {
+            robot.operatorStick.setButtonHandler(enabled? this::operatorStickButtonEvent: null);
+        }
 
         if (RobotParams.Preferences.useButtonPanels)
         {
@@ -261,6 +298,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         switch (button)
         {
+            // Reset Field-Oriented
             case FrcXboxController.BUTTON_A:
                 if (pressed)
                 {
@@ -432,21 +470,22 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         switch (button)
         {
+            //gathers cones, cubes into the intake 
+            //if pressed, extends intake if its not extended, spins intake
+            //otherwise stops
             case FrcJoystick.LOGITECH_TRIGGER:
                 if (pressed)
                 {
-                    robot.autoPickup.autoAssistPickup(ObjectType.CUBE, false, null);
+                    robot.intake.extend();
+                    robot.intake.setPower(fastIntake? RobotParams.INTAKE_CONE_PICKUP_POWER: RobotParams.INTAKE_CUBE_PICKUP_POWER);
+                }
+                else
+                {
+                    robot.intake.cancel();
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
-                if (robot.arm != null)
-                {
-                    armControl = pressed;
-                }
-                break;
-
-            case FrcJoystick.LOGITECH_BUTTON3:
                 if (robot.intake != null && pressed)
                 {
                     if (robot.intake.isExtended())
@@ -460,6 +499,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
 
+            case FrcJoystick.LOGITECH_BUTTON3:
+                fastIntake = pressed; 
+
+                break;
+            
             case FrcJoystick.LOGITECH_BUTTON4:
                 if (robot.grabber != null && pressed)
                 {
@@ -473,7 +517,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
                 break;
-
+            
             case FrcJoystick.LOGITECH_BUTTON5:
                 if (robot.grabber != null && pressed)
                 {
@@ -487,15 +531,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
                 break;
-
+            //raises the arm and elevator one preset position
             case FrcJoystick.LOGITECH_BUTTON6:
                 if (robot.arm != null && pressed)
                 {
                     // Must acquire ownership to override analog control of the arm.
                     robot.armPidActuator.presetPositionUp(moduleName);
+                    // robot.elevatorPidActuator.presetPositionUp();
                 }
                 break;
-
+            //lowers the arm and elevator one preset position 
             case FrcJoystick.LOGITECH_BUTTON7:
                 if (robot.arm != null && pressed)
                 {
@@ -504,13 +549,30 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
 
+            //spits objects out 
             case FrcJoystick.LOGITECH_BUTTON8:
+                if (pressed)
+                {
+                    robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
+                }
+                else
+                {
+                    robot.intake.cancel();
+                }
+                // if(pressed){
+                //     robot.intake.acquireExclusiveAccess("teleop");
+                //     robot.intake.setPower("teleop", 0.0, -RobotParams.INTAKE_LEFT_PICKUP_POWER, -RobotParams.INTAKE_RIGHT_PICKUP_POWER, 0.0);
+                // }
+                // else{
+                //     robot.intake.releaseExclusiveAccess("teleop");
+                //     robot.intake.cancel("teleop");
+                // }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
                 if (robot.elevator != null && pressed)
                 {
-                    robot.elevatorPidActuator.zeroCalibrate();
+                        robot.elevatorPidActuator.zeroCalibrate();
                 }
                 break;
 
@@ -529,11 +591,105 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.elevatorPidActuator.presetPositionUp(moduleName);
                 }
                 break;
-
+            //turtle mode, use this while driving 
             case FrcJoystick.LOGITECH_BUTTON12:
+                robot.intake.retract(); 
+                robot.elevatorPidActuator.setPresetPosition(moduleName, 0.5, 0, false, 0.0, null, 0.0);
+                robot.armPidActuator.setPresetPosition(moduleName, 0, 0, false, 0.0, null, 0.0);
+
                 break;
         }
     }   //operatorStickButtonEvent
+
+    private void operatorControllerButtonEvent(int button, boolean pressed)
+    {
+        robot.dashboard.displayPrintf(
+            8, "OperatorController: button=0x%04x %s", button, pressed ? "pressed" : "released");
+
+        switch (button)
+        {
+            case FrcXboxController.BUTTON_A:
+
+                break;
+
+            case FrcXboxController.BUTTON_B:
+                break;
+
+            case FrcXboxController.BUTTON_X:
+                if (robot.grabber != null && pressed)
+                {
+                    if(robot.grabber.grabbedCube())
+                    {
+                        robot.grabber.releaseCube();
+                    }
+                    else
+                    {
+                        robot.grabber.grabCube();
+                    }
+                }
+                break;
+
+            case FrcXboxController.BUTTON_Y:
+                if (robot.grabber != null && pressed)
+                {
+                    if(robot.grabber.grabbedCone())
+                    {
+                        robot.grabber.releaseCone();
+                    }
+                    else
+                    {
+                        robot.grabber.grabCone();
+                    }
+                }
+                break;
+            case FrcXboxController.LEFT_BUMPER:
+                  intakeReversed = pressed;  
+                
+                break;
+
+            case FrcXboxController.RIGHT_BUMPER:
+                if (robot.intake != null && pressed)
+                {
+                    if(robot.intake.isExtended())
+                    {
+                        robot.intake.retract();
+                    }
+                    else
+                    {
+                        robot.intake.extend();
+                    }
+                }
+                break;
+
+            case FrcXboxController.BACK:
+                if (pressed)
+                {
+                    if(elevatorPresetIndex >= 0)
+                    {
+                        elevatorPresetIndex--;
+                    }
+                    robot.elevatorPidActuator.setTarget(RobotParams.elevatorPresets[elevatorPresetIndex], true);
+                }
+                break;
+
+            case FrcXboxController.START:
+                break;
+
+            case FrcXboxController.LEFT_STICK_BUTTON:
+                break;
+
+            case FrcXboxController.RIGHT_STICK_BUTTON:
+                if (pressed)
+                {
+                    if(elevatorPresetIndex < 6)
+                    {
+                        elevatorPresetIndex++;
+                    }
+                    robot.elevatorPidActuator.setTarget(RobotParams.elevatorPresets[elevatorPresetIndex], true);
+                }
+                break; 
+        }  
+    }
 
     /**
      * This method is called when a button panel button event is detected.
@@ -549,6 +705,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
+                //prepare for pickup
+                    //extend intake 
+                    //lower the arm and elevator to min position 
+                    
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
@@ -577,9 +737,26 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
+                if (pressed)
+                {
+                    FrcCANTalon armMotor = ((FrcCANTalon)robot.armPidActuator.getMotor());
+                    armMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, (int) robot.armPidActuator.getPosition());
+                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
+                if (robot.elevator != null && pressed && robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
+                {
+                    if(robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
+                    {
+                        robot.elevatorPidActuator.zeroCalibrate("TeleOp");
+                    }
+                    else
+                    {
+                        robot.dashboard.displayPrintf(
+                            2, "elevator could not get owner");
+                    }
+                }
                 break;
         }
     }   //buttonPanelButtonEvent

@@ -135,6 +135,11 @@ public class Intake implements TrcExclusiveSubsystem
         setPower(null, 0.0, leftPower, rightPower, 0.0);
     }   //setPower
 
+    public void setPower(double power)
+    {
+        setPower(null, 0.0, power, power, 0.0);
+    }   //setPower
+
     public void extend()
     {
         intakePneumatic.extend();
