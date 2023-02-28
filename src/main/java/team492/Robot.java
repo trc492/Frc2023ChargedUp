@@ -55,6 +55,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import team492.autotasks.TaskAutoBalance;
 import team492.autotasks.TaskAutoPickup;
+import team492.autotasks.TaskAutoScore;
 import team492.drivebases.SwerveDrive;
 import team492.subsystems.Arm;
 import team492.subsystems.Elevator;
@@ -87,8 +88,8 @@ public class Robot extends FrcRobotBase
     public FrcJoystick operatorStick;
     public FrcJoystick buttonPanel;
     public FrcJoystick switchPanel;
-    public FrcXboxController operatorController;
     public FrcXboxController driverController;
+    public FrcXboxController operatorController;
     //
     // Sensors.
     //
@@ -126,8 +127,10 @@ public class Robot extends FrcRobotBase
     public TrcPidActuator armPidActuator;
     public Intake intake; 
     public Grabber grabber;
-    public TaskAutoBalance autoBalance;
-    public TaskAutoPickup autoPickup;
+
+    public TaskAutoScore autoScoreTask;
+    public TaskAutoPickup autoPickupTask;
+    public TaskAutoBalance autoBalanceTask;
 
     /**
      * Constructor: Create an instance of the object.
@@ -161,7 +164,7 @@ public class Robot extends FrcRobotBase
         //
         if (RobotParams.Preferences.useDriverXboxController)
         {
-            driverController = new FrcXboxController("DriverController", RobotParams.XBOX_DRIVERCONTROLLER);
+            driverController = new FrcXboxController("DriverController", RobotParams.XBOX_DRIVER_CONTROLLER);
             driverController.setLeftYInverted(true);
             driverController.setRightYInverted(true);
         }
@@ -172,9 +175,11 @@ public class Robot extends FrcRobotBase
             rightDriveStick = new FrcJoystick("DriverRightStick", RobotParams.JSPORT_DRIVER_RIGHTSTICK);
             rightDriveStick.setYInverted(true);
         }
-        if(RobotParams.Preferences.useOperatorXboxController)
+
+        if (RobotParams.Preferences.useOperatorXboxController)
         {
-            operatorController = new FrcXboxController("OperatorController", RobotParams.XBOX_OPERATORCONTROLLER);
+            operatorController = new FrcXboxController("OperatorController", RobotParams.XBOX_OPERATOR_CONTROLLER);
+            operatorController.setLeftYInverted(true);
             operatorController.setRightYInverted(true);
         }
         else
@@ -273,8 +278,10 @@ public class Robot extends FrcRobotBase
                     grabber = new Grabber();
                     grabber.releaseAll();
                 }
-                autoBalance = new TaskAutoBalance("TaskAutoBalance", this, globalTracer);
-                autoPickup = new TaskAutoPickup("TaskAutoPickup", this, globalTracer);
+
+                autoScoreTask = new TaskAutoScore("TaskAutoScore", this, globalTracer);
+                autoPickupTask = new TaskAutoPickup("TaskAutoPickup", this, globalTracer);
+                autoBalanceTask = new TaskAutoBalance("TaskAutoBalance", this, globalTracer);
             }
         }
         //

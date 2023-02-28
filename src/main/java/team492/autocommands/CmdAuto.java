@@ -33,9 +33,6 @@ import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
-import team492.autotasks.TaskAutoBalance;
-import team492.autotasks.TaskAutoPickup;
-import team492.autotasks.TaskAutoScore;
 
 public class CmdAuto implements TrcRobot.RobotCommand
 {
@@ -59,9 +56,6 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private final TrcTimer timer;
     private final TrcEvent event;
     private final TrcStateMachine<State> sm;
-    private final TaskAutoPickup autoPickupTask;
-    private final TaskAutoScore autoScoreTask;
-    private final TaskAutoBalance autoBalanceTask;
 
     private ObjectType loadedObjType;
     private int scoringLevel;
@@ -84,9 +78,6 @@ public class CmdAuto implements TrcRobot.RobotCommand
         event = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
-        autoPickupTask = new TaskAutoPickup(moduleName, robot, robot.globalTracer);
-        autoScoreTask = new TaskAutoScore(moduleName, robot, robot.globalTracer);
-        autoBalanceTask = new TaskAutoBalance(moduleName, robot, robot.globalTracer);
     }   //CmdAuto
 
     //
@@ -110,9 +101,9 @@ public class CmdAuto implements TrcRobot.RobotCommand
     @Override
     public void cancel()
     {
-        // autoPickupTask.autoAssistCancel();
-        autoScoreTask.autoAssistCancel();
-        autoBalanceTask.autoAssistCancel();
+        robot.autoScoreTask.autoAssistCancel();
+        robot.autoPickupTask.autoAssistCancel();
+        robot.autoBalanceTask.autoAssistCancel();
         robot.robotDrive.purePursuitDrive.setMoveOutputLimit(RobotParams.PPD_MOVE_DEF_OUTPUT_LIMIT);
         robot.robotDrive.cancel();
         sm.stop();
@@ -165,22 +156,27 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         // Scoring first game piece(cube, so scoreLocation is CENTER), doing delay next.
                         
                         nextState = State.START_DELAY;
-                        autoScoreTask.autoAssistScorePreloadNoVision(loadedObjType, scoringLevel, scoreLocation, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+                        //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+                        robot.autoScoreTask.autoAssistScorePreloadNoVision(
+                            loadedObjType, scoringLevel, scoreLocation, event);
 
                     }
                     else if (piecesScored == 1 && !doAutoBalance)
                     {
                         // Scoring second game piece, going for third next.
                         nextState = State.GO_TO_GAME_PIECE;
-                        autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, scoreLocation, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+                        //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+                        robot.autoScoreTask.autoAssistScoreObject(
+                            loadedObjType, scoringLevel, scoreLocation, useVision, event);
 
                     }
                     else
                     {
                         // Scoring second game piece, going to the charging station next.
                         nextState = State.GO_TO_CHARGING_STATION;
-                        autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, scoreLocation, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
-
+                        //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+                        robot.autoScoreTask.autoAssistScoreObject(
+                            loadedObjType, scoringLevel, scoreLocation, useVision, event);
                     }
                     sm.waitForSingleEvent(event, nextState);
                     piecesScored++;
@@ -212,14 +208,14 @@ public class CmdAuto implements TrcRobot.RobotCommand
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 0.0),
-                                new TrcPose2D(RobotParams.GAME_PIECE_1_X_CUBE, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0));
+                                new TrcPose2D(RobotParams.GAME_PIECE_1_X, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0));
                         }
                         else
                         {
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 180.0),
-                                new TrcPose2D(RobotParams.GAME_PIECE_1_X_CUBE, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
+                                new TrcPose2D(RobotParams.GAME_PIECE_1_X, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
                         }
                     }
                     else if (piecesScored == 2)
@@ -232,7 +228,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 0.0),
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 220.0, 0.0),
-                                new TrcPose2D(RobotParams.GAME_PIECE_2_X_CONE, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0));
+                                new TrcPose2D(RobotParams.GAME_PIECE_2_X, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0));
                         }
                         else
                         {
@@ -240,7 +236,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                                 event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 180.0),
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 429.0, 180.0),
-                                new TrcPose2D(RobotParams.GAME_PIECE_2_X_CONE, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
+                                new TrcPose2D(RobotParams.GAME_PIECE_2_X, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
                         }
                     }
                     sm.waitForSingleEvent(event, State.PICKUP_GAME_PIECE);
@@ -251,7 +247,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // we already at the correct location
                     sm.waitForSingleEvent(event, State.GO_TO_SCORE_POSITION);
                     // Second game piece will be a cube, third game piece will be a cone.
-                    autoPickupTask.autoAssistPickup(
+                    robot.autoPickupTask.autoAssistPickup(
                         piecesScored == 1? ObjectType.CUBE: ObjectType.CONE, useVision, event);
                     if (piecesScored == 1) {
                         loadedObjType = ObjectType.CUBE;
@@ -326,7 +322,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     break;
 
                 case AUTO_BALANCE:
-                    autoBalanceTask.autoAssistBalance(event);
+                    robot.autoBalanceTask.autoAssistBalance(event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 

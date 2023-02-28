@@ -127,10 +127,10 @@ public class RobotParams
     //
     // Game element locations and dimensions.
     //
-    public static final double GAME_PIECE_1_X_CUBE              = -36.25;
-    public static final double GAME_PIECE_2_X_CONE              = GAME_PIECE_1_X_CUBE - 48.0;
-    public static final double GAME_PIECE_3_X_CONE              = GAME_PIECE_2_X_CONE - 48.0;
-    public static final double GAME_PIECE_4_X_CUBE              = GAME_PIECE_3_X_CONE - 48.0;
+    public static final double GAME_PIECE_1_X                   = -36.25;
+    public static final double GAME_PIECE_2_X                   = GAME_PIECE_1_X - 48.0;
+    public static final double GAME_PIECE_3_X                   = GAME_PIECE_2_X - 48.0;
+    public static final double GAME_PIECE_4_X                   = GAME_PIECE_3_X - 48.0;
     public static final double GAME_PIECE_BLUE_Y                = GRID_TAPE_EDGE_BLUE_Y + 18*12.0 + 8.0;
     public static final double GAME_PIECE_RED_Y                 = FIELD_LENGTH - GAME_PIECE_BLUE_Y;
 
@@ -140,8 +140,8 @@ public class RobotParams
     public static final double CHARGING_STATION_CENTER_BLUE_Y   = GRID_TAPE_EDGE_BLUE_Y + 8.0*12.0 + 2.625;
     public static final double CHARGING_STATION_CENTER_RED_Y    = FIELD_LENGTH - CHARGING_STATION_CENTER_BLUE_Y;
 
-    public static final double 
-    CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X            = (RobotParams.CHARGING_STATION_CENTER_X + (RobotParams.CHARGING_STATION_WIDTH/2))/2;
+    public static final double CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X =
+        (RobotParams.CHARGING_STATION_CENTER_X + RobotParams.CHARGING_STATION_WIDTH/2.0)/2.0;
 
     public static final double HIGH_POLE_HEIGHT                 = 3.0*12.0 + 10.0;
     public static final double LOW_POLE_HEIGHT                  = 2.0*12.0 + 10.0;
@@ -150,13 +150,13 @@ public class RobotParams
     //
     // Joystick ports.
     //
+    public static final int XBOX_DRIVER_CONTROLLER              = 0;
     public static final int JSPORT_DRIVER_LEFTSTICK             = 0;
     public static final int JSPORT_DRIVER_RIGHTSTICK            = 1;
-    public static final int XBOX_OPERATORCONTROLLER             = 1;
+    public static final int XBOX_OPERATOR_CONTROLLER            = 2;
     public static final int JSPORT_OPERATORSTICK                = 2;
     public static final int JSPORT_BUTTON_PANEL                 = 3;
     public static final int JSPORT_SWITCH_PANEL                 = 4;
-    public static final int XBOX_DRIVERCONTROLLER               = 5;
     //
     // CAN IDs.
     //
@@ -427,6 +427,8 @@ public class RobotParams
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_MIN_POS                      = ARM_OFFSET;
     public static final double ARM_MAX_POS                      = 90.0;
+    public static final double ARM_LOW_POS                      = 0.0;
+    public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_KP                           = 0.018;
     public static final double ARM_KI                           = 0.0;
     public static final double ARM_KD                           = 0.0018;
@@ -435,8 +437,8 @@ public class RobotParams
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
-    public static final double ARM_PICKUP_POSITION              = 0; //need to tune this value 
-    public static final double ARM_TRAVEL_POSITION              = 5.0; //need to tune this value 
+    public static final double ARM_PICKUP_POSITION              = 0.0;  //need to tune this value 
+    public static final double ARM_TRAVEL_POSITION              = 5.0;  //need to tune this value 
     public static final double[] armPresets                     =
     {
         -30.0, -15.0, ARM_PICKUP_POSITION, ARM_TRAVEL_POSITION, 30.0, 45.0, 60.0, 75.0, 90.0
