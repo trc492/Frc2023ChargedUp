@@ -595,7 +595,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
-                //turtle mode, use this while driving 
+                //turtle mode, use this while driving
                 robot.intake.retract();
                 // TODO (Code Review): Don't use preset, just do setTarget.
                 // robot.elevatorPidActuator.setPresetPosition(moduleName, 0.5, 0, false, 0.0, null, 0.0);
@@ -654,7 +654,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.LEFT_BUMPER:
-                intakeReversed = pressed;  
+                intakeReversed = pressed;
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
@@ -718,8 +718,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
                 //prepare for pickup
-                //extend intake 
-                //lower the arm and elevator to min position 
+                //extend intake
+                //lower the arm and elevator to min position
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:

@@ -153,21 +153,20 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // a game piece in the robot, broadacasting grabberEvent when complete.
                     if (piecesScored == 0)
                     {
-                        // Scoring first game piece(cube, so scoreLocation is CENTER), doing delay next.
-                        
+                        // Scoring first game piece (cube, so scoreLocation is MIDDLE), doing delay next.
                         nextState = State.START_DELAY;
                         //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
-                        robot.autoScoreTask.autoAssistScorePreloadNoVision(
-                            loadedObjType, scoringLevel, scoreLocation, event);
-
+                        robot.autoScoreTask.autoAssistScoreObject(
+                            loadedObjType, scoringLevel, ScoreLocation.MIDDLE, false, true, event);
                     }
                     else if (piecesScored == 1 && !doAutoBalance)
                     {
                         // Scoring second game piece, going for third next.
                         nextState = State.GO_TO_GAME_PIECE;
                         //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+                        // Code Review: what is the loadedObjType for the 2nd piece? Who sets scoreLocation?
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoringLevel, scoreLocation, useVision, event);
+                            loadedObjType, scoringLevel, scoreLocation, useVision, false, event);
 
                     }
                     else
@@ -176,7 +175,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         nextState = State.GO_TO_CHARGING_STATION;
                         //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoringLevel, scoreLocation, useVision, event);
+                            loadedObjType, scoringLevel, scoreLocation, useVision, false, event);
                     }
                     sm.waitForSingleEvent(event, nextState);
                     piecesScored++;

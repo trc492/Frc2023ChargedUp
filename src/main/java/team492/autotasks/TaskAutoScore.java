@@ -61,17 +61,18 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     {
         ObjectType objectType;
         int scoreLevel;
-        boolean useVision;
-        boolean isPreload; 
         ScoreLocation scoreLocation;
+        boolean useVision;
+        boolean isPreload;
 
-        TaskParams(ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision, boolean isPreload)
+        TaskParams(
+            ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision, boolean isPreload)
         {
             this.objectType = objectType;
             this.scoreLevel = scoreLevel;
+            this.scoreLocation = scoreLocation;
             this.useVision = useVision;
-            this.isPreload = isPreload; 
-            this.scoreLocation = scoreLocation; 
+            this.isPreload = isPreload;
         }   //TaskParams
     }   //class TaskParams
 
@@ -80,7 +81,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event;
     private String currOwner = null;
-    private boolean isPreload = false; 
 
     /**
      * Constructor: Create an instance of the object.
@@ -97,40 +97,32 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         this.msgTracer = msgTracer;
         event = new TrcEvent(moduleName);
     }   //TaskAutoScore
-    
-    public void autoAssistScorePreloadNoVision(ObjectType objectType, int scoreLevel, ScoreLocation scoreLocation, TrcEvent completionEvent){
-        final String funcName = "autoAssistScorePreloadNoVision";
 
-        if (msgTracer != null)
-        {
-            msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, scoreLevel=%d, scoreLocation=%s, useVision=%s, event=%s",
-                moduleName, objectType, scoreLevel, scoreLocation, false, completionEvent);
-        }
-
-        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, scoreLocation, false, true), completionEvent);
-    }
     /**
      * This method starts the auto-assist operation to score an object.
      *
      * @param objectType specifies the object type to score (cone or cube).
      * @param scoreLevel specifies the level to score a cone.
+     * @param scoreLocation specifies the score location (Left Pole, Shelf, Right Pole).
      * @param useVision specifies true to use vision assist, false otherwise.
+     * @param isPreload specifies true to score the preloaded object.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
     public void autoAssistScoreObject(
-        ObjectType objectType, int scoreLevel, ScoreLocation scoreLocation, boolean useVision, TrcEvent completionEvent)
+        ObjectType objectType, int scoreLevel, ScoreLocation scoreLocation, boolean useVision, boolean isPreload,
+        TrcEvent completionEvent)
     {
         final String funcName = "autoAssistScoreObject";
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, scoreLevel=%d, scoreLocation=%s, useVision=%s, event=%s",
-                moduleName, objectType, scoreLevel, scoreLocation, useVision, completionEvent);
+                funcName, "%s: objectType=%s, scoreLevel=%d, scoreLocation=%s, useVision=%s, isPreload=%s, event=%s",
+                moduleName, objectType, scoreLevel, scoreLocation, useVision, isPreload, completionEvent);
         }
 
-        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision, false), completionEvent);
+        startAutoTask(
+            State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision, isPreload), completionEvent);
     }   //autoAssistScoreObject
 
     /**
@@ -242,13 +234,17 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         switch (state)
         {
             case START:
-                if(taskParams.useVision){
+                // TODO (Code Review): What are you trying to do here? I don't understand the logic.
+                if (taskParams.useVision)
+                {
                     sm.setState(State.DETECT_TARGET);
                 }
-                else if(taskParams.isPreload){
+                else if (taskParams.isPreload)
+                {
                     sm.setState(State.PREPARE_TO_SCORE);
                 }
-                else if(!taskParams.useVision){
+                else if (!taskParams.useVision)
+                {
                     sm.setState(State.ALIGN_TO_TARGET);
                 }
                 break;
@@ -295,6 +291,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             case PREPARE_TO_SCORE:
                 // set elevator, arm to the proper scoring positions
                 //todo: make sure these positions are accurate
+                // TODO (Code Review): Don't understand this. It looks wrong.
                 robot.elevatorPidActuator.setPresetPosition(currOwner, 0, taskParams.scoreLevel + 2, true, 0, event, 0);
                 robot.armPidActuator.setPresetPosition(currOwner, 0, taskParams.scoreLevel + 2, slowPeriodicLoop, 0, null, 0);
                 sm.waitForSingleEvent(event, State.SCORE_OBJECT);
