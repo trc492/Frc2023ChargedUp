@@ -54,11 +54,11 @@ public class Intake implements TrcExclusiveSubsystem
         this.msgTracer = msgTracer;
 
         intakeLeftMotor = new FrcCANTalon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
-        intakeLeftMotor.motor.configFactoryDefault();
+        intakeLeftMotor.resetFactoryDefault();
         intakeLeftMotor.setMotorInverted(true);
 
         intakeRightMotor = new FrcCANTalon(moduleName + ".rightMotor", RobotParams.CANID_INTAKE_RIGHT);
-        intakeRightMotor.motor.configFactoryDefault();
+        intakeRightMotor.resetFactoryDefault();
         intakeRightMotor.setMotorInverted(true);
 
         intakePneumatic = new FrcPneumatic(
@@ -79,7 +79,7 @@ public class Intake implements TrcExclusiveSubsystem
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployer=%s, Break=%s",
+            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployer=%s, hasObject=%s",
             moduleName, getLeftMotorPower(), getRightMotorPower(), isExtended(), hasObject());
     }   //toString
 

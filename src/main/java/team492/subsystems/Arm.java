@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import java.util.Locale;
 import java.util.Scanner;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -57,12 +58,6 @@ public class Arm
      */
     public Arm(TrcDbgTrace msgTracer)
     {
-        this.msgTracer = msgTracer;
-
-        FrcMotorActuator.MotorParams motorParams = new FrcMotorActuator.MotorParams(
-            RobotParams.ARM_MOTOR_INVERTED,
-            -1, RobotParams.ARM_LOWER_LIMIT_INVERTED, -1, RobotParams.ARM_UPPER_LIMIT_INVERTED,
-            false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
         TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
             .setScaleOffset(RobotParams.ARM_DEGS_PER_COUNT, RobotParams.ARM_OFFSET)
             .setPosRange(RobotParams.ARM_MIN_POS, RobotParams.ARM_MAX_POS)
@@ -72,13 +67,15 @@ public class Arm
             .setPosPresets(RobotParams.ARM_PRESET_TOLERANCE, RobotParams.armPresets)
             .setPowerCompensation(this::getGravityCompensation);
 
+        this.msgTracer = msgTracer;
         actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
-        configMotionMagic(actuatorMotor.motor);
+        actuatorMotor.resetFactoryDefault();
+        actuatorMotor.setMotorInverted(RobotParams.ARM_MOTOR_INVERTED);
+        actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
         actuatorMotor.setBrakeModeEnabled(true);
-        if (motorParams.batteryNominalVoltage > 0.0)
-        {
-            actuatorMotor.enableVoltageCompensation(motorParams.batteryNominalVoltage);
-        }
+        actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
+        configMotionMagic(actuatorMotor.motor);
+
         int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
         actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
 
@@ -86,11 +83,11 @@ public class Arm
             "ArmLowerLimitSw", actuatorMotor, false);
         FrcCANTalonLimitSwitch upperLimitSw = new FrcCANTalonLimitSwitch(
             "ArmUpperLimitSw", actuatorMotor, true);
-        lowerLimitSw.setInverted(motorParams.lowerLimitSwitchInverted);
-        upperLimitSw.setInverted(motorParams.upperLimitSwitchInverted);
+        lowerLimitSw.setInverted(RobotParams.ARM_LOWER_LIMIT_INVERTED);
+        upperLimitSw.setInverted(RobotParams.ARM_UPPER_LIMIT_INVERTED);
 
         pidActuator = new FrcMotorActuator(
-            "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, motorParams, actuatorParams).getPidActuator();
+            "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer);
 
         zeroTrigger = new TrcDigitalInputTrigger(moduleName, lowerLimitSw, this::zeroCalCompletion);
@@ -103,10 +100,10 @@ public class Arm
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, pos=%.1f/%.1f, LimitSw=%s/%s, Enc=%.0f",
-            moduleName, pidActuator.getPower(), pidActuator.getPosition(), pidActuator.getPidController().getTarget(),
-            pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive(),
-            actuatorMotor.motor.getSelectedSensorPosition());
+            Locale.US, "%s: pwr=%.3f, current=%.1f, pos=%.1f/%.1f, Enc=%.0f, LimitSw=%s/%s",
+            moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
+            pidActuator.getPidController().getTarget(), actuatorMotor.motor.getSelectedSensorPosition(),
+            pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
     }   //toString
 
     private void configMotionMagic(TalonSRX motor)

@@ -75,13 +75,13 @@ public class Grabber
     //This method is called to grab a cube, extends the left pneumatic for a partial grab
     public void grabCube()
     {   
-        if (vacuum != null)
+        if (vacuum == null)
         {
-            if (vacuum.getMotorVelocity() == 0)
-            { //this probably works
-                cubeGrabber.extend();
-            }
-        } else {
+            cubeGrabber.extend();
+        }
+        else if (vacuum.getMotorVelocity() == 0)
+        {
+            //this probably works
             cubeGrabber.extend();
         }
     }   //grabCube
@@ -94,14 +94,13 @@ public class Grabber
     //This method is called to grab a cone, extends both pneumatics for a complete grab
     public void grabCone()
     {
-        if (vacuum != null)
+        if (vacuum == null)
         {
-            if(vacuum.getMotorVelocity() == 0)
-            { //this probably works
-                coneGrabber.extend();
-            }
-        } else
+            coneGrabber.extend();
+        }
+        else if (vacuum.getMotorVelocity() == 0)
         {
+            //this probably works
             coneGrabber.extend();
         }
     }   //grabCone
@@ -129,8 +128,9 @@ public class Grabber
     }   //grabbedCone
 
     //This method is called to turn on the vacuum, used to grab a cube
-    public void vacuumOn() {
-        if(!cubeGrabber.isExtended() &&  !coneGrabber.isExtended() && vacuum != null)
+    public void vacuumOn()
+    {
+        if (vacuum != null && !cubeGrabber.isExtended() &&  !coneGrabber.isExtended())
         {
             vacuum.set(1); //this is just a placeholder, unsure of vacuum strength
         }
@@ -139,7 +139,8 @@ public class Grabber
     //This method is called to turn off the vacuum, dropping any grabbed cube
     public void vacuumOff()
     {
-        if (vacuum != null) {
+        if (vacuum != null)
+        {
             vacuum.stopMotor();
         }
     }   //vacuumOff

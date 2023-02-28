@@ -48,12 +48,6 @@ public class Elevator
      */
     public Elevator(TrcDbgTrace msgTracer)
     {
-        // this.msgTracer = msgTracer;
-
-        FrcMotorActuator.MotorParams motorParams = new FrcMotorActuator.MotorParams(
-            RobotParams.ELEVATOR_MOTOR_INVERTED,
-            -1, RobotParams.ELEVATOR_LOWER_LIMIT_INVERTED, -1, RobotParams.ELEVATOR_UPPER_LIMIT_INVERTED,
-            false, RobotParams.BATTERY_NOMINAL_VOLTAGE);
         TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
             .setScaleOffset(RobotParams.ELEVATOR_INCHES_PER_COUNT, RobotParams.ELEVATOR_OFFSET)
             .setPosRange(RobotParams.ELEVATOR_MIN_POS, RobotParams.ELEVATOR_MAX_POS)
@@ -62,13 +56,13 @@ public class Elevator
                 RobotParams.ELEVATOR_IZONE, RobotParams.ELEVATOR_TOLERANCE)
             .setPosPresets(RobotParams.ELEVATOR_PRESET_TOLERANCE, RobotParams.elevatorPresets)
             .setZeroCalibratePower(RobotParams.ELEVATOR_CAL_POWER);
-        actuatorMotor = new FrcCANSparkMax("ElevatorMotor", RobotParams.CANID_ELEVATOR, true);
-        actuatorMotor.setBrakeModeEnabled(true);
 
-        if (motorParams.batteryNominalVoltage > 0.0)
-        {
-            actuatorMotor.enableVoltageCompensation(motorParams.batteryNominalVoltage);
-        }
+        // this.msgTracer = msgTracer;
+        actuatorMotor = new FrcCANSparkMax("ElevatorMotor", RobotParams.CANID_ELEVATOR, true);
+        actuatorMotor.resetFactoryDefault();
+        actuatorMotor.setMotorInverted(RobotParams.ELEVATOR_MOTOR_INVERTED);
+        actuatorMotor.setBrakeModeEnabled(true);
+        actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
 
         // int zeroOffset = getZeroPosition(RobotParams.ELEVATOR_ZERO);
         // actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.NEO_CPR - 1, false, zeroOffset);
@@ -77,11 +71,11 @@ public class Elevator
             "ElevatorLowerLimitSw", actuatorMotor, false);
         FrcCANSparkMaxLimitSwitch upperLimitSw = new FrcCANSparkMaxLimitSwitch(
             "ElevatorUpperLimitSw", actuatorMotor, true);
-        lowerLimitSw.setInverted(motorParams.lowerLimitSwitchInverted);
-        upperLimitSw.setInverted(motorParams.upperLimitSwitchInverted);
+        lowerLimitSw.setInverted(RobotParams.ELEVATOR_LOWER_LIMIT_INVERTED);
+        upperLimitSw.setInverted(RobotParams.ELEVATOR_UPPER_LIMIT_INVERTED);
 
         pidActuator = new FrcMotorActuator(
-            "Elevator", actuatorMotor, lowerLimitSw, upperLimitSw, motorParams, actuatorParams).getPidActuator();
+            "Elevator", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer);
 
         // zeroTrigger = new TrcDigitalInputTrigger(moduleName, lowerLimitSw, this::zeroCalCompletion);
@@ -94,10 +88,10 @@ public class Elevator
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.1f, pos=%.1f, LimitSw=%s/%s, Enc=%.3f",
-            moduleName, pidActuator.getPower(), pidActuator.getPosition(), pidActuator.isLowerLimitSwitchActive(),
-            pidActuator.isUpperLimitSwitchActive(), actuatorMotor.motor.getEncoder().getPosition());
-            // actuatorMotor.motor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+            Locale.US, "%s: pwr=%.3f, current=%.1f, pos=%.1f/%.1f, Enc=%.0f, LimitSw=%s/%s",
+            moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
+            pidActuator.getPidController().getTarget(), actuatorMotor.motor.getEncoder().getPosition(),
+            pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
     }   //toString
 
     /**
