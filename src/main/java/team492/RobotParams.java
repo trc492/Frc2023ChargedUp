@@ -435,9 +435,11 @@ public class RobotParams
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
+    public static final double ARM_PICKUP_POSITION              = 0; //need to tune this value 
+    public static final double ARM_TRAVEL_POSITION              = 5.0; //need to tune this value 
     public static final double[] armPresets                     =
     {
-        -30.0, -15.0, 0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0
+        -30.0, -15.0, ARM_PICKUP_POSITION, ARM_TRAVEL_POSITION, 30.0, 45.0, 60.0, 75.0, 90.0
     };
 
     public static final double INTAKE_CUBE_PICKUP_POWER         = 0.3; 

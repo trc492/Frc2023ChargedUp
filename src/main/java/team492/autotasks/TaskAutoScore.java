@@ -62,13 +62,15 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         ObjectType objectType;
         int scoreLevel;
         boolean useVision;
+        boolean isPreload; 
         ScoreLocation scoreLocation;
 
-        TaskParams(ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision)
+        TaskParams(ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision, boolean isPreload)
         {
             this.objectType = objectType;
             this.scoreLevel = scoreLevel;
             this.useVision = useVision;
+            this.isPreload = isPreload; 
             this.scoreLocation = scoreLocation; 
         }   //TaskParams
     }   //class TaskParams
@@ -78,6 +80,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event;
     private String currOwner = null;
+    private boolean isPreload = false; 
 
     /**
      * Constructor: Create an instance of the object.
@@ -94,7 +97,19 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         this.msgTracer = msgTracer;
         event = new TrcEvent(moduleName);
     }   //TaskAutoScore
+    
+    public void autoAssistScorePreloadNoVision(ObjectType objectType, int scoreLevel, ScoreLocation scoreLocation, TrcEvent completionEvent){
+        final String funcName = "autoAssistScorePreloadNoVision";
 
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(
+                funcName, "%s: objectType=%s, scoreLevel=%d, scoreLocation=%s, useVision=%s, event=%s",
+                moduleName, objectType, scoreLevel, scoreLocation, false, completionEvent);
+        }
+
+        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, scoreLocation, false, true), completionEvent);
+    }
     /**
      * This method starts the auto-assist operation to score an object.
      *
@@ -115,7 +130,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 moduleName, objectType, scoreLevel, scoreLocation, useVision, completionEvent);
         }
 
-        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision), completionEvent);
+        startAutoTask(State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision, false), completionEvent);
     }   //autoAssistScoreObject
 
     /**
@@ -227,7 +242,15 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         switch (state)
         {
             case START:
-                sm.setState(taskParams.useVision? State.DETECT_TARGET : State.SCORE_OBJECT);
+                if(taskParams.useVision){
+                    sm.setState(State.DETECT_TARGET);
+                }
+                else if(taskParams.isPreload){
+                    sm.setState(State.PREPARE_TO_SCORE);
+                }
+                else if(!taskParams.useVision){
+                    sm.setState(State.ALIGN_TO_TARGET);
+                }
                 break;
 
             case DETECT_TARGET:
@@ -264,20 +287,30 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     // Nathan and Isaac know that and put that as pre-condition comment above.
                     // However, if useVision == true and it doesn't see the target for some reason (i.e. vision failed),
                     // your current logic is to score regardless without any navigation. This must be fixed.
+                    //leaving this for Anand 
                     sm.setState(State.PREPARE_TO_SCORE);    // This need to be fixed.
                 }
                 break;
 
             case PREPARE_TO_SCORE:
                 // set elevator, arm to the proper scoring positions
+                //todo: make sure these positions are accurate
+                robot.elevatorPidActuator.setPresetPosition(currOwner, 0, taskParams.scoreLevel + 2, true, 0, event, 0);
+                robot.armPidActuator.setPresetPosition(currOwner, 0, taskParams.scoreLevel + 2, slowPeriodicLoop, 0, null, 0);
+                sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 break; 
 
             case SCORE_OBJECT:
                 //outtake with the claw then go to RESET state
+                robot.grabber.releaseAll();
+                sm.setState(State.RESET);
                 break;
 
             case RESET:
-                //retract elevator, arm, everything, back up a tiny bit, go to DONE state  
+                //retract elevator, arm, everything, back up a tiny bit, go to DONE state
+                //todo: tune these values, should be arm perpendicular to grown position, min elevator position
+                robot.elevatorPidActuator.setPresetPosition(currOwner, 0.5, 0, true, 0, event, 0);
+                robot.armPidActuator.setPresetPosition(currOwner, 0, 2, slowPeriodicLoop, 0, event, 0);  
                 break;
 
             default:

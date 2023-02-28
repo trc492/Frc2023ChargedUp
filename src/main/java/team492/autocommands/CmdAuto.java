@@ -165,19 +165,24 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         // Scoring first game piece(cube, so scoreLocation is CENTER), doing delay next.
                         
                         nextState = State.START_DELAY;
+                        autoScoreTask.autoAssistScorePreloadNoVision(loadedObjType, scoringLevel, scoreLocation, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+
                     }
                     else if (piecesScored == 1 && !doAutoBalance)
                     {
                         // Scoring second game piece, going for third next.
                         nextState = State.GO_TO_GAME_PIECE;
+                        autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, scoreLocation, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+
                     }
                     else
                     {
                         // Scoring second game piece, going to the charging station next.
                         nextState = State.GO_TO_CHARGING_STATION;
+                        autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, scoreLocation, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
+
                     }
                     sm.waitForSingleEvent(event, nextState);
-                    autoScoreTask.autoAssistScoreObject(loadedObjType, scoringLevel, scoreLocation, useVision, event); //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                     piecesScored++;
                     break;
 
