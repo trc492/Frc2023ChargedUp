@@ -74,6 +74,7 @@ public class Arm
         actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
         actuatorMotor.setBrakeModeEnabled(true);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
+        actuatorMotor.setCurrentLimit(20.0, 40.0, 0.5);
         configMotionMagic(actuatorMotor.motor);
 
         int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
