@@ -221,7 +221,7 @@ public class RobotParams
     //
     // PWM channels.
     //
-    public static final int NUM_LEDS                            = 60;
+    public static final int NUM_LEDS                            = 100;
     public static final int PWM_CHANNEL_LED                     = 0;
     public static final int PWM_VACUUM                          = 9;
     //

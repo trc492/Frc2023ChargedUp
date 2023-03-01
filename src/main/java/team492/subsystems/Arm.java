@@ -75,7 +75,7 @@ public class Arm
         actuatorMotor.setBrakeModeEnabled(true);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
         actuatorMotor.setCurrentLimit(20.0, 40.0, 0.5);
-        configMotionMagic(actuatorMotor.motor);
+        // configMotionMagic(actuatorMotor.motor);
 
         int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
         actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
@@ -219,5 +219,10 @@ public class Arm
     {
         return RobotParams.ARM_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()));
     }   //getGravityCompensation
+
+    public double getCurrent()
+    {
+        return actuatorMotor.getMotorCurrent();
+    }
 
 }   //class Arm

@@ -41,6 +41,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private boolean controlsEnabled = false;
+    private boolean armPosControl = false;
 
     private boolean fastIntake = false;
     private boolean intakeReversed = false;
@@ -171,12 +172,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     if (robot.elevator != null)
                     {
-                        double elevatorPower;
+                        double elevatorPower = 0.0;
                         if (RobotParams.Preferences.useOperatorXboxController)
                         {
                             elevatorPower = robot.operatorController.getRightYWithDeadband(true);
                         }
-                        else
+                        else if (!armPosControl)
                         {
                             elevatorPower = robot.operatorStick.getYWithDeadband(true);
                         }
@@ -191,13 +192,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             double armPower = robot.operatorController.getLeftYWithDeadband(true);
                             robot.armPidActuator.setPidPower(armPower, true);
                         }
-                        else
+                        else if (armPosControl)
                         {
-                            robot.dashboard.displayPrintf(15, "flipper reading=%f", robot.operatorStick.getZ());
+                            double armPower = robot.operatorStick.getYWithDeadband(true);
+                            robot.armPidActuator.setPidPower(armPower*0.25, true);
                             // double armPos =
-                            //     -robot.operatorStick.getZWithDeadband(false) * RobotParams.ARM_SAFE_RANGE +
+                            //     (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
                             //     RobotParams.ARM_LOW_POS;
-                            // robot.armPidActuator.setTarget(armPos, true);
+                            // robot.armPidActuator.setPosition(armPos, true, 0.2);
                         }
                     }
 
@@ -538,9 +540,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON6:
                 if (robot.arm != null && pressed)
                 {
+                    // if(robot.armPidActuator.acquireExclusiveAccess(moduleName))
+                    // {
+                        robot.armPidActuator.presetPositionUp(moduleName);
+                        // robot.elevatorPidActuator.presetPositionUp();
+                    // }
                     // Must acquire ownership to override analog control of the arm.
-                    robot.armPidActuator.presetPositionUp(moduleName);
-                    // robot.elevatorPidActuator.presetPositionUp();
+                // }
+                // else
+                // {
+                    robot.armPidActuator.releaseExclusiveAccess(moduleName);
                 }
                 break;
             //lowers the arm and elevator one preset position 
@@ -718,6 +727,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
+                armPosControl = pressed;
+                // if (robot.arm != null && !pressed)
+                // {
+                //     robot.armPidActuator.setPower(0.0);
+                // }
                 //prepare for pickup
                 //extend intake
                 //lower the arm and elevator to min position
@@ -749,13 +763,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                // TODO (Code Review): What is this? Don't muck around with absolute encoder calibration!!! This should not be an
-                // operator controlled action.
-                if (pressed)
-                {
-                    FrcCANTalon armMotor = ((FrcCANTalon)robot.armPidActuator.getMotor());
-                    armMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, (int) robot.armPidActuator.getPosition());
-                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
