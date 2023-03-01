@@ -108,7 +108,6 @@ public class PhotonVision extends FrcPhotonVision
         }
 
         setPipeline(PipelineType.POLE);
-        setLED(VisionLEDMode.kOn);
 
         // poseEstimator = new AprilTagPoseEstimator(
         //     new AprilTagPoseEstimator.Config(
@@ -181,12 +180,7 @@ public class PhotonVision extends FrcPhotonVision
     public void setPipeline(PipelineType pipelineType)
     {
         setPipelineIndex(pipelineType.pipelineIndex);
-        if(pipelineType == PipelineType.POLE){
-            setLED(VisionLEDMode.kOn);
-        }
-        else{
-            setLED(VisionLEDMode.kOn);
-        }
+        setLED(pipelineType == PipelineType.POLE? VisionLEDMode.kOn: VisionLEDMode.kOff);
     }   //setPipeline
 
     /**

@@ -220,12 +220,17 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         {
             case START:
                 robot.grabber.releaseAll();
-                robot.elevatorPidActuator.setPosition(currOwner, 0, RobotParams.elevatorPresets[3], true, 1.0, event, 0);
+                // TODO (Code Review): What is preset[3]? Why? I thought elevator should be retracted?! Are you thinking
+                // the arm is still tucked inside the belly of the robot? As a pre-condition, you may say the arm should
+                // be out already.
+                robot.elevatorPidActuator.setPosition(
+                    currOwner, 0, RobotParams.elevatorPresets[3], true, 1.0, event, 0);
                 sm.waitForSingleEvent(event, State.MOVE_ARM_FORWARD);
                 break;
 
             case MOVE_ARM_FORWARD:
-                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, null, 0);
+                robot.armPidActuator.setPosition(
+                    currOwner, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, event, 0);
                 sm.waitForSingleEvent(event, taskParams.useVision? State.LOOK_FOR_TARGET: State.DRIVE_TO_TARGET);
                 break;
 
@@ -237,19 +242,19 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 break;
             
             case DRIVE_TO_TARGET:
-                robot.elevatorPidActuator.setPosition(currOwner, 0, 0, true, 1.0, event, 0);
+                // TODO (Code Review): Do we really need this?
+                // robot.elevatorPidActuator.setPosition(
+                //     currOwner, 0, 0, true, 1.0, event, 0);
                 TrcPose2D target = null;
                 if (taskParams.useVision)
                 {
                     // Check if vision has detected a target.
-                    // robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
-                    //robot.robotDrive.setFieldPosition(robotPose, false); is this needed?
                     DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
                     if (detectedTarget != null)
                     {
                         // Cone center height: 12+13/16, Cube center height: 9.5 +/- 0.5.
                         target = robot.photonVision.getTargetPose2D(
-                            detectedTarget, detectedTarget.getRect().height / 2);
+                            detectedTarget, detectedTarget.getRect().height / 2.0);
                         target.angle = 0.0;     // Just need x and y but maintain the current heading.
                         //target.y += 12; not sure how much to add at the moment, need testing
                     }
@@ -257,7 +262,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 
                 if (target == null)
                 {
-                    // TODO (Code Review): 60 inches is 5 feet. Do you need to go that far?
                     target = new TrcPose2D(0.0, 36.0);
                 }
 
@@ -281,6 +285,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 robot.intake.cancel(currOwner);
                 robot.robotDrive.purePursuitDrive.cancel(currOwner);
                 robot.intake.setTriggerEnabled(false, null);
+                // TODO (CodeReview): Do we need to retract here? We haven't grab the object yet.
                 robot.intake.retract();
 
                 if (taskParams.objectType == ObjectType.CONE)
@@ -291,6 +296,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 {
                     robot.grabber.grabCube();
                 }
+                // TODO (Code Review): Need to wait until you firmly grabbed the object before moving the elevator. And why
+                // is the elevator height 0?
                 robot.elevatorPidActuator.setPosition(currOwner, 0, 0, true, 1.0, event, 1);
                 sm.waitForSingleEvent(event, State.DONE);
                 break;
