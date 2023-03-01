@@ -193,10 +193,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         }
                         else
                         {
-                            double armPos =
-                                -robot.operatorStick.getZWithDeadband(false) * RobotParams.ARM_SAFE_RANGE +
-                                RobotParams.ARM_LOW_POS;
-                            robot.armPidActuator.setTarget(armPos, true);
+                            robot.dashboard.displayPrintf(15, "flipper reading=%f", robot.operatorStick.getZ());
+                            // double armPos =
+                            //     -robot.operatorStick.getZWithDeadband(false) * RobotParams.ARM_SAFE_RANGE +
+                            //     RobotParams.ARM_LOW_POS;
+                            // robot.armPidActuator.setTarget(armPos, true);
                         }
                     }
 
@@ -600,8 +601,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // TODO (Code Review): Don't use preset, just do setTarget.
                 // robot.elevatorPidActuator.setPresetPosition(moduleName, 0.5, 0, false, 0.0, null, 0.0);
                 // robot.armPidActuator.setPresetPosition(moduleName, 0, 0, false, 0.0, null, 0.0);
-                robot.elevatorPidActuator.setTarget(0.0, true);
-                robot.armPidActuator.setTarget(RobotParams.ARM_TRAVEL_POSITION, true);
+                robot.elevatorPidActuator.setPosition(0.0, true);
+                robot.armPidActuator.setPosition(RobotParams.ARM_TRAVEL_POSITION, true);
                 break;
         }
     }   //operatorStickButtonEvent
@@ -679,7 +680,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     {
                         elevatorPresetIndex--;
                     }
-                    robot.elevatorPidActuator.setTarget(RobotParams.elevatorPresets[elevatorPresetIndex], true);
+                    robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
                 }
                 break;
 
@@ -697,7 +698,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     {
                         elevatorPresetIndex++;
                     }
-                    robot.elevatorPidActuator.setTarget(RobotParams.elevatorPresets[elevatorPresetIndex], true);
+                    robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
                 }
                 break; 
         }  
