@@ -25,7 +25,6 @@ package team492;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
-import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.drivebases.RobotDrive;

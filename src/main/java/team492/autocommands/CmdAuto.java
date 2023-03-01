@@ -149,6 +149,12 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     // Set robot's start position according to autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
+                    // TODO (Code Review): This state may be a lot more complicated because at the beginning of the match,
+                    // the arm is tucked inside the robot's belly. You need to back off, raise the elevator, raise the arm
+                    // to the scoring angle (probably 90-deg), raise the elevator. You may want to talk to Samuel to see how
+                    // much auto-assist scoring is doing and how much you should be doing as his pre-conditions. Since auto-assist
+                    // scoring is for generic scoring. It doesn't understand you are scoring the preload. Therefore, you need
+                    // to prep the robot to a state just like scoring the second object.
                     sm.setState(State.SCORE_GAME_PIECE);
                     //
                     // Intentionally falling through to SCORE_GAME_PIECE state (i.e. no break).
@@ -172,7 +178,6 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         // Code Review: what is the loadedObjType for the 2nd piece? Who sets scoreLocation?
                         robot.autoScoreTask.autoAssistScoreObject(
                             loadedObjType, scoringLevel, scoreLocation, useVision, false, event);
-
                     }
                     else
                     {
