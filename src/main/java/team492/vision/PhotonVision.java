@@ -181,6 +181,12 @@ public class PhotonVision extends FrcPhotonVision
     public void setPipeline(PipelineType pipelineType)
     {
         setPipelineIndex(pipelineType.pipelineIndex);
+        if(pipelineType == PipelineType.POLE){
+            setLED(VisionLEDMode.kOn);
+        }
+        else{
+            setLED(VisionLEDMode.kOn);
+        }
     }   //setPipeline
 
     /**
