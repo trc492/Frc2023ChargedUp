@@ -60,7 +60,12 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private ObjectType loadedObjType;
     private int scoringLevel;
     private boolean useVision;
-    private boolean doAutoBalance;  //if true, we auto-balance, if false, we try to score a third piece
+    private boolean getSecondPiece;  
+    private boolean doAutoBalance;
+    //getSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
+    //!getSecondPiece && doAutoBalance: after the start delay, we go to park
+    //getSecondPiece && !doAutoBalance: after the start delay, we go for a second piece, score it, then go for a third piece
+    //!getSecondPiece && !doAutoBalance: after the start delay, we stop
     private int piecesScored = 0;
     private ScoreLocation scoreLocation;
 
@@ -182,14 +187,23 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     break;
 
                 case START_DELAY:
+                    if (getSecondPiece) {
+                        nextState = State.GO_TO_GAME_PIECE;
+                    }
+                    else if (doAutoBalance) {
+                        nextState = State.GO_TO_CHARGING_STATION;
+                    }
+                    else {
+                        nextState = State.DONE;
+                    }
                     double startDelay = FrcAuto.autoChoices.getStartDelay();
                     if (startDelay == 0.0)
                     {
-                        sm.setState(State.GO_TO_GAME_PIECE);
+                        sm.setState(nextState);
                     }
                     else
                     {
-                        sm.waitForSingleEvent(event, State.GO_TO_GAME_PIECE);
+                        sm.waitForSingleEvent(event, nextState);
                         timer.set(startDelay, event);
                     }
                     break;
