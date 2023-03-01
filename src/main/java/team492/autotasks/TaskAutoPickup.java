@@ -46,6 +46,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     public enum State
     {
         START,
+        MOVE_ARM_FORWARD,
         LOOK_FOR_TARGET,
         DRIVE_TO_TARGET,
         PICKUP_OBJECT,
@@ -219,13 +220,13 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         {
             case START:
                 robot.grabber.releaseAll();
-                // TODO (Code Review): Why do zero calibration on elevator? We just need to do it once at the
-                // beginning of the match. Definitely do not do zero calibration on the arm. Arm has absolute
-                // encoder, zero calibration on the arm is to determine the arm's absolute zero. We just need
-                // to do it once as long as we do not muck around the encoder.
-                // robot.elevatorPidActuator.zeroCalibrate();
-                // robot.armPidActuator.zeroCalibrate();
-                sm.setState(taskParams.useVision? State.LOOK_FOR_TARGET: State.DRIVE_TO_TARGET);
+                robot.elevatorPidActuator.setPosition(currOwner, 0, RobotParams.elevatorPresets[3], true, 1.0, event, 0);
+                sm.waitForSingleEvent(event, State.MOVE_ARM_FORWARD);
+                break;
+
+            case MOVE_ARM_FORWARD:
+                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, null, 0);
+                sm.waitForSingleEvent(event, taskParams.useVision? State.LOOK_FOR_TARGET: State.DRIVE_TO_TARGET);
                 break;
 
             case LOOK_FOR_TARGET:
@@ -236,6 +237,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 break;
             
             case DRIVE_TO_TARGET:
+                robot.elevatorPidActuator.setPosition(currOwner, 0, 0, true, 1.0, event, 0);
                 TrcPose2D target = null;
                 if (taskParams.useVision)
                 {
@@ -247,15 +249,16 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     {
                         // Cone center height: 12+13/16, Cube center height: 9.5 +/- 0.5.
                         target = robot.photonVision.getTargetPose2D(
-                            detectedTarget, taskParams.objectType == ObjectType.CONE? 12.81: 9.5);
+                            detectedTarget, detectedTarget.getRect().height / 2);
                         target.angle = 0.0;     // Just need x and y but maintain the current heading.
+                        //target.y += 12; not sure how much to add at the moment, need testing
                     }
                 }
 
                 if (target == null)
                 {
                     // TODO (Code Review): 60 inches is 5 feet. Do you need to go that far?
-                    target = new TrcPose2D(0.0, 60.0);
+                    target = new TrcPose2D(0.0, 36.0);
                 }
 
                 robot.intake.extend();
@@ -273,7 +276,11 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             case PICKUP_OBJECT:
                 // TODO (Code Review): Picking up an object requires a sequence that Eric has published a document for.
                 // Please consult Eric's document. It's not as simple as this.
+                // Tried to abide by Eric's document as much as possible, but parts of it (rotating cone to be nose out) was too challenging/unthinkable!!
+                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_PICKUP_POSITION, true, 1.0, null, 0);
                 robot.intake.cancel(currOwner);
+                robot.robotDrive.purePursuitDrive.cancel(currOwner);
+                robot.intake.setTriggerEnabled(false, null);
                 robot.intake.retract();
 
                 if (taskParams.objectType == ObjectType.CONE)
@@ -284,7 +291,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 {
                     robot.grabber.grabCube();
                 }
-                sm.setState(State.DONE);
+                robot.elevatorPidActuator.setPosition(currOwner, 0, 0, true, 1.0, event, 1);
+                sm.waitForSingleEvent(event, State.DONE);
                 break;
             
             case DONE:
