@@ -412,6 +412,7 @@ public class RobotParams
     public static final double ELEVATOR_CAL_POWER               = -0.2;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
     public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
+    // Important: presets must be sorted in increasing order.
     public static final double[] elevatorPresets                =
     {
         0.0, 6.0, 12.0, 18.0, 24.0, 28.0
@@ -440,9 +441,10 @@ public class RobotParams
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;  // 40 deg TODO: Verify
     public static final double ARM_TRAVEL_POSITION              = 5.0;  //TODO
+    // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =
     {
-        -30.0, -15.0, ARM_PICKUP_POSITION, ARM_TRAVEL_POSITION, 30.0, 45.0, 60.0, 75.0, 90.0
+        ARM_LOW_POS, ARM_TRAVEL_POSITION, ARM_PICKUP_POSITION, ARM_MAX_POS
     };
 
     public static final double INTAKE_CUBE_PICKUP_POWER         = 0.3; 
