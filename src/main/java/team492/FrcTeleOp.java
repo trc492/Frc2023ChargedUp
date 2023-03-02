@@ -27,7 +27,6 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
-import team492.FrcAuto.ObjectType;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -45,7 +44,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     private boolean fastIntake = false;
     private boolean intakeReversed = false;
-    private int elevatorPresetIndex = 0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -531,23 +529,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON6:
                 if (robot.arm != null && pressed)
                 {
-                    // if(robot.armPidActuator.acquireExclusiveAccess(moduleName))
-                    // {
-                        robot.armPidActuator.presetPositionUp(moduleName);
-                        // robot.elevatorPidActuator.presetPositionUp();
-                    // }
-                    // Must acquire ownership to override analog control of the arm.
-                // }
-                // else
-                // {
-                    robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                    robot.armPidActuator.presetPositionUp(moduleName);
                 }
                 break;
             //lowers the arm and elevator one preset position 
             case FrcJoystick.LOGITECH_BUTTON7:
                 if (robot.arm != null && pressed)
                 {
-                    // Must acquire ownership to override analog control of the arm.
                     robot.armPidActuator.presetPositionDown(moduleName);
                 }
                 break;
@@ -575,7 +563,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON9:
                 if (robot.elevator != null && pressed)
                 {
-                    robot.elevatorPidActuator.zeroCalibrate();
+                    robot.elevatorPidActuator.zeroCalibrate(moduleName);
                 }
                 break;
 
@@ -600,13 +588,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
-                //turtle mode, use this while driving
+                // Turtle mode, use this while driving.
+                // Must acquire ownership moving the elevator and arm or analog control will interfere.
                 robot.intake.retract();
-                // TODO (Code Review): Don't use preset, just do setTarget.
-                // robot.elevatorPidActuator.setPresetPosition(moduleName, 0.5, 0, false, 0.0, null, 0.0);
-                // robot.armPidActuator.setPresetPosition(moduleName, 0, 0, false, 0.0, null, 0.0);
-                robot.elevatorPidActuator.setPosition(0.0, true);
-                robot.armPidActuator.setPosition(RobotParams.ARM_TRAVEL_POSITION, true);
+                robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
+                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, null, 0.0);
                 break;
         }
     }   //operatorStickButtonEvent
@@ -763,18 +749,19 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
-                if (robot.elevator != null && pressed && robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
-                {
-                    if(robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
-                    {
-                        robot.elevatorPidActuator.zeroCalibrate("TeleOp");
-                    }
-                    else
-                    {
-                        robot.dashboard.displayPrintf(
-                            2, "elevator could not get owner");
-                    }
-                }
+                // TODO (Code Review): This code won't work because it doesn't release ownership. See operationStick button 9.
+                // if (robot.elevator != null && pressed && robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
+                // {
+                //     if(robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
+                //     {
+                //         robot.elevatorPidActuator.zeroCalibrate("TeleOp");
+                //     }
+                //     else
+                //     {
+                //         robot.dashboard.displayPrintf(
+                //             2, "elevator could not get owner");
+                //     }
+                // }
                 break;
         }
     }   //buttonPanelButtonEvent

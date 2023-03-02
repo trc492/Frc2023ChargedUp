@@ -59,7 +59,7 @@ public class Arm
     public Arm(TrcDbgTrace msgTracer)
     {
         TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
-            .setScaleOffset(RobotParams.ARM_DEGS_PER_COUNT, RobotParams.ARM_OFFSET)
+            .setScaleAndOffset(RobotParams.ARM_DEGS_PER_COUNT, RobotParams.ARM_OFFSET)
             .setPosRange(RobotParams.ARM_MIN_POS, RobotParams.ARM_MAX_POS)
             .setPidParams(
                 RobotParams.ARM_KP, RobotParams.ARM_KI, RobotParams.ARM_KD, RobotParams.ARM_KF,
