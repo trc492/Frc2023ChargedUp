@@ -27,6 +27,7 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
+import team492.FrcAuto.ObjectType;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -129,26 +130,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 // DriveBase operation.
                 //
-                if (robot.driverController != null)
-                {
-                    switch (robot.driverController.getPOV())
-                    {
-                        case 0:
-                            robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_FAST_SCALE;
-                            robot.robotDrive.turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
-                            break;
-
-                        case 270:
-                            robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
-                            robot.robotDrive.turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
-                            break;
-
-                        case 180:
-                            robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_SLOW_SCALE;
-                            robot.robotDrive.turnSpeedScale = RobotParams.TURN_SLOW_SCALE;
-                            break;
-                    }
-                }
 
                 if (robot.robotDrive != null)
                 {
@@ -335,6 +316,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
+                if (pressed)
+                {
+                    robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_SLOW_SCALE;
+                    robot.robotDrive.turnSpeedScale = RobotParams.TURN_SLOW_SCALE;
+                }
                 break;
 
             case FrcXboxController.BACK:
@@ -482,7 +468,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
                     robot.intake.extend();
-                    robot.intake.setPower(fastIntake? RobotParams.INTAKE_CONE_PICKUP_POWER: RobotParams.INTAKE_CUBE_PICKUP_POWER);
+                    double intakePower = fastIntake? RobotParams.INTAKE_CONE_PICKUP_POWER: RobotParams.INTAKE_CUBE_PICKUP_POWER;
+                    if(intakeReversed){
+                        robot.intake.setPower(intakePower, -intakePower);
+                    }
+                    else{
+                        robot.intake.setPower(intakePower);
+                    }
                 }
                 else
                 {
@@ -588,19 +580,23 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                if (robot.elevator != null && pressed)
+                if (pressed)
                 {
-                    // Must acquire ownership to override analog control of the elevator.
-                    robot.elevatorPidActuator.presetPositionDown(moduleName);
+                    // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, null);
                 }
+                // if (robot.elevator != null && pressed)
+                // {
+                //     // Must acquire ownership to override analog control of the elevator.
+                //     robot.elevatorPidActuator.presetPositionDown(moduleName);
+                // }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-                if (robot.elevator != null && pressed)
-                {
-                    // Must acquire ownership to override analog control of the elevator.
-                    robot.elevatorPidActuator.presetPositionUp(moduleName);
-                }
+                // if (robot.elevator != null && pressed)
+                // {
+                //     // Must acquire ownership to override analog control of the elevator.
+                //     robot.elevatorPidActuator.presetPositionUp(moduleName);
+                // }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
@@ -681,15 +677,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BACK:
-                if (pressed)
-                {
-                    // TODO (Code Review): Why not use presetPositionDown???
-                    if(elevatorPresetIndex >= 0)
-                    {
-                        elevatorPresetIndex--;
-                    }
-                    robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
-                }
+                // if (pressed)
+                // {
+                //     // TODO (Code Review): Why not use presetPositionDown???
+                //     if(elevatorPresetIndex >= 0)
+                //     {
+                //         elevatorPresetIndex--;
+                //     }
+                //     robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
+                // }
                 break;
 
             case FrcXboxController.START:
@@ -699,15 +695,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.RIGHT_STICK_BUTTON:
-                if (pressed)
-                {
-                    // TODO (Code Review): Why not use presetPositionUp???
-                    if(elevatorPresetIndex < 6)
-                    {
-                        elevatorPresetIndex++;
-                    }
-                    robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
-                }
+                // if (pressed)
+                // {
+                //     // TODO (Code Review): Why not use presetPositionUp???
+                //     if(elevatorPresetIndex < 6)
+                //     {
+                //         elevatorPresetIndex++;
+                //     }
+                //     robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
+                // }
                 break; 
         }  
     }
@@ -737,6 +733,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
+                    //reversing intake 
+                intakeReversed = pressed; 
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:

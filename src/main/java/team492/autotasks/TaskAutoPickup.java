@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import team492.Robot;
@@ -71,6 +72,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
     private final TrcEvent armEvent, elevatorEvent, intakeEvent, event;
+    private final TrcTimer timer;
     private String currOwner = null;
 
     /**
@@ -90,6 +92,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         event = new TrcEvent(moduleName);
+        timer = new TrcTimer(moduleName + ".timer");
     }   //TaskAutoPickup
 
     /**
@@ -99,7 +102,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
      * @param useVision specifies true to use vision assist, false otherwise.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
+    public void 
+    autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
     {
         final String funcName = "autoAssistPickup";
 
@@ -228,7 +232,14 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // Need to bring arm out if it is stowed
                 if(robot.elevatorPidActuator.getPosition() < RobotParams.ELEVATOR_SAFE_HEIGHT && robot.armPidActuator.getPosition() < 0)
                 {
+                    // Do not have to wait for intake because elevator is being raised to safe height
                     sm.setState(State.BRING_ARM_OUT);
+                }
+                else
+                {
+                    // Have to wait for intake to extend
+                    timer.set(0.2, event);
+                    sm.waitForSingleEvent(event, State.ASSUME_DRIVING_POS);
                 }
                 break;
 
@@ -238,15 +249,19 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_PICKUP_POSITION, true, 1.0, armEvent, 0.0);
                 sm.addEvent(elevatorEvent);
                 sm.addEvent(armEvent);
-                sm.waitForEvents(State.LOOK_FOR_TARGET);
+                sm.waitForEvents(State.ASSUME_DRIVING_POS);
                 break;
 
             case ASSUME_DRIVING_POS:
                // Then, zero the elevator and arm to keep robot compact
-               robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
-               robot.armPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
+               //TODO: violent, incorrect position
+               robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, elevatorEvent, 0.0);
+               robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_LOW_POS, true, 1.0, armEvent, 0.0);
                // Release all grabbers
                robot.grabber.releaseAll();
+               sm.addEvent(elevatorEvent);
+               sm.addEvent(armEvent);
+               sm.waitForEvents(State.DONE);
                break;
 
             case LOOK_FOR_TARGET:

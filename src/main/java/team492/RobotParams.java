@@ -333,10 +333,10 @@ public class RobotParams
     // KF should be set to the reciprocal of max tangential velocity (time to travel unit distance), units: sec./in.
     public static final double ROBOT_VEL_KF                     = 1.0 / ROBOT_MAX_VELOCITY;
 
-    public static final double DRIVE_SLOW_SCALE                 = 0.5;
-    public static final double TURN_SLOW_SCALE                  = 0.3;
-    public static final double DRIVE_MEDIUM_SCALE               = 0.75;
-    public static final double TURN_MEDIUM_SCALE                = 0.6;
+    public static final double DRIVE_SLOW_SCALE                 = 0.2;
+    public static final double TURN_SLOW_SCALE                  = 0.15;
+    public static final double DRIVE_MEDIUM_SCALE               = 0.5;
+    public static final double TURN_MEDIUM_SCALE                = 0.3;
     public static final double DRIVE_FAST_SCALE                 = 1.0;
     public static final double TURN_FAST_SCALE                  = 0.8;
 
@@ -411,6 +411,7 @@ public class RobotParams
     public static final double ELEVATOR_TOLERANCE               = 1.0;
     public static final double ELEVATOR_CAL_POWER               = -0.2;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
+    public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
     public static final double[] elevatorPresets                =
     {
         0.0, 6.0, 12.0, 18.0, 24.0, 28.0
@@ -420,7 +421,7 @@ public class RobotParams
     public static final int ARM_ENCODER_CPR                     = 4096;
     public static final int ARM_ZERO                            = 1635;
 
-    public static final boolean ARM_MOTOR_INVERTED              = true;
+    public static final boolean ARM_MOTOR_INVERTED              = false;
     public static final boolean ARM_LOWER_LIMIT_INVERTED        = true;
     public static final boolean ARM_UPPER_LIMIT_INVERTED        = true;
     public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
@@ -437,8 +438,8 @@ public class RobotParams
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
-    public static final double ARM_PICKUP_POSITION              = 0.0;  //need to tune this value 
-    public static final double ARM_TRAVEL_POSITION              = 5.0;  //need to tune this value 
+    public static final double ARM_PICKUP_POSITION              = 40.0;  // 40 deg TODO: Verify
+    public static final double ARM_TRAVEL_POSITION              = 5.0;  //TODO
     public static final double[] armPresets                     =
     {
         -30.0, -15.0, ARM_PICKUP_POSITION, ARM_TRAVEL_POSITION, 30.0, 45.0, 60.0, 75.0, 90.0
