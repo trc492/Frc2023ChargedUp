@@ -38,6 +38,7 @@ import team492.vision.PhotonVision.PipelineType;
 
 /**
  * This class implements auto-assist task to pick up a cube or a cone from the ground.
+ * Precondition: None
  */
 public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 {
@@ -46,7 +47,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     public enum State
     {
         START,
-        MOVE_ARM_FORWARD,
+        BRING_ARM_OUT,
+        ASSUME_DRIVING_POS,
         LOOK_FOR_TARGET,
         DRIVE_TO_TARGET,
         PICKUP_OBJECT,
@@ -68,7 +70,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent event, intakeEvent;
+    private final TrcEvent armEvent, elevatorEvent, intakeEvent, event;
     private String currOwner = null;
 
     /**
@@ -84,8 +86,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        event = new TrcEvent(moduleName);
+        armEvent = new TrcEvent(moduleName + ".armEvent");
+        elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
+        event = new TrcEvent(moduleName);
     }   //TaskAutoPickup
 
     /**
@@ -219,20 +223,31 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         switch (state)
         {
             case START:
-                robot.grabber.releaseAll();
-                // TODO (Code Review): What is preset[3]? Why? I thought elevator should be retracted?! Are you thinking
-                // the arm is still tucked inside the belly of the robot? As a pre-condition, you may say the arm should
-                // be out already.
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0, RobotParams.elevatorPresets[3], true, 1.0, event, 0);
-                sm.waitForSingleEvent(event, State.MOVE_ARM_FORWARD);
+                // Extend intake to make sure any arm movements will not interfere
+                robot.intake.extend();
+                // Need to bring arm out if it is stowed
+                if(robot.elevatorPidActuator.getPosition() < RobotParams.ELEVATOR_SAFE_HEIGHT && robot.armPidActuator.getPosition() < 0)
+                {
+                    sm.setState(State.BRING_ARM_OUT);
+                }
                 break;
 
-            case MOVE_ARM_FORWARD:
-                robot.armPidActuator.setPosition(
-                    currOwner, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, event, 0);
-                sm.waitForSingleEvent(event, taskParams.useVision? State.LOOK_FOR_TARGET: State.DRIVE_TO_TARGET);
+            case BRING_ARM_OUT:
+                // If arm is stowed, then we move the elevator up and move the arm out
+                robot.elevatorPidActuator.setPosition(moduleName, 10.0, true, 1.0, elevatorEvent, 0.0);
+                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_PICKUP_POSITION, true, 1.0, armEvent, 0.0);
+                sm.addEvent(elevatorEvent);
+                sm.addEvent(armEvent);
+                sm.waitForEvents(State.LOOK_FOR_TARGET);
                 break;
+
+            case ASSUME_DRIVING_POS:
+               // Then, zero the elevator and arm to keep robot compact
+               robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
+               robot.armPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
+               // Release all grabbers
+               robot.grabber.releaseAll();
+               break;
 
             case LOOK_FOR_TARGET:
                 robot.photonVision.setPipeline(

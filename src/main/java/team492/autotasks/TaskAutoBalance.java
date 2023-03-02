@@ -35,8 +35,7 @@ import team492.Robot;
  *
  * Preconditions:
  * - Robot is on flat ground in front of the charging station.
- * - Robot should be roughly square with the charging station so that it will tilt backward when climbing the
- *   charging station.
+ * - Robot is facing sideways so that its right edge is square with the charging station
  */
 public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 {
