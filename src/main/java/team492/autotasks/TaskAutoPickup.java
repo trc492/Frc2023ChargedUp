@@ -223,7 +223,37 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
         TaskParams taskParams = (TaskParams) params;
-
+        // TODO (Code Review): Recommendations
+        //  Preconditions:
+        //      All subsystems are in "turtle mode" for travelling: arm at TRAVEL_POS, elevator at 0.0, whacker retracted.
+        //  START:
+        //      set Whacker down.
+        //      close cube grabber (polycarb).
+        //      open cone grabber (earmuffs).
+        //      raise elevator to ~6-inch, signal event.
+        //      raise arm to 15-deg, signal evernt.
+        //      if (useVision) call vision to detect object with timeout, signal event.
+        //      wait for all events then goto DRIVE_TO_OBJECT.
+        //  DRIVE_TO_OBJECT:
+        //      Turn on whacker.
+        //      Arm beam breaker, signal event when has object.
+        //      if no object position, set position to forward 36-inch.
+        //      call purePursuit to go to object position, signal event.
+        //      wait for any event then goto PICKUP_OBJECT.
+        //  PICKUP_OBJECT: (This only picks up cone, what about cube?)
+        //      cancel purePursuit drive.
+        //      unarm beam breaker.
+        //      stop whacker.
+        //      lower elevator to 3-inch.
+        //      lower arm to 5-deg.
+        //      close cone grabber with a delay (earmuffs).
+        //      set a delay timer and signal event.
+        //      wait for timer event then goto PREP_FOR_TRAVEL.
+        //  PREP_FOR_TRAVEL:
+        //      raise elevator to 5-inch, signal event.
+        //      wait for event then goto DONE.
+        //  DONE:
+        //      stop task.
         switch (state)
         {
             case START:
@@ -245,8 +275,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 
             case BRING_ARM_OUT:
                 // If arm is stowed, then we move the elevator up and move the arm out
-                robot.elevatorPidActuator.setPosition(moduleName, 10.0, true, 1.0, elevatorEvent, 0.0);
-                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_PICKUP_POSITION, true, 1.0, armEvent, 0.0);
+                robot.elevatorPidActuator.setPosition(currOwner, 10.0, true, 1.0, elevatorEvent, 0.0);
+                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_PICKUP_POSITION, true, 1.0, armEvent, 0.0);
                 sm.addEvent(elevatorEvent);
                 sm.addEvent(armEvent);
                 sm.waitForEvents(State.ASSUME_DRIVING_POS);
@@ -255,8 +285,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             case ASSUME_DRIVING_POS:
                // Then, zero the elevator and arm to keep robot compact
                //TODO: violent, incorrect position
-               robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, elevatorEvent, 0.0);
-               robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_LOW_POS, true, 1.0, armEvent, 0.0);
+               robot.elevatorPidActuator.setPosition(currOwner, 0.0, true, 1.0, elevatorEvent, 0.0);
+               robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_LOW_POS, true, 1.0, armEvent, 0.0);
                // Release all grabbers
                robot.grabber.releaseAll();
                sm.addEvent(elevatorEvent);

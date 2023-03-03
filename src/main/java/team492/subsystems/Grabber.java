@@ -108,6 +108,23 @@ public class Grabber
         }
     }   //grabCone
 
+    public void grabCone(double delay)
+    {
+        if (delay > 0.0)
+        {
+            timer.set(delay, this::delayGrabCone);
+        }
+        else
+        {
+            grabCone();
+        }
+    }   //grabCone
+
+    private void delayGrabCone(Object context)
+    {
+        grabCone();
+    }   //delayReleaseCone
+
     public void releaseCone()
     {
         coneGrabber.retract();
