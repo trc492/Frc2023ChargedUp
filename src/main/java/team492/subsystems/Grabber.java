@@ -108,6 +108,11 @@ public class Grabber
         }
     }   //grabCone
 
+    public void releaseCone()
+    {
+        coneGrabber.retract();
+    }   //releaseCone
+
     public void releaseCone(double delay)
     {
         if (delay > 0.0)
@@ -116,18 +121,13 @@ public class Grabber
         }
         else
         {
-            coneGrabber.retract();
+            releaseCone();
         }
-    }   //releaseCone
-
-    public void releaseCone()
-    {
-        releaseCone(0.0);
     }   //releaseCone
 
     private void delayReleaseCone(Object context)
     {
-        coneGrabber.retract();
+        releaseCone();
     }   //delayReleaseCone
 
     //This method is called to open the grabber, retracting the pneumatics
