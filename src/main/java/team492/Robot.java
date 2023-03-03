@@ -185,7 +185,7 @@ public class Robot extends FrcRobotBase
         else
         {
             operatorStick = new FrcJoystick("operatorStick", RobotParams.JSPORT_OPERATORSTICK);
-            operatorStick.setYInverted(true);
+            // operatorStick.setYInverted(true);
         }
 
         if (RobotParams.Preferences.useButtonPanels)

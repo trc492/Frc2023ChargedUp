@@ -75,7 +75,7 @@ public class Arm
         actuatorMotor.setBrakeModeEnabled(true);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
         actuatorMotor.setCurrentLimit(20.0, 40.0, 0.5);
-        // configMotionMagic(actuatorMotor.motor);
+        configMotionMagic(actuatorMotor.motor);
 
         int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
         actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
@@ -90,6 +90,7 @@ public class Arm
         pidActuator = new FrcMotorActuator(
             "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer);
+        pidActuator.getPidController().setOutputLimit(0.25);
 
         zeroTrigger = new TrcDigitalInputTrigger(moduleName, lowerLimitSw, this::zeroCalCompletion);
     }   //Arm
@@ -115,21 +116,21 @@ public class Arm
         motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 30);
         motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 30);
         // Set the peak and nominal outputs.
-        motor.configNominalOutputForward(0, 30);
-        motor.configNominalOutputReverse(0, 30);
-        motor.configPeakOutputForward(1, 30);
-        motor.configPeakOutputReverse(-1, 30);
+        motor.configNominalOutputForward(0.0, 30);
+        motor.configNominalOutputReverse(0.0, 30);
+        motor.configPeakOutputForward(1.0, 30);
+        motor.configPeakOutputReverse(-1.0, 30);
         // Set Motion Magic gains in slot0 - see documentation.
         motor.selectProfileSlot(0, 0);
         motor.config_kP(0, 1.0, 30);
         motor.config_kI(0, 0.0, 30);
         motor.config_kD(0, 0.0, 30);
         motor.config_kF(0, 0.05, 30);
-        motor.config_IntegralZone(0, 100, 30);
+        motor.config_IntegralZone(0, 100.0, 30);
         motor.configAllowableClosedloopError(0, 10.0, 30);
         // Set acceleration and vcruise velocity - see documentation.
-        motor.configMotionCruiseVelocity(1000, 30);
-        motor.configMotionAcceleration(1000, 30);
+        motor.configMotionCruiseVelocity(1000.0, 30);
+        motor.configMotionAcceleration(1000.0, 30);
     }   //configMotionMagic
 
     /**
