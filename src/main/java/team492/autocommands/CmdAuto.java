@@ -57,6 +57,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private final TrcEvent event;
     private final TrcStateMachine<State> sm;
 
+    // private int startPos;
     private ObjectType loadedObjType;
     private int scoringLevel;
     private boolean useVision;
@@ -124,7 +125,14 @@ public class CmdAuto implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         State state = sm.checkReadyAndGetState();
-
+        // TODO (Code Review): Recommendations
+        //  START:
+        //      get all relevant autoChoices.
+        //      set Start field position.
+        //      back up a little so that deploying elevator and arm won't hit any field elements.
+        //      raise elevator a little to let the arm out.
+        //      raise arm to TRAVEL_POS with a delay.
+        //      goto SCORE_GAME_PIECE.
         if (state == null)
         {
             robot.dashboard.displayPrintf(8, "State: disabled or waiting (nextState=%s)...", sm.getNextState());
@@ -143,6 +151,8 @@ public class CmdAuto implements TrcRobot.RobotCommand
                 // Also, need to add code to check match time in order to determine if we have enough time
                 // to fetch 2nd piece. If not, check if we can go balance.
                 case START:
+                    // startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
+                    // TODO (Code Review): We always preload cube, so why do we have an "AutoChoice" for it???
                     loadedObjType = FrcAuto.autoChoices.getPreloadedObjType();
                     scoringLevel = FrcAuto.autoChoices.getScoringLevel();
                     useVision = FrcAuto.autoChoices.getUseVision();
@@ -150,11 +160,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // Set robot's start position according to autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
                     // TODO (Code Review): This state may be a lot more complicated because at the beginning of the match,
-                    // the arm is tucked inside the robot's belly. You need to back off, raise the elevator, raise the arm
-                    // to the scoring angle (probably 90-deg), raise the elevator. You may want to talk to Samuel to see how
-                    // much auto-assist scoring is doing and how much you should be doing as his pre-conditions. Since auto-assist
-                    // scoring is for generic scoring. It doesn't understand you are scoring the preload. Therefore, you need
-                    // to prep the robot to a state just like scoring the second object.
+                    // the arm is tucked inside the robot's belly. See recommendation above.
                     sm.setState(State.SCORE_GAME_PIECE);
                     //
                     // Intentionally falling through to SCORE_GAME_PIECE state (i.e. no break).
@@ -164,7 +170,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     // a game piece in the robot, broadacasting grabberEvent when complete.
                     if (piecesScored == 0)
                     {
-                        // Scoring first game piece (cube, so scoreLocation is MIDDLE), doing delay next.
+                        // Scoring preloaded game piece (cube, so scoreLocation is MIDDLE), doing delay next.
                         nextState = State.START_DELAY;
                         //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                         robot.autoScoreTask.autoAssistScoreObject(

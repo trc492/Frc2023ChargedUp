@@ -234,6 +234,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         //  START:
         //      Raise elevator to scoring height, signal elevator event.
         //      Raise arm to scoring angle, signal arm event.
+        //      Retract whacker.
         //      if (useVision) call vision to detect target with a timeout, signal vision event.
         //      wait for all events and goto APPROACH_SCORING_POS.
         //  APPROACH_SCORING_POS:
