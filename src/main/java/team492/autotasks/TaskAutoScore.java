@@ -227,10 +227,28 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         Object params, State state, TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode, boolean slowPeriodicLoop)
     {
         TaskParams taskParams = (TaskParams) params;
-        //
-        // Preconditions:
-        // Arm is at up position, elevator is at min position, turret is optionally at start scan position.
-        //
+        // TODO (Code Review): Recommendations
+        //  Preconditions:
+        //      robot is at position that it can see AprilTag (if using vision) and far enough to deploy elevator and
+        //      arm without hitting field elements (Nathan must satisfy these conditions even for scoring preload).
+        //  START:
+        //      Raise elevator to scoring height, signal elevator event.
+        //      Raise arm to scoring angle, signal arm event.
+        //      if (useVision) call vision to detect target with a timeout, signal vision event.
+        //      wait for all events and goto APPROACH_SCORING_POS.
+        //  APPROACH_SCORING_POS:
+        //      if no position, determine the score position on your own (may want to enhance getScoringPos to return
+        //      position even there is no AprilTagObj).
+        //      use purePursuit to go there (go slowly), goto SCORE_OBJECT.
+        //  SCORE_OBJECT:
+        //      if object is CUBE, release cube grabber, goto RESET.
+        //      if object is CONE, lower arm and release cone with a slight delay, goto RESET.
+        //  RESET:
+        //      lower elevator to 0 height.
+        //      lower arm to TRAVEL_POS.
+        //      goto DONE.
+        //  DONE:
+        //      stop task.
         switch (state)
         {
             case START:
