@@ -40,7 +40,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private boolean controlsEnabled = false;
-    private boolean armPosControl = false;
 
     private boolean fastIntake = false;
     private boolean intakeReversed = false;
@@ -82,6 +81,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         if (robot.robotDrive != null)
         {
             robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
+            robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
+            robot.robotDrive.turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
         }
     }   //startMode
 
@@ -155,7 +156,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         {
                             elevatorPower = robot.operatorController.getRightYWithDeadband(true);
                         }
-                        else if (!armPosControl)
+                        else
                         {
                             elevatorPower = robot.operatorStick.getYWithDeadband(true);
                         }
@@ -170,14 +171,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             double armPower = robot.operatorController.getLeftYWithDeadband(true);
                             robot.armPidActuator.setPidPower(armPower, true);
                         }
-                        else// if (armPosControl)
+                        else
                         {
-                            // double armPower = robot.operatorStick.getYWithDeadband(true);
-                            // robot.armPidActuator.setPidPower(armPower*0.25, true);
                             double armPos =
                                 (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
                                 RobotParams.ARM_LOW_POS;
-                            robot.armPidActuator.setPosition(armPos, true, 0.2);
+                            robot.armPidActuator.setPosition(armPos, true, 0.25);
                         }
                     }
 
@@ -313,6 +312,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcXboxController.LEFT_BUMPER:
                 if (pressed)
                 {
+                    // Reset all swerve steering to point absolute forward.
                     robot.robotDrive.setSteerAngleZero(false);
                 }
                 break;
@@ -717,7 +717,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
-                armPosControl = pressed;
                 // if (robot.arm != null && !pressed)
                 // {
                 //     robot.armPidActuator.setPower(0.0);

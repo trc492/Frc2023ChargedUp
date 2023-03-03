@@ -286,6 +286,12 @@ public class FrcTest extends FrcTeleOp
                 }
                 break;
 
+            case DRIVE_SPEED_TEST:
+                // Overriding FrcTeleOp start mode init so we are really testing robot's top speed and acceleration.
+                robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_FAST_SCALE;
+                robot.robotDrive.turnSpeedScale = RobotParams.TURN_FAST_SCALE;
+                break;
+
             case DRIVE_MOTORS_TEST:
                 //
                 // Initialize motor array with the wheel motors. For 2-motor drive base, it is leftWheel and

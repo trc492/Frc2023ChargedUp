@@ -408,6 +408,7 @@ public class SwerveDrive extends RobotDrive
     public void startMode(RunMode runMode, RunMode prevMode)
     {
         super.startMode(runMode, prevMode);
+        // Set all swerve steering pointing to absolute forward to start.
         setSteerAngleZero(false);
     }   //startMode
 

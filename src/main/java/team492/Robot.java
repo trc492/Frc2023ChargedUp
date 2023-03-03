@@ -35,7 +35,6 @@ import TrcCommonLib.trclib.TrcRobotBattery;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcVisionTargetInfo;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
-import TrcFrcLib.frclib.FrcAHRSGyro;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
 import TrcFrcLib.frclib.FrcCANTalon;
@@ -517,18 +516,6 @@ public class Robot extends FrcRobotBase
                 {
                     int lineNum = 8;
                     TrcPose2D robotPose = robotDrive.driveBase.getFieldPosition();
-
-                    // dashboard.putNumber("DriveBase/xPos", robotPose.x);
-                    // dashboard.putNumber("DriveBase/yPos", robotPose.y);
-                    // dashboard.putData("DriveBase/heading", ((FrcAHRSGyro) robotDrive.gyro).getGyroSendable());
-                    // dashboard.putNumber("DriveBase/Yaw", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getYaw());
-                    // dashboard.putNumber("DriveBase/Pitch", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getPitch());
-                    // dashboard.putNumber("DriveBase/Roll", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getRoll());
-                    // dashboard.putNumber("DriveBase/AccelX", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelX());
-                    // dashboard.putNumber("DriveBase/AccelY", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelY());
-                    // dashboard.putNumber("DriveBase/AccelZ", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getWorldLinearAccelZ());
-                    // dashboard.putNumber("DriverBase/Compass", ((FrcAHRSGyro) robotDrive.gyro).ahrs.getCompassHeading());
-
                     //
                     // DriveBase debug info.
                     //
@@ -538,7 +525,7 @@ public class Robot extends FrcRobotBase
                     double rbDriveEnc = robotDrive.rbDriveMotor.getPosition();
 
                     dashboard.displayPrintf(
-                        4, "DriveEncPos: lf=%.0f, rf=%.0f, lb=%.0f, rb=%.0f, avg=%.0f",
+                        lineNum, "DriveEncPos: lf=%.0f, rf=%.0f, lb=%.0f, rb=%.0f, avg=%.0f",
                         lfDriveEnc, rfDriveEnc, lbDriveEnc, rbDriveEnc,
                         (lfDriveEnc + rfDriveEnc + lbDriveEnc + rbDriveEnc) / 4.0);
                     lineNum++;
@@ -547,14 +534,12 @@ public class Robot extends FrcRobotBase
                     {
                         SwerveDrive swerveDrive = (SwerveDrive) robotDrive;
                         dashboard.displayPrintf(
-                            5, "SteerEncPos: lf=%.1f,rf=%.1f,lb=%.1f,rb=%.1f",
-                            swerveDrive.lfSteerMotor.getPosition(), swerveDrive.rfSteerMotor.getPosition(),
-                            swerveDrive.lbSteerMotor.getPosition(), swerveDrive.rbSteerMotor.getPosition());
+                            lineNum, "SteerPos(Deg/Enc): lf=%.1f/%.1f,rf=%.1f/%.1f,lb=%.1f/%.1f,rb=%.1f/%.1f",
+                            swerveDrive.lfWheel.getSteerAngle(), swerveDrive.lfSteerMotor.getPosition(),
+                            swerveDrive.rfWheel.getSteerAngle(), swerveDrive.rfSteerMotor.getPosition(),
+                            swerveDrive.lbWheel.getSteerAngle(), swerveDrive.lbSteerMotor.getPosition(),
+                            swerveDrive.rbWheel.getSteerAngle(), swerveDrive.rbSteerMotor.getPosition());
                         lineNum++;
-                        dashboard.displayPrintf(
-                            6, "WheelPos: lf=%.2f, rf=%.2f, lb=%.2f, rb=%.2f",
-                            swerveDrive.lfWheel.getSteerAngle(), swerveDrive.rfWheel.getSteerAngle(),
-                            swerveDrive.lbWheel.getSteerAngle(), swerveDrive.rbWheel.getSteerAngle());
                     }
 
                     if (RobotParams.Preferences.debugPurePursuitDrive)

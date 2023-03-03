@@ -88,7 +88,7 @@ public class RobotDrive
     //
     public DriveOrientation driveOrientation = DriveOrientation.FIELD;
     public double driveSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
-    public double turnSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
+    public double turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
     //
     // Odometry.
     //
