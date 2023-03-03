@@ -24,7 +24,6 @@ package team492.subsystems;
 
 import java.util.Locale;
 
-import TrcCommonLib.trclib.TrcTimer;
 import TrcFrcLib.frclib.FrcPWMTalonSRX;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -35,7 +34,6 @@ public class Grabber
     private static final String moduleName = "Grabber";
     private final FrcPneumatic coneGrabber;
     private final FrcPneumatic cubeGrabber;
-    private final TrcTimer timer;
     private final FrcPWMTalonSRX vacuum;
     
     /**
@@ -53,7 +51,6 @@ public class Grabber
         cubeGrabber = new FrcPneumatic(
             moduleName + ".cube", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_CUBE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CUBE_GRABBER_EXTEND);
-        timer = new TrcTimer(moduleName);
 
         if (RobotParams.Preferences.useVacuum)
         {
@@ -110,20 +107,8 @@ public class Grabber
 
     public void grabCone(double delay)
     {
-        if (delay > 0.0)
-        {
-            timer.set(delay, this::delayGrabCone);
-        }
-        else
-        {
-            grabCone();
-        }
+        coneGrabber.extend(delay);
     }   //grabCone
-
-    private void delayGrabCone(Object context)
-    {
-        grabCone();
-    }   //delayReleaseCone
 
     public void releaseCone()
     {
@@ -132,20 +117,8 @@ public class Grabber
 
     public void releaseCone(double delay)
     {
-        if (delay > 0.0)
-        {
-            timer.set(delay, this::delayReleaseCone);
-        }
-        else
-        {
-            releaseCone();
-        }
+        coneGrabber.retract(delay);
     }   //releaseCone
-
-    private void delayReleaseCone(Object context)
-    {
-        releaseCone();
-    }   //delayReleaseCone
 
     //This method is called to open the grabber, retracting the pneumatics
     public void releaseAll()
