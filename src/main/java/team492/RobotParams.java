@@ -288,10 +288,11 @@ public class RobotParams
     public static final double MECANUM_Y_KF                     = 0.0;
     public static final double MECANUM_Y_TOLERANCE              = 2.0;
 
-    public static final double SWERVE_INCHES_PER_COUNT          = 9.072106867127145344367826764411e-4;
-    public static final double SWERVE_KP                        = 0.02;
+    // Tuned 3/02/2023
+    public static final double SWERVE_INCHES_PER_COUNT          = 9.3802993133e-4;
+    public static final double SWERVE_KP                        = 0.015;
     public static final double SWERVE_KI                        = 0.0;
-    public static final double SWERVE_KD                        = 0.0;
+    public static final double SWERVE_KD                        = 0.004;
     public static final double SWERVE_KF                        = 0.0;
     public static final double SWERVE_TOLERANCE                 = 2.0;
 
@@ -432,7 +433,7 @@ public class RobotParams
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_KP                           = 0.018;
-    public static final double ARM_KI                           = 0.0;
+    public static final double ARM_KI                           = 0.1;
     public static final double ARM_KD                           = 0.0018;
     public static final double ARM_KF                           = 0.0;
     public static final double ARM_IZONE                        = 5.0;

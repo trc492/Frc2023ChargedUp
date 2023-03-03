@@ -133,15 +133,15 @@ public class FrcTest extends FrcTeleOp
             // Initialize dashboard with default choice values.
             //
             userChoices.addChoiceMenu(DBKEY_TEST_TESTS, testMenu);
-            userChoices.addNumber(DBKEY_TEST_X_DRIVE_DISTANCE, 6.0);    // in ft
-            userChoices.addNumber(DBKEY_TEST_Y_DRIVE_DISTANCE, 6.0);    // in ft
-            userChoices.addNumber(DBKEY_TEST_TURN_ANGLE, 90.0);         // in degrees
-            userChoices.addNumber(DBKEY_TEST_DRIVE_TIME, 4.0);          // in seconds
+            userChoices.addNumber(DBKEY_TEST_X_DRIVE_DISTANCE, 0.0);    // in ft
+            userChoices.addNumber(DBKEY_TEST_Y_DRIVE_DISTANCE, 0.0);    // in ft
+            userChoices.addNumber(DBKEY_TEST_TURN_ANGLE, 0.0);         // in degrees
+            userChoices.addNumber(DBKEY_TEST_DRIVE_TIME, 0.0);          // in seconds
             userChoices.addNumber(DBKEY_TEST_DRIVE_POWER, 0.5);
-            userChoices.addNumber(DBKEY_TEST_TUNE_KP, 1.0);
-            userChoices.addNumber(DBKEY_TEST_TUNE_KI, 0.0);
-            userChoices.addNumber(DBKEY_TEST_TUNE_KD, 0.0);
-            userChoices.addNumber(DBKEY_TEST_TUNE_KF, 0.0);
+            userChoices.addNumber(DBKEY_TEST_TUNE_KP, RobotParams.SWERVE_KP);
+            userChoices.addNumber(DBKEY_TEST_TUNE_KI, RobotParams.SWERVE_KI);
+            userChoices.addNumber(DBKEY_TEST_TUNE_KD, RobotParams.SWERVE_KD);
+            userChoices.addNumber(DBKEY_TEST_TUNE_KF, RobotParams.SWERVE_KF);
         }   //TestChoices
 
         //

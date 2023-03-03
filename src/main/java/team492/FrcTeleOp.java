@@ -170,14 +170,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             double armPower = robot.operatorController.getLeftYWithDeadband(true);
                             robot.armPidActuator.setPidPower(armPower, true);
                         }
-                        else if (armPosControl)
+                        else// if (armPosControl)
                         {
-                            double armPower = robot.operatorStick.getYWithDeadband(true);
-                            robot.armPidActuator.setPidPower(armPower*0.25, true);
-                            // double armPos =
-                            //     (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
-                            //     RobotParams.ARM_LOW_POS;
-                            // robot.armPidActuator.setPosition(armPos, true, 0.2);
+                            // double armPower = robot.operatorStick.getYWithDeadband(true);
+                            // robot.armPidActuator.setPidPower(armPower*0.25, true);
+                            double armPos =
+                                (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
+                                RobotParams.ARM_LOW_POS;
+                            robot.armPidActuator.setPosition(armPos, true, 0.2);
                         }
                     }
 
@@ -311,6 +311,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.LEFT_BUMPER:
+                if (pressed)
+                {
+                    robot.robotDrive.setSteerAngleZero(false);
+                }
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
@@ -318,6 +322,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_SLOW_SCALE;
                     robot.robotDrive.turnSpeedScale = RobotParams.TURN_SLOW_SCALE;
+                }
+                else
+                {
+                    robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
+                    robot.robotDrive.turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
                 }
                 break;
 

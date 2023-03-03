@@ -115,8 +115,8 @@ public class RobotDrive
     {
         if (runMode != RunMode.DISABLED_MODE)
         {
-            driveSpeedScale = RobotParams.DRIVE_SLOW_SCALE;
-            turnSpeedScale = RobotParams.TURN_SLOW_SCALE;
+            driveSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
+            turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
             driveBase.setOdometryEnabled(true, true);
 
             if (runMode == RunMode.AUTO_MODE)
