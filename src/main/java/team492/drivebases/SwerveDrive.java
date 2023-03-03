@@ -209,7 +209,7 @@ public class SwerveDrive extends RobotDrive
         pidDrive.setAbsoluteTargetModeEnabled(true);
         pidDrive.setMsgTracer(robot.globalTracer, logPoseEvents, tracePidInfo);
 
-        if (RobotParams.Preferences.useBalanceDrive)
+        if (RobotParams.Preferences.useBalancePidDrive)
         {
             gyroPitchPidCoeff = new TrcPidController.PidCoefficients(
                 RobotParams.GYRO_PITCH_KP, RobotParams.GYRO_PITCH_KI, RobotParams.GYRO_PITCH_KD,

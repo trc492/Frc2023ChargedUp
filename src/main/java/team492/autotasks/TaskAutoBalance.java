@@ -43,17 +43,16 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 
     public enum State
     {
-        MOVE_FORWARD,
-        BALANCING,
+        CLIMBING,
+        // BALANCING,
         DONE
     }
     
     private final String owner;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent event;
     private String currOwner = null;
-    private double prevAngle;
+    private double prevTilt;
 
     /**
      * Constructor: Create an instance of the object.
@@ -68,7 +67,6 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         this.owner = owner;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        event = new TrcEvent(moduleName);
     }   //TaskAutoBalance
 
     /**
@@ -78,8 +76,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
      */
     public void autoAssistBalance(TrcEvent completionEvent)
     {
-        prevAngle = 0.0;
-        startAutoTask(State.MOVE_FORWARD, null, completionEvent);
+        prevTilt = 0.0;
+        startAutoTask(State.CLIMBING, null, completionEvent);
     }   //autoAssistBalance
 
     /**
@@ -138,7 +136,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     @Override
     protected void stopSubsystems()
     {
-        robot.robotDrive.balancePidDrive.cancel();
+        // robot.robotDrive.balancePidDrive.cancel(currOwner);
+        robot.robotDrive.driveBase.stop(currOwner);
     }   //stopSubsystems
 
     /**
@@ -157,19 +156,26 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     {
         switch (state)
         {
-            case MOVE_FORWARD:
+            case CLIMBING:
+                double currTilt = Math.abs(robot.robotDrive.getGyroRoll());
+
+                if (msgTracer != null)
+                {
+                    msgTracer.traceInfo(moduleName, "prevTilt=%.2f, currTilt=%.2f", prevTilt, currTilt);
+                }
                 robot.dashboard.displayPrintf(
-                    15, "Balance: roll:%.2f", Math.abs(robot.robotDrive.getGyroRoll()));
+                    15, "Balance: prevTilt=%.2f, currTilt=%.2f", prevTilt, currTilt);
                 robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.25, 0.0, 0.0);
                 // Check if our angle is decerasing (approaching zero)
-                if(Math.abs(robot.robotDrive.getGyroRoll()) < prevAngle) {
+                if (currTilt < prevTilt)
+                {
                     robot.robotDrive.driveBase.stop(currOwner);
                     sm.setState(State.DONE);
-                } else {
-                    prevAngle = Math.abs(robot.robotDrive.getGyroRoll());
                 }
-
-
+                else
+                {
+                    prevTilt = currTilt;
+                }
                 // // Move forward slowly until the robot is tipping backward.
                 // // CodeReview: should not use Math.abs, just check the sign when it's tilting backward.
                 // if (Math.abs(robot.robotDrive.getGyroPitch()) < 2.0)
@@ -183,13 +189,13 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 // }
                 break;
 
-            case BALANCING:
-                msgTracer.traceInfo(moduleName, "Balancing.");
-                robot.robotDrive.balancePidDrive.setSensorTarget(
-                    currOwner, robot.robotDrive.driveBase.getXPosition(), 0.0,
-                    robot.robotDrive.driveBase.getHeading(), true, event, 0.0);
-                sm.waitForSingleEvent(event, State.DONE);
-                break;
+            // case BALANCING:
+            //     msgTracer.traceInfo(moduleName, "Balancing.");
+            //     robot.robotDrive.balancePidDrive.setSensorTarget(
+            //         currOwner, robot.robotDrive.driveBase.getXPosition(), 0.0,
+            //         robot.robotDrive.driveBase.getHeading(), true, event, 0.0);
+            //     sm.waitForSingleEvent(event, State.DONE);
+            //     break;
 
             case DONE:
             default:

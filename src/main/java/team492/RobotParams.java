@@ -62,7 +62,7 @@ public class RobotParams
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
         public static final boolean useAntiTipping              = false;
-        public static final boolean useBalanceDrive             = true;
+        public static final boolean useBalancePidDrive          = false;
         // Subsystems
         public static final boolean useSubsystems               = true;
         public static final boolean useElevator                 = true;
