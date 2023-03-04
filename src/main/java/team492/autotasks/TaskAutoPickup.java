@@ -48,11 +48,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     public enum State
     {
         START,
-        BRING_ARM_OUT,
-        ASSUME_DRIVING_POS,
-        LOOK_FOR_TARGET,
-        DRIVE_TO_TARGET,
+        DRIVE_TO_OBJECT,
         PICKUP_OBJECT,
+        PREP_FOR_TRAVEL,
         DONE
     }   //enum State
 
@@ -71,7 +69,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent armEvent, elevatorEvent, intakeEvent, event;
+    private final TrcEvent armEvent, elevatorEvent, visionEvent, beamBreakerEvent, event;
     private final TrcTimer timer;
     private String currOwner = null;
 
@@ -90,7 +88,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.msgTracer = msgTracer;
         armEvent = new TrcEvent(moduleName + ".armEvent");
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
-        intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
+        visionEvent = new TrcEvent(moduleName + ".visionEvent");
+        beamBreakerEvent = new TrcEvent(moduleName + ".beamBreakerEvent");
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName + ".timer");
     }   //TaskAutoPickup
@@ -232,7 +231,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         //      open cone grabber (earmuffs).
         //      raise elevator to ~6-inch, signal event.
         //      raise arm to 15-deg, signal evernt.
-        //      if (useVision) call vision to detect object with timeout, signal event.
+        //      if (useVision == true) call vision to detect object with timeout, signal event.
         //      wait for all events then goto DRIVE_TO_OBJECT.
         //  DRIVE_TO_OBJECT:
         //      Turn on whacker.
@@ -257,111 +256,85 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         switch (state)
         {
             case START:
-                // Extend intake to make sure any arm movements will not interfere
-                robot.intake.extend();
-                // Need to bring arm out if it is stowed
-                if(robot.elevatorPidActuator.getPosition() < RobotParams.ELEVATOR_SAFE_HEIGHT && robot.armPidActuator.getPosition() < 0)
-                {
-                    // Do not have to wait for intake because elevator is being raised to safe height
-                    sm.setState(State.BRING_ARM_OUT);
-                }
-                else
-                {
-                    // Have to wait for intake to extend
-                    timer.set(0.2, event);
-                    sm.waitForSingleEvent(event, State.ASSUME_DRIVING_POS);
-                }
-                break;
+                
+                //close cube grabber
+                robot.grabber.grabCube();
 
-            case BRING_ARM_OUT:
-                // If arm is stowed, then we move the elevator up and move the arm out
-                robot.elevatorPidActuator.setPosition(currOwner, 10.0, true, 1.0, elevatorEvent, 0.0);
-                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_PICKUP_POSITION, true, 1.0, armEvent, 0.0);
+                //open cone grabber
+                robot.grabber.releaseCone();
+
+                // raise elevator 6 inches
+                
+                robot.elevatorPidActuator.setPosition(currOwner, 0, 6, true, 1.0, elevatorEvent, 0);
+
+                // raise arm to around 15 degrees
+                // change the power limit
+                robot.armPidActuator.setPosition(currOwner, 0, 15, true, 0.25, armEvent, 0);
+
+                robot.intake.extend();
+                // if (useVision == true) call vision to detect object with timeout, signal event.
+
+                if (taskParams.useVision) {
+                    robot.photonVision.setPipeline(
+                        taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
+                    robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
+                    sm.addEvent(visionEvent);
+                }
                 sm.addEvent(elevatorEvent);
                 sm.addEvent(armEvent);
-                sm.waitForEvents(State.ASSUME_DRIVING_POS);
-                break;
-
-            case ASSUME_DRIVING_POS:
-               // Then, zero the elevator and arm to keep robot compact
-               //TODO: violent, incorrect position
-               robot.elevatorPidActuator.setPosition(currOwner, 0.0, true, 1.0, elevatorEvent, 0.0);
-               robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_LOW_POS, true, 1.0, armEvent, 0.0);
-               // Release all grabbers
-               robot.grabber.releaseAll();
-               sm.addEvent(elevatorEvent);
-               sm.addEvent(armEvent);
-               sm.waitForEvents(State.DONE);
-               break;
-
-            case LOOK_FOR_TARGET:
-                robot.photonVision.setPipeline(
-                    taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
-                robot.photonVision.detectBestObject(event, RobotParams.VISION_TIMEOUT);
-                sm.waitForSingleEvent(event, State.DRIVE_TO_TARGET);
+                sm.waitForEvents(State.DRIVE_TO_OBJECT, 0.0, true);
                 break;
             
-            case DRIVE_TO_TARGET:
-                // TODO (Code Review): Do we really need this?
-                // robot.elevatorPidActuator.setPosition(
-                //     currOwner, 0, 0, true, 1.0, event, 0);
-                TrcPose2D target = null;
-                if (taskParams.useVision)
-                {
-                    // Check if vision has detected a target.
-                    DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
-                    if (detectedTarget != null)
-                    {
-                        // Cone center height: 12+13/16, Cube center height: 9.5 +/- 0.5.
-                        target = robot.photonVision.getTargetPose2D(
-                            detectedTarget, detectedTarget.getRect().height / 2.0);
-                        target.angle = 0.0;     // Just need x and y but maintain the current heading.
-                        //target.y += 12; not sure how much to add at the moment, need testing
+            case DRIVE_TO_OBJECT:
+                TrcPose2D targetPos = null;
+                // turn on whacker
+                robot.intake.setPower(currOwner, 0, 1.0, 1.0, 0);
+
+                //arm beam breaker
+                robot.intake.setTriggerEnabled(true, beamBreakerEvent);
+                sm.addEvent(beamBreakerEvent);
+
+                if (taskParams.useVision) {
+                    DetectedObject target = robot.photonVision.getLastDetectedBestObject();
+                    if (target != null) {
+                        //may add offset later
+                        targetPos = new TrcPose2D(target.targetPose3D.getX(),target.targetPose3D.getY(),target.targetPose3D.getRotation().getZ());
                     }
+
                 }
-
-                if (target == null)
-                {
-                    target = new TrcPose2D(0.0, 36.0);
+                if (targetPos == null) {
+                    targetPos = new TrcPose2D(0, 36, 0);
+      
                 }
-
-                robot.intake.extend();
-                robot.intake.setPower(currOwner, 0.0, 1.0, 1.0, 0.0);
-                robot.intake.setTriggerEnabled(true, intakeEvent);
-                sm.addEvent(intakeEvent);
-
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, target);
+                robot.robotDrive.purePursuitDrive.start(currOwner,event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, targetPos);
                 sm.addEvent(event);
-
                 sm.waitForEvents(State.PICKUP_OBJECT);
                 break;
-
+            
             case PICKUP_OBJECT:
-                // TODO (Code Review): Picking up an object requires a sequence that Eric has published a document for.
-                // Please consult Eric's document. It's not as simple as this.
-                // Tried to abide by Eric's document as much as possible, but parts of it (rotating cone to be nose out) was too challenging/unthinkable!!
-                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_PICKUP_POSITION, true, 1.0, null, 0);
-                robot.intake.cancel(currOwner);
-                robot.robotDrive.purePursuitDrive.cancel(currOwner);
-                robot.intake.setTriggerEnabled(false, null);
-                // TODO (CodeReview): Do we need to retract here? We haven't grab the object yet.
-                robot.intake.retract();
+                if (robot.intake.hasObject()) {
+                    robot.robotDrive.purePursuitDrive.cancel();
+                    robot.intake.setTriggerEnabled(false, null);
+                    robot.intake.cancel();
+                    robot.elevatorPidActuator.setPosition(currOwner, 0, 3.0, true, 1.0, null, 0);
+                    robot.armPidActuator.setPosition(currOwner, 0, 5, true, 0.25, visionEvent, 0);
+                    //adjust delay later
+                    robot.grabber.grabCone(1.0);
+                    timer.set(1.5, event);
+                    sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL);
 
-                if (taskParams.objectType == ObjectType.CONE)
-                {
-                    robot.grabber.grabCone();
+                    
                 }
-                else
-                {
-                    robot.grabber.grabCube();
+                else {
+                    sm.setState(State.DONE);
                 }
-                // TODO (Code Review): Need to wait until you firmly grabbed the object before moving the elevator. And why
-                // is the elevator height 0?
-                robot.elevatorPidActuator.setPosition(currOwner, 0, 0, true, 1.0, event, 1);
-                sm.waitForSingleEvent(event, State.DONE);
                 break;
             
+            case PREP_FOR_TRAVEL:
+                robot.elevatorPidActuator.setPosition(currOwner, 0, 5.0, true, 1.0, event, 0);
+                sm.waitForSingleEvent(event, State.DONE);
+                break;
+
             case DONE:
                 stopAutoTask(true);
                 break;
