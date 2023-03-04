@@ -29,7 +29,6 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -39,6 +38,9 @@ import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 import team492.vision.PhotonVision.PipelineType;
+
+
+
 
 /**
  * This class implements auto-assist task to score a cone or cube.
@@ -50,7 +52,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     public enum State
     {
         START,
-        DRIVE_TO_SCORING_POS,
+        DETECT_TARGET,
+        ALIGN_TO_TARGET,
+        PREPARE_TO_SCORE,
         SCORE_OBJECT,
         RESET,
         DONE
@@ -79,8 +83,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event;
-    private final TrcEvent visionEvent;
-    private final TrcTimer timer;
     private String currOwner = null;
 
     /**
@@ -97,8 +99,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         this.robot = robot;
         this.msgTracer = msgTracer;
         event = new TrcEvent(moduleName);
-        visionEvent = new TrcEvent(moduleName + ".visionEvent");
-        timer = new TrcTimer(moduleName);
     }   //TaskAutoScore
 
     /**
@@ -225,135 +225,108 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      * @param slowPeriodicLoop specifies true if it is running the slow periodic loop on the main robot thread,
      *        false otherwise.
      */
+
+
+
+
+
+     
     @Override
     protected void runTaskState(
         Object params, State state, TrcTaskMgr.TaskType taskType, TrcRobot.RunMode runMode, boolean slowPeriodicLoop)
     {
         TaskParams taskParams = (TaskParams) params;
-        // TODO (Code Review): Recommendations
-        //  Preconditions:
-        //      robot is at position that it can see AprilTag (if using vision) and far enough to deploy elevator and
-        //      arm without hitting field elements (Nathan must satisfy these conditions even for scoring preload).
-        //  START:
-        //      Raise elevator to scoring height, signal elevator event.
-        //      Raise arm to scoring angle, signal arm event.
-        //      Retract whacker.
-        //      if (useVision) call vision to detect target with a timeout, signal vision event.
-        //      wait for all events and goto DRIVE_TO_SCORING_POS.
-        //  DRIVE_TO_SCORING_POS:
-        //      if no position, determine the score position on your own (may want to enhance getScoringPos to return
-        //      position even there is no AprilTagObj). -> will implement this later
-        //      use purePursuit to go there (go slowly), goto SCORE_OBJECT.
-        //  SCORE_OBJECT:
-        //      if object is CUBE, release cube grabber, goto RESET.
-        //      if object is CONE, lower arm and release cone with a slight delay, goto RESET.
-        //  RESET:
-        //      lower elevator to 0 height.
-        //      lower arm to TRAVEL_POS.
-        //      goto DONE.
-        //  DONE:
-        //      stop task.
+        //
+        // Preconditions:
+        // Arm is at up position, elevator is at min position, turret is optionally at start scan position.
+        //
         switch (state)
         {
             case START:
-                //scoring position for cone, will add an array in params for cube and cone scoring pos' for arm and elevator 
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ELEVATOR_MAX_POS, true, 1.0, event, 0.0);
-                sm.addEvent(event);
-                // Assuming the arm is much faster than the elevator.
-                robot.armPidActuator.setPosition(currOwner, 0.0, RobotParams.ARM_MAX_POS, true, 0.25, null, 0.0);
-                // TODO (Code Review): Why delay one second???
-                robot.intake.retract();//(1.0);
+                // TODO (Code Review): What are you trying to do here? I don't understand the logic.
                 if (taskParams.useVision)
                 {
-                    robot.photonVision.setPipeline(PipelineType.APRILTAG);
-                    robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
-                    sm.addEvent(visionEvent);
+                    sm.setState(State.DETECT_TARGET);
                 }
-                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, 0.0, true);
-                //if its the preload/not using vision just score the object after setting elevator, arm to the right heights 
-                // TODO (Code Review): No, you can't just score, you need to move forward before scoring!!!
-                // else if(taskParams.isPreload || !taskParams.useVision)
-                // {
-                //     sm.waitForSingleEvent(event, State.SCORE_OBJECT);
-                // }
+                else if (taskParams.isPreload)
+                {
+                    sm.setState(State.PREPARE_TO_SCORE);
+                }
+                else if (!taskParams.useVision)
+                {
+                    sm.setState(State.ALIGN_TO_TARGET);
+                }
                 break;
 
-            case DRIVE_TO_SCORING_POS:
-                TrcPose2D targetPose = null;
-                if (taskParams.useVision)
-                {
-                    DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
-                    if (detectedTarget != null)
-                    {
-                        // Vision sees the target.
-                        TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
-                        robot.robotDrive.setFieldPosition(robotPose, false);
-                        targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
-                    }
-                }
+            case DETECT_TARGET:
+                robot.photonVision.setPipeline(PipelineType.APRILTAG);
+                robot.photonVision.detectBestObject(event, RobotParams.VISION_TIMEOUT);
+                sm.waitForSingleEvent(event, State.ALIGN_TO_TARGET);
+                break;
 
-                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
-                if (targetPose != null)
+            case ALIGN_TO_TARGET:
+                // We are using vision.
+                DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
+                if (detectedTarget != null)
                 {
+                    // Vision sees the target.
+                    TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
+                    robot.robotDrive.setFieldPosition(robotPose, false);
                     robot.robotDrive.purePursuitDrive.start(
                         currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                        targetPose);
+                        getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation));
+                    sm.waitForSingleEvent(event, State.PREPARE_TO_SCORE);
                 }
                 else
                 {
-                    // Either we are not using vison or vision did not detect anything, try to determine scoring
-                    // position on our own.
+                    // Vision does not see the target.
+                    // TODO (Code Review): If not using vision or vision doesn't see the target, what do you do?
+                    // You should navigate to pre-determined location for scoring. Two possibilities:
+                    // 1) Scoring pre-load: don't need to go anywhere, you are just there.
+                    // 2) Scoring picked up objects either in auto or in teleop: you need to determine the scoring
+                    //    position according to your current location because according to pre-condition you should
+                    //    be right in front of your scoring "Grid" so you know where the nearest scoring position is.
+                    // Alternatively, if you said CmdAuto must call you with useVision == false for preloaded object
+                    // and must call you with useVision == true for subsequenet objects and TeleOp must call you with
+                    // useVision == true. Then your current logic is fine. If that's the case, you need to make sure
+                    // Nathan and Isaac know that and put that as pre-condition comment above.
+                    // However, if useVision == true and it doesn't see the target for some reason (i.e. vision failed),
+                    // your current logic is to score regardless without any navigation. This must be fixed.
+                    //leaving this for Anand 
 
-                    // TODO (Code Review): this should use the current robot location to determine the scoring location.
-                    // Hard coded going forward for now. Also adjust the distance to what Nathan has backed up.
 
-                    //future logic -> use odometry to determine scoring position 
-                    // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
-                    // robot.robotDrive.purePursuitDrive.start(
-                    //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                    //     getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation));
-                    // sm.waitForSingleEvent(event, State.SCORE_OBJECT);
-                    robot.robotDrive.purePursuitDrive.start(
-                        currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, 20.0, 0.0));
+                    // This is for ifVision == true
+
+
+                    
+
+
+                    
+                    sm.setState(State.PREPARE_TO_SCORE);    // This need to be fixed.
                 }
-
-                // robot.robotDrive.purePursuitDrive.start(
-                //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
-                sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 break;
 
+            case PREPARE_TO_SCORE:
+                // set elevator, arm to the proper scoring positions
+                //todo: make sure these positions are accurate
+                // TODO (Code Review): Don't understand this. It looks wrong.
+                robot.elevatorPidActuator.setPresetPosition(currOwner, 0, taskParams.scoreLevel + 2, true, 0, event, 0);
+                robot.armPidActuator.setPresetPosition(currOwner, 0, taskParams.scoreLevel + 2, slowPeriodicLoop, 0, null, 0);
+                sm.waitForSingleEvent(event, State.SCORE_OBJECT);
+                break; 
+
             case SCORE_OBJECT:
-                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(1.0);
-                if (taskParams.objectType == ObjectType.CUBE)
-                {
-                    robot.grabber.releaseAll();
-                }
-                else
-                {
-                    // Move the arm down to cap the pole, then release the cone with a slight delay.
-                    robot.armPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, 0.25, visionEvent, 0);
-                    robot.grabber.releaseCube();
-                    robot.grabber.releaseCone(0.2);
-                }
-                // Wait a little bit to make sure the release is completed.
-                timer.set(0.2, event);
-                sm.waitForSingleEvent(event, State.RESET);
+                //outtake with the claw then go to RESET state
+                robot.grabber.releaseAll();
+                sm.setState(State.RESET);
                 break;
 
             case RESET:
-                // Retract elevator, arm, everything, back up a tiny bit, go to DONE state.
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, event, 0.0);
-                robot.armPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION, true, 0.25, null, 0.0);
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner, null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    new TrcPose2D(0.0, -20.0, 0.0));
-                sm.waitForSingleEvent(event, State.DONE);
-                break; 
+                //retract elevator, arm, everything, back up a tiny bit, go to DONE state
+                //todo: tune these values, should be arm perpendicular to grown position, min elevator position
+                robot.elevatorPidActuator.setPresetPosition(currOwner, 0.5, 0, true, 0, event, 0);
+                robot.armPidActuator.setPresetPosition(currOwner, 0, 2, slowPeriodicLoop, 0, event, 0);  
+                break;
 
             default:
             case DONE:
@@ -371,28 +344,61 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      */
     private TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType, ScoreLocation scoreLocation)
     {
-        Pose3d aprilTagPos = robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId());
-        // Make the robot face the AprilTag.
-        double heading = (aprilTagPos.getRotation().getZ() + 180.0) % 360.0; 
-        //x + 22 if red right or blue left
-        double xOffset = 0.0;
-        if(objectType == ObjectType.CONE)
+        
+        if(aprilTagObj != null)
         {
-            if ((FrcAuto.autoChoices.getAlliance() == Alliance.Red && scoreLocation == ScoreLocation.RIGHT) ||
-                 FrcAuto.autoChoices.getAlliance() == Alliance.Blue && scoreLocation == ScoreLocation.LEFT)
-            {
-                xOffset = 22.0;
-            }
-            else
-            {
-                xOffset = -22.0;
-            }
-        }
-        double x = aprilTagPos.getX() + xOffset;
-        double y = aprilTagPos.getY() +
-                   (FrcAuto.autoChoices.getAlliance() == Alliance.Blue?
-                        RobotParams.STARTPOS_BLUE_Y: RobotParams.STARTPOS_RED_Y);
-        return new TrcPose2D(x, y, heading);
-    }   //getScoringPos
+                Pose3d aprilTagPos = robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId());
+                // Make the robot face the AprilTag.
+                double heading = (aprilTagPos.getRotation().getZ() + 180.0) % 360.0; 
+                //x + 22 if red right or blue left
+                double xOffset = 0.0;
+                if(objectType == ObjectType.CONE)
+                {
+                    if ((FrcAuto.autoChoices.getAlliance() == Alliance.Red && scoreLocation == ScoreLocation.RIGHT) ||
+                        FrcAuto.autoChoices.getAlliance() == Alliance.Blue && scoreLocation == ScoreLocation.LEFT)
+                    {
+                        xOffset = 22.0;
+                    }
+                    else
+                    {
+                        xOffset = -22.0;
+                    }
+                }
+                double x = aprilTagPos.getX() + xOffset;
+                double y = aprilTagPos.getY() +
+                        (FrcAuto.autoChoices.getAlliance() == Alliance.Blue?
+                                RobotParams.STARTPOS_BLUE_Y: RobotParams.STARTPOS_RED_Y);
+                return new TrcPose2D(x, y, heading);
+             
 
-}   //class TaskAutoScore
+        } 
+        else 
+        {
+            
+            
+            TrcPose2D robotPos = robot.robotDrive.driveBase.getFieldPosition();
+            double minXDist = Math.abs(robotPos.x - RobotParams.STARTPOS_X[0]);
+            int minDistIndex = 0;
+
+            int allianceIndex = FrcAuto.autoChoices.getAlliance() == Alliance.Blue? 0: 1;
+
+
+            for(int i = 1; i < RobotParams.STARTPOS_X.length; i++ ){
+                double xDist = Math.abs(robotPos.x - RobotParams.STARTPOS_X[i]);
+                if (xDist < minXDist)
+                {
+                    minXDist = xDist;
+                    minDistIndex = i;
+                }
+
+                TrcPose2D scoringPos = RobotParams.startPos[allianceIndex][minDistIndex].clone();
+                double yOffSet = FrcAuto.autoChoices.getAlliance() == Alliance.Blue? +24: -24; // Random Numbers
+                scoringPos.y += yOffSet;
+                return scoringPos;
+
+            }
+
+        }
+
+    }   //class TaskAutoScore
+}

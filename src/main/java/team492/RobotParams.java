@@ -113,6 +113,10 @@ public class RobotParams
     public static final double GRID_TAPE_EDGE_BLUE_Y            = 54.25;
     public static final double STARTPOS_BLUE_Y                  = GRID_TAPE_EDGE_BLUE_Y + RobotParams.ROBOT_LENGTH/2.0;
     public static final double STARTPOS_RED_Y                   = FIELD_LENGTH - STARTPOS_BLUE_Y;
+    public static final double STARTPOS_1_X                     = -42.19;
+    public static final double STARTPOS_2_X                     = -108.19;
+    public static final double STARTPOS_3_X                     = -174.19;
+    public static final double[] STARTPOS_X                     = {STARTPOS_1_X, STARTPOS_2_X, STARTPOS_3_X};
     public static final TrcPose2D STARTPOS_BLUE_1 = new TrcPose2D(-42.19, STARTPOS_BLUE_Y, 180.0);
     public static final TrcPose2D STARTPOS_BLUE_2 = new TrcPose2D(-108.19, STARTPOS_BLUE_Y, 180.0);
     public static final TrcPose2D STARTPOS_BLUE_3 = new TrcPose2D(-174.19, STARTPOS_BLUE_Y, 180.0);
