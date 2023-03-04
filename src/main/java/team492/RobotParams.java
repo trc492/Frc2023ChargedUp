@@ -366,7 +366,7 @@ public class RobotParams
 
     // Zeroes are normalized offsets which are in the unit of percentage revolution (0.0 to 1.0).
     // This is a backup if file is not found: LF, RF, LB, RB.
-    public static final double[] STEER_ZEROS                    = new double[] {0.705251, 0.282917, 0.902077, 0.443488};
+    public static final double[] STEER_ZEROS                    = new double[] {0.706660, 0.285550, 0.900340, 0.443968};
 
     public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0;
     // public static final TrcPidController.PidCoefficients magicSteerCoeff =
