@@ -116,13 +116,13 @@ public class RobotParams
     public static final double STARTPOS_1_X                     = -42.19;
     public static final double STARTPOS_2_X                     = -108.19;
     public static final double STARTPOS_3_X                     = -174.19;
-    public static final double[] STARTPOS_X                     = {STARTPOS_1_X, STARTPOS_2_X, STARTPOS_3_X};
-    public static final TrcPose2D STARTPOS_BLUE_1 = new TrcPose2D(-42.19, STARTPOS_BLUE_Y, 180.0);
-    public static final TrcPose2D STARTPOS_BLUE_2 = new TrcPose2D(-108.19, STARTPOS_BLUE_Y, 180.0);
-    public static final TrcPose2D STARTPOS_BLUE_3 = new TrcPose2D(-174.19, STARTPOS_BLUE_Y, 180.0);
-    public static final TrcPose2D STARTPOS_RED_1 = new TrcPose2D(-42.19, STARTPOS_RED_Y, 0.0);
-    public static final TrcPose2D STARTPOS_RED_2 = new TrcPose2D(-108.19, STARTPOS_RED_Y, 0.0);
-    public static final TrcPose2D STARTPOS_RED_3 = new TrcPose2D(-174.19, STARTPOS_RED_Y, 0.0);
+    public static final double[] startPosX                      = {STARTPOS_1_X, STARTPOS_2_X, STARTPOS_3_X};
+    public static final TrcPose2D STARTPOS_BLUE_1 = new TrcPose2D(STARTPOS_1_X, STARTPOS_BLUE_Y, 180.0);
+    public static final TrcPose2D STARTPOS_BLUE_2 = new TrcPose2D(STARTPOS_2_X, STARTPOS_BLUE_Y, 180.0);
+    public static final TrcPose2D STARTPOS_BLUE_3 = new TrcPose2D(STARTPOS_3_X, STARTPOS_BLUE_Y, 180.0);
+    public static final TrcPose2D STARTPOS_RED_1 = new TrcPose2D(STARTPOS_1_X, STARTPOS_RED_Y, 0.0);
+    public static final TrcPose2D STARTPOS_RED_2 = new TrcPose2D(STARTPOS_2_X, STARTPOS_RED_Y, 0.0);
+    public static final TrcPose2D STARTPOS_RED_3 = new TrcPose2D(STARTPOS_3_X, STARTPOS_RED_Y, 0.0);
     public static final TrcPose2D[][] startPos =
     {
         {STARTPOS_BLUE_1, STARTPOS_BLUE_2, STARTPOS_BLUE_3},

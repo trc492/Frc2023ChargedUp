@@ -146,10 +146,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         final String funcName = "acquireSubsystemsOwnership";
         boolean success = ownerName == null ||
-                          (robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
-                           robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
-                           robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
-                           robot.intake.acquireExclusiveAccess(ownerName));
+                          robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
+                          robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
+                          robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
+                          robot.intake.acquireExclusiveAccess(ownerName);
         if (success)
         {
             currOwner = ownerName;
