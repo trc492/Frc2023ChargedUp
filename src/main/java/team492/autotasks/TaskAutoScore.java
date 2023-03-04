@@ -390,13 +390,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     minXDist = xDist;
                     minDistIndex = i;
                 }
-
-                TrcPose2D scoringPos = RobotParams.startPos[allianceIndex][minDistIndex].clone();
-                double yOffSet = FrcAuto.autoChoices.getAlliance() == Alliance.Blue? +24: -24; // Random Numbers
-                scoringPos.y += yOffSet;
-                return scoringPos;
-
             }
+            TrcPose2D scoringPos = RobotParams.startPos[allianceIndex][minDistIndex].clone();
+            double yOffSet = FrcAuto.autoChoices.getAlliance() == Alliance.Blue? +24: -24; // Random Numbers
+            scoringPos.y += yOffSet;
+            return scoringPos;
 
         }
 
