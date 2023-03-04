@@ -176,7 +176,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             double armPos =
                                 (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
                                 RobotParams.ARM_LOW_POS;
-                            robot.armPidActuator.setPosition(armPos, true, 0.25);
+                            robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
                         }
                     }
 
@@ -538,14 +538,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON6:
                 if (robot.arm != null && pressed)
                 {
-                    robot.armPidActuator.presetPositionUp(moduleName, 0.25);
+                    robot.armPidActuator.presetPositionUp(moduleName, RobotParams.ARM_MAX_POWER);
                 }
                 break;
             //lowers the arm and elevator one preset position 
             case FrcJoystick.LOGITECH_BUTTON7:
                 if (robot.arm != null && pressed)
                 {
-                    robot.armPidActuator.presetPositionDown(moduleName, 0.25);
+                    robot.armPidActuator.presetPositionDown(moduleName, RobotParams.ARM_MAX_POWER);
                 }
                 break;
 
@@ -601,7 +601,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Must acquire ownership moving the elevator and arm or analog control will interfere.
                 robot.intake.retract();
                 robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
-                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, null, 0.0);
+                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 break;
         }
     }   //operatorStickButtonEvent

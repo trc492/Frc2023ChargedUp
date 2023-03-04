@@ -261,7 +261,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     currOwner, 0.0, RobotParams.ELEVATOR_MAX_POS, true, 1.0, event, 0.0);
                 sm.addEvent(event);
                 // Assuming the arm is much faster than the elevator.
-                robot.armPidActuator.setPosition(currOwner, 0.0, RobotParams.ARM_MAX_POS, true, 0.25, null, 0.0);
+                robot.armPidActuator.setPosition(currOwner, 0.0, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 // TODO (Code Review): Why delay one second???
                 robot.intake.retract();//(1.0);
                 if (taskParams.useVision)
@@ -334,7 +334,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 {
                     // Move the arm down to cap the pole, then release the cone with a slight delay.
                     robot.armPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, 0.25, visionEvent, 0);
+                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, visionEvent, 0);
                     robot.grabber.releaseCube();
                     robot.grabber.releaseCone(0.2);
                 }
@@ -348,7 +348,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 robot.elevatorPidActuator.setPosition(
                     currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, event, 0.0);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION, true, 0.25, null, 0.0);
+                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     new TrcPose2D(0.0, -20.0, 0.0));

@@ -269,7 +269,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 
                 // raise arm to around 15 degrees
                 // change the power limit
-                robot.armPidActuator.setPosition(currOwner, 0, 15, true, 0.25, armEvent, 0);
+                robot.armPidActuator.setPosition(currOwner, 0, 15, true, RobotParams.ARM_MAX_POWER, armEvent, 0);
 
                 robot.intake.extend();
                 // if (useVision == true) call vision to detect object with timeout, signal event.
@@ -317,7 +317,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     robot.intake.setTriggerEnabled(false, null);
                     robot.intake.cancel();
                     robot.elevatorPidActuator.setPosition(currOwner, 0, 3.0, true, 1.0, null, 0);
-                    robot.armPidActuator.setPosition(currOwner, 0, 5, true, 0.25, visionEvent, 0);
+                    robot.armPidActuator.setPosition(currOwner, 0, 5, true, RobotParams.ARM_MAX_POWER, visionEvent, 0);
                     //adjust delay later
                     robot.grabber.grabCone(1.0);
                     timer.set(1.5, event);
