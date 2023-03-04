@@ -338,7 +338,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.grabber.releaseCube();
                     robot.grabber.releaseCone(0.2);
                 }
-                //outtake with the claw then go to RESET state
+                // Wait a little bit to make sure the release is completed.
                 timer.set(0.2, event);
                 sm.waitForSingleEvent(event, State.RESET);
                 break;
