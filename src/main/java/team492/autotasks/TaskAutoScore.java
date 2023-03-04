@@ -255,12 +255,22 @@
          switch (state)
          {
              case START:
-                 //scoring position for cone, will add an array in params for cube and cone scoring pos' for arm and elevator 
+                 //determine arm, elevator scoring positions based on scoringLevel and objectType
+                 double elevatorPos; 
+                 double armPos;
+                 if(taskParams.objectType == ObjectType.CONE){
+                    elevatorPos = RobotParams.elevatorConeScoringPresets[taskParams.scoreLevel];
+                    armPos = RobotParams.armConeScorePresets[taskParams.scoreLevel];
+                 }
+                 else{
+                    elevatorPos = RobotParams.elevatorCubeScoringPresets[taskParams.scoreLevel];
+                    armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
+                 }
                  robot.elevatorPidActuator.setPosition(
-                     currOwner, 0.0, RobotParams.ELEVATOR_MAX_POS, true, 1.0, event, 0.0);
+                     currOwner, 0.0, elevatorPos, true, 1.0, event, 0.0);
                  sm.addEvent(event);
                  // Assuming the arm is much faster than the elevator.
-                 robot.armPidActuator.setPosition(currOwner, 0.0, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                 robot.armPidActuator.setPosition(currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                  robot.intake.retract(1.0);
                  if (taskParams.useVision)
                  {
@@ -280,10 +290,10 @@
                  {
                     detectedTarget = robot.photonVision.getLastDetectedBestObject();
                  }
-                 //whether detectedTarget was found or not targetPose is getScoringPos()
+                 //whether detectedTarget was found or not targetPose is getScoringPos(detectedTarget)
                     //if detectedTarget is null(vision failed or no vision) getScoringPos() can use odometry to find targetPose
                 targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
-                //if its not the preload object use targetPose
+                //if its not the preload object use targetPose to drive to the scoring location
                 if (!taskParams.isPreload)
                  {
                      robot.robotDrive.purePursuitDrive.start(

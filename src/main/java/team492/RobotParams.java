@@ -422,6 +422,16 @@ public class RobotParams
     {
         0.0, 6.0, 12.0, 18.0, 24.0, 28.0
     };
+    //TODO: tune these values
+    public static final double[] elevatorConeScoringPresets     =
+    {
+        18.0, 24.0, 28.0
+    };
+    //TODO: tune these values
+    public static final double[] elevatorCubeScoringPresets     =
+    {
+        18.0, 24.0, 28.0
+    };
     // Arm subsystem.
     // public static final double ARM_MAX_VEL                      = (FALCON_MAX_RPM*0.81/STEER_GEAR_RATIO/60.0)*360.0;
     public static final int ARM_ENCODER_CPR                     = 4096;
@@ -454,6 +464,16 @@ public class RobotParams
         ARM_LOW_POS, ARM_TRAVEL_POSITION, ARM_PICKUP_POSITION, ARM_MAX_POS
     };
 
+    //TODO: tune these values, random numbers
+    public static final double[] armConeScorePresets            =
+    {
+        ARM_PICKUP_POSITION, 60, ARM_MAX_POS
+    };
+    //TODO: tune these values, random numbers
+    public static final double[] armCubeScorePresets            =
+    {
+        ARM_PICKUP_POSITION, 60, ARM_MAX_POS
+    };
     public static final double INTAKE_CUBE_PICKUP_POWER         = 0.3; 
     public static final double INTAKE_CONE_PICKUP_POWER         = 0.8;
     public static final double INTAKE_SPIT_POWER                = -0.5; 
