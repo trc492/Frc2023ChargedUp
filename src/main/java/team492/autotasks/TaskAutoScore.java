@@ -383,7 +383,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             int allianceIndex = FrcAuto.autoChoices.getAlliance() == Alliance.Blue? 0: 1;
 
 
-            for(int i = 1; i < RobotParams.STARTPOS_X.length; i++ ){
+            for(int i = 1; i < RobotParams.STARTPOS_X.length; i++){
                 double xDist = Math.abs(robotPos.x - RobotParams.STARTPOS_X[i]);
                 if (xDist < minXDist)
                 {

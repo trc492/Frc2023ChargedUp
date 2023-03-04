@@ -689,4 +689,22 @@ public class Robot extends FrcRobotBase
         return (pressureSensor.getVoltage() - 0.5) * 50.0;
     }   //getPressure
 
+    public void turtleMode(String owner)
+    {
+        double timeout = 0.0;
+        // Do we need to move the arm to let the intake retract?
+        if(armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&
+            elevatorPidActuator.getPosition() <= RobotParams.ELEVATOR_SAFE_HEIGHT)
+        {
+            timeout = 0.2;
+            // Move elevator & arm out of the way
+            elevatorPidActuator.setPosition(owner, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, timeout);
+            armPidActuator.setPosition(owner, RobotParams.ARM_SAFE_POSITION, true, RobotParams.ARM_MAX_POWER, null, timeout);
+        }
+        intake.retract(timeout);
+        // Move elevator & arm to turtle position
+        elevatorPidActuator.setPosition(owner, timeout, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
+        armPidActuator.setPosition(owner, timeout, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+    }
+
 }   //class Robot

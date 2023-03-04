@@ -48,11 +48,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     public enum State
     {
         START,
-        BRING_ARM_OUT,
-        ASSUME_DRIVING_POS,
-        LOOK_FOR_TARGET,
-        DRIVE_TO_TARGET,
+        DRIVE_TO_OBJECT,
         PICKUP_OBJECT,
+        PREP_FOR_TRAVEL,
         DONE
     }   //enum State
 
@@ -71,7 +69,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent armEvent, elevatorEvent, intakeEvent, event;
+    private final TrcEvent elevatorEvent, armEvent, intakeEvent, visionEvent, event;
     private final TrcTimer timer;
     private String currOwner = null;
 
@@ -88,9 +86,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        armEvent = new TrcEvent(moduleName + ".armEvent");
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
+        armEvent = new TrcEvent(moduleName + ".armEvent");
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
+        visionEvent = new TrcEvent(moduleName + ".visionEvent");
         event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName + ".timer");
     }   //TaskAutoPickup
@@ -223,146 +222,134 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
         TaskParams taskParams = (TaskParams) params;
-        // TODO (Code Review): Recommendations
         //  Preconditions:
-        //      All subsystems are in "turtle mode" for travelling: arm at TRAVEL_POS, elevator at 0.0, whacker retracted.
-        //  START:
-        //      set Whacker down.
-        //      close cube grabber (polycarb).
-        //      open cone grabber (earmuffs).
-        //      raise elevator to ~6-inch, signal event.
-        //      raise arm to 15-deg, signal evernt.
-        //      if (useVision) call vision to detect object with timeout, signal event.
-        //      wait for all events then goto DRIVE_TO_OBJECT.
-        //  DRIVE_TO_OBJECT:
-        //      Turn on whacker.
-        //      Arm beam breaker, signal event when has object.
-        //      if no object position, set position to forward 36-inch.
-        //      call purePursuit to go to object position, signal event.
-        //      wait for any event then goto PICKUP_OBJECT.
-        //  PICKUP_OBJECT: (This only picks up cone, what about cube?)
-        //      cancel purePursuit drive.
-        //      unarm beam breaker.
-        //      stop whacker.
-        //      lower elevator to 3-inch.
-        //      lower arm to 5-deg.
-        //      close cone grabber with a delay (earmuffs).
-        //      set a delay timer and signal event.
-        //      wait for timer event then goto PREP_FOR_TRAVEL.
-        //  PREP_FOR_TRAVEL:
-        //      raise elevator to 5-inch, signal event.
-        //      wait for event then goto DONE.
-        //  DONE:
-        //      stop task.
+        //      All subsystems are in "turtle mode" for travelling: arm at TRAVEL_POS, elevator at 0.0,
+        //      whacker retracted.
         switch (state)
         {
             case START:
-                // Extend intake to make sure any arm movements will not interfere
+                // Set Intake down.
+                // If picking up cube, open both cube and cone grabber,
+                //      otherwise close cube grabber and open cone grabber.
+                // Raise elevator to 6-inch, signal event.
+                // Raise arm to 15-deg, signal event.
+                // If useVision, call vision to detect object with timeout, signal event.
+                // Wait for all events, then goto DRIVE_TO_OBJECT.
                 robot.intake.extend();
-                // Need to bring arm out if it is stowed
-                if(robot.elevatorPidActuator.getPosition() < RobotParams.ELEVATOR_SAFE_HEIGHT && robot.armPidActuator.getPosition() < 0)
+                if (taskParams.objectType == ObjectType.CUBE)
                 {
-                    // Do not have to wait for intake because elevator is being raised to safe height
-                    sm.setState(State.BRING_ARM_OUT);
-                }
-                else
-                {
-                    // Have to wait for intake to extend
-                    timer.set(0.2, event);
-                    sm.waitForSingleEvent(event, State.ASSUME_DRIVING_POS);
-                }
-                break;
-
-            case BRING_ARM_OUT:
-                // If arm is stowed, then we move the elevator up and move the arm out
-                robot.elevatorPidActuator.setPosition(currOwner, 10.0, true, 1.0, elevatorEvent, 0.0);
-                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_PICKUP_POSITION, true, 1.0, armEvent, 0.0);
-                sm.addEvent(elevatorEvent);
-                sm.addEvent(armEvent);
-                sm.waitForEvents(State.ASSUME_DRIVING_POS);
-                break;
-
-            case ASSUME_DRIVING_POS:
-               // Then, zero the elevator and arm to keep robot compact
-               //TODO: violent, incorrect position
-               robot.elevatorPidActuator.setPosition(currOwner, 0.0, true, 1.0, elevatorEvent, 0.0);
-               robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_LOW_POS, true, 1.0, armEvent, 0.0);
-               // Release all grabbers
-               robot.grabber.releaseAll();
-               sm.addEvent(elevatorEvent);
-               sm.addEvent(armEvent);
-               sm.waitForEvents(State.DONE);
-               break;
-
-            case LOOK_FOR_TARGET:
-                robot.photonVision.setPipeline(
-                    taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
-                robot.photonVision.detectBestObject(event, RobotParams.VISION_TIMEOUT);
-                sm.waitForSingleEvent(event, State.DRIVE_TO_TARGET);
-                break;
-            
-            case DRIVE_TO_TARGET:
-                // TODO (Code Review): Do we really need this?
-                // robot.elevatorPidActuator.setPosition(
-                //     currOwner, 0, 0, true, 1.0, event, 0);
-                TrcPose2D target = null;
-                if (taskParams.useVision)
-                {
-                    // Check if vision has detected a target.
-                    DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
-                    if (detectedTarget != null)
-                    {
-                        // Cone center height: 12+13/16, Cube center height: 9.5 +/- 0.5.
-                        target = robot.photonVision.getTargetPose2D(
-                            detectedTarget, detectedTarget.getRect().height / 2.0);
-                        target.angle = 0.0;     // Just need x and y but maintain the current heading.
-                        //target.y += 12; not sure how much to add at the moment, need testing
-                    }
-                }
-
-                if (target == null)
-                {
-                    target = new TrcPose2D(0.0, 36.0);
-                }
-
-                robot.intake.extend();
-                robot.intake.setPower(currOwner, 0.0, 1.0, 1.0, 0.0);
-                robot.intake.setTriggerEnabled(true, intakeEvent);
-                sm.addEvent(intakeEvent);
-
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, target);
-                sm.addEvent(event);
-
-                sm.waitForEvents(State.PICKUP_OBJECT);
-                break;
-
-            case PICKUP_OBJECT:
-                // TODO (Code Review): Picking up an object requires a sequence that Eric has published a document for.
-                // Please consult Eric's document. It's not as simple as this.
-                // Tried to abide by Eric's document as much as possible, but parts of it (rotating cone to be nose out) was too challenging/unthinkable!!
-                robot.armPidActuator.setPosition(currOwner, RobotParams.ARM_PICKUP_POSITION, true, 1.0, null, 0);
-                robot.intake.cancel(currOwner);
-                robot.robotDrive.purePursuitDrive.cancel(currOwner);
-                robot.intake.setTriggerEnabled(false, null);
-                // TODO (CodeReview): Do we need to retract here? We haven't grab the object yet.
-                robot.intake.retract();
-
-                if (taskParams.objectType == ObjectType.CONE)
-                {
-                    robot.grabber.grabCone();
+                    robot.grabber.releaseCube();
                 }
                 else
                 {
                     robot.grabber.grabCube();
                 }
-                // TODO (Code Review): Need to wait until you firmly grabbed the object before moving the elevator. And why
-                // is the elevator height 0?
-                robot.elevatorPidActuator.setPosition(currOwner, 0, 0, true, 1.0, event, 1);
-                sm.waitForSingleEvent(event, State.DONE);
+                robot.grabber.releaseCone();
+
+                robot.elevatorPidActuator.setPosition(
+                    currOwner, 0.0, 6.0, true, 1.0, elevatorEvent, 0.0);
+                sm.addEvent(elevatorEvent);
+                robot.armPidActuator.setPosition(
+                    currOwner, 0.0, 15.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
+                sm.addEvent(armEvent);
+
+                if (taskParams.useVision)
+                {
+                    robot.photonVision.setPipeline(
+                        taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
+                    robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
+                    sm.addEvent(visionEvent);
+                }
+
+                sm.waitForEvents(State.DRIVE_TO_OBJECT, 0.0, true);
                 break;
             
+            case DRIVE_TO_OBJECT:
+                // Turn on whacker with speed appropriate for cube or cone.
+                // Arm intake sensor, signal event when has object.
+                // If useVision and vision detected object use detected object position,
+                //      otherwise set position to 36-inch forward.
+                // Call purePursuit to go to object position, signal event.
+                // Wait for either events, then goto PICKUP_OBJECT.
+                TrcPose2D targetPos = null;
+                double intakePower = taskParams.objectType == ObjectType.CUBE?
+                    RobotParams.INTAKE_CUBE_PICKUP_POWER: RobotParams.INTAKE_CONE_PICKUP_POWER;
+
+                robot.intake.setPower(currOwner, 0.0, intakePower, intakePower, 0.0);
+                robot.intake.setTriggerEnabled(true, intakeEvent);
+                sm.addEvent(intakeEvent);
+
+                if (taskParams.useVision)
+                {
+                    DetectedObject target = robot.photonVision.getLastDetectedBestObject();
+                    if (target != null)
+                    {
+                        targetPos = robot.photonVision.getTargetPose2D(target, target.getRect().height/2.0);
+                    }
+                }
+
+                if (targetPos == null)
+                {
+                    targetPos = new TrcPose2D(0.0, 36.0, 0.0);
+                }
+
+                robot.robotDrive.purePursuitDrive.start(
+                    currOwner,event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, targetPos);
+                sm.addEvent(event);
+
+                sm.waitForEvents(State.PICKUP_OBJECT);
+                break;
+            
+            case PICKUP_OBJECT:
+                // Cancel purePursuit drive.
+                // Stop intake.
+                // Unarm intake sensor.
+                // If intake does not have object, goto DONE, otherwise continue the following.
+                // Lower elevator to 3-inch.
+                // Lower arm to 5-deg.
+                // If picking up cone, close cone grabber with a delay, otherwise close cube grabber with a delay.
+                // Set a delay timer and signal event.
+                // Wait for timer event then goto PREP_FOR_TRAVEL.
+                robot.robotDrive.purePursuitDrive.cancel();
+                robot.intake.cancel();
+                robot.intake.setTriggerEnabled(false, null);
+
+                if (robot.intake.hasObject())
+                {
+                    robot.elevatorPidActuator.setPosition(
+                        currOwner, 0.0, 3.0, true, 1.0, null, 0.0);
+                    robot.armPidActuator.setPosition(
+                        currOwner, 0.0, 5.0, true, RobotParams.ARM_MAX_POWER, visionEvent, 0.0);
+                    if (taskParams.objectType == ObjectType.CUBE)
+                    {
+                        robot.grabber.grabCube(1.0);
+                    }
+                    else
+                    {
+                        robot.grabber.grabCone(1.0);
+                    }
+                    timer.set(1.5, event);
+                    sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL);
+                }
+                else
+                {
+                    sm.setState(State.PREP_FOR_TRAVEL);
+                }
+                break;
+            
+            case PREP_FOR_TRAVEL:
+                // Raise elevator to 5-inch, signal event.
+                // Set arm at 5-deg.
+                // Wait for event, then goto DONE.
+                robot.elevatorPidActuator.setPosition(
+                    currOwner, 0.0, 5.0, true, 1.0, event, 0.0);
+                robot.armPidActuator.setPosition(
+                    currOwner, 0.0, 5.0, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                sm.waitForSingleEvent(event, State.DONE);
+                break;
+
             case DONE:
+                // Stop task.
                 stopAutoTask(true);
                 break;
         }

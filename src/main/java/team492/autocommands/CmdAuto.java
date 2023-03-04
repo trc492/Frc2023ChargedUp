@@ -157,11 +157,13 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     scoringLevel = FrcAuto.autoChoices.getScoringLevel();
                     useVision = FrcAuto.autoChoices.getUseVision();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    getSecondPiece = FrcAuto.autoChoices.getGetSecondPiece();
                     // Set robot's start position according to autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
                     // TODO (Code Review): This state may be a lot more complicated because at the beginning of the match,
                     // the arm is tucked inside the robot's belly. See recommendation above.
-                    sm.setState(State.SCORE_GAME_PIECE);
+                    sm.setState(State./*START_DELAY); piecesScored = 1;*/SCORE_GAME_PIECE);
+                    //break; 
                     //
                     // Intentionally falling through to SCORE_GAME_PIECE state (i.e. no break).
                     //
@@ -172,7 +174,6 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     {
                         // Scoring preloaded game piece (cube, so scoreLocation is MIDDLE), doing delay next.
                         nextState = State.START_DELAY;
-                        //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                         robot.autoScoreTask.autoAssistScoreObject(
                             loadedObjType, scoringLevel, ScoreLocation.MIDDLE, false, true, event);
                     }
@@ -180,18 +181,16 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     {
                         // Scoring second game piece, going for third next.
                         nextState = State.GO_TO_GAME_PIECE;
-                        //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                         // Code Review: what is the loadedObjType for the 2nd piece? Who sets scoreLocation?
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoringLevel, scoreLocation, useVision, false, event);
+                            loadedObjType, scoringLevel, ScoreLocation.LEFT, useVision, false, event);
                     }
                     else
                     {
                         // Scoring second game piece, going to the charging station next.
                         nextState = State.GO_TO_CHARGING_STATION;
-                        //TODO: wait for samuel to adde code for taskautoscore that allows to specify where to score (which pole or shelf)
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoringLevel, scoreLocation, useVision, false, event);
+                            loadedObjType, scoringLevel, ScoreLocation.RIGHT, useVision, false, event);
                     }
                     sm.waitForSingleEvent(event, nextState);
                     piecesScored++;
@@ -230,15 +229,15 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
                         {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 0.0),
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, RobotParams.CHARGING_STATION_CENTER_BLUE_Y, 180.0),
                                 new TrcPose2D(RobotParams.GAME_PIECE_1_X, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0));
                         }
                         else
                         {
                             robot.robotDrive.purePursuitDrive.start(
-                                event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 180.0),
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 0.0),
                                 new TrcPose2D(RobotParams.GAME_PIECE_1_X, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
                         }
                     }
@@ -272,13 +271,14 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     sm.waitForSingleEvent(event, State.GO_TO_SCORE_POSITION);
                     // Second game piece will be a cube, third game piece will be a cone.
                     robot.autoPickupTask.autoAssistPickup(
-                        piecesScored == 1? ObjectType.CUBE: ObjectType.CONE, useVision, event);
-                    if (piecesScored == 1) {
-                        loadedObjType = ObjectType.CUBE;
-                    }
-                    else {
-                        loadedObjType = ObjectType.CONE;
-                    }
+                        //piecesScored == 1? ObjectType.CUBE: Right now, we are assuming that we can pick up a cone reliably
+                        ObjectType.CONE, useVision, event);
+                    //if (piecesScored == 1) {
+                    //    loadedObjType = ObjectType.CUBE;
+                    //}
+                    //else {
+                    loadedObjType = ObjectType.CONE;
+                    //}
                     //we dont need the folowing lines, keeping it just in case
                     // robot.robotDrive.purePursuitDrive.start(
                     //     null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
