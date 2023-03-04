@@ -86,6 +86,11 @@ public class Grabber
         }
     }   //grabCube
 
+    public void grabCube(double delay)
+    {
+        cubeGrabber.extend(delay);
+    }   //grabCube
+
     public void releaseCube()
     {
         cubeGrabber.retract();

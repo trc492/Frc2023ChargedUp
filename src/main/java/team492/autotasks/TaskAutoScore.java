@@ -366,7 +366,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      * This method returns the absolute field location for the robot to be at to score the game element.
      *
      * @param aprilTagObj specifies the nearest detected AprilTag object.
-     * @parm objectType specifies the game element type to score.
+     * @param objectType specifies the game element type to score.
      * @param scoreLocation specifies the scoring location (shelf, left pole or right pole). ROBOTS POV
      */
     private TrcPose2D getScoringPos(DetectedObject aprilTagObj, ObjectType objectType, ScoreLocation scoreLocation)
