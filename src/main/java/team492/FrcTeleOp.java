@@ -538,14 +538,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON6:
                 if (robot.arm != null && pressed)
                 {
-                    robot.armPidActuator.presetPositionUp(moduleName);
+                    robot.armPidActuator.presetPositionUp(moduleName, 0.25);
                 }
                 break;
             //lowers the arm and elevator one preset position 
             case FrcJoystick.LOGITECH_BUTTON7:
                 if (robot.arm != null && pressed)
                 {
-                    robot.armPidActuator.presetPositionDown(moduleName);
+                    robot.armPidActuator.presetPositionDown(moduleName, 0.25);
                 }
                 break;
 
