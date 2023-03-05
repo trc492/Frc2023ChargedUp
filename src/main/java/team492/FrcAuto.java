@@ -79,25 +79,25 @@ public class FrcAuto implements TrcRobot.RobotMode
         CONE
     }   //enum ObjectType
 
-    public static enum ScoreLocation
-    {
-        LEFT, //pole to the left of the apriltag
-        MIDDLE, //for cubes
-        RIGHT //pole to the right of the aprilag 
-    }
-
-    public static enum ScoringLevel
+    public static enum ScoreLevel
     {
         GROUND(0),
         LEVEL_1(1),
         LEVEL_2(2);
         // The value can be used as index into arrays if necessary.
         int value;
-        ScoringLevel(int value)
+        ScoreLevel(int value)
         {
             this.value = value;
-        }   //ScoringLevel
-    }   //enum ScoringLevel
+        }   //ScoreLevel
+    }   //enum ScoreLevel
+
+    public static enum ScoreLocation
+    {
+        LEFT,   // Pole to the left of the apriltag.
+        MIDDLE, // Shelf for cubes.
+        RIGHT   // Pole to the right of the aprilag.
+    }   //enum SocreLocation
 
     /**
      * This class encapsulates all user choices for autonomous mode from the smart dashboard.
@@ -118,7 +118,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         private static final String DBKEY_AUTO_START_POS = "Auto/StartPos";
         private static final String DBKEY_AUTO_START_DELAY = "Auto/StartDelay";
         private static final String DBKEY_AUTO_PRELOADED_OBJECT = "Auto/PreloadedObj";
-        private static final String DBKEY_AUTO_SCORING_LEVEL = "Auto/ScoringLevel";
+        private static final String DBKEY_AUTO_SCORE_LEVEL = "Auto/ScoreLevel";
+        private static final String DBKEY_AUTO_SCORE_LOCATION = "Auto/ScoreLocation";
         private static final String DBKEY_AUTO_USE_VISION = "Auto/UseVision";
         private static final String DBKEY_AUTO_DO_AUTO_BALANCE = "Auto/DoAutoBalance";
         private static final String DBKEY_AUTO_GET_SECOND_PIECE = "Auto/GetSecondPiece";
@@ -134,7 +135,8 @@ public class FrcAuto implements TrcRobot.RobotMode
         private final FrcChoiceMenu<AutoStrategy> autoStrategyMenu;
         private final FrcChoiceMenu<AutoStartPos> autoStartPosMenu;
         private final FrcChoiceMenu<ObjectType> autoPreloadedObjMenu;
-        private final FrcChoiceMenu<ScoringLevel> autoScoringLevelMenu;
+        private final FrcChoiceMenu<ScoreLevel> autoScoreLevelMenu;
+        private final FrcChoiceMenu<ScoreLocation> autoScoreLocationMenu;
 
         public AutoChoices()
         {
@@ -145,7 +147,8 @@ public class FrcAuto implements TrcRobot.RobotMode
             autoStrategyMenu = new FrcChoiceMenu<>(DBKEY_AUTO_STRATEGY);
             autoStartPosMenu = new FrcChoiceMenu<>(DBKEY_AUTO_START_POS);
             autoPreloadedObjMenu = new FrcChoiceMenu<>(DBKEY_AUTO_PRELOADED_OBJECT);
-            autoScoringLevelMenu = new FrcChoiceMenu<>(DBKEY_AUTO_SCORING_LEVEL);
+            autoScoreLevelMenu = new FrcChoiceMenu<>(DBKEY_AUTO_SCORE_LEVEL);
+            autoScoreLocationMenu = new FrcChoiceMenu<>(DBKEY_AUTO_SCORE_LOCATION);
             //
             // Populate autonomous mode choice menus.
             //
@@ -165,9 +168,13 @@ public class FrcAuto implements TrcRobot.RobotMode
             autoPreloadedObjMenu.addChoice("Cube", ObjectType.CUBE, true, false);
             autoPreloadedObjMenu.addChoice("Cone", ObjectType.CONE, false, true);
 
-            autoScoringLevelMenu.addChoice("Ground Level", ScoringLevel.GROUND);
-            autoScoringLevelMenu.addChoice("Level 1", ScoringLevel.LEVEL_1);
-            autoScoringLevelMenu.addChoice("Level 2", ScoringLevel.LEVEL_2, true, true);
+            autoScoreLevelMenu.addChoice("Ground Level", ScoreLevel.GROUND);
+            autoScoreLevelMenu.addChoice("Level 1", ScoreLevel.LEVEL_1);
+            autoScoreLevelMenu.addChoice("Level 2", ScoreLevel.LEVEL_2, true, true);
+
+            autoScoreLocationMenu.addChoice("Left", ScoreLocation.LEFT);
+            autoScoreLocationMenu.addChoice("Middle", ScoreLocation.MIDDLE, true, false);
+            autoScoreLocationMenu.addChoice("Right", ScoreLocation.RIGHT, false, true);
             //
             // Initialize dashboard with default choice values.
             //
@@ -176,7 +183,8 @@ public class FrcAuto implements TrcRobot.RobotMode
             userChoices.addChoiceMenu(DBKEY_AUTO_START_POS, autoStartPosMenu);
             userChoices.addNumber(DBKEY_AUTO_START_DELAY, 0.0);
             userChoices.addChoiceMenu(DBKEY_AUTO_PRELOADED_OBJECT, autoPreloadedObjMenu);
-            userChoices.addChoiceMenu(DBKEY_AUTO_SCORING_LEVEL, autoScoringLevelMenu);
+            userChoices.addChoiceMenu(DBKEY_AUTO_SCORE_LEVEL, autoScoreLevelMenu);
+            userChoices.addChoiceMenu(DBKEY_AUTO_SCORE_LOCATION, autoScoreLocationMenu);
             userChoices.addBoolean(DBKEY_AUTO_USE_VISION, true);
             userChoices.addBoolean(DBKEY_AUTO_DO_AUTO_BALANCE, true);
             userChoices.addBoolean(DBKEY_AUTO_GET_SECOND_PIECE, true);
@@ -214,10 +222,15 @@ public class FrcAuto implements TrcRobot.RobotMode
             return autoPreloadedObjMenu.getCurrentChoiceObject();
         }   //getPreloadedObjType
         
-        public int getScoringLevel()
+        public int getScoreLevel()
         {
-            return autoScoringLevelMenu.getCurrentChoiceObject().value;
-        }   //getScoringLevel
+            return autoScoreLevelMenu.getCurrentChoiceObject().value;
+        }   //getScoreLevel
+
+        public ScoreLocation getScoreLocation()
+        {
+            return autoScoreLocationMenu.getCurrentChoiceObject();
+        }   //getScoreLocation
 
         public boolean getUseVision()
         {
@@ -277,7 +290,8 @@ public class FrcAuto implements TrcRobot.RobotMode
                 "strategy=\"%s\" " +
                 "startPos=\"%s\" " +
                 "preloadedObj=\"%s\" " +
-                "scoringLevel=\"%s\" " +
+                "scoreLevel=\"%s\" " +
+                "scoreLocation=\"%s\" " +
                 "useVision=\"%s\" " +
                 "doAutoBalance=\"%s\" " +
                 "startDelay=%.0f sec " +
@@ -287,9 +301,9 @@ public class FrcAuto implements TrcRobot.RobotMode
                 "turnDegrees=%.0f deg " +
                 "driveTime=%.0f sec " +
                 "drivePower=%.1f",
-                getAlliance(), getStrategy(), getStartPos(), getPreloadedObjType(), getScoringLevel(), getUseVision(),
-                getDoAutoBalance(), getStartDelay(), getPathFile(), getXDriveDistance(), getYDriveDistance(),
-                getTurnAngle(), getDriveTime(), getDrivePower());
+                getAlliance(), getStrategy(), getStartPos(), getPreloadedObjType(), getScoreLevel(),
+                getScoreLocation(), getUseVision(), getDoAutoBalance(), getStartDelay(), getPathFile(),
+                getXDriveDistance(), getYDriveDistance(), getTurnAngle(), getDriveTime(), getDrivePower());
         }   //toString
 
     }   //class AutoChoices

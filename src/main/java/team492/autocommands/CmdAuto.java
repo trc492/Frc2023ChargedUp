@@ -57,12 +57,12 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private final TrcEvent event;
     private final TrcStateMachine<State> sm;
 
-    // private int startPos;
     private ObjectType loadedObjType;
-    private int scoringLevel;
+    private int scoreLevel;
+    private ScoreLocation scoreLocation;
     private boolean useVision;
-    private boolean getSecondPiece;  
     private boolean doAutoBalance;
+    private boolean getSecondPiece;
     //getSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
     //!getSecondPiece && doAutoBalance: after the start delay, we go to park
     //getSecondPiece && !doAutoBalance: after the start delay, we go for a second piece, score it, then go for a third piece
@@ -145,38 +145,38 @@ public class CmdAuto implements TrcRobot.RobotCommand
                 // to fetch 2nd piece. If not, check if we can go balance.
                 case START:
                     // startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
-
                     loadedObjType = ObjectType.CUBE;
-                    scoringLevel = FrcAuto.autoChoices.getScoringLevel();
+                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    scoreLocation = FrcAuto.autoChoices.getScoreLocation();
                     useVision = FrcAuto.autoChoices.getUseVision();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     getSecondPiece = FrcAuto.autoChoices.getGetSecondPiece();
-
                     // Set robot's start position according to autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
 
-                    // Back up a little so that deploying elevator and arm won't hit any field elements.
+                    // Back up a little slowly so that deploying elevator and arm won't hit any field elements.
+                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                     robot.robotDrive.purePursuitDrive.start(
-                        null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
-                        
                     // Raise elevator a little to let the arm out.
-                    robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                    robot.elevatorPidActuator.setPosition(
+                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.5);
                     robot.armPidActuator.setPosition(
                         0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                     sm.waitForSingleEvent(event, State.SCORE_GAME_PIECE);
                     break;
-                    // sm.setState(State./*START_DELAY); piecesScored = 1;*/SCORE_GAME_PIECE);
 
                 case SCORE_GAME_PIECE:
-                    // Scores a game piece, the precondition being that it is already in the scoring position, with
-                    // a game piece in the robot, broadacasting grabberEvent when complete.
+                    //  Preconditions:
+                    //      Robot is at position that it can see AprilTag (if using vision) and far enough to deploy elevator and
+                    //      arm without hitting field elements.
                     if (piecesScored == 0)
                     {
-                        // Scoring preloaded game piece (cube, so scoreLocation is MIDDLE), doing delay next.
+                        // TODO (Code Review): Samuel said we should get out of the community instead of doing delay. Please rework.
                         nextState = State.START_DELAY;
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoringLevel, ScoreLocation.MIDDLE, false, true, event);
+                            loadedObjType, scoreLevel, scoreLocation, false,  event);
                     }
                     else if (piecesScored == 1 && !doAutoBalance)
                     {
@@ -184,27 +184,30 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         nextState = State.GO_TO_GAME_PIECE;
                         // Code Review: what is the loadedObjType for the 2nd piece? Who sets scoreLocation?
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoringLevel, ScoreLocation.LEFT, useVision, false, event);
+                            loadedObjType, scoreLevel, ScoreLocation.LEFT, useVision, event);
                     }
                     else
                     {
                         // Scoring second game piece, going to the charging station next.
                         nextState = State.GO_TO_CHARGING_STATION;
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoringLevel, ScoreLocation.RIGHT, useVision, false, event);
+                            loadedObjType, scoreLevel, ScoreLocation.RIGHT, useVision, event);
                     }
                     sm.waitForSingleEvent(event, nextState);
                     piecesScored++;
                     break;
 
                 case START_DELAY:
-                    if (getSecondPiece) {
+                    if (getSecondPiece)
+                    {
                         nextState = State.GO_TO_GAME_PIECE;
                     }
-                    else if (doAutoBalance) {
+                    else if (doAutoBalance)
+                    {
                         nextState = State.GO_TO_CHARGING_STATION;
                     }
-                    else {
+                    else
+                    {
                         nextState = State.DONE;
                     }
                     double startDelay = FrcAuto.autoChoices.getStartDelay();
