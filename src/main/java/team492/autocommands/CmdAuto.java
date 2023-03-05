@@ -64,7 +64,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private boolean doAutoBalance;
     private boolean getSecondPiece;
     //getSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
-    //!getSecondPiece && doAutoBalance: after the start delay, we go to park
+    //!getSecondPiece && doAutoBalance: after the start delay, we go out of the community and then we go to park
     //getSecondPiece && !doAutoBalance: after the start delay, we go for a second piece, score it, then go for a third piece
     //!getSecondPiece && !doAutoBalance: after the start delay, we stop
     private int piecesScored = 0;
@@ -336,15 +336,15 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     {
                         robot.robotDrive.purePursuitDrive.start(
                             event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                            new TrcPose2D(-107.0, 85.0, 0),
-                            new TrcPose2D(-107.0, 145.0, 0));
+                            new TrcPose2D(-107.0, 85.0, 270),
+                            new TrcPose2D(-107.0, 145.0, 270));
                     }
                     else
                     {
                         robot.robotDrive.purePursuitDrive.start(
                             event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                            new TrcPose2D(-107.0, 550.0, 180),
-                            new TrcPose2D(-107.0, 490.0, 180));
+                            new TrcPose2D(-107.0, 550.0, 90),
+                            new TrcPose2D(-107.0, 490.0, 90));
                     }
                     sm.waitForSingleEvent(event, State.AUTO_BALANCE);
                     break;
