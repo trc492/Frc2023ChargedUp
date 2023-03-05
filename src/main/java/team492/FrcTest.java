@@ -24,6 +24,8 @@ package team492;
 
 import java.util.Locale;
 
+import org.opencv.core.Rect;
+
 import TrcCommonLib.command.CmdDriveMotorsTest;
 import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;
@@ -713,25 +715,31 @@ public class FrcTest extends FrcTeleOp
                 if (pipelineType == PipelineType.APRILTAG)
                 {
                     // line 9
-                    TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
+                    robot.dashboard.displayPrintf(lineNum, "TargetPose: %s", targetInfo.targetPose3D);
+                    lineNum++;
 
+                    TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
                     if (robotPose != null)
                     {
+                        // line 10
                         robot.dashboard.displayPrintf(lineNum, "RobotPose: %s", robotPose);
+                        lineNum++;
                     }
-                    lineNum++;
                 }
                 else
                 {
                     // line 9
-                    double targetHeight = pipelineType == PipelineType.POLE? RobotParams.LOW_POLE_TAPE_HEIGHT: 0.0;
+                    double targetHeight = pipelineType == PipelineType.POLE?
+                                            RobotParams.LOW_POLE_TAPE_HEIGHT:
+                                          pipelineType == PipelineType.CONE?
+                                            RobotParams.CONE_HALF_HEIGHT: RobotParams.CUBE_HALF_HEIGHT;
                     TrcPose2D targetPose = robot.photonVision.getTargetPose2D(targetInfo, targetHeight);
-
                     if (targetPose != null)
                     {
-                        robot.dashboard.displayPrintf(lineNum, "TargetPose: %s", targetPose);
+                        robot.dashboard.displayPrintf(
+                            lineNum, "TargetPose: %s, Rect: %s", targetPose, targetInfo.getRect());
+                            lineNum++;
                     }
-                    lineNum++;
                 }
             }
         }

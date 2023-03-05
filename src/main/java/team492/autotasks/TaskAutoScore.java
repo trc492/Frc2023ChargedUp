@@ -232,8 +232,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         TaskParams taskParams = (TaskParams) params;
         // TODO (Code Review): Recommendations
         //  Preconditions:
-        //      robot is at position that it can see AprilTag (if using vision) and far enough to deploy elevator and
+        //      robot is at position that it can see AprilTag (if using vision) within 5 feet and far enough to deploy elevator and
         //      arm without hitting field elements (Nathan must satisfy these conditions even for scoring preload).
+        //      bumper touching wood when scoring
         //  START:
         //      Raise elevator to scoring height, signal elevator event.
         //      Raise arm to scoring angle, signal arm event.
@@ -337,7 +338,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    new TrcPose2D(0.0, -20.0, 0.0));
+                    new TrcPose2D(0.0, -12.0, 0.0));
                 sm.waitForSingleEvent(event, State.DONE);
                 break; 
 

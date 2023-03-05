@@ -85,7 +85,7 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSubsystems             = true;
+        public static final boolean debugSubsystems             = false;
         public static final boolean debugSwerveSteering         = false;
         public static final boolean debugArmEncoder             = false;
         public static final boolean debugLoopTime               = false;
@@ -151,6 +151,10 @@ public class RobotParams
     public static final double LOW_POLE_HEIGHT                  = 2.0*12.0 + 10.0;
     public static final double HIGH_POLE_TAPE_HEIGHT            = HIGH_POLE_HEIGHT - 2.1875;
     public static final double LOW_POLE_TAPE_HEIGHT             = LOW_POLE_HEIGHT - 10.0;
+    public static final double CONE_HALF_HEIGHT                 = 6.34375;  // Inches
+    public static final double CONE_HALF_WIDTH                  = 4.0;      // Inches
+    public static final double CUBE_HALF_HEIGHT                 = 4.5;      // Inches
+
     //
     // Joystick ports.
     //
@@ -252,13 +256,13 @@ public class RobotParams
     //
     public static final int CAMERA_IMAGE_WIDTH                  = 320;
     public static final int CAMERA_IMAGE_HEIGHT                 = 240;
-    public static final double CAMERA_DATA_TIMEOUT              = 0.5;  // 500ms
-    public static final double VISION_TIMEOUT                   = 0.5;  // 500ms
-    public static final double VISION_TARGET_HEIGHT             = 104.0;// Inches from the floor
-    public static final double CAMERA_Y_OFFSET                  = 0.0;  // Inches from the center of the robot
-    public static final double CAMERA_X_OFFSET                  = 0.0;  // Inches from the center of the robot
-    public static final double CAMERA_HEIGHT                    = 5.5;  // Inches from the floor
-    public static final double CAMERA_PITCH                     = -5.0; // Degrees from horizontal
+    public static final double CAMERA_DATA_TIMEOUT              = 0.5;      // 500ms
+    public static final double VISION_TIMEOUT                   = 0.5;      // 500ms
+    public static final double VISION_TARGET_HEIGHT             = 104.0;    // Inches from the floor
+    public static final double CAMERA_Y_OFFSET                  = 11.6625;  // Inches from the center of the robot
+    public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
+    public static final double CAMERA_HEIGHT                    = 41.5;     // Inches from the floor
+    public static final double CAMERA_PITCH                     = -44.5;    // Degrees from horizontal
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_X_OFFSET, CAMERA_Y_OFFSET, CAMERA_HEIGHT),
         new Rotation3d(0.0, CAMERA_PITCH, 0.0));

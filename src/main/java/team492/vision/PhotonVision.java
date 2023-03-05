@@ -49,10 +49,10 @@ public class PhotonVision extends FrcPhotonVision
 
     public enum PipelineType
     {
-        CUBE(0),
-        POLE(1),
-        CONE(2),
-        APRILTAG(3);
+        POLE(0),
+        CUBE(1),
+        APRILTAG(2),
+        CONE(3);
 
         public int pipelineIndex;
 
