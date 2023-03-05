@@ -24,8 +24,6 @@ package team492;
 
 import java.util.Locale;
 
-import org.opencv.core.Rect;
-
 import TrcCommonLib.command.CmdDriveMotorsTest;
 import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;

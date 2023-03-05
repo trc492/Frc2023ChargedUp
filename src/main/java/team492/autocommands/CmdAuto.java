@@ -68,7 +68,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
     //getSecondPiece && !doAutoBalance: after the start delay, we go for a second piece, score it, then go for a third piece
     //!getSecondPiece && !doAutoBalance: after the start delay, we stop
     private int piecesScored = 0;
-    private ScoreLocation scoreLocation;
+    // private ScoreLocation scoreLocation;
 
     /**
      * Constructor: Create an instance of the object.
@@ -161,8 +161,9 @@ public class CmdAuto implements TrcRobot.RobotCommand
                         new TrcPose2D(0.0, -24.0, 0.0));
                         
                     // Raise elevator a little to let the arm out.
-                    robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.5);
-                    robot.armPidActuator.setPosition(0.5, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, event, 0.0);
+                    robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                    robot.armPidActuator.setPosition(
+                        0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                     sm.waitForSingleEvent(event, State.SCORE_GAME_PIECE);
                     break;
                     // sm.setState(State./*START_DELAY); piecesScored = 1;*/SCORE_GAME_PIECE);

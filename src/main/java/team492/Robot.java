@@ -223,12 +223,12 @@ public class Robot extends FrcRobotBase
         //
         if (RobotParams.Preferences.usePhotonVision)
         {
-            photonVision = new PhotonVision("OV5647", globalTracer);
+            photonVision = new PhotonVision("OV5647", null);
         }
 
         if (RobotParams.Preferences.useLimeLightVision)
         {
-            limeLightVision = new LimeLightVision("limelight", globalTracer);
+            limeLightVision = new LimeLightVision("limelight", null);
         }
 
         if (RobotParams.Preferences.useOpenCvVision)

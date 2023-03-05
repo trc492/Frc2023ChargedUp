@@ -45,7 +45,7 @@ public class PhotonVision extends FrcPhotonVision
 {
     private static final String moduleName = "PhotonVision";
     private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
-    private static final boolean debugEnabled = true;
+    private static final boolean debugEnabled = false;
 
     public enum PipelineType
     {
