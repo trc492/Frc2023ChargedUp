@@ -594,12 +594,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //     // Must acquire ownership to override analog control of the elevator.
                 //     robot.elevatorPidActuator.presetPositionUp(moduleName);
                 // }
+                //puts robot in scoring position for high poles 
+                robot.elevatorPidActuator.setPosition(moduleName, RobotParams.ELEVATOR_MAX_POS, true, 1.0, null, 0.0); 
+                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_MAX_POS, true, 1.0, null, 0.0); 
+                robot.intake.retract(1.0); 
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
                 // Turtle mode, use this while driving.
                 // Must acquire ownership moving the elevator and arm or analog control will interfere.
-                robot.intake.retract();
                 robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 break;
