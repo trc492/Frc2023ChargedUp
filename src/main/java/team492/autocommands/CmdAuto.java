@@ -125,14 +125,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
     public boolean cmdPeriodic(double elapsedTime)
     {
         State state = sm.checkReadyAndGetState();
-        // TODO (Code Review): Recommendations
-        //  START:
-        //      get all relevant autoChoices.
-        //      set Start field position.
-        //      back up a little so that deploying elevator and arm won't hit any field elements.
-        //      raise elevator a little to let the arm out.
-        //      raise arm to TRAVEL_POS with a delay.
-        //      goto SCORE_GAME_PIECE.
+
         if (state == null)
         {
             robot.dashboard.displayPrintf(8, "State: disabled or waiting (nextState=%s)...", sm.getNextState());
@@ -152,21 +145,28 @@ public class CmdAuto implements TrcRobot.RobotCommand
                 // to fetch 2nd piece. If not, check if we can go balance.
                 case START:
                     // startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
-                    // TODO (Code Review): We always preload cube, so why do we have an "AutoChoice" for it???
-                    loadedObjType = FrcAuto.autoChoices.getPreloadedObjType();
+
+                    loadedObjType = ObjectType.CUBE;
                     scoringLevel = FrcAuto.autoChoices.getScoringLevel();
                     useVision = FrcAuto.autoChoices.getUseVision();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     getSecondPiece = FrcAuto.autoChoices.getGetSecondPiece();
+
                     // Set robot's start position according to autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
-                    // TODO (Code Review): This state may be a lot more complicated because at the beginning of the match,
-                    // the arm is tucked inside the robot's belly. See recommendation above.
-                    sm.setState(State./*START_DELAY); piecesScored = 1;*/SCORE_GAME_PIECE);
-                    //break; 
-                    //
-                    // Intentionally falling through to SCORE_GAME_PIECE state (i.e. no break).
-                    //
+
+                    // Back up a little so that deploying elevator and arm won't hit any field elements.
+                    robot.robotDrive.purePursuitDrive.start(
+                        null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, -24.0, 0.0));
+                        
+                    // Raise elevator a little to let the arm out.
+                    robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.5);
+                    robot.armPidActuator.setPosition(0.5, RobotParams.ARM_TRAVEL_POSITION, true, 1.0, event, 0.0);
+                    sm.waitForSingleEvent(event, State.SCORE_GAME_PIECE);
+                    break;
+                    // sm.setState(State./*START_DELAY); piecesScored = 1;*/SCORE_GAME_PIECE);
+
                 case SCORE_GAME_PIECE:
                     // Scores a game piece, the precondition being that it is already in the scoring position, with
                     // a game piece in the robot, broadacasting grabberEvent when complete.
