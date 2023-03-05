@@ -197,8 +197,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             //     sm.waitForSingleEvent(event, State.DONE);
             //     break;
 
-            case DONE:
             default:
+            case DONE:
                 robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 stopAutoTask(true);
                 break;
