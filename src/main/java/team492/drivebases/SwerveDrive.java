@@ -305,7 +305,7 @@ public class SwerveDrive extends RobotDrive
         FrcEncoder encoder = new FrcAnalogEncoder(name, encoderId);
 
         encoder.setInverted(inverted);
-        // Analog Encoder is already normalized to the range of 0 to 1.0 for a revolutionn (revolution per count).
+        // Analog Encoder is already normalized to the range of 0 to 1.0 for a revolution (revolution per count).
         encoder.setScaleAndOffset(1.0, steerZero);
         return encoder;
     }   //createAnalogEncoder

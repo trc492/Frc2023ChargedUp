@@ -35,6 +35,7 @@ import TrcFrcLib.frclib.FrcMatchInfo;
 import TrcFrcLib.frclib.FrcUserChoices;
 import edu.wpi.first.wpilibj.DriverStation;
 import team492.autocommands.CmdAuto;
+import team492.autocommands.CmdAutoMid;
 
 /**
  * This class implements the code to run in Autonomous Mode.
@@ -54,6 +55,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     public static enum AutoStrategy
     {
         CHARGEDUP_AUTO,
+        MID_BALANCE,
         PP_DRIVE,
         PID_DRIVE,
         TIMED_DRIVE,
@@ -118,6 +120,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         private static final String DBKEY_AUTO_START_POS = "Auto/StartPos";
         private static final String DBKEY_AUTO_START_DELAY = "Auto/StartDelay";
         private static final String DBKEY_AUTO_PRELOADED_OBJECT = "Auto/PreloadedObj";
+        private static final String DBKEY_AUTO_SCORE_PRELOAD = "Auto/ScorePreload";
         private static final String DBKEY_AUTO_SCORE_LEVEL = "Auto/ScoreLevel";
         private static final String DBKEY_AUTO_SCORE_LOCATION = "Auto/ScoreLocation";
         private static final String DBKEY_AUTO_USE_VISION = "Auto/UseVision";
@@ -156,6 +159,7 @@ public class FrcAuto implements TrcRobot.RobotMode
             allianceMenu.addChoice("Blue", DriverStation.Alliance.Blue, false, true);
 
             autoStrategyMenu.addChoice("ChargedUp Auto", AutoStrategy.CHARGEDUP_AUTO, true, false);
+            autoStrategyMenu.addChoice("Mid Balance Only", AutoStrategy.MID_BALANCE, false, false);
             autoStrategyMenu.addChoice("Pure Pursuit Drive", AutoStrategy.PP_DRIVE);
             autoStrategyMenu.addChoice("PID Drive", AutoStrategy.PID_DRIVE);
             autoStrategyMenu.addChoice("Timed Drive", AutoStrategy.TIMED_DRIVE);
@@ -186,6 +190,7 @@ public class FrcAuto implements TrcRobot.RobotMode
             userChoices.addChoiceMenu(DBKEY_AUTO_SCORE_LEVEL, autoScoreLevelMenu);
             userChoices.addChoiceMenu(DBKEY_AUTO_SCORE_LOCATION, autoScoreLocationMenu);
             userChoices.addBoolean(DBKEY_AUTO_USE_VISION, true);
+            userChoices.addBoolean(DBKEY_AUTO_SCORE_PRELOAD, true);
             userChoices.addBoolean(DBKEY_AUTO_DO_AUTO_BALANCE, true);
             userChoices.addBoolean(DBKEY_AUTO_GET_SECOND_PIECE, true);
             userChoices.addString(DBKEY_AUTO_PATHFILE, "DrivePath.csv");
@@ -221,6 +226,11 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             return autoPreloadedObjMenu.getCurrentChoiceObject();
         }   //getPreloadedObjType
+
+        public boolean getScorePreload()
+        {
+            return userChoices.getUserBoolean(DBKEY_AUTO_SCORE_PRELOAD);
+        }
         
         public int getScoreLevel()
         {
@@ -384,6 +394,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         {
             case CHARGEDUP_AUTO:
                 autoCommand = new CmdAuto(robot);
+                break;
+
+            case MID_BALANCE:
+                autoCommand = new CmdAutoMid(robot);
                 break;
 
             case PP_DRIVE:

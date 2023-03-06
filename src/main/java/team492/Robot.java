@@ -534,11 +534,11 @@ public class Robot extends FrcRobotBase
                     {
                         SwerveDrive swerveDrive = (SwerveDrive) robotDrive;
                         dashboard.displayPrintf(
-                            lineNum, "SteerPos(Deg/Enc): lf=%.1f/%.1f,rf=%.1f/%.1f,lb=%.1f/%.1f,rb=%.1f/%.1f",
-                            swerveDrive.lfWheel.getSteerAngle(), swerveDrive.lfSteerMotor.getPosition(),
-                            swerveDrive.rfWheel.getSteerAngle(), swerveDrive.rfSteerMotor.getPosition(),
-                            swerveDrive.lbWheel.getSteerAngle(), swerveDrive.lbSteerMotor.getPosition(),
-                            swerveDrive.rbWheel.getSteerAngle(), swerveDrive.rbSteerMotor.getPosition());
+                            lineNum, "SteerPos(Deg/Enc/Abs): lf=%.1f/%.0f/%.3f,rf=%.1f/%.0f/%.3f,lb=%.1f/%.0f/%.3f,rb=%.1f/%.0f/%.3f",
+                            swerveDrive.lfWheel.getSteerAngle(), swerveDrive.lfSteerMotor.getPosition(), swerveDrive.lfSteerEncoder.getRawPosition(),
+                            swerveDrive.rfWheel.getSteerAngle(), swerveDrive.rfSteerMotor.getPosition(), swerveDrive.rfSteerEncoder.getRawPosition(),
+                            swerveDrive.lbWheel.getSteerAngle(), swerveDrive.lbSteerMotor.getPosition(), swerveDrive.lbSteerEncoder.getRawPosition(),
+                            swerveDrive.rbWheel.getSteerAngle(), swerveDrive.rbSteerMotor.getPosition(), swerveDrive.rbSteerEncoder.getRawPosition());
                         lineNum++;
                     }
 
