@@ -223,7 +223,7 @@ public class Robot extends FrcRobotBase
         //
         if (RobotParams.Preferences.usePhotonVision)
         {
-            photonVision = new PhotonVision("OV5647", null);
+            photonVision = new PhotonVision("OV5647", ledIndicator, null);
         }
 
         if (RobotParams.Preferences.useLimeLightVision)
@@ -269,7 +269,7 @@ public class Robot extends FrcRobotBase
 
                 if (RobotParams.Preferences.useIntake)
                 {
-                    intake = new Intake(globalTracer);
+                    intake = new Intake(ledIndicator, globalTracer);
                 }
 
                 if (RobotParams.Preferences.useGrabber)

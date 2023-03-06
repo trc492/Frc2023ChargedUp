@@ -37,6 +37,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import team492.RobotParams;
+import team492.subsystems.LEDIndicator;
 
 /**
  * This class is a thin wrapper extending FrcPhotonVision that provides additional game specific functionalities.
@@ -78,6 +79,7 @@ public class PhotonVision extends FrcPhotonVision
 
     }   //enum PipelineType
 
+    private final LEDIndicator ledIndicator;
     private final AprilTagFieldLayout aprilTagFieldLayout;
     // private final AprilTagPoseEstimator poseEstimator;
 
@@ -85,11 +87,13 @@ public class PhotonVision extends FrcPhotonVision
      * Constructor: Create an instance of the object.
      *
      * @param cameraName specifies the photon vision camera name.
+     * @param ledIndicator specifies the LEDIndicator object, can be null if none provided.
      * @param tracer specifies the tracer for trace info, null if none provided.
      */
-    public PhotonVision(String cameraName, TrcDbgTrace tracer)
+    public PhotonVision(String cameraName, LEDIndicator ledIndicator, TrcDbgTrace tracer)
     {
         super(cameraName, RobotParams.CAMERA_HEIGHT, RobotParams.CAMERA_PITCH, tracer);
+        this.ledIndicator = ledIndicator;
 
         double startTime = TrcTimer.getModeElapsedTime();
         try
@@ -101,6 +105,7 @@ public class PhotonVision extends FrcPhotonVision
             throw new RuntimeException("Failed to read AprilTag field layout info.");
         }
         double endTime = TrcTimer.getModeElapsedTime();
+
         if (debugEnabled)
         {
             globalTracer.traceInfo(
@@ -108,12 +113,29 @@ public class PhotonVision extends FrcPhotonVision
         }
 
         setPipeline(PipelineType.POLE);
-
         // poseEstimator = new AprilTagPoseEstimator(
         //     new AprilTagPoseEstimator.Config(
         //         RobotParams.APRILTAG_SIZE, RobotParams.APRILTAG_FX, RobotParams.APRILTAG_FY,
         //         RobotParams.APRILTAG_CX, RobotParams.APRILTAG_CY));
     }   //FrcPhotonVision
+
+    /**
+     * This method returns the best detected object and set the LED to indicate type detected object type.
+     *
+     * @return best detected object.
+     */
+    @Override
+    public DetectedObject getBestDetectedObject()
+    {
+        DetectedObject detectedObject = super.getBestDetectedObject();
+
+        if (detectedObject != null && ledIndicator != null)
+        {
+            ledIndicator.setVisionDetectedObject(getPipeline());
+        }
+
+        return detectedObject;
+    }   //getBestDetectedObject
 
     /**
      * This method returns the 3D field location of the AprilTag with its given ID.

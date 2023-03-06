@@ -27,26 +27,41 @@ import TrcFrcLib.frclib.FrcAddressableLED;
 import TrcFrcLib.frclib.FrcColor;
 import team492.RobotParams;
 import team492.drivebases.RobotDrive;
+import team492.vision.PhotonVision.PipelineType;
 
 public class LEDIndicator
 {
-    private static final TrcAddressableLED.Pattern nominalPattern = // Black
+    private static final TrcAddressableLED.Pattern nominalPattern =             // Black
         new TrcAddressableLED.Pattern("Nominal", new FrcColor(0, 0, 0), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern fieldOrientedPattern = // Cyan
+    private static final TrcAddressableLED.Pattern inverseOrientedPattern =     // Red
+        new TrcAddressableLED.Pattern("InverseOriented", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern robotOrientedPattern =       // White
+        new TrcAddressableLED.Pattern("RobotOriented", new FrcColor(63, 63, 63), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern fieldOrientedPattern =       // Cyan
         new TrcAddressableLED.Pattern("FieldOriented", new FrcColor(0, 63, 63), RobotParams.NUM_LEDS);
-    private static final TrcAddressableLED.Pattern robotOrientedPattern = // Red
-        new TrcAddressableLED.Pattern("RobotOriented", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
-    private static final TrcAddressableLED.Pattern inverseOrientedPattern = // Magenta
-        new TrcAddressableLED.Pattern("InverseOriented", new FrcColor(63, 0, 63), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern[] priorities =
+    private static final TrcAddressableLED.Pattern intakeHasObjectPattern =     // Blue
+        new TrcAddressableLED.Pattern("intakeHasObject", new FrcColor(0, 0, 63), RobotParams.NUM_LEDS);
+
+    private static final TrcAddressableLED.Pattern detectedConePattern =        // Yellow
+        new TrcAddressableLED.Pattern("detectedCone", new FrcColor(63, 63, 0), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern detectedCubePattern =        // Magenta
+        new TrcAddressableLED.Pattern("detectedCube", new FrcColor(63, 0, 63), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern detectedAprilTagPattern =    // Green
+        new TrcAddressableLED.Pattern("detectedAprilTag", new FrcColor(0, 63, 0), RobotParams.NUM_LEDS);
+
+        private static final TrcAddressableLED.Pattern[] priorities =
         new TrcAddressableLED.Pattern[]
         {
             nominalPattern,
             inverseOrientedPattern,
             robotOrientedPattern,
             fieldOrientedPattern,
+            intakeHasObjectPattern,
+            detectedConePattern,
+            detectedCubePattern,
+            detectedAprilTagPattern
         };
 
     private final FrcAddressableLED led;
@@ -100,5 +115,41 @@ public class LEDIndicator
                 break;
         }
     }   //setDriveOrientation
+
+    /**
+     * This method sets the LED to indicate the vision detected object type.
+     *
+     * @param pipelineType specifies the current vision pipeline type.
+     */
+    public void setVisionDetectedObject(PipelineType pipelineType)
+    {
+        switch (pipelineType)
+        {
+            case APRILTAG:
+                led.setPatternState(detectedAprilTagPattern, true, 0.5);
+                break;
+
+            case CUBE:
+                led.setPatternState(detectedCubePattern, true, 0.5);
+                break;
+
+            case CONE:
+                led.setPatternState(detectedConePattern, true, 0.5);
+                break;
+
+            default:
+                break;
+        }
+    }   //setVisionDetectedObject
+
+    /**
+     * This method sets the LED to indicate intake has an object.
+     *
+     * @param hasObject specifies true to indicate intake has an object, false otherwise.
+     */
+    public void setIntakeHasObject(boolean hasObject)
+    {
+        led.setPatternState(intakeHasObjectPattern, hasObject);
+    }   //setIntakeHasObject
 
 }   //class LEDIndicator

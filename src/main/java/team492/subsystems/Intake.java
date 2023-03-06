@@ -40,7 +40,8 @@ public class Intake implements TrcExclusiveSubsystem
 { 
     private static final String moduleName = "Intake";
 
-    private TrcDbgTrace msgTracer = null; 
+    private final LEDIndicator ledIndicator;
+    private final TrcDbgTrace msgTracer;
     private final FrcCANTalon intakeLeftMotor;
     private final FrcCANTalon intakeRightMotor;
     private final FrcPneumatic intakePneumatic;
@@ -49,8 +50,9 @@ public class Intake implements TrcExclusiveSubsystem
     private boolean sensorActive = false;
     private TrcEvent triggerEvent = null;
 
-    public Intake(TrcDbgTrace msgTracer)
+    public Intake(LEDIndicator ledIndicator, TrcDbgTrace msgTracer)
     {
+        this.ledIndicator = ledIndicator;
         this.msgTracer = msgTracer;
 
         intakeLeftMotor = new FrcCANTalon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
@@ -197,6 +199,11 @@ public class Intake implements TrcExclusiveSubsystem
         if (triggerEvent != null)
         {
             triggerEvent.signal();
+        }
+
+        if (ledIndicator != null)
+        {
+            ledIndicator.setIntakeHasObject(sensorActive);
         }
 
         if (msgTracer != null)
