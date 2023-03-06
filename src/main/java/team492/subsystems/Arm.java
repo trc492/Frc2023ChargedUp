@@ -34,7 +34,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
-import TrcCommonLib.trclib.TrcDigitalInputTrigger;
+import TrcCommonLib.trclib.TrcTriggerDigitalInput;
 import TrcCommonLib.trclib.TrcPidActuator;
 import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcCANTalonLimitSwitch;
@@ -49,7 +49,7 @@ public class Arm
     private final TrcDbgTrace msgTracer;
     private final FrcCANTalon actuatorMotor;
     private final TrcPidActuator pidActuator;
-    private final TrcDigitalInputTrigger zeroTrigger;
+    private final TrcTriggerDigitalInput zeroTrigger;
 
     /**
      * Constructor: Create an instance of the object.
@@ -92,7 +92,7 @@ public class Arm
         pidActuator.setMsgTracer(msgTracer);
         pidActuator.getPidController().setOutputLimit(0.25);
 
-        zeroTrigger = new TrcDigitalInputTrigger(moduleName, lowerLimitSw, this::zeroCalCompletion);
+        zeroTrigger = new TrcTriggerDigitalInput(moduleName, lowerLimitSw, this::zeroCalCompletion);
     }   //Arm
 
     /**

@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
-import TrcCommonLib.trclib.TrcDigitalInputTrigger;
+import TrcCommonLib.trclib.TrcTriggerDigitalInput;
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcTimer;
@@ -45,7 +45,7 @@ public class Intake implements TrcExclusiveSubsystem
     private final FrcCANTalon intakeRightMotor;
     private final FrcPneumatic intakePneumatic;
     private final FrcDigitalInput intakeSensor;
-    private final TrcDigitalInputTrigger intakeTrigger;
+    private final TrcTriggerDigitalInput intakeTrigger;
     private boolean sensorActive = false;
     private TrcEvent triggerEvent = null;
 
@@ -68,7 +68,7 @@ public class Intake implements TrcExclusiveSubsystem
 
         intakeSensor = new FrcDigitalInput("intakeSensor", RobotParams.DIO_INTAKE_SENSOR);
         intakeSensor.setInverted(true);
-        intakeTrigger = new TrcDigitalInputTrigger("intakeTrigger", intakeSensor, this::intakeEvent);
+        intakeTrigger = new TrcTriggerDigitalInput("intakeTrigger", intakeSensor, this::intakeTriggerCallback);
         intakeTrigger.setEnabled(true);
     }   //Intake
 
@@ -172,18 +172,14 @@ public class Intake implements TrcExclusiveSubsystem
      * This method enables/disables the sensor trigger.
      *
      * @param enabled specifies true to enable trigger, false to disable.
-     * @param triggerEvent specifies the event to signal if the sensor is triggered.
+     * @param event specifies the event to signal if the sensor is triggered.
      */
-    public void setTriggerEnabled(boolean enabled, TrcEvent triggerEvent)
+    public void setTriggerEnabled(boolean enabled, TrcEvent event)
     {
-        if (enabled)
+        triggerEvent = enabled? event: null;
+        if (triggerEvent != null)
         {
             triggerEvent.clear();
-            this.triggerEvent = triggerEvent;
-        }
-        else
-        {
-            this.triggerEvent = null;
         }
         intakeTrigger.setEnabled(enabled);
     }   //setTriggerEnabled
@@ -193,9 +189,9 @@ public class Intake implements TrcExclusiveSubsystem
      *
      * @param context specifies true if an object is captured, false otherwise.
      */
-    private void intakeEvent(Object context)
+    private void intakeTriggerCallback(Object context)
     {
-        final String funcName = "intakeEvent";
+        final String funcName = "intakeTriggerCallback";
         sensorActive = ((AtomicBoolean) context).get();
 
         if (triggerEvent != null)
@@ -207,6 +203,6 @@ public class Intake implements TrcExclusiveSubsystem
         {
             msgTracer.traceInfo(funcName, "[%.3f] active=%s", TrcTimer.getModeElapsedTime(), sensorActive);
         }
-    }   //intakeEvent
+    }   //intakeTriggerCallback
 
 }   //class Intake
