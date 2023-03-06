@@ -515,7 +515,6 @@ public class Robot extends FrcRobotBase
                 if (robotDrive != null)
                 {
                     int lineNum = 8;
-                    TrcPose2D robotPose = robotDrive.driveBase.getFieldPosition();
                     //
                     // DriveBase debug info.
                     //
@@ -588,6 +587,14 @@ public class Robot extends FrcRobotBase
                 if (grabber != null)
                 {
                     dashboard.displayPrintf(lineNum, grabber.toString());
+                    lineNum++;
+                }
+
+                if (robotDrive != null)
+                {
+                    dashboard.displayPrintf(
+                        lineNum, "Gyro: Yaw=%.3f, Pitch=%.3f, Roll=%.3f",
+                        robotDrive.driveBase.getHeading(), robotDrive.getGyroPitch(), robotDrive.getGyroRoll());
                     lineNum++;
                 }
             }
