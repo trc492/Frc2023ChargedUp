@@ -154,6 +154,15 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     protected void runTaskState(
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
+        // TODO (Code Review): Recommendations.
+        // 1. START: arm tilt trigger with tiltEvent and do purePursuitDrive for a distance with event, goto CLIMB
+        //    when either event signaled.
+        // 2. CLIMB: if tilt event signaled, clear event and wait for tilt trigger again, goto BALANCE when either events
+        //    signaled.
+        // 3. BALANCE: cancel purePursuit but leave tilt trigger arm, clear event, wait for tilt trigger with a timeout, goto CHECK_BALANCE.
+        // 4. CHECK_BALANCE: if tilt event signaled, react accordingly (move backward or forward depending on the tilt sign),
+        //    goto BALANCE, else goto DONE.
+        // 5. DONE: unarm tilt trigger, stop task.
         switch (state)
         {
             case CLIMBING:

@@ -34,8 +34,8 @@ import TrcFrcLib.frclib.FrcChoiceMenu;
 import TrcFrcLib.frclib.FrcMatchInfo;
 import TrcFrcLib.frclib.FrcUserChoices;
 import edu.wpi.first.wpilibj.DriverStation;
-import team492.autocommands.CmdAuto;
-import team492.autocommands.CmdAutoMid;
+import team492.autocommands.CmdAutoStartPos1Or3;
+import team492.autocommands.CmdAutoStartPos2;
 
 /**
  * This class implements the code to run in Autonomous Mode.
@@ -54,8 +54,8 @@ public class FrcAuto implements TrcRobot.RobotMode
 
     public static enum AutoStrategy
     {
-        CHARGEDUP_AUTO,
-        MID_BALANCE,
+        AUTO_STARTPOS_1OR3,
+        AUTO_STARTPOS_2,
         PP_DRIVE,
         PID_DRIVE,
         TIMED_DRIVE,
@@ -120,10 +120,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         private static final String DBKEY_AUTO_START_POS = "Auto/StartPos";
         private static final String DBKEY_AUTO_START_DELAY = "Auto/StartDelay";
         private static final String DBKEY_AUTO_PRELOADED_OBJECT = "Auto/PreloadedObj";
-        private static final String DBKEY_AUTO_SCORE_PRELOAD = "Auto/ScorePreload";
         private static final String DBKEY_AUTO_SCORE_LEVEL = "Auto/ScoreLevel";
         private static final String DBKEY_AUTO_SCORE_LOCATION = "Auto/ScoreLocation";
         private static final String DBKEY_AUTO_USE_VISION = "Auto/UseVision";
+        private static final String DBKEY_AUTO_SCORE_PRELOAD = "Auto/ScorePreload";
         private static final String DBKEY_AUTO_DO_AUTO_BALANCE = "Auto/DoAutoBalance";
         private static final String DBKEY_AUTO_SCORE_SECOND_PIECE = "Auto/ScoreSecondPiece";
         private static final String DBKEY_AUTO_PATHFILE = "Auto/PathFile";
@@ -158,8 +158,8 @@ public class FrcAuto implements TrcRobot.RobotMode
             allianceMenu.addChoice("Red", DriverStation.Alliance.Red, true, false);
             allianceMenu.addChoice("Blue", DriverStation.Alliance.Blue, false, true);
 
-            autoStrategyMenu.addChoice("ChargedUp Auto", AutoStrategy.CHARGEDUP_AUTO, true, false);
-            autoStrategyMenu.addChoice("Mid Balance Only", AutoStrategy.MID_BALANCE, false, false);
+            autoStrategyMenu.addChoice("Auto StartPos 1 or 3", AutoStrategy.AUTO_STARTPOS_1OR3, true, false);
+            autoStrategyMenu.addChoice("Auto StartPos 2", AutoStrategy.AUTO_STARTPOS_2);
             autoStrategyMenu.addChoice("Pure Pursuit Drive", AutoStrategy.PP_DRIVE);
             autoStrategyMenu.addChoice("PID Drive", AutoStrategy.PID_DRIVE);
             autoStrategyMenu.addChoice("Timed Drive", AutoStrategy.TIMED_DRIVE);
@@ -227,11 +227,6 @@ public class FrcAuto implements TrcRobot.RobotMode
             return autoPreloadedObjMenu.getCurrentChoiceObject();
         }   //getPreloadedObjType
 
-        public boolean getScorePreload()
-        {
-            return userChoices.getUserBoolean(DBKEY_AUTO_SCORE_PRELOAD);
-        }
-        
         public int getScoreLevel()
         {
             return autoScoreLevelMenu.getCurrentChoiceObject().value;
@@ -247,14 +242,20 @@ public class FrcAuto implements TrcRobot.RobotMode
             return userChoices.getUserBoolean(DBKEY_AUTO_USE_VISION);
         }   //getUseVision
 
+        public boolean getScorePreload()
+        {
+            return userChoices.getUserBoolean(DBKEY_AUTO_SCORE_PRELOAD);
+        }
+
         public boolean getDoAutoBalance()
         {
             return userChoices.getUserBoolean(DBKEY_AUTO_DO_AUTO_BALANCE);
         }   //getDoAutoBalance
 
-        public boolean getScoreSecondPiece() {
+        public boolean getScoreSecondPiece()
+        {
             return userChoices.getUserBoolean(DBKEY_AUTO_SCORE_SECOND_PIECE);
-        }
+        }   //getScoreSecondPiece
 
         public double getStartDelay()
         {
@@ -303,7 +304,9 @@ public class FrcAuto implements TrcRobot.RobotMode
                 "scoreLevel=\"%s\" " +
                 "scoreLocation=\"%s\" " +
                 "useVision=\"%s\" " +
+                "scorePreload=\"%s\" " +
                 "doAutoBalance=\"%s\" " +
+                "scoreSecondPiece=\"%s\" " +
                 "startDelay=%.0f sec " +
                 "pathFile=\"%s\" " +
                 "xDistance=%.1f ft " +
@@ -312,8 +315,9 @@ public class FrcAuto implements TrcRobot.RobotMode
                 "driveTime=%.0f sec " +
                 "drivePower=%.1f",
                 getAlliance(), getStrategy(), getStartPos(), getPreloadedObjType(), getScoreLevel(),
-                getScoreLocation(), getUseVision(), getDoAutoBalance(), getStartDelay(), getPathFile(),
-                getXDriveDistance(), getYDriveDistance(), getTurnAngle(), getDriveTime(), getDrivePower());
+                getScoreLocation(), getUseVision(), getScorePreload(), getDoAutoBalance(), getScoreSecondPiece(),
+                getStartDelay(), getPathFile(), getXDriveDistance(), getYDriveDistance(), getTurnAngle(),
+                getDriveTime(), getDrivePower());
         }   //toString
 
     }   //class AutoChoices
@@ -392,12 +396,12 @@ public class FrcAuto implements TrcRobot.RobotMode
         //
         switch (autoChoices.getStrategy())
         {
-            case CHARGEDUP_AUTO:
-                autoCommand = new CmdAuto(robot);
+            case AUTO_STARTPOS_1OR3:
+                autoCommand = new CmdAutoStartPos1Or3(robot);
                 break;
 
-            case MID_BALANCE:
-                autoCommand = new CmdAutoMid(robot);
+            case AUTO_STARTPOS_2:
+                autoCommand = new CmdAutoStartPos2(robot);
                 break;
 
             case PP_DRIVE:

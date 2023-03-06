@@ -111,7 +111,10 @@ public class RobotParams
     // Robot starting positions. All dimensions are from Game Manual, do not adjust.
     //
     public static final double GRID_TAPE_EDGE_BLUE_Y            = 54.25;
-    public static final double STARTPOS_BLUE_Y                  = GRID_TAPE_EDGE_BLUE_Y + RobotParams.ROBOT_LENGTH/2.0;
+    public static final double STARTPOS_Y_OFFSET                = 24.0;
+    public static final double STARTPOS_BLUE_Y                  = GRID_TAPE_EDGE_BLUE_Y +
+                                                                  RobotParams.ROBOT_LENGTH/2.0 +
+                                                                  STARTPOS_Y_OFFSET;
     public static final double STARTPOS_RED_Y                   = FIELD_LENGTH - STARTPOS_BLUE_Y;
     public static final double STARTPOS_1_X                     = -42.19;
     public static final double STARTPOS_2_X                     = -108.19;

@@ -22,23 +22,19 @@
 
  package team492.autocommands;
 
-import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
-import TrcCommonLib.trclib.TrcTimer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 
-public class CmdAutoMid implements TrcRobot.RobotCommand
+public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 {
-    private static final String moduleName = "CmdAutoMid";
-    private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
+    private static final String moduleName = "CmdAutoStartPos2";
 
     private enum State
     {
@@ -54,28 +50,27 @@ public class CmdAutoMid implements TrcRobot.RobotCommand
 
 
     private final Robot robot;
-    private final TrcTimer timer;
     private final TrcEvent event;
     private final TrcStateMachine<State> sm;
 
-    private boolean balance;
+    private int scoreLevel;
     private boolean scorePreload;
+    private boolean doAutoBalance;
 
     /**
      * Constructor: Create an instance of the object.
      *
      * @param robot specifies the robot object for providing access to various global objects.
      */
-    public CmdAutoMid(Robot robot)
+    public CmdAutoStartPos2(Robot robot)
     {
         robot.globalTracer.traceInfo(moduleName, ">>> robot=%s, choices=%s", robot, FrcAuto.autoChoices);
 
         this.robot = robot;
-        timer = new TrcTimer(moduleName);
         event = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
-    }   //CmdAuto
+    }   //CmdAutoStartPos2
 
     //
     // Implements the TrcRobot.RobotCommand interface.
@@ -119,39 +114,41 @@ public class CmdAutoMid implements TrcRobot.RobotCommand
         if (state == null)
         {
             robot.dashboard.displayPrintf(8, "State: disabled or waiting (nextState=%s)...", sm.getNextState());
-            globalTracer.traceInfo(moduleName, "State: disabled or waiting (nextState=%s)...", sm.getNextState());
         }
         else
         {
-            State nextState;
-
             robot.dashboard.displayPrintf(8, "State: %s", state);
-            globalTracer.traceInfo(moduleName, "State: %s", state);
             switch (state)
             {
-
                 case START:
-                    balance = FrcAuto.autoChoices.getDoAutoBalance();
+                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
-
+                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // TODO (Code Review): setFieldPosition will no longer work since it was assuming robot touching GRID.
+                    // May want to use vision to determine exact location, or you don't care about odometry in this auto.
                     robot.robotDrive.setFieldPosition(null, false);
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
-                    if(scorePreload)
+                    if (scorePreload)
                     {
-                        robot.elevatorPidActuator.setPosition(moduleName, 0.0, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.5);
-                        robot.armPidActuator.setPosition(moduleName, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.5);
+                        robot.elevatorPidActuator.setPosition(
+                            RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                        robot.armPidActuator.setPosition(
+                            moduleName, 0.2, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.5);
                         sm.setState(State.SCORE_PRELOAD);
                     }
-                    sm.setState(State.TURN);
+                    else
+                    {
+                        sm.setState(State.TURN);
+                    }
                     break;
 
                 case SCORE_PRELOAD:
-                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, event);
+                    robot.autoScoreTask.autoAssistScoreObject(
+                        ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, event);
                     sm.waitForSingleEvent(event, State.TURN);
                     break;
                 
                 case TURN:
-
                     robot.robotDrive.purePursuitDrive.start(
                         event, 1.5, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
@@ -159,17 +156,21 @@ public class CmdAutoMid implements TrcRobot.RobotCommand
                     break;
                 
                 case EXIT_COMMUNITY:
+                    // TODO (Code Review): Odometry doesn't work well going over charging station, should do the following:
+                    // 1. arm tilt trigger with tiltEvent and do purePursuitDrive for a distance with event, goto CLIMB
+                    //    when either event signaled.
+                    // 2. if tilt event signaled, clear event and wait for tilt trigger again, goto LEVEL when either events
+                    //    signaled.
+                    // 3. if tilt event signaled, clear event and wait for tilt trigger again, goto DESCEND when either events
+                    //    signaled.
+                    // 4. if tilt event signaled, clear event and wait for tilt trigger again, goto EXIT when either events
+                    //    signaled.
+                    // 5. unarm tilt trigger, cancel purePursuit, call auto balance.
+                    // 6. done.
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 7, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        event, 7.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(180.0, 0.0, 0.0));
-                    if(balance)
-                    {
-                        sm.waitForSingleEvent(event, State.GET_ON_CHARGE);
-                    }
-                    else
-                    {
-                        sm.setState(State.DONE);
-                    }
+                    sm.waitForSingleEvent(event, doAutoBalance? State.GET_ON_CHARGE: State.DONE);
                     break;
                 
                 case GET_ON_CHARGE:
@@ -186,9 +187,7 @@ public class CmdAutoMid implements TrcRobot.RobotCommand
 
                 case DONE:
                 default:
-                    //
                     // We are done.
-                    //
                     cancel();
                     break;
             }
@@ -201,4 +200,4 @@ public class CmdAutoMid implements TrcRobot.RobotCommand
         return !sm.isEnabled();
     }   //cmdPeriodic
 
-}   //class CmdAuto
+}   //class CmdAutoStartPos2

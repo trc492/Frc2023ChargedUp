@@ -41,6 +41,7 @@ import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPidDrive;
+import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcPurePursuitDrive;
 import TrcCommonLib.trclib.TrcSwerveDriveBase;
 import TrcCommonLib.trclib.TrcSwerveModule;
@@ -51,6 +52,7 @@ import TrcFrcLib.frclib.FrcCANFalcon;
 import TrcFrcLib.frclib.FrcEncoder;
 import TrcFrcLib.frclib.FrcFalconServo;
 import TrcFrcLib.frclib.FrcPdp;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.Robot;
 import team492.RobotParams;
 
@@ -592,5 +594,25 @@ public class SwerveDrive extends RobotDrive
 
         tiltEvent.signal();
     }   //tiltTriggerCallback
+
+    /**
+     * This method returns an adjusted absolute position by the robot's alliance.
+     *
+     * @param alliance specifies the robot alliance.
+     * @param pos specifies the absolute position for the blue alliance.
+     * @return returns unchanged pos if blue alliance, adjusted to the opposite side if red alliance.
+     */
+    public TrcPose2D adjustPosByAlliance(Alliance alliance, TrcPose2D pos)
+    {
+        if (alliance == Alliance.Red)
+        {
+            // no change on x, change y to the opposite side of the field.
+            // 
+            pos.y = RobotParams.FIELD_LENGTH - pos.y;
+            pos.angle = (pos.angle + 180.0) % 360.0;
+        }
+
+        return pos;
+    }   //adjustPosByAlliance
 
 }   //class SwerveDrive
