@@ -125,7 +125,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         private static final String DBKEY_AUTO_SCORE_LOCATION = "Auto/ScoreLocation";
         private static final String DBKEY_AUTO_USE_VISION = "Auto/UseVision";
         private static final String DBKEY_AUTO_DO_AUTO_BALANCE = "Auto/DoAutoBalance";
-        private static final String DBKEY_AUTO_GET_SECOND_PIECE = "Auto/GetSecondPiece";
+        private static final String DBKEY_AUTO_SCORE_SECOND_PIECE = "Auto/ScoreSecondPiece";
         private static final String DBKEY_AUTO_PATHFILE = "Auto/PathFile";
         private static final String DBKEY_AUTO_X_DRIVE_DISTANCE = "Auto/XDriveDistance";
         private static final String DBKEY_AUTO_Y_DRIVE_DISTANCE = "Auto/YDriveDistance";
@@ -192,7 +192,7 @@ public class FrcAuto implements TrcRobot.RobotMode
             userChoices.addBoolean(DBKEY_AUTO_USE_VISION, true);
             userChoices.addBoolean(DBKEY_AUTO_SCORE_PRELOAD, true);
             userChoices.addBoolean(DBKEY_AUTO_DO_AUTO_BALANCE, true);
-            userChoices.addBoolean(DBKEY_AUTO_GET_SECOND_PIECE, true);
+            userChoices.addBoolean(DBKEY_AUTO_SCORE_SECOND_PIECE, true);
             userChoices.addString(DBKEY_AUTO_PATHFILE, "DrivePath.csv");
             userChoices.addNumber(DBKEY_AUTO_X_DRIVE_DISTANCE, 6.0);    // in feet
             userChoices.addNumber(DBKEY_AUTO_Y_DRIVE_DISTANCE, 6.0);    // in feet
@@ -252,8 +252,8 @@ public class FrcAuto implements TrcRobot.RobotMode
             return userChoices.getUserBoolean(DBKEY_AUTO_DO_AUTO_BALANCE);
         }   //getDoAutoBalance
 
-        public boolean getGetSecondPiece() {
-            return userChoices.getUserBoolean(DBKEY_AUTO_GET_SECOND_PIECE);
+        public boolean getScoreSecondPiece() {
+            return userChoices.getUserBoolean(DBKEY_AUTO_SCORE_SECOND_PIECE);
         }
 
         public double getStartDelay()

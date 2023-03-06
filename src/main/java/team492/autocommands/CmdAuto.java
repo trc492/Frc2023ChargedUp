@@ -49,6 +49,7 @@ public class CmdAuto implements TrcRobot.RobotCommand
         PICKUP_GAME_PIECE,
         GO_TO_SCORE_POSITION,
         GO_TO_CHARGING_STATION,
+        GET_ON_CHARGING_STATION,
         AUTO_BALANCE,
         DONE
     }   //enum State
@@ -65,11 +66,11 @@ public class CmdAuto implements TrcRobot.RobotCommand
     private ScoreLocation scoreLocation;
     private boolean useVision;
     private boolean doAutoBalance;
-    private boolean getSecondPiece;
-    //getSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
-    //!getSecondPiece && doAutoBalance: after the start delay, we go out of the community and then we go to park
-    //getSecondPiece && !doAutoBalance: after the start delay, we go for a second piece, score it, then go for a third piece
-    //!getSecondPiece && !doAutoBalance: after the start delay, we stop
+    private boolean scoreSecondPiece;
+    //scoreSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
+    //!scoreSecondPiece && doAutoBalance: after the start delay, we go out of the community, pickup a second piece, and then park
+    //scoreSecondPiece && !doAutoBalance: after the start delay, we go for a second piece and score it
+    //!scoreSecondPiece && !doAutoBalance: after the start delay, we stop
     private int piecesScored = 0;
     // private ScoreLocation scoreLocation;
 
@@ -142,29 +143,25 @@ public class CmdAuto implements TrcRobot.RobotCommand
             globalTracer.traceInfo(moduleName, "State: %s", state);
             switch (state)
             {
-                // TODO (Code Review): Eventually, need to change the paths according to the starting position.
-                // StartPos1: Go to the path by the field rail side to fetch 2nd game piece.
-                // StartPos2: Go to balance on Charging Station after scoring preloaded piece.
-                // StartPos3: Go to the path by the substation side to fetch 2nd game piece.
-                // Also, need to add code to check match time in order to determine if we have enough time
-                // to fetch 2nd piece. If not, check if we can go balance.
+                // TODO: need to add code to check match time in order to determine if we have enough time to fetch 2nd piece. If not, check if we can go balance.
                 case START:
+                    //TODO: should we make startpos 1, 2, or 3 to make it match with shuffleboard?
                     startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
                     loadedObjType = ObjectType.CUBE;
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scoreLocation = FrcAuto.autoChoices.getScoreLocation();
                     useVision = FrcAuto.autoChoices.getUseVision();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
-                    getSecondPiece = FrcAuto.autoChoices.getGetSecondPiece();
+                    scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
                     // Set robot's start position according to autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
 
-                    // Back up a little slowly so that deploying elevator and arm won't hit any field elements.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                     // robot.robotDrive.purePursuitDrive.start(
                     //     event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     //     new TrcPose2D(0.0, -24.0, 0.0));
-                    // Raise elevator a little to let the arm out.
+
+                    // Raise elevator a little and lets the arm out.
                     robot.elevatorPidActuator.setPosition(
                         RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.5);
                     robot.armPidActuator.setPosition(
@@ -178,38 +175,33 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     //      arm without hitting field elements.
                     if (piecesScored == 0)
                     {
-                        // TODO (Code Review): Samuel said we should get out of the community instead of doing delay. Please rework.
+                        //we havent scored anything, so we are scoring the preload and going to startdelay
                         nextState = State.START_DELAY;
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoreLevel, scoreLocation, false,  event);
+                            loadedObjType, scoreLevel, ScoreLocation.MIDDLE, false,  event);
                     }
                     else if (piecesScored == 1 && !doAutoBalance)
                     {
-                        // Scoring second game piece, going for third next.
-                        nextState = State.GO_TO_GAME_PIECE;
-                        // Code Review: what is the loadedObjType for the 2nd piece? Who sets scoreLocation?
+                        //we've scored the preload, so we are scoring the second piece. since we're not parking, we're done
+                        nextState = State.DONE;
                         robot.autoScoreTask.autoAssistScoreObject(
                             loadedObjType, scoreLevel, ScoreLocation.LEFT, useVision, event);
                     }
                     else
                     {
-                        // Scoring second game piece, going to the charging station next.
+                        // Swe've scored the preload, so we are scoring the second piece. since we're parking, we go to the charging station
                         nextState = State.GO_TO_CHARGING_STATION;
                         robot.autoScoreTask.autoAssistScoreObject(
-                            loadedObjType, scoreLevel, ScoreLocation.RIGHT, useVision, event);
+                            loadedObjType, scoreLevel, ScoreLocation.LEFT, useVision, event);
                     }
                     sm.waitForSingleEvent(event, nextState);
                     piecesScored++;
                     break;
 
                 case START_DELAY:
-                    if (getSecondPiece)
+                    if (scoreSecondPiece || doAutoBalance)
                     {
                         nextState = State.GO_TO_GAME_PIECE;
-                    }
-                    else if (doAutoBalance)
-                    {
-                        nextState = State.GO_TO_CHARGING_STATION;
                     }
                     else
                     {
@@ -228,13 +220,11 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     break;
 
                 case GO_TO_GAME_PIECE:
-                    // TODO (Code Review): Please use the dimensions defined in RobotParams.
-                    // Drives to a few feet (3ft from the center of the robot to the ball) behind the game piece we
-                    // want to pick up, determining the location by how many pieces we have already scored
-                    if (piecesScored == 1)
+                    // Drives to a 3ft behind the game piece we want to pick up,
+                    //  determining the location by our alliance and startpos
+                    if (startPos == 0)
                     {
-                        // We are going for the second game piece.
-                        // drives to 3ft behind the right most piece from the init scoring pos
+                        // We are going for the game piece on the far right, so we go between the charging station and the edge of the field.
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
                         {
                             robot.robotDrive.purePursuitDrive.start(
@@ -250,6 +240,25 @@ public class CmdAuto implements TrcRobot.RobotCommand
                                 new TrcPose2D(RobotParams.GAME_PIECE_1_X, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
                         }
                     }
+                    else {
+                        //startPos is 2, so we are going for the piece on the far left. we go between the charging station and the rail
+                        //TODO: find points
+                        if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(0, 0, 0.0),
+                                new TrcPose2D(0, 0, 0));
+                        }
+                        else
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(0, 0, 0.0),
+                                new TrcPose2D(0, 0, 0));
+                        }
+                    }
+                     /* we wont have time to go for a third piece, keeping it just in case
                     else if (piecesScored == 2)
                     {
                         // We are going for the third game piece.
@@ -270,14 +279,19 @@ public class CmdAuto implements TrcRobot.RobotCommand
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 429.0, 180.0),
                                 new TrcPose2D(RobotParams.GAME_PIECE_2_X, RobotParams.GAME_PIECE_RED_Y + 36, 180.0));
                         }
-                    }
+                    } */
                     sm.waitForSingleEvent(event, State.PICKUP_GAME_PIECE);
                     break;
                     
                 case PICKUP_GAME_PIECE:
                     // Drives forward while running intake until it picks up a game piece, the precondition being that
                     // we already at the correct location
-                    sm.waitForSingleEvent(event, State.GO_TO_SCORE_POSITION);
+                    if (scoreSecondPiece) {
+                        nextState = State.GO_TO_SCORE_POSITION;
+                    }
+                    else {
+                        nextState = State.GO_TO_CHARGING_STATION;
+                    }
                     // Second game piece will be a cube, third game piece will be a cone.
                     robot.autoPickupTask.autoAssistPickup(
                         //piecesScored == 1? ObjectType.CUBE: Right now, we are assuming that we can pick up a cone reliably
@@ -287,18 +301,12 @@ public class CmdAuto implements TrcRobot.RobotCommand
                     //}
                     //else {
                     loadedObjType = ObjectType.CONE;
-                    //}
-                    //we dont need the folowing lines, keeping it just in case
-                    // robot.robotDrive.purePursuitDrive.start(
-                    //     null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    //     new TrcPose2D(0, 50, 0));
+                    sm.waitForSingleEvent(event, nextState);
                     break;
 
                 case GO_TO_SCORE_POSITION:
-                    // TODO (Code Review): Please use the dimensions defined in RobotParams.
-                    // Drives to the scoring position, determining the location based on how many pieces we have
-                    // already scored
-                    if (piecesScored == 1)
+                    // Drives to the scoring position, determining the location based on our startpos and alliance
+                    if (startPos == 0)
                     {
                         //drives to the score precondition position from the right most game piece
                         if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
@@ -314,6 +322,24 @@ public class CmdAuto implements TrcRobot.RobotCommand
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 0.0));
                         }
                     }
+                    else {
+                        //TODO: find points
+                        if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(0, 0, 0.0),
+                                new TrcPose2D(0, 0, 0));
+                        }
+                        else
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(0, 0, 0.0),
+                                new TrcPose2D(0, 0, 0));
+                        }
+                    }
+                    /* again we are not going to have time to get a 3rd piece, keeping just in case
                     else if (piecesScored == 2)
                     {
                         // drives to the score precondition position from the second right most game piece
@@ -331,27 +357,50 @@ public class CmdAuto implements TrcRobot.RobotCommand
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 429, 0.0),
                                 new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 564.0, 0.0));
                         }
-                    }
+                    }*/
                     sm.waitForSingleEvent(event, State.SCORE_GAME_PIECE);
                     break;
 
                 case GO_TO_CHARGING_STATION:
-                    // Drives onto the charging station platform from the scoring position
-                    if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
-                    {
-                        robot.robotDrive.purePursuitDrive.start(
-                            event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                            new TrcPose2D(RobotParams.CHARGING_STATION_CENTER_X, RobotParams.CHARGING_STATION_CENTER_BLUE_Y, 270));
+                    // Drives behind the charging station platform from the scoring position
+                    if (scoreSecondPiece) {
+                        //since we just scored the second piece, we are inside the community so we get onto the charging station from the inside
+                        if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(RobotParams.CHARGING_STATION_CENTER_X, RobotParams.CHARGING_STATION_CENTER_BLUE_Y - (RobotParams.CHARGING_STATION_DEPTH + 15), 270));
+                        }
+                        else
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(RobotParams.CHARGING_STATION_CENTER_X, RobotParams.CHARGING_STATION_CENTER_RED_Y + (RobotParams.CHARGING_STATION_DEPTH + 15), 90));
+                        }
                     }
-                    else
-                    {
-                        robot.robotDrive.purePursuitDrive.start(
-                            event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                            new TrcPose2D(RobotParams.CHARGING_STATION_CENTER_X, RobotParams.CHARGING_STATION_CENTER_RED_Y, 90));
+                    else {
+                        //since we aren't scoring the second piece, we're in the center of the field and will get onto the charging station from the outside
+                        if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue)
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(RobotParams.CHARGING_STATION_CENTER_X, RobotParams.CHARGING_STATION_CENTER_BLUE_Y + (RobotParams.CHARGING_STATION_DEPTH + 15), 90));
+                        }
+                        else
+                        {
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                new TrcPose2D(RobotParams.CHARGING_STATION_CENTER_X, RobotParams.CHARGING_STATION_CENTER_RED_Y - (RobotParams.CHARGING_STATION_DEPTH + 15), 270));
+                        }
                     }
-                    sm.waitForSingleEvent(event, State.AUTO_BALANCE);
+                    sm.waitForSingleEvent(event, State.GET_ON_CHARGING_STATION);
                     break;
-
+                
+                case GET_ON_CHARGING_STATION: //we crab onto the charging station in relative
+                    robot.robotDrive.purePursuitDrive.start(
+                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(RobotParams.CHARGING_STATION_DEPTH + 15, 0, 0));
+                    break;
                 case AUTO_BALANCE:
                     robot.autoBalanceTask.autoAssistBalance(event);
                     sm.waitForSingleEvent(event, State.DONE);
