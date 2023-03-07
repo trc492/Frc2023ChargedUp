@@ -267,8 +267,9 @@ public class RobotParams
     public static final double CAMERA_HEIGHT                    = 41.5;     // Inches from the floor
     public static final double CAMERA_PITCH                     = -44.5;    // Degrees from horizontal
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
-        new Translation3d(CAMERA_X_OFFSET, CAMERA_Y_OFFSET, CAMERA_HEIGHT),
-        new Rotation3d(0.0, CAMERA_PITCH, 0.0));
+        new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -1.0*CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH, 
+                          CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
+        new Rotation3d(0.0, Math.toRadians(CAMERA_PITCH), 0.0));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
     // Camera: Logitech C310
     public static final double WEBCAM_FX                        = 821.993;  // in pixels
@@ -455,13 +456,13 @@ public class RobotParams
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
-    public static final double ARM_KP                           = 0.018;
-    public static final double ARM_KI                           = 0.1;
-    public static final double ARM_KD                           = 0.0018;
+    public static final double ARM_KP                           = 0.09;
+    public static final double ARM_KI                           = 0.08;
+    public static final double ARM_KD                           = 0.02;
     public static final double ARM_KF                           = 0.0;
     public static final double ARM_IZONE                        = 5.0;
     public static final double ARM_TOLERANCE                    = 1.0;
-    public static final double ARM_MAX_POWER                    = 0.25;
+    public static final double ARM_MAX_POWER                    = 0.3;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;  // 40 deg TODO: Verify
@@ -483,7 +484,7 @@ public class RobotParams
     {
         ARM_PICKUP_POSITION, 60, ARM_MAX_POS
     };
-    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.3; 
+    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.8; 
     public static final double INTAKE_CONE_PICKUP_POWER         = 0.8;
     public static final double INTAKE_SPIT_POWER                = -0.5; 
 

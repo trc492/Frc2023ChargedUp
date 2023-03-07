@@ -314,17 +314,37 @@
               "_title": "SmartDashboard/Auto/YDriveDistance"
             }
           },
-          "9,6": {
+          "15,0": {
             "size": [
               3,
-              3
+              2
             ],
             "content": {
-              "_type": "Boolean Box",
+              "_type": "Toggle Switch",
+              "_source0": "network_table:///SmartDashboard/Auto/GetSecondPiece",
+              "_title": "SmartDashboard/Auto/GetSecondPiece"
+            }
+          },
+          "12,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Toggle Switch",
               "_source0": "network_table:///SmartDashboard/Auto/DoAutoBalance",
-              "_title": "SmartDashboard/Auto/DoAutoBalance",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+              "_title": "SmartDashboard/Auto/DoAutoBalance"
+            }
+          },
+          "12,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Toggle Switch",
+              "_source0": "network_table:///SmartDashboard/Auto/ScorePreload",
+              "_title": "SmartDashboard/Auto/ScorePreload"
             }
           }
         }
@@ -912,6 +932,43 @@
                   "_title": "DigitalInput[6]/Value",
                   "Colors/Color when true": "#7CFC00FF",
                   "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Voltage View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/AnalogInput[2]",
+                  "_title": "LiveWindow/Ungrouped/AnalogInput[2]",
+                  "Range/Min": 0.0,
+                  "Range/Max": 5.0,
+                  "Range/Center": 0.0,
+                  "Visuals/Orientation": "HORIZONTAL",
+                  "Visuals/Number of tick marks": 5
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Solenoid[30,6]/Value",
+                  "_title": "LiveWindow/Ungrouped/Solenoid[30,6]/Value",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Voltage View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/AnalogInput[1]",
+                  "_title": "LiveWindow/Ungrouped/AnalogInput[1]",
+                  "Range/Min": 0.0,
+                  "Range/Max": 5.0,
+                  "Range/Center": 0.0,
+                  "Visuals/Orientation": "HORIZONTAL",
+                  "Visuals/Number of tick marks": 5
+                },
+                {
+                  "_type": "Voltage View",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/AnalogInput[3]",
+                  "_title": "LiveWindow/Ungrouped/AnalogInput[3]",
+                  "Range/Min": 0.0,
+                  "Range/Max": 5.0,
+                  "Range/Center": 0.0,
+                  "Visuals/Orientation": "HORIZONTAL",
+                  "Visuals/Number of tick marks": 5
                 }
               ]
             }

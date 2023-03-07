@@ -294,8 +294,12 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
                 robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
+                // robot.robotDrive.purePursuitDrive.start(
+                //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
+                // sm.waitForSingleEvent(event, State.SCORE_OBJECT);
+                //for now, testing the basic version without vision/autoassist
                 robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
+                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 20, 0));
                 sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 break;
 

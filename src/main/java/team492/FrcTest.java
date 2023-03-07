@@ -708,6 +708,8 @@ public class FrcTest extends FrcTeleOp
             {
                 // line 8
                 robot.dashboard.displayPrintf(lineNum, "PhotonVision[%s]: targetInfo=%s", pipelineType, targetInfo);
+                robot.globalTracer.traceInfo("FRCTEST", "TargetInfo=%s", targetInfo);
+
                 lineNum++;
 
                 if (pipelineType == PipelineType.APRILTAG)

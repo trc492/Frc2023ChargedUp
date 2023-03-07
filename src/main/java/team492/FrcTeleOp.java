@@ -27,6 +27,8 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
+import team492.FrcAuto.ObjectType;
+import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -173,10 +175,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         }
                         else
                         {
-                            double armPos =
-                                (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
-                                RobotParams.ARM_LOW_POS;
-                            robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
+                            // double armPos =
+                            //     (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
+                            //     RobotParams.ARM_LOW_POS;
+                            // robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
                         }
                     }
 
@@ -477,7 +479,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.intake.extend();
                     double intakePower = fastIntake? RobotParams.INTAKE_CONE_PICKUP_POWER: RobotParams.INTAKE_CUBE_PICKUP_POWER;
                     if(intakeReversed){
-                        robot.intake.setPower(intakePower, -intakePower);
+                        robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER);
                     }
                     else{
                         robot.intake.setPower(intakePower);
@@ -504,7 +506,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-                fastIntake = pressed; 
+                intakeReversed = pressed; 
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON4:
@@ -579,7 +581,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON10:
                 if (pressed)
                 {
+                    robot.armPidActuator.setPosition(moduleName, 0.0, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                     // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, null);
+                }
+                else
+                {
+                    robot.armPidActuator.setPosition(moduleName,0.0,RobotParams.ARM_LOW_POS,true,RobotParams.ARM_MAX_POWER,null,0.0);
                 }
                 // if (robot.elevator != null && pressed)
                 // {
@@ -595,7 +602,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //     robot.elevatorPidActuator.presetPositionUp(moduleName);
                 // }
                 //puts robot in scoring position for high poles 
-                robot.elevatorPidActuator.setPosition(moduleName, RobotParams.ELEVATOR_MAX_POS, true, 1.0, null, 0.0); 
+                // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.ELEVATOR_MAX_POS, true, 1.0, null, 0.0); 
                 robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_MAX_POS, true, 1.0, null, 0.0); 
                 robot.intake.retract(1.0); 
                 break;
@@ -603,7 +610,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON12:
                 // Turtle mode, use this while driving.
                 // Must acquire ownership moving the elevator and arm or analog control will interfere.
-                robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
+                // robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 break;
         }
@@ -720,6 +727,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
+                if(pressed){
+                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
+                }
                 // if (robot.arm != null && !pressed)
                 // {
                 //     robot.armPidActuator.setPower(0.0);

@@ -64,6 +64,7 @@ import team492.subsystems.LEDIndicator;
 import team492.vision.LimeLightVision;
 import team492.vision.OpenCvVision;
 import team492.vision.PhotonVision;
+import team492.vision.PhotonVision.PipelineType;
 
 /**
  * The Main class is configured to instantiate and automatically run this class,
@@ -224,6 +225,7 @@ public class Robot extends FrcRobotBase
         if (RobotParams.Preferences.usePhotonVision)
         {
             photonVision = new PhotonVision("OV5647", ledIndicator, null);
+            photonVision.setPipeline(PipelineType.APRILTAG);
         }
 
         if (RobotParams.Preferences.useLimeLightVision)
