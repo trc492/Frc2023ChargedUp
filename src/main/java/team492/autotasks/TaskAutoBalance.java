@@ -25,17 +25,20 @@
 import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
+import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import team492.Robot;
+import team492.RobotParams;
+import team492.FrcAuto.BalanceStrafeDir;
 
 /**
  * This class implements auto-assist balancing on the charging station.
  *
  * Preconditions:
  * - Robot is on flat ground in front of the charging station.
- * - Robot is facing sideways so that its right edge is square with the charging station
+ * - Robot is facing sideways so that its edge is square with the charging station
  */
 public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 {
@@ -43,16 +46,30 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 
     public enum State
     {
-        CLIMBING,
-        // BALANCING,
+        START,
+        CLIMB,
+        BALANCE,
+        CHECK_BALANCE,
         DONE
     }
+
+    private static class TaskParams
+    {
+        BalanceStrafeDir dir;
+
+        TaskParams(BalanceStrafeDir dir)
+        {
+            this.dir = dir;
+        }   //TaskParams
+    }   //class TaskParams
     
     private final String owner;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
+    private final TrcEvent driveEvent, tiltEvent;
     private String currOwner = null;
     private double prevTilt;
+    private double dir;
 
     /**
      * Constructor: Create an instance of the object.
@@ -67,6 +84,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         this.owner = owner;
         this.robot = robot;
         this.msgTracer = msgTracer;
+        driveEvent = new TrcEvent(moduleName + ".driveEvent");
+        tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
     }   //TaskAutoBalance
 
     /**
@@ -74,10 +93,11 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
      *
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void autoAssistBalance(TrcEvent completionEvent)
+    public void autoAssistBalance(TrcEvent completionEvent, BalanceStrafeDir dir)
     {
         prevTilt = 0.0;
-        startAutoTask(State.CLIMBING, null, completionEvent);
+        this.dir = ((dir == dir.LEFT) ? -1 : 1);
+        startAutoTask(State.START, new TaskParams(dir), completionEvent);
     }   //autoAssistBalance
 
     /**
@@ -136,7 +156,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     @Override
     protected void stopSubsystems()
     {
-        // robot.robotDrive.balancePidDrive.cancel(currOwner);
+        robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
         robot.robotDrive.driveBase.stop(currOwner);
     }   //stopSubsystems
 
@@ -165,46 +185,57 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         // 5. DONE: unarm tilt trigger, stop task.
         switch (state)
         {
-            case CLIMBING:
-                double currTilt = Math.abs(robot.robotDrive.getGyroRoll());
+            case START:
+                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
+                robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                sm.addEvent(tiltEvent);
+                robot.robotDrive.purePursuitDrive.start(
+                    currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    new TrcPose2D(dir*60.0, 0.0, 0.0));
+                sm.addEvent(driveEvent);
+                sm.waitForEvents(State.CLIMB, 0.0, false);
+                break;
 
-                if (msgTracer != null)
+            case CLIMB:
+                if(tiltEvent.isSignaled())
                 {
-                    msgTracer.traceInfo(moduleName, "prevTilt=%.2f, currTilt=%.2f", prevTilt, currTilt);
-                }
-                robot.dashboard.displayPrintf(
-                    15, "Balance: prevTilt=%.2f, currTilt=%.2f", prevTilt, currTilt);
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.25, 0.0, 0.0);
-                // Check if our angle is decerasing (approaching zero)
-                if (currTilt < prevTilt)
-                {
-                    robot.robotDrive.driveBase.stop(currOwner);
-                    sm.setState(State.DONE);
+                    // Tilt went past the threshold in one direction, meaning we are on the charging station
+                    tiltEvent.clear();
+                    sm.addEvent(tiltEvent);
+                    sm.waitForEvents(State.BALANCE, 0.0, false);
                 }
                 else
                 {
-                    prevTilt = currTilt;
+                    // Tilt trigger did not fire but purePursuit did, meaning we missed the platform
+                    sm.setState(State.DONE);
                 }
-                // // Move forward slowly until the robot is tipping backward.
-                // // CodeReview: should not use Math.abs, just check the sign when it's tilting backward.
-                // if (Math.abs(robot.robotDrive.getGyroPitch()) < 2.0)
-                // {
-                //     robot.robotDrive.driveBase.holonomicDrive(currOwner, 0.0, 0.2, 0.0);
-                // }
-                // else
-                // {
-                //     robot.robotDrive.driveBase.stop(currOwner);
-                //     sm.setState(State.BALANCING);
-                // }
                 break;
-
-            // case BALANCING:
-            //     msgTracer.traceInfo(moduleName, "Balancing.");
-            //     robot.robotDrive.balancePidDrive.setSensorTarget(
-            //         currOwner, robot.robotDrive.driveBase.getXPosition(), 0.0,
-            //         robot.robotDrive.driveBase.getHeading(), true, event, 0.0);
-            //     sm.waitForSingleEvent(event, State.DONE);
-            //     break;
+            
+            case BALANCE:
+                // Tilt was triggered, meaning we have returned to the allowable tipping range
+                robot.robotDrive.purePursuitDrive.cancel(currOwner);
+                // Make sure we don't tip again
+                tiltEvent.clear();
+                sm.waitForSingleEvent(tiltEvent, State.CHECK_BALANCE, 1.5);
+                break;
+            
+            case CHECK_BALANCE:
+                if(tiltEvent.isSignaled())
+                {
+                    // We have tipped outside the allowable tipping range! Correct ourselves
+                    tiltEvent.clear();
+                    // TODO: may consider lower the output limit further
+                    robot.robotDrive.purePursuitDrive.start(
+                        currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D((robot.robotDrive.getGyroRoll() < 0 ? -1 : 1)*24.0, 0.0, 0.0));
+                    sm.waitForSingleEvent(tiltEvent, State.BALANCE);
+                }
+                else
+                {
+                    // We are balanced
+                    sm.setState(State.DONE);
+                }
+                break;
 
             default:
             case DONE:

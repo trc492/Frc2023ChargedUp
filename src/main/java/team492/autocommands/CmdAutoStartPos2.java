@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcStateMachine;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
+import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 
@@ -181,7 +182,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
 
                 case BALANCE:
-                    robot.autoBalanceTask.autoAssistBalance(event);
+                    // TODO: Determine which direction robot will strafe onto charging station
+                    robot.autoBalanceTask.autoAssistBalance(event, BalanceStrafeDir.LEFT);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 

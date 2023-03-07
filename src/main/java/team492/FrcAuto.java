@@ -101,6 +101,12 @@ public class FrcAuto implements TrcRobot.RobotMode
         RIGHT   // Pole to the right of the aprilag.
     }   //enum SocreLocation
 
+    public static enum BalanceStrafeDir
+    {
+        LEFT,   // Robot will strafe left to balance
+        RIGHT   // Robot will strafe right to balance
+    }   //enum BalanceStrafeDir
+
     /**
      * This class encapsulates all user choices for autonomous mode from the smart dashboard.
      *

@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
+import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 
@@ -348,13 +349,15 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     break;
                 
                 case GET_ON_CHARGING_STATION: //we crab onto the charging station in relative
-                    robot.robotDrive.purePursuitDrive.start(
-                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(RobotParams.CHARGING_STATION_DEPTH + 15, 0, 0));
+                    // Auto Balance requires that the robot is on the floor next to the charging station, not already on it
+                    // robot.robotDrive.purePursuitDrive.start(
+                    //     event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    //     new TrcPose2D(RobotParams.CHARGING_STATION_DEPTH + 15, 0, 0));
                     break;
 
                 case AUTO_BALANCE:
-                    robot.autoBalanceTask.autoAssistBalance(event);
+                    // TODO: check which direction it strafes on
+                    robot.autoBalanceTask.autoAssistBalance(event, BalanceStrafeDir.LEFT);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 
