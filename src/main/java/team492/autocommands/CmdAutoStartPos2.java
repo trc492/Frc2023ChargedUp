@@ -183,7 +183,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case BALANCE:
                     // TODO: Determine which direction robot will strafe onto charging station
-                    robot.autoBalanceTask.autoAssistBalance(event, BalanceStrafeDir.LEFT);
+                    robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 

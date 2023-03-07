@@ -345,7 +345,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else
                     {
-                        robot.autoBalanceTask.autoAssistBalance(null, BalanceStrafeDir.LEFT);
+                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, null);
                     }
                 }
                 break;

@@ -347,7 +347,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     }
                     sm.waitForSingleEvent(event, State.GET_ON_CHARGING_STATION);
                     break;
-                
+
                 case GET_ON_CHARGING_STATION: //we crab onto the charging station in relative
                     // Auto Balance requires that the robot is on the floor next to the charging station, not already on it
                     // robot.robotDrive.purePursuitDrive.start(
@@ -357,7 +357,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
 
                 case AUTO_BALANCE:
                     // TODO: check which direction it strafes on
-                    robot.autoBalanceTask.autoAssistBalance(event, BalanceStrafeDir.LEFT);
+                    robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 
