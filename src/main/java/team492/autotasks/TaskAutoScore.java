@@ -269,7 +269,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
                 }
-                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, 0.0, true);
+                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true);
                 break;
 
             case DRIVE_TO_SCORING_POS:

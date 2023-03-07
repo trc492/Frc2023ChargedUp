@@ -180,7 +180,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     new TrcPose2D(dir*60.0, 0.0, 0.0));
                 sm.addEvent(driveEvent);
-                sm.waitForEvents(State.CLIMB, 0.0, false);
+                sm.waitForEvents(State.CLIMB, false);
                 break;
 
             case CLIMB:
@@ -190,7 +190,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     tiltEvent.clear();
                     sm.addEvent(tiltEvent);
                     sm.addEvent(driveEvent);
-                    sm.waitForEvents(State.CHECK_BALANCE, 0.0, false);
+                    sm.waitForEvents(State.CHECK_BALANCE, false);
                 }
                 else
                 {

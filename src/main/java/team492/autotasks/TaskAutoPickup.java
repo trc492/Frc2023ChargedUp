@@ -263,7 +263,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     sm.addEvent(visionEvent);
                 }
 
-                sm.waitForEvents(State.DRIVE_TO_OBJECT, 0.0, true);
+                sm.waitForEvents(State.DRIVE_TO_OBJECT, true);
                 break;
             
             case DRIVE_TO_OBJECT:
