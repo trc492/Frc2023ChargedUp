@@ -267,7 +267,7 @@ public class RobotParams
     public static final double CAMERA_HEIGHT                    = 41.5;     // Inches from the floor
     public static final double CAMERA_PITCH                     = -44.5;    // Degrees from horizontal
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
-        new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -1.0*CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH, 
+        new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH, 
                           CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
         new Rotation3d(0.0, Math.toRadians(CAMERA_PITCH), 0.0));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
@@ -462,12 +462,13 @@ public class RobotParams
     public static final double ARM_KF                           = 0.0;
     public static final double ARM_IZONE                        = 5.0;
     public static final double ARM_TOLERANCE                    = 1.0;
+    public static final double ARM_CAL_POWER                    = -0.2;
     public static final double ARM_MAX_POWER                    = 0.3;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
-    public static final double ARM_PICKUP_POSITION              = 40.0;  // 40 deg TODO: Verify
-    public static final double ARM_TRAVEL_POSITION              = 5.0;  //TODO
-    public static final double ARM_SAFE_POSITION                = 10.0; //TODO
+    public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify
+    public static final double ARM_TRAVEL_POSITION              = 5.0;      //TODO
+    public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
     // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =
     {

@@ -25,16 +25,19 @@ package team492.vision;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.opencv.core.Rect;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.common.hardware.VisionLEDMode;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcTimer;
-import TrcCommonLib.trclib.TrcUtil;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import team492.RobotParams;
 import team492.subsystems.LEDIndicator;
@@ -76,12 +79,11 @@ public class PhotonVision extends FrcPhotonVision
 
             return type;
         }   //getType
-
     }   //enum PipelineType
 
     private final LEDIndicator ledIndicator;
     private final AprilTagFieldLayout aprilTagFieldLayout;
-    // private final AprilTagPoseEstimator poseEstimator;
+    private final PhotonPoseEstimator poseEstimator;
 
     /**
      * Constructor: Create an instance of the object.
@@ -98,11 +100,15 @@ public class PhotonVision extends FrcPhotonVision
         double startTime = TrcTimer.getModeElapsedTime();
         try
         {
-            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+            // aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+            aprilTagFieldLayout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
+            poseEstimator = new PhotonPoseEstimator(
+                aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, this, RobotParams.CAMERA_TRANSFORM3D);
+            poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         }
         catch (IOException e)
         {
-            throw new RuntimeException("Failed to read AprilTag field layout info.");
+            throw new RuntimeException("Failed to load AprilTag field layout info.");
         }
         double endTime = TrcTimer.getModeElapsedTime();
 
@@ -113,11 +119,7 @@ public class PhotonVision extends FrcPhotonVision
         }
 
         setPipeline(PipelineType.POLE);
-        // poseEstimator = new AprilTagPoseEstimator(
-        //     new AprilTagPoseEstimator.Config(
-        //         RobotParams.APRILTAG_SIZE, RobotParams.APRILTAG_FX, RobotParams.APRILTAG_FY,
-        //         RobotParams.APRILTAG_CX, RobotParams.APRILTAG_CY));
-    }   //FrcPhotonVision
+    }   //PhotonVision
 
     /**
      * This method returns the best detected object and set the LED to indicate type detected object type.
@@ -166,41 +168,44 @@ public class PhotonVision extends FrcPhotonVision
         if (aprilTagPose != null)
         {
             // camPose3d is the absolute field position of the camera.
-            Pose3d camPose3d = aprilTagPose.transformBy(aprilTagObj.targetTransform.inverse());
-            TrcPose2D camPose = new TrcPose2D(
-                -camPose3d.getY() * TrcUtil.INCHES_PER_METER,
-                camPose3d.getX() * TrcUtil.INCHES_PER_METER,
-                0);
-
-
+            Pose3d camPose3d = aprilTagPose.transformBy(aprilTagObj.target.getBestCameraToTarget().inverse());
             // robotPose2d is the absolute field position of the robot centroid projected on the ground.
-            Pose2d robotPose2d = camPose3d.transformBy(RobotParams.CAMERA_TRANSFORM3D.inverse()).toPose2d();
+            Pose3d robotPose3d = camPose3d.transformBy(RobotParams.CAMERA_TRANSFORM3D.inverse());
             // robotPose is the absolute field position of the robot adjusted to the robot coordinate system.
-            robotPose = new TrcPose2D(
-                -robotPose2d.getY() * TrcUtil.INCHES_PER_METER,
-                robotPose2d.getX() * TrcUtil.INCHES_PER_METER,
-                -robotPose2d.getRotation().getDegrees());
+            robotPose = DetectedObject.pose3dToTrcPose2D(robotPose3d);
 
             if (debugEnabled)
             {
-                globalTracer.traceInfo(funcName, "[%d] CamPose2D=%s", aprilTagId, camPose);
-                globalTracer.traceInfo(funcName, "[%d] CamTransform=%s", aprilTagId, (RobotParams.CAMERA_TRANSFORM3D.inverse()));
-                globalTracer.traceInfo(funcName, "[%d] RobotPose=%s", aprilTagId, robotPose);
+                globalTracer.traceInfo(
+                    funcName, "[%d] camPose3d=%s, robotPose3d=%s, RobotPose=%s",
+                    aprilTagId, camPose3d, robotPose3d, robotPose);
             }
         }
 
         return robotPose;
-        // poseEstimator.update(gyro.getRotation2d(), leftDist, rightDist);
-
-        // var res = cam.getLatestResult();
-        // if (res.hasTargets()) {
-        //     var imageCaptureTime = res.getTimestampSeconds();
-        //     var camToTargetTrans = res.getBestTarget().getBestCameraToTarget();
-        //     var camPose = Constants.kFarTargetPose.transformBy(camToTargetTrans.inverse());
-        //     m_poseEstimator.addVisionMeasurement(
-        //             camPose.transformBy(Constants.kCameraToRobot).toPose2d(), imageCaptureTime);
-        // }        
     }   //getRobotFieldPosition
+
+    /**
+     * This method uses the PhotonVision Pose Estimator to get an estimated absolute field position of the robot.
+     *
+     * @return absolute robot field position.
+     */
+    public TrcPose2D getEstimatedFieldPosition(TrcPose2D robotPose)
+    {
+        TrcPose2D estimatedRobotPose = null;
+
+        if (poseEstimator != null)
+        {
+            poseEstimator.setReferencePose(DetectedObject.trcPose2DToPose3d(robotPose));
+            Optional<EstimatedRobotPose> optionalPose = poseEstimator.update();
+            if (optionalPose.isPresent())
+            {
+                DetectedObject.pose3dToTrcPose2D(optionalPose.get().estimatedPose);
+            }
+        }
+
+        return estimatedRobotPose;
+    }   //getEstimatedFieldPosition
 
     /**
      * This method sets the active pipeline type used in the LimeLight.
@@ -222,5 +227,43 @@ public class PhotonVision extends FrcPhotonVision
     {
         return PipelineType.getType(getPipelineIndex());
     }   //getPipeline
+
+    //
+    // Implements FrcPhotonVision abstract methods.
+    //
+
+    /**
+     * This method returns the ground offset of the detected target.
+     *
+     * @return target ground offset.
+     */
+    public double getTargetHeight(PhotonTrackedTarget target)
+    {
+        double targetHeight = 0.0;
+        PipelineType pipelineType = getPipeline();
+
+        switch (pipelineType)
+        {
+            case APRILTAG:
+                targetHeight = getAprilTagPose(target.getFiducialId()).getZ();
+                break;
+
+            case CUBE:
+                targetHeight = RobotParams.CUBE_HALF_HEIGHT;
+                break;
+
+            case CONE:
+                Rect targetRect = DetectedObject.getRect(target);
+                targetHeight = targetRect.height > targetRect.width?
+                    RobotParams.CONE_HALF_HEIGHT: RobotParams.CONE_HALF_WIDTH;
+                break;
+
+            case POLE:
+                targetHeight = RobotParams.LOW_POLE_TAPE_HEIGHT;
+                break;
+        }
+
+        return targetHeight;
+    }   //getTargetHeight
 
 }   //class PhotonVision

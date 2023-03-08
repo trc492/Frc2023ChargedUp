@@ -708,38 +708,19 @@ public class FrcTest extends FrcTeleOp
             {
                 // line 8
                 robot.dashboard.displayPrintf(lineNum, "PhotonVision[%s]: targetInfo=%s", pipelineType, targetInfo);
-                robot.globalTracer.traceInfo("FRCTEST", "TargetInfo=%s", targetInfo);
-
                 lineNum++;
 
-                if (pipelineType == PipelineType.APRILTAG)
-                {
-                    // line 9
-                    robot.dashboard.displayPrintf(lineNum, "TargetPose: %s", targetInfo.targetPose3D);
-                    lineNum++;
+                // line 9
+                robot.dashboard.displayPrintf(lineNum, "TargetPose: %s", targetInfo.targetPose);
+                lineNum++;
 
-                    TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
-                    if (robotPose != null)
-                    {
-                        // line 10
-                        robot.dashboard.displayPrintf(lineNum, "RobotPose: %s", robotPose);
-                        lineNum++;
-                    }
-                }
-                else
+                TrcPose2D robotPose =
+                    robot.photonVision.getEstimatedFieldPosition(robot.robotDrive.driveBase.getFieldPosition());
+                if (robotPose != null)
                 {
-                    // line 9
-                    double targetHeight = pipelineType == PipelineType.POLE?
-                                            RobotParams.LOW_POLE_TAPE_HEIGHT:
-                                          pipelineType == PipelineType.CONE?
-                                            RobotParams.CONE_HALF_HEIGHT: RobotParams.CUBE_HALF_HEIGHT;
-                    TrcPose2D targetPose = robot.photonVision.getTargetPose2D(targetInfo, targetHeight);
-                    if (targetPose != null)
-                    {
-                        robot.dashboard.displayPrintf(
-                            lineNum, "TargetPose: %s, Rect: %s", targetPose, targetInfo.getRect());
-                            lineNum++;
-                    }
+                    // line 10
+                    robot.dashboard.displayPrintf(lineNum, "RobotPose: %s", robotPose);
+                    lineNum++;
                 }
             }
         }

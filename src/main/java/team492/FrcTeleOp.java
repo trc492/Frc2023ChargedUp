@@ -132,7 +132,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 // DriveBase operation.
                 //
-
                 if (robot.robotDrive != null)
                 {
                     double[] inputs = robot.robotDrive.getDriveInputs();

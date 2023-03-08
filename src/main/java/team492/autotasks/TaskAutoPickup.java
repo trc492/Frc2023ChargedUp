@@ -22,8 +22,6 @@
 
 package team492.autotasks;
 
-import org.opencv.core.Rect;
-
 import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
@@ -286,21 +284,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     DetectedObject target = robot.photonVision.getLastDetectedBestObject();
                     if (target != null)
                     {
-                        Rect targetRect = target.getRect();
-                        double targetHeight;
-                        if (taskParams.objectType == ObjectType.CUBE)
-                        {
-                            targetHeight = RobotParams.CUBE_HALF_HEIGHT;
-                        }
-                        else
-                        {
-                            targetHeight = targetRect.height > targetRect.width?
-                                RobotParams.CONE_HALF_HEIGHT: RobotParams.CONE_HALF_WIDTH;
-                        }
-                        targetPos = robot.photonVision.getTargetPose2D(target, targetHeight);
+                        targetPos = target.targetPose;
                         robot.globalTracer.traceInfo(
-                            moduleName, "Detected %s: targetPos=%s, height=%.1f",
-                            taskParams.objectType, targetPos, targetHeight);
+                            moduleName, "Detected %s: targetPos=%s", taskParams.objectType, targetPos);
                     }
                 }
 
