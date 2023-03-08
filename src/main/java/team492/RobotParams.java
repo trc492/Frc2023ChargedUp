@@ -313,7 +313,7 @@ public class RobotParams
     public static final double GYRO_TURN_KD                     = 0.0;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
-    public static final double[] GYRO_TILT_THRESHOLDS           = {-10.0, 10.0};
+    public static final double[] GYRO_TILT_THRESHOLDS           = {-7.0, 7.0};
 
     public static final double GYRO_PITCH_KP                    = 0.0095;
     public static final double GYRO_PITCH_KI                    = 0.0;
@@ -385,7 +385,7 @@ public class RobotParams
     public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0;
     // public static final TrcPidController.PidCoefficients magicSteerCoeff =
     //     new TrcPidController.PidCoefficients(2.0, 0.01, 0.0, 1023.0 / STEER_MAX_VEL_COUNT_PER_100MS, 5.0 / STEER_DEGREES_PER_COUNT);
-    public static final double STEER_KP                         = 0.5;
+    public static final double STEER_KP                         = 0.3;
     public static final double STEER_KI                         = 0.0;//0.01;
     public static final double STEER_KD                         = 0.0;
     // kF set to Motion Magic recommendation.
@@ -456,14 +456,14 @@ public class RobotParams
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
-    public static final double ARM_KP                           = 0.09;
+    public static final double ARM_KP                           = 0.5;
     public static final double ARM_KI                           = 0.08;
     public static final double ARM_KD                           = 0.02;
     public static final double ARM_KF                           = 0.0;
     public static final double ARM_IZONE                        = 5.0;
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = -0.2;
-    public static final double ARM_MAX_POWER                    = 0.3;
+    public static final double ARM_MAX_POWER                    = 0.5;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify

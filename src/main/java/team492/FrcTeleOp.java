@@ -581,12 +581,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON10:
                 if (pressed)
                 {
-                    robot.armPidActuator.setPosition(moduleName, 0.0, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                    // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, null);
-                }
-                else
-                {
-                    robot.armPidActuator.setPosition(moduleName,0.0,RobotParams.ARM_LOW_POS,true,RobotParams.ARM_MAX_POWER,null,0.0);
+                //     robot.armPidActuator.setPosition(moduleName, 0.0, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                //     // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, null);
+                // }
+                // else
+                // {
+                //     robot.armPidActuator.setPosition(moduleName,0.0,RobotParams.ARM_LOW_POS,true,RobotParams.ARM_MAX_POWER,null,0.0);
                 }
                 // if (robot.elevator != null && pressed)
                 // {

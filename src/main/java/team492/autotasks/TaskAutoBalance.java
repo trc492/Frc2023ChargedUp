@@ -42,6 +42,7 @@ import team492.FrcAuto.BalanceStrafeDir;
 public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 {
     private static final String moduleName = "TaskAutoBalance";
+    private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
 
     public enum State
     {
@@ -92,6 +93,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         }
 
         dir = strafeDir == BalanceStrafeDir.LEFT? -1.0: 1.0;
+
         startAutoTask(State.START, null, completionEvent);
     }   //autoAssistBalance
 
@@ -168,6 +170,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     protected void runTaskState(
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
+        globalTracer.traceInfo(moduleName, "State:%s, gyro:%.3f", sm.getState(), robot.robotDrive.getGyroRoll());
         switch (state)
         {
             case START:
@@ -175,10 +178,10 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 // Strafe up the charging station slowly with a safety limit of 5 feet and signal driveEvent.
                 robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                 sm.addEvent(tiltEvent);
-                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
+                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.1);
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    new TrcPose2D(dir*60.0, 0.0, 0.0));
+                    new TrcPose2D(dir*240.0, 0.0, 0.0));
                 sm.addEvent(driveEvent);
                 sm.waitForEvents(State.CLIMB, false);
                 break;
@@ -190,6 +193,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     tiltEvent.clear();
                     sm.addEvent(tiltEvent);
                     sm.addEvent(driveEvent);
+                    // TODO: tiltEvent never fires, robot continues to drive off the charging station
                     sm.waitForEvents(State.CHECK_BALANCE, false);
                 }
                 else
@@ -215,7 +219,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     // TODO: may consider lower the output limit further.
                     robot.robotDrive.purePursuitDrive.start(
                         currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D((robot.robotDrive.getGyroRoll() < 0.0? 1.0: -1.0)*24.0, 0.0, 0.0));
+                        new TrcPose2D((robot.robotDrive.getGyroRoll() < 0.0? 1.0: -1.0)*60.0, 0.0, 0.0));
                     sm.waitForSingleEvent(tiltEvent, State.CHECK_BALANCE);
                 }
                 else

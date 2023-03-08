@@ -594,9 +594,13 @@ public class Robot extends FrcRobotBase
 
                 if (robotDrive != null)
                 {
+                    double[] drivePwr = robotDrive.getDriveInputs();
+                    dashboard.displayPrintf(
+                        2, "Drive: Pwr:%.3f,%.3f,%.3f", drivePwr[0],drivePwr[1],drivePwr[2]);
                     dashboard.displayPrintf(
                         lineNum, "Gyro: Yaw=%.3f, Pitch=%.3f, Roll=%.3f",
                         robotDrive.driveBase.getHeading(), robotDrive.getGyroPitch(), robotDrive.getGyroRoll());
+                    dashboard.putNumber("gyroRoll", robotDrive.getGyroRoll());
                     lineNum++;
                 }
             }

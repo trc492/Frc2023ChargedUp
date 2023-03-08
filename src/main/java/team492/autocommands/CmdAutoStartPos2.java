@@ -158,7 +158,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         event, 1.5, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
-                    sm.waitForSingleEvent(event, State.CLIMB);
+                    sm.waitForSingleEvent(event, State.EXIT_COMMUNITY);
                     break;
                 
                 case EXIT_COMMUNITY:
@@ -179,25 +179,27 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     //     new TrcPose2D(180.0, 0.0, 0.0));
                     // sm.waitForSingleEvent(event, doAutoBalance? State.BALANCE: State.BALANCE);
                     robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
-                    sm.addEvent(tiltEvent);
-                    robot.robotDrive.purePursuitDrive.start(
-                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(60.0, 0.0, 0.0));
-                    sm.waitForEvents(State.CLIMB, false);
-                    sm.addEvent(event);
+                    robot.robotDrive.driveBase.holonomicDrive(0.2, 0, 0); 
+                    sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
                 case CLIMB:
                     if (tiltEvent.isSignaled()) {
-                        event.clear();
-                        sm.addEvent(tiltEvent);
-                        robot.robotDrive.purePursuitDrive.start(
-                            event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                            new TrcPose2D(60.0, 0.0, 0.0));
-                        sm.addEvent(event);
-                        sm.waitForEvents(State.LEVEL, false);
+                        robot.robotDrive.cancel(); 
+                        tiltEvent.clear();
+                        
+                        robot.globalTracer.traceInfo("CLIMBING STATE", "CLIMBING RIGHT NOW@!!!!!!");
+                        robot.robotDrive.driveBase.holonomicDrive(0.1, 0, 0); 
+                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                        // robot.robotDrive.purePursuitDrive.start(
+                        //     event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        //     new TrcPose2D(60.0, 0.0, 0.0));
+                        // sm.addEvent(event);
+                        // sm.waitForEvents(State.LEVEL, false);
+
+                        sm.waitForSingleEvent(tiltEvent, State.DONE, 10.0);//LEVEL, 5);
                     }
                     else {
-                        sm.setState(State.DONE);
+                        // sm.setState(State.DONE);
                     }
                     break;
 
@@ -224,7 +226,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                             new TrcPose2D(60.0, 0.0, 0.0));
                         sm.addEvent(event);
-                        sm.waitForEvents(State.DESCEND, false);
+                        sm.waitForEvents(State.EXIT, false);
                     }
                     else {
                         sm.setState(State.DONE);
@@ -233,8 +235,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case EXIT:
                     tiltEvent.clear();
+                    robot.robotDrive.cancel(); 
                     robot.robotDrive.purePursuitDrive.cancel();
-                    sm.setState(State.BALANCE);
+                    sm.setState(State.DONE);//BALANCE);
                     break;
 
                 case BALANCE:
@@ -244,6 +247,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
 
                 case DONE:
+                    robot.robotDrive.cancel(); 
                 default:
                     // We are done.
                     cancel();
