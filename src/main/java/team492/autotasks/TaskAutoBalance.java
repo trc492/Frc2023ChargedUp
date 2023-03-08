@@ -153,7 +153,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     @Override
     protected void stopSubsystems()
     {
-        robot.robotDrive.driveBase.stop(currOwner);
+        robot.robotDrive.cancel(currOwner);
     }   //stopSubsystems
 
     /**

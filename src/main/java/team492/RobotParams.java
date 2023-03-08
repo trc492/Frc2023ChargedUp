@@ -313,7 +313,7 @@ public class RobotParams
     public static final double GYRO_TURN_KD                     = 0.0;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
-    public static final double[] GYRO_TILT_THRESHOLDS           = {-7.0, 7.0};
+    public static final double[] GYRO_TILT_THRESHOLDS           = {-5.0, 5.0};
 
     public static final double GYRO_PITCH_KP                    = 0.0095;
     public static final double GYRO_PITCH_KI                    = 0.0;
@@ -456,18 +456,18 @@ public class RobotParams
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
-    public static final double ARM_KP                           = 0.5;
-    public static final double ARM_KI                           = 0.08;
-    public static final double ARM_KD                           = 0.02;
-    public static final double ARM_KF                           = 0.0;
-    public static final double ARM_IZONE                        = 5.0;
+    public static final double ARM_KP                           = 0.04;
+    public static final double ARM_KI                           = 0.015;
+    public static final double ARM_KD                           = 0.004;
+    public static final double ARM_KF                           = 0.003;
+    public static final double ARM_IZONE                        = 10.0;
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = -0.2;
-    public static final double ARM_MAX_POWER                    = 0.5;
-    public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;//0.06;
+    public static final double ARM_MAX_POWER                    = 0.4;
+    public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify
-    public static final double ARM_TRAVEL_POSITION              = 5.0;      //TODO
+    public static final double ARM_TRAVEL_POSITION              = 20.0;     //TODO
     public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
     // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =

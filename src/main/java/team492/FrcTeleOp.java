@@ -175,10 +175,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         }
                         else
                         {
-                            // double armPos =
-                            //     (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
-                            //     RobotParams.ARM_LOW_POS;
-                            // robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
+                            double armPos =
+                                (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
+                                RobotParams.ARM_LOW_POS;
+                            robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
+                            robot.dashboard.displayPrintf(1, "Arm: pos=%.2f", armPos);
                         }
                     }
 
