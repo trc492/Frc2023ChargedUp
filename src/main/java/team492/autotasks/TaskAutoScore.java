@@ -83,6 +83,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcTimer timer;
     private String currOwner = null;
 
+    //Cube High: Arm-Max, Elevator-19.6
+    //Cube Mid: Arm-Max, Elevator-Min
+    //Cone High: Arm-, Elevator-
+    //Cone Mid: Arm-, Elevator-
+
     /**
      * Constructor: Create an instance of the object.
      *

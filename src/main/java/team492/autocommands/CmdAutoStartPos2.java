@@ -43,7 +43,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         SCORE_PRELOAD,
         TURN,
         EXIT_COMMUNITY,
-        GET_ON_CHARGE,
         BALANCE,
         DONE
 
@@ -70,7 +69,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         this.robot = robot;
         event = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        sm.start(State.START);
+        sm.start(State.TURN);
     }   //CmdAutoStartPos2
 
     //
@@ -171,14 +170,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         event, 7.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(180.0, 0.0, 0.0));
-                    sm.waitForSingleEvent(event, doAutoBalance? State.GET_ON_CHARGE: State.DONE);
-                    break;
-                
-                case GET_ON_CHARGE:
-                    robot.robotDrive.purePursuitDrive.start(
-                        event, 5, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(-60.0, 0.0, 0.0));
-                    sm.waitForSingleEvent(event, State.BALANCE);
+                    sm.waitForSingleEvent(event, doAutoBalance? State.BALANCE: State.BALANCE);
                     break;
 
                 case BALANCE:
