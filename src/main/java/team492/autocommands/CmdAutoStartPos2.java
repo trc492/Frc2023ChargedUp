@@ -42,11 +42,11 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         START,
         SCORE_PRELOAD,
         TURN,
-        EXIT_COMMUNITY,
+        DRIVE_UP_CHARGING_STATION,
         CLIMB,
         LEVEL,
         DESCEND,
-        EXIT,
+        EXIT_COMMUNITY,
         BALANCE,
         DONE
 
@@ -158,54 +158,51 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         event, 1.5, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
-                    sm.waitForSingleEvent(event, State.EXIT_COMMUNITY);
+                    sm.waitForSingleEvent(event, State.DRIVE_UP_CHARGING_STATION);
                     break;
                 
-                case EXIT_COMMUNITY:
-                    // TODO (Code Review): Odometry doesn't work well going over charging station, should do the following:
-                    // 1. arm tilt trigger with tiltEvent and do purePursuitDrive for a distance with event, goto CLIMB
-                    //    when either event signaled.
-                    // 2. if tilt event signaled, clear event and wait for tilt trigger again, goto LEVEL when either events
-                    //    signaled.
-                    // 3. if tilt event signaled, clear event and wait for tilt trigger again, goto DESCEND when either events
-                    //    signaled.
-                    // 4. if tilt event signaled, clear event and wait for tilt trigger again, goto EXIT when either events
-                    //    signaled.
-                    // 5. unarm tilt trigger, cancel purePursuit, call auto balance.
-                    // 6. done.
-
+                case DRIVE_UP_CHARGING_STATION:
+                    // Arm tilt trigger with tiltEvent and do holonomicDrive with a timeout, then goto CLIMB
+                    // when either tiltEvent signaled or holonomicDrive timed out.
+                    robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                    robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
+                    sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     // robot.robotDrive.purePursuitDrive.start(
                     //     event, 7.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     //     new TrcPose2D(180.0, 0.0, 0.0));
                     // sm.waitForSingleEvent(event, doAutoBalance? State.BALANCE: State.BALANCE);
-                    robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
-                    robot.robotDrive.driveBase.holonomicDrive(0.2, 0, 0); 
-                    sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
+
                 case CLIMB:
-                    if (tiltEvent.isSignaled()) {
-                        robot.robotDrive.cancel(); 
+                    // If tilt event signaled, clear event and wait for tilt trigger again, goto LEVEL when tiltEvent
+                    // signaled.
+                    if (tiltEvent.isSignaled())
+                    {
+                        robot.globalTracer.traceInfo("CLIMBING STATE", "CLIMBING RIGHT NOW!!!!!!");
+                        // Slow down the climb.
+                        robot.robotDrive.driveBase.holonomicDrive(0.1, 0.0, 0.0);
                         tiltEvent.clear();
-                        
-                        robot.globalTracer.traceInfo("CLIMBING STATE", "CLIMBING RIGHT NOW@!!!!!!");
-                        robot.robotDrive.driveBase.holonomicDrive(0.1, 0, 0); 
-                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                        sm.waitForSingleEvent(tiltEvent, State.DONE, 10.0);//LEVEL, 5);
+                        // robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         // robot.robotDrive.purePursuitDrive.start(
                         //     event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         //     new TrcPose2D(60.0, 0.0, 0.0));
                         // sm.addEvent(event);
                         // sm.waitForEvents(State.LEVEL, false);
-
-                        sm.waitForSingleEvent(tiltEvent, State.DONE, 10.0);//LEVEL, 5);
                     }
-                    else {
-                        // sm.setState(State.DONE);
+                    else
+                    {
+                        // TODO (Code Review): Why do you comment this out? I uncommented it now.
+                        sm.setState(State.DONE);
                     }
                     break;
 
                 case LEVEL:
-                    if (tiltEvent.isSignaled()) {
-                        event.clear();
+                    // If tilt event signaled, clear event and wait for tilt trigger again, goto DESCEND when either events
+                    // signaled.
+                    if (tiltEvent.isSignaled())
+                    {
+                        tiltEvent.clear();
                         sm.addEvent(tiltEvent);
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -213,30 +210,35 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                         sm.addEvent(event);
                         sm.waitForEvents(State.DESCEND, false);
                     }
-                    else {
+                    else
+                    {
                         sm.setState(State.DONE);
                     }
                     break;
 
                 case DESCEND:
-                    if (tiltEvent.isSignaled()) {
-                        event.clear();
+                    // If tilt event signaled, clear event and wait for tilt trigger again, goto EXIT_COMMUNITY when
+                    // either events signaled.
+                    if (tiltEvent.isSignaled())
+                    {
+                        tiltEvent.clear();
                         sm.addEvent(tiltEvent);
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                             new TrcPose2D(60.0, 0.0, 0.0));
                         sm.addEvent(event);
-                        sm.waitForEvents(State.EXIT, false);
+                        sm.waitForEvents(State.EXIT_COMMUNITY, false);
                     }
-                    else {
+                    else
+                    {
                         sm.setState(State.DONE);
                     }
                     break;
 
-                case EXIT:
-                    tiltEvent.clear();
-                    robot.robotDrive.cancel(); 
-                    robot.robotDrive.purePursuitDrive.cancel();
+                case EXIT_COMMUNITY:
+                    // Unarm tilt trigger, cancel purePursuit, call auto balance.
+                    robot.robotDrive.setTiltTriggerEnabled(false, null);
+                    robot.robotDrive.cancel();
                     sm.setState(State.DONE);//BALANCE);
                     break;
 
@@ -246,9 +248,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 
-                case DONE:
-                    robot.robotDrive.cancel(); 
                 default:
+                case DONE:
                     // We are done.
                     cancel();
                     break;
