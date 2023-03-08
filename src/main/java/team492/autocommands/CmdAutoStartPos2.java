@@ -43,6 +43,10 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         SCORE_PRELOAD,
         TURN,
         EXIT_COMMUNITY,
+        CLIMB,
+        LEVEL,
+        DESCEND,
+        EXIT,
         BALANCE,
         DONE
 
@@ -51,6 +55,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
     private final Robot robot;
     private final TrcEvent event;
+    private final TrcEvent tiltEvent;
     private final TrcStateMachine<State> sm;
 
     private int scoreLevel;
@@ -68,6 +73,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
         this.robot = robot;
         event = new TrcEvent(moduleName);
+        tiltEvent = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.TURN);
     }   //CmdAutoStartPos2
@@ -152,7 +158,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         event, 1.5, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
-                    sm.waitForSingleEvent(event, State.EXIT_COMMUNITY);
+                    sm.waitForSingleEvent(event, State.CLIMB);
                     break;
                 
                 case EXIT_COMMUNITY:
@@ -167,10 +173,68 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     //    signaled.
                     // 5. unarm tilt trigger, cancel purePursuit, call auto balance.
                     // 6. done.
+
+                    // robot.robotDrive.purePursuitDrive.start(
+                    //     event, 7.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    //     new TrcPose2D(180.0, 0.0, 0.0));
+                    // sm.waitForSingleEvent(event, doAutoBalance? State.BALANCE: State.BALANCE);
+                    robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                    sm.addEvent(tiltEvent);
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 7.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(180.0, 0.0, 0.0));
-                    sm.waitForSingleEvent(event, doAutoBalance? State.BALANCE: State.BALANCE);
+                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(60.0, 0.0, 0.0));
+                    sm.waitForEvents(State.CLIMB, false);
+                    sm.addEvent(event);
+                    break;
+                case CLIMB:
+                    if (tiltEvent.isSignaled()) {
+                        event.clear();
+                        sm.addEvent(tiltEvent);
+                        robot.robotDrive.purePursuitDrive.start(
+                            event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                            new TrcPose2D(60.0, 0.0, 0.0));
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.LEVEL, false);
+                    }
+                    else {
+                        sm.setState(State.DONE);
+                    }
+                    break;
+
+                case LEVEL:
+                    if (tiltEvent.isSignaled()) {
+                        event.clear();
+                        sm.addEvent(tiltEvent);
+                        robot.robotDrive.purePursuitDrive.start(
+                            event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                            new TrcPose2D(60.0, 0.0, 0.0));
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.DESCEND, false);
+                    }
+                    else {
+                        sm.setState(State.DONE);
+                    }
+                    break;
+
+                case DESCEND:
+                    if (tiltEvent.isSignaled()) {
+                        event.clear();
+                        sm.addEvent(tiltEvent);
+                        robot.robotDrive.purePursuitDrive.start(
+                            event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                            new TrcPose2D(60.0, 0.0, 0.0));
+                        sm.addEvent(event);
+                        sm.waitForEvents(State.DESCEND, false);
+                    }
+                    else {
+                        sm.setState(State.DONE);
+                    }
+                    break;
+
+                case EXIT:
+                    tiltEvent.clear();
+                    robot.robotDrive.purePursuitDrive.cancel();
+                    sm.setState(State.BALANCE);
                     break;
 
                 case BALANCE:
