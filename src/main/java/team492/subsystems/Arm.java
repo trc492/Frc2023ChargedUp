@@ -87,7 +87,7 @@ public class Arm
 
         pidActuator = new FrcMotorActuator(
             "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
-        pidActuator.setMsgTracer(msgTracer);
+        pidActuator.setMsgTracer(msgTracer, true);
         pidActuator.getPidController().setOutputLimit(0.25);
 
         zeroTrigger = new TrcTriggerDigitalInput(moduleName, lowerLimitSw, this::zeroCalCompletion);
