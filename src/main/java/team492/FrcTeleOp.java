@@ -741,24 +741,35 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
-                    //reversing intake 
-                intakeReversed = pressed; 
+                    //high pole cone scoring 
+                    // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[2], true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    robot.elevatorPidActuator.setPosition(moduleName,25/* RobotParams.elevatorConeScoringPresets[2] */, true, 1.0, null, 0.0);
+
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:
+                robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[1], true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[1], true, 1.0, null, 0.0);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
+                robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[0], true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[0], true, 1.0, null, 0.0);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
-                if (pressed)
-                {
-                    robot.autoPickupTask.autoAssistCancel();
-                }
+                // if (pressed)
+                // {
+                //     robot.autoPickupTask.autoAssistCancel();
+                // }
+                robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
+                robot.autoScoreTask.autoAssistCancel();
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:
+                    //auto score testing
+                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:

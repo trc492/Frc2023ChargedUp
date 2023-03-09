@@ -261,10 +261,10 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
 
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.0);
+                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 2.0);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
+                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
                 sm.addEvent(armEvent);
 
                 robot.intake.retract(0.5);
@@ -274,7 +274,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
                 }
-                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true);
+                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true, 3.0);
                 break;
 
             case DRIVE_TO_SCORING_POS:
@@ -298,14 +298,14 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // base odometry if not using vision or vision did not detect target.
                 targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
                 robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
-                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
+                // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                 // robot.robotDrive.purePursuitDrive.start(
                 //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
                 // sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 //for now, testing the basic version without vision/autoassist
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 20, 0));
-                sm.waitForSingleEvent(event, State.SCORE_OBJECT);
+                sm.waitForSingleEvent(event, State.SCORE_OBJECT, 3.0);
                 break;
 
             case SCORE_OBJECT:
@@ -313,18 +313,22 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
-                    robot.grabber.releaseAll();
+                    robot.globalTracer.traceInfo("RELEASING THE CUBE", "CUBE");
+                    robot.grabber.grabCube();
+                    //timer.set() isn't working, didnt have time to debug 
+                    sm.waitForSingleEvent(event, State.RESET, 0.2);
+
                 }
                 else
                 {
                     // Move the arm down to cap the pole, then release the cone with a slight delay.
                     robot.armPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, visionEvent, 0);
+                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, event, 0);
                     robot.grabber.releaseCube();
                     robot.grabber.releaseCone(0.2);
+                    sm.waitForSingleEvent(event, State.RESET);
                 }
-                timer.set(0.2, event);
-                sm.waitForSingleEvent(event, State.RESET);
+
                 break;
 
             case RESET:
@@ -337,15 +341,16 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     currOwner, null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     new TrcPose2D(0.0, -24.0, 0.0));
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.5, RobotParams.ELEVATOR_MIN_POS, true, 1.0, event, 0.0);
+                    currOwner, 0.5, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(
                     currOwner, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                sm.waitForSingleEvent(event, State.DONE);
+                sm.waitForSingleEvent(event, State.DONE, 2.0);
                 break; 
 
             default:
             case DONE:
                 // Stop task.
+                
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(1.0);
                 stopAutoTask(true);
                 break;
