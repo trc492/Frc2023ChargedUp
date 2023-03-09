@@ -28,6 +28,7 @@ import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import team492.Robot;
 import team492.FrcAuto.BalanceStrafeDir;
@@ -56,9 +57,11 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final String owner;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent driveEvent, tiltEvent;
+    private final TrcEvent event, tiltEvent;
+    private final TrcTimer timer;
     private String currOwner = null;
     private double dir;
+    private boolean balanceIsStable;
 
     /**
      * Constructor: Create an instance of the object.
@@ -73,7 +76,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         this.owner = owner;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        driveEvent = new TrcEvent(moduleName + ".driveEvent");
+        event = new TrcEvent(moduleName);
+        timer = new TrcTimer(moduleName);
         tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
     }   //TaskAutoBalance
 
@@ -175,26 +179,29 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         {
             case START:
                 // Arm tilt trigger to signal tiltEvent.
-                // Strafe up the charging station slowly with a safety limit of 6 feet and signal driveEvent.
+                // Strafe up the charging station slowly with a safety limit of 5 seconds.
                 robot.robotDrive.tiltTrigger.enableTrigger(tiltEvent);
-                sm.addEvent(tiltEvent);
-                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.1);
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.1, 0.0, 0.0);
+                sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
+                // sm.addEvent(tiltEvent);
+                // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.1);
                 // TODO (Code Review): 20 feet is a bit much, don't you think? May be 6 feet? If you are running
                 // towards the GRID, don't want to hit the GRID. Check that distance as your worst case distance.
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    new TrcPose2D(dir*240.0, 0.0, 0.0));
-                sm.addEvent(driveEvent);
-                sm.waitForEvents(State.CLIMB, false);
+                // robot.robotDrive.purePursuitDrive.start(
+                //     currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                //     new TrcPose2D(dir*240.0, 0.0, 0.0));
+                // sm.addEvent(driveEvent);
+                // sm.waitForEvents(State.CLIMB, false);
                 break;
 
             case CLIMB:
                 if (tiltEvent.isSignaled())
                 {
-                    // Robot started to tilt, meaning we are starting to climb. Let it continue.
-                    sm.addEvent(tiltEvent);
-                    sm.addEvent(driveEvent);
-                    sm.waitForEvents(State.ADJUST_BALANCE, false);
+                    // Robot started to tilt, meaning we are starting to climb. Continue the climb.
+                    sm.waitForSingleEvent(tiltEvent, State.ADJUST_BALANCE);
+                    // sm.addEvent(tiltEvent);
+                    // sm.addEvent(driveEvent);
+                    // sm.waitForEvents(State.ADJUST_BALANCE, false);
                 }
                 else
                 {
@@ -211,13 +218,15 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     // it is inevitable that it will tip the other way. Therefore, we need to make correction
                     // by going the opposite way for a small distance bringing the robot's CG back to the
                     // center. (Need to determine this "small distance")
+                    balanceIsStable = false;
                     sm.addEvent(tiltEvent);
                     // TODO (Code Review): Verify and adjust the 6-inch.
+                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.1);
                     robot.robotDrive.purePursuitDrive.start(
-                        currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(robot.robotDrive.getGyroRoll() < 0.0? 6.0: -6.0, 0.0, 0.0));
-                    sm.addEvent(driveEvent);
-                    sm.waitForEvents(State.CHECK_BALANCE, false, 1.5);
+                    sm.addEvent(event);
+                    sm.waitForEvents(State.CHECK_BALANCE, false);
                 }
                 else
                 {
@@ -226,14 +235,25 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 break;
             
             case CHECK_BALANCE:
+                // If tiltEvent signaled, we went too far tipping the other way, go do more correction.
+                // Otherwise, we are balanced and done.
                 if (tiltEvent.isSignaled())
                 {
                     // We went too far and tipped the other way. Do more correction.
                     sm.setState(State.ADJUST_BALANCE);
                 }
+                else if (!balanceIsStable)
+                {
+                    // We did not tip, keep an eye on it for a period of time to make sure it's stable.
+                    balanceIsStable = true;
+                    sm.addEvent(tiltEvent);
+                    timer.set(1.5, event);
+                    sm.addEvent(event);
+                    sm.waitForEvents(State.CHECK_BALANCE, false);
+                }
                 else
                 {
-                    // We are balanced.
+                    // Balance was stable for a period of time, call it done.
                     sm.setState(State.DONE);
                 }
                 break;
@@ -241,6 +261,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             default:
             case DONE:
                 robot.robotDrive.tiltTrigger.disableTrigger();
+                robot.robotDrive.cancel();
                 robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 stopAutoTask(true);
                 break;
