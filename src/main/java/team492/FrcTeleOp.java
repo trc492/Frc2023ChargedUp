@@ -46,6 +46,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
     private boolean fastIntake = false;
     private boolean intakeReversed = false;
+    private boolean armControl = false; 
 
     /**
      * Constructor: Create an instance of the object.
@@ -151,7 +152,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 if (RobotParams.Preferences.useSubsystems)
                 {
-                    if (robot.elevator != null)
+                    if (robot.elevator != null && !armControl)
                     {
                         double elevatorPower = 0.0;
                         if (RobotParams.Preferences.useOperatorXboxController)
@@ -168,18 +169,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
                     if (robot.arm != null)
                     {
-                        if(RobotParams.Preferences.useOperatorXboxController)
+                        if(armControl)
                         {
-                            double armPower = robot.operatorController.getLeftYWithDeadband(true);
+                            double armPower = 0.3 * robot.operatorStick.getYWithDeadband(true);
                             robot.armPidActuator.setPidPower(armPower, true);
                         }
                         else
                         {
-                            double armPos =
-                                (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
-                                RobotParams.ARM_LOW_POS;
-                            robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
-                            robot.dashboard.displayPrintf(1, "Arm: pos=%.2f", armPos);
+                            // double armPos =
+                            //     (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
+                            //     RobotParams.ARM_LOW_POS;
+                            // robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
+                            // robot.dashboard.displayPrintf(1, "Arm: pos=%.2f", armPos);
                         }
                     }
 
@@ -728,9 +729,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
-                if(pressed){
-                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
-                }
+                // if(pressed){
+                //     robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
+                // }
+                armControl = pressed; 
                 // if (robot.arm != null && !pressed)
                 // {
                 //     robot.armPidActuator.setPower(0.0);
@@ -741,20 +743,20 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
-                    //high pole cone scoring 
+                    // //high pole cone scoring 
                     // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[2], true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                    robot.elevatorPidActuator.setPosition(moduleName,25/* RobotParams.elevatorConeScoringPresets[2] */, true, 1.0, null, 0.0);
+                    // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[2], true, 1.0, null, 0.0);
 
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:
-                robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[1], true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[1], true, 1.0, null, 0.0);
+                // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[1], true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[1], true, 1.0, null, 0.0);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
-                robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[0], true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[0], true, 1.0, null, 0.0);
+                // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[0], true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[0], true, 1.0, null, 0.0);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
@@ -769,16 +771,23 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.PANEL_BUTTON_RED2:
                     //auto score testing
-                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
+                    // robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
+                    if (pressed) {
+                        // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, null);;
+                    }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
+                    if (pressed) {
+                        // robot.autoPickupTask.autoAssistPickup(ObjectType.CUBE, false, null);;
+                    }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
+                // robot.autoPickupTask.autoAssistCancel();
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
@@ -795,6 +804,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //             2, "elevator could not get owner");
                 //     }
                 // }
+
                 break;
         }
     }   //buttonPanelButtonEvent

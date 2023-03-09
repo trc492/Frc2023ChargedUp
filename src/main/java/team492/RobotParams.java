@@ -242,8 +242,8 @@ public class RobotParams
     //
     // Pneumatic channels.
     //
-    public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 1;
-    public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 6;
+    public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 6;
+    public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
     public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 5;
     public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 2;
     public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
@@ -445,7 +445,7 @@ public class RobotParams
     // Arm subsystem.
     // public static final double ARM_MAX_VEL                      = (FALCON_MAX_RPM*0.81/STEER_GEAR_RATIO/60.0)*360.0;
     public static final int ARM_ENCODER_CPR                     = 4096;
-    public static final int ARM_ZERO                            = 1635;
+    public static final int ARM_ZERO                            = 1663;
 
     public static final boolean ARM_MOTOR_INVERTED              = false;
     public static final boolean ARM_LOWER_LIMIT_INVERTED        = true;
@@ -456,14 +456,14 @@ public class RobotParams
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
-    public static final double ARM_KP                           = 0.04;
-    public static final double ARM_KI                           = 0.015;
-    public static final double ARM_KD                           = 0.004;
-    public static final double ARM_KF                           = 0.003;
+    public static final double ARM_KP                           = 0.018;
+    public static final double ARM_KI                           = 0.00;
+    public static final double ARM_KD                           = 0.000;
+    public static final double ARM_KF                           = 0.000;
     public static final double ARM_IZONE                        = 10.0;
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = -0.2;
-    public static final double ARM_MAX_POWER                    = 0.4;
+    public static final double ARM_MAX_POWER                    = 0.25;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify

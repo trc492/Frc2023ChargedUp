@@ -577,6 +577,7 @@ public class Robot extends FrcRobotBase
                 if (arm != null)
                 {
                     dashboard.displayPrintf(lineNum, arm.toString());
+                    dashboard.putNumber("armCurrent", arm.getCurrent());
                     lineNum++;
                 }
 

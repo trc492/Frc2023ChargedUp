@@ -247,10 +247,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 robot.grabber.releaseCone();
 
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, 6.0, true, 1.0, elevatorEvent, 0.0);
+                    currOwner, 0.0, 6.0, true, 1.0, elevatorEvent, 0.5);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, 15.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
+                    currOwner, 0.0, 45.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
                 sm.addEvent(armEvent);
 
                 if (taskParams.useVision)
