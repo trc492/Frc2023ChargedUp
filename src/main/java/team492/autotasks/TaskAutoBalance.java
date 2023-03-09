@@ -191,6 +191,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // Tilt went past the threshold in one direction, meaning we are climbing the charging station.
                     tiltEvent.clear();
+                    robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                     sm.addEvent(tiltEvent);
                     sm.addEvent(driveEvent);
                     // TODO: tiltEvent never fires, robot continues to drive off the charging station
@@ -204,11 +205,20 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 break;
             
             case CHECK_BALANCE:
-                // Tilt was triggered, meaning we have returned to the allowable tipping range.
-                robot.robotDrive.purePursuitDrive.cancel(currOwner);
-                // Continue to monitor tilt for a period of time to make sure we are balanced.
-                tiltEvent.clear();
-                sm.waitForSingleEvent(tiltEvent, State.ADJUST_BALANCE, 1.5);
+                if (tiltEvent.isSignaled())
+                {
+                    // Tilt was triggered, meaning we have returned to the allowable tipping range.
+                    robot.robotDrive.purePursuitDrive.cancel(currOwner);
+                    // Continue to monitor tilt for a period of time to make sure we are balanced.
+                    tiltEvent.clear();
+                    robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                    sm.waitForSingleEvent(tiltEvent, State.ADJUST_BALANCE, 1.5);
+                }
+                else
+                {
+                    sm.setState(State.DONE);
+                }
+
                 break;
             
             case ADJUST_BALANCE:
@@ -216,6 +226,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // We have tipped outside the allowable tipping range! Correct ourselves.
                     tiltEvent.clear();
+                    robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                     // TODO: may consider lower the output limit further.
                     robot.robotDrive.purePursuitDrive.start(
                         currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,

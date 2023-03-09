@@ -180,9 +180,10 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     {
                         robot.globalTracer.traceInfo("CLIMBING STATE", "CLIMBING RIGHT NOW!!!!!!");
                         // Slow down the climb.
-                        robot.robotDrive.driveBase.holonomicDrive(0.1, 0.0, 0.0);
+                        robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
                         tiltEvent.clear();
-                        sm.waitForSingleEvent(tiltEvent, State.DONE, 10.0);//LEVEL, 5);
+                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                        sm.waitForSingleEvent(tiltEvent, State.LEVEL, 10.0);//LEVEL, 5);
                         // robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         // robot.robotDrive.purePursuitDrive.start(
                         //     event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -203,6 +204,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     if (tiltEvent.isSignaled())
                     {
                         tiltEvent.clear();
+                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         sm.addEvent(tiltEvent);
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -222,6 +224,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     if (tiltEvent.isSignaled())
                     {
                         tiltEvent.clear();
+                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         sm.addEvent(tiltEvent);
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
