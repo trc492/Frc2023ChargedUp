@@ -38,6 +38,7 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 
 import TrcCommonLib.trclib.TrcTriggerThresholdZones;
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPidDrive;
 import TrcCommonLib.trclib.TrcPose2D;
@@ -71,7 +72,9 @@ public class SwerveDrive extends RobotDrive
     public final FrcEncoder[] steerEncoders;
     public final FrcCANFalcon lfSteerMotor, rfSteerMotor, lbSteerMotor, rbSteerMotor;
     public final TrcSwerveModule lfWheel, lbWheel, rfWheel, rbWheel;
-    public final TrcTriggerThresholdZones tiltTrigger;
+    private final TrcTriggerThresholdZones tiltTrigger;
+    private final TrcTriggerThresholdZones distanceTrigger;
+    private Double startXPosition = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -240,6 +243,8 @@ public class SwerveDrive extends RobotDrive
 
         tiltTrigger = new TrcTriggerThresholdZones(
             "tiltTrigger", this::getGyroRoll, RobotParams.GYRO_TILT_THRESHOLDS, false);
+        distanceTrigger = new TrcTriggerThresholdZones(
+            "distanceTrigger", this::getXDistanceTraveled, RobotParams.DRIVE_DISTANCE_THRESHOLDS, false);
     }   //SwerveDrive
 
     /**
@@ -567,5 +572,31 @@ public class SwerveDrive extends RobotDrive
 
         return pos;
     }   //adjustPosByAlliance
+
+    public void enableTiltTrigger(TrcEvent event)
+    {
+        tiltTrigger.enableTrigger(event);
+    }   //enableTiltTrigger
+
+    public void disableTiltTrigger()
+    {
+        tiltTrigger.disableTrigger();
+    }   //disableTiltTrigger
+
+    private double getXDistanceTraveled()
+    {
+        return startXPosition != null? driveBase.getXPosition() - startXPosition: 0.0;
+    }   //getXDistanceTraveled
+
+    public void enableDistanceTrigger(TrcEvent event)
+    {
+        startXPosition = driveBase.getXPosition();
+        distanceTrigger.enableTrigger(event);
+    }   //enableDistanceTrigger
+
+    public void disableDistanceTrigger()
+    {
+        distanceTrigger.disableTrigger();
+    }   //disableDistanceTrigger
 
 }   //class SwerveDrive

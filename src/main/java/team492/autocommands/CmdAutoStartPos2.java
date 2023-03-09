@@ -164,7 +164,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case DRIVE_UP_CHARGING_STATION:
                     // Arm tilt trigger to signal tiltEvent and do holonomicDrive with a timeout, then goto CLIMB.
                     // when either tiltEvent signaled or holonomicDrive timed out.
-                    robot.robotDrive.tiltTrigger.enableTrigger(tiltEvent);
+                    robot.robotDrive.enableTiltTrigger(tiltEvent);
                     robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     // robot.robotDrive.purePursuitDrive.start(
@@ -232,7 +232,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case EXIT_COMMUNITY:
                     // Unarm tilt trigger, cancel purePursuit, call auto balance.
-                    robot.robotDrive.tiltTrigger.disableTrigger();
+                    robot.robotDrive.disableTiltTrigger();
                     robot.robotDrive.cancel();
                     sm.setState(State.DONE);//BALANCE);
                     break;

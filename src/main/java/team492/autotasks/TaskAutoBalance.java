@@ -25,7 +25,6 @@
 import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
-import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTimer;
@@ -180,8 +179,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             case START:
                 // Arm tilt trigger to signal tiltEvent.
                 // Strafe up the charging station slowly with a safety limit of 5 seconds.
-                robot.robotDrive.tiltTrigger.enableTrigger(tiltEvent);
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.1, 0.0, 0.0);
+                robot.robotDrive.enableTiltTrigger(tiltEvent);
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                 // sm.addEvent(tiltEvent);
                 // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.1);
@@ -198,10 +197,11 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 if (tiltEvent.isSignaled())
                 {
                     // Robot started to tilt, meaning we are starting to climb. Continue the climb.
-                    sm.waitForSingleEvent(tiltEvent, State.ADJUST_BALANCE);
                     // sm.addEvent(tiltEvent);
-                    // sm.addEvent(driveEvent);
+                    // robot.robotDrive.enableDistanceTrigger(event);
+                    // sm.addEvent(event);
                     // sm.waitForEvents(State.ADJUST_BALANCE, false);
+                    sm.waitForSingleEvent(tiltEvent, State.ADJUST_BALANCE);
                 }
                 else
                 {
@@ -218,15 +218,18 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     // it is inevitable that it will tip the other way. Therefore, we need to make correction
                     // by going the opposite way for a small distance bringing the robot's CG back to the
                     // center. (Need to determine this "small distance")
+                    double correctionDir = -Math.signum(robot.robotDrive.getGyroRoll());
                     balanceIsStable = false;
-                    sm.addEvent(tiltEvent);
+                    robot.robotDrive.driveBase.holonomicDrive(currOwner, correctionDir*0.15, 0.0, 0.0);
+                    sm.waitForSingleEvent(tiltEvent, State.CHECK_BALANCE, 0.2);
+                    // sm.addEvent(tiltEvent);
                     // TODO (Code Review): Verify and adjust the 6-inch.
-                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.1);
-                    robot.robotDrive.purePursuitDrive.start(
-                        currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(robot.robotDrive.getGyroRoll() < 0.0? 6.0: -6.0, 0.0, 0.0));
-                    sm.addEvent(event);
-                    sm.waitForEvents(State.CHECK_BALANCE, false);
+                    // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
+                    // robot.robotDrive.purePursuitDrive.start(
+                    //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    //     new TrcPose2D(robot.robotDrive.getGyroRoll() < 0.0? 12.0: -12.0, 0.0, 0.0));
+                    // sm.addEvent(event);
+                    // sm.waitForEvents(State.CHECK_BALANCE, false);
                 }
                 else
                 {
@@ -260,7 +263,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 
             default:
             case DONE:
-                robot.robotDrive.tiltTrigger.disableTrigger();
+                robot.robotDrive.disableTiltTrigger();
                 robot.robotDrive.cancel();
                 robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 stopAutoTask(true);
