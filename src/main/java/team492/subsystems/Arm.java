@@ -89,7 +89,7 @@ public class Arm
             "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer, true);
 
-        zeroTrigger = new TrcTriggerDigitalInput(moduleName, lowerLimitSw, this::zeroCalCompletion);
+        zeroTrigger = new TrcTriggerDigitalInput(moduleName, lowerLimitSw);
     }   //Arm
 
     /**
@@ -145,7 +145,7 @@ public class Arm
      */
     public void zeroCalibrate()
     {
-        zeroTrigger.setEnabled(true);
+        zeroTrigger.enableTrigger(this::zeroCalCompletion);
         pidActuator.setPower(RobotParams.ARM_CAL_POWER);
     }   //zeroCalibrate
 
@@ -159,7 +159,7 @@ public class Arm
         final String funcName = "zeroCalCompletion";
         int zeroPos = actuatorMotor.motor.getSensorCollection().getPulseWidthPosition();
 
-        zeroTrigger.setEnabled(false);
+        zeroTrigger.disableTrigger();
         saveZeroPosition(zeroPos);
         if (msgTracer != null)
         {

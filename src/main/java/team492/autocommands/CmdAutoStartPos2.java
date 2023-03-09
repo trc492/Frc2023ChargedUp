@@ -162,9 +162,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
                 
                 case DRIVE_UP_CHARGING_STATION:
-                    // Arm tilt trigger with tiltEvent and do holonomicDrive with a timeout, then goto CLIMB
+                    // Arm tilt trigger to signal tiltEvent and do holonomicDrive with a timeout, then goto CLIMB.
                     // when either tiltEvent signaled or holonomicDrive timed out.
-                    robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
+                    robot.robotDrive.tiltTrigger.enableTrigger(tiltEvent);
                     robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     // robot.robotDrive.purePursuitDrive.start(
@@ -174,15 +174,12 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
 
                 case CLIMB:
-                    // If tilt event signaled, clear event and wait for tilt trigger again, goto LEVEL when tiltEvent
-                    // signaled.
+                    // We started climbing. Let it continue and monitor for leveling.
                     if (tiltEvent.isSignaled())
                     {
                         robot.globalTracer.traceInfo("CLIMBING STATE", "CLIMBING RIGHT NOW!!!!!!");
                         // Slow down the climb.
                         robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
-                        tiltEvent.clear();
-                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         sm.waitForSingleEvent(tiltEvent, State.LEVEL, 10.0);//LEVEL, 5);
                         // robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         // robot.robotDrive.purePursuitDrive.start(
@@ -199,13 +196,11 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
 
                 case LEVEL:
-                    // If tilt event signaled, clear event and wait for tilt trigger again, goto DESCEND when either events
-                    // signaled.
+                    // We started to level but the robot will tip the other way. Let it continue and monitor for descend.
                     if (tiltEvent.isSignaled())
                     {
-                        tiltEvent.clear();
-                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         sm.addEvent(tiltEvent);
+                        // Switch to use PurePursuit so PID control can slow down the descend.
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                             new TrcPose2D(60.0, 0.0, 0.0));
@@ -219,12 +214,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
 
                 case DESCEND:
-                    // If tilt event signaled, clear event and wait for tilt trigger again, goto EXIT_COMMUNITY when
-                    // either events signaled.
+                    // We started to descent. Let it continue to exit the community.
                     if (tiltEvent.isSignaled())
                     {
-                        tiltEvent.clear();
-                        robot.robotDrive.setTiltTriggerEnabled(true, tiltEvent);
                         sm.addEvent(tiltEvent);
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -240,15 +232,22 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case EXIT_COMMUNITY:
                     // Unarm tilt trigger, cancel purePursuit, call auto balance.
-                    robot.robotDrive.setTiltTriggerEnabled(false, null);
+                    robot.robotDrive.tiltTrigger.disableTrigger();
                     robot.robotDrive.cancel();
                     sm.setState(State.DONE);//BALANCE);
                     break;
 
                 case BALANCE:
                     // TODO: Determine which direction robot will strafe onto charging station
-                    robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
-                    sm.waitForSingleEvent(event, State.DONE);
+                    if (doAutoBalance)
+                    {
+                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
+                        sm.waitForSingleEvent(event, State.DONE);
+                    }
+                    else
+                    {
+                        sm.setState(State.DONE);
+                    }
                     break;
 
                 default:

@@ -38,7 +38,6 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 
 import TrcCommonLib.trclib.TrcTriggerThresholdZones;
 import TrcCommonLib.trclib.TrcDbgTrace;
-import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPidController;
 import TrcCommonLib.trclib.TrcPidDrive;
 import TrcCommonLib.trclib.TrcPose2D;
@@ -72,10 +71,7 @@ public class SwerveDrive extends RobotDrive
     public final FrcEncoder[] steerEncoders;
     public final FrcCANFalcon lfSteerMotor, rfSteerMotor, lbSteerMotor, rbSteerMotor;
     public final TrcSwerveModule lfWheel, lbWheel, rfWheel, rbWheel;
-
-    private final TrcTriggerThresholdZones tiltTrigger;
-    private TrcEvent tiltEvent;
-    private TrcTriggerThresholdZones.CallbackContext tiltTriggerState;
+    public final TrcTriggerThresholdZones tiltTrigger;
 
     /**
      * Constructor: Create an instance of the object.
@@ -243,7 +239,7 @@ public class SwerveDrive extends RobotDrive
         purePursuitDrive.setMsgTracer(robot.globalTracer, logPoseEvents, tracePidInfo);
 
         tiltTrigger = new TrcTriggerThresholdZones(
-            "tiltTrigger", this::getGyroRoll, RobotParams.GYRO_TILT_THRESHOLDS, false, this::tiltTriggerCallback);
+            "tiltTrigger", this::getGyroRoll, RobotParams.GYRO_TILT_THRESHOLDS, false);
     }   //SwerveDrive
 
     /**
@@ -551,49 +547,6 @@ public class SwerveDrive extends RobotDrive
     {
         return gyro.getYHeading().value;
     }   //getGyroRoll
-
-    /**
-     * This method enables/disables tilt trigger. When tilting is detected, the given event will be signaled.
-     *
-     * @param enabled specifies true to enable tilt trigger, false to disable.
-     * @param event specifies the event to signal when tilting is detected.
-     */
-    public void setTiltTriggerEnabled(boolean enabled, TrcEvent event)
-    {
-        tiltEvent = enabled? event: null;
-        if (tiltEvent != null)
-        {
-            tiltEvent.clear();
-        }
-        tiltTrigger.setEnabled(enabled);
-    }   //setTiltTriggerEnabled
-
-    /**
-     * This method returns the last tilt trigger state.
-     *
-     * @return last tilt trigger state.
-     */
-    public TrcTriggerThresholdZones.CallbackContext getTiltTriggerState()
-    {
-        return tiltTriggerState;
-    }   //getTiltTriggerState
-
-    /**
-     * This method is called when the robot tilting is crossing a certain thresholds. This is used by auto-balancing.
-     *
-     * @param context specifies the AnalogTrigger callback parameters.
-     */
-    private void tiltTriggerCallback(Object context)
-    {
-        final String funcName = "tiltTriggerCallback";
-        tiltTriggerState = (TrcTriggerThresholdZones.CallbackContext) context;
-
-        robot.globalTracer.traceInfo(
-            funcName, "Zone=%d->%d, value=%.3f",
-            tiltTriggerState.prevZone, tiltTriggerState.currZone, tiltTriggerState.sensorValue);
-
-        tiltEvent.signal();
-    }   //tiltTriggerCallback
 
     /**
      * This method returns an adjusted absolute position by the robot's alliance.

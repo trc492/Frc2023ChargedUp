@@ -27,8 +27,6 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
-import team492.FrcAuto.ObjectType;
-import team492.FrcAuto.ScoreLocation;
 import team492.FrcAuto.BalanceStrafeDir;
 import team492.drivebases.RobotDrive;
 

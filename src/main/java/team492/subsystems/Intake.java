@@ -70,8 +70,7 @@ public class Intake implements TrcExclusiveSubsystem
 
         intakeSensor = new FrcDigitalInput("intakeSensor", RobotParams.DIO_INTAKE_SENSOR);
         intakeSensor.setInverted(true);
-        intakeTrigger = new TrcTriggerDigitalInput("intakeTrigger", intakeSensor, this::intakeTriggerCallback);
-        intakeTrigger.setEnabled(true);
+        intakeTrigger = new TrcTriggerDigitalInput("intakeTrigger", intakeSensor);
     }   //Intake
 
     /**
@@ -171,20 +170,32 @@ public class Intake implements TrcExclusiveSubsystem
     }   //hasObject
 
     /**
-     * This method enables/disables the sensor trigger.
+     * This method enables the sensor trigger.
      *
-     * @param enabled specifies true to enable trigger, false to disable.
      * @param event specifies the event to signal if the sensor is triggered.
      */
-    public void setTriggerEnabled(boolean enabled, TrcEvent event)
+    public void enableTrigger(TrcEvent event)
     {
-        triggerEvent = enabled? event: null;
+        triggerEvent = event;
         if (triggerEvent != null)
         {
             triggerEvent.clear();
         }
-        intakeTrigger.setEnabled(enabled);
-    }   //setTriggerEnabled
+        intakeTrigger.enableTrigger(this::intakeTriggerCallback);
+    }   //enableTrigger
+
+    /**
+     * This method disables the sensor trigger.
+     */
+    public void disableTrigger()
+    {
+        if (triggerEvent != null)
+        {
+            triggerEvent.cancel();
+            triggerEvent = null;
+        }
+        intakeTrigger.disableTrigger();
+    }   //disableTrigger
 
     /**
      * This method is called when the intake sensor is triggered.

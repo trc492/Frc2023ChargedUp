@@ -276,7 +276,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     RobotParams.INTAKE_CUBE_PICKUP_POWER: RobotParams.INTAKE_CONE_PICKUP_POWER;
 
                 robot.intake.setPower(currOwner, 0.0, intakePower, intakePower, 0.0);
-                robot.intake.setTriggerEnabled(true, intakeEvent);
+                robot.intake.enableTrigger(intakeEvent);
                 sm.addEvent(intakeEvent);
 
                 if (taskParams.useVision)
@@ -314,7 +314,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // Wait for timer event then goto PREP_FOR_TRAVEL.
                 robot.robotDrive.purePursuitDrive.cancel();
                 robot.intake.cancel();
-                robot.intake.setTriggerEnabled(false, null);
+                robot.intake.disableTrigger();
 
                 if (robot.intake.hasObject())
                 {
