@@ -575,7 +575,7 @@ public class SwerveDrive extends RobotDrive
 
     public boolean inBalanceZone()
     {
-        return tiltTrigger.getCurrentZone() == 3;
+        return tiltTrigger.getCurrentZone() == 2;
     }   //inBalanceZone
 
     public boolean startingToLevel()
@@ -599,8 +599,9 @@ public class SwerveDrive extends RobotDrive
         return startXPosition != null? Math.abs(driveBase.getXPosition() - startXPosition): 0.0;
     }   //getXDistanceTraveled
 
-    public void enableDistanceTrigger(TrcEvent event)
+    public void enableDistanceTrigger(double distance, TrcEvent event)
     {
+        distanceTrigger.setThresholds(new double[]{distance});
         startXPosition = driveBase.getXPosition();
         distanceTrigger.enableTrigger(event);
     }   //enableDistanceTrigger

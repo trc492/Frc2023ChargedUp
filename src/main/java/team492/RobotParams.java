@@ -313,8 +313,8 @@ public class RobotParams
     public static final double GYRO_TURN_KD                     = 0.0;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
-    public static final double[] GYRO_TILT_THRESHOLDS           = {-12.5, -5.0, 5.0, 12.5};
-    public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {-44.0, 44.0};
+    public static final double[] GYRO_TILT_THRESHOLDS           = {-15.0, -5.0, 5.0, 15.0};
+    public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {20.0};
 
     public static final double GYRO_PITCH_KP                    = 0.0095;
     public static final double GYRO_PITCH_KI                    = 0.0;
@@ -464,7 +464,7 @@ public class RobotParams
     public static final double ARM_IZONE                        = 10.0;
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = -0.2;
-    public static final double ARM_MAX_POWER                    = 0.25;
+    public static final double ARM_MAX_POWER                    = 0.5;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify

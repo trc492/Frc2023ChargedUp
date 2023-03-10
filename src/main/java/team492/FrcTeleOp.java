@@ -169,7 +169,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     {
                         if(armControl)
                         {
-                            double armPower = 0.3 * robot.operatorStick.getYWithDeadband(true);
+                            double armPower = RobotParams.ARM_MAX_POWER * robot.operatorStick.getYWithDeadband(true);
                             robot.armPidActuator.setPidPower(armPower, true);
                         }
                         else

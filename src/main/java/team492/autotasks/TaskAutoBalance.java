@@ -59,8 +59,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final TrcEvent event, tiltEvent;
     private final TrcTimer timer;
     private String currOwner = null;
-    private double dir;
-    private boolean isBalance;
+    private double startDir;
+    private boolean isBalanced;
 
     /**
      * Constructor: Create an instance of the object.
@@ -95,7 +95,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             msgTracer.traceInfo( funcName, "%s: strafeDir=%s, event=%s", moduleName, strafeDir, completionEvent);
         }
 
-        dir = strafeDir == BalanceStrafeDir.LEFT? -1.0: 1.0;
+        startDir = strafeDir == BalanceStrafeDir.LEFT? -1.0: 1.0;
 
         startAutoTask(State.START, null, completionEvent);
     }   //autoAssistBalance
@@ -174,6 +174,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
         double tiltAngle = robot.robotDrive.getGyroRoll();
+        double dir = -Math.signum(tiltAngle);
         boolean inBalance = robot.robotDrive.inBalanceZone();
         boolean leveling = robot.robotDrive.startingToLevel();
         boolean tiltSignaled = tiltEvent.isSignaled();
@@ -188,7 +189,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 // Arm tilt trigger to signal tiltEvent.
                 // Strafe up the charging station slowly with a safety limit of 5 seconds.
                 robot.robotDrive.enableTiltTrigger(tiltEvent);
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, startDir*0.2, 0.0, 0.0);
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                 break;
 
@@ -197,9 +198,13 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     if (leveling)
                     {
-                        // We are starting to level off, stop the robot now!
-                        robot.robotDrive.driveBase.stop(currOwner);
-                        sm.waitForSingleEvent(tiltEvent, State.CHECK_BALANCE, 1.0);
+                        // We are starting to level off, drive a fixed distance to the center of the charging station.
+                        // Arm a distance trigger to do this.
+                        isBalanced = false;
+                        robot.robotDrive.enableDistanceTrigger(20.0, event);
+                        sm.addEvent(event);
+                        sm.addEvent(tiltEvent);
+                        sm.waitForEvents(State.CHECK_BALANCE, false);
                     }
                     else
                     {
@@ -209,41 +214,49 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 }
                 else
                 {
-                    // We timed out. We somehow missed the charging station, quit.
+                    // We timed out. We somehow missed the charging station, call it quit.
                     sm.setState(State.DONE);
                 }
                 break;
             
             case CHECK_BALANCE:
-                // If tiltEvent signaled, we went too far tipping the other way, go do more correction.
-                // Otherwise, we are balanced and done.
-                if (tiltSignaled)
+                if (inBalance)
                 {
-                    // We went too far and tipped the other way. Do more correction.
-                    sm.setState(State.ADJUST_BALANCE);
+                    robot.robotDrive.driveBase.stop(currOwner);
+                    if (!isBalanced)
+                    {
+                        // We are balanced. Make sure we stay that way for a period of time.
+                        isBalanced = true;
+                        timer.set(1.0, event);
+                        sm.addEvent(event);
+                        sm.addEvent(tiltEvent);
+                        sm.waitForEvents(State.CHECK_BALANCE, false);
+                    }
+                    else
+                    {
+                        // We are balanced for a period of time, we are done.
+                        sm.setState(State.DONE);
+                    }
                 }
                 else
                 {
-                    // We were balanced and stable for the timeouot period, so we are done.
-                    sm.setState(State.DONE);
+                    // We either did not go far enough or went too far and tipped the other way. Either way,
+                    // perform correction.
+                    sm.setState(State.ADJUST_BALANCE);
                 }
                 break;
 
             case ADJUST_BALANCE:
-                // Robot started leveling. Unfortunately, this means it will tip the other way because
-                // charging station won't level unless the robot's CG has past the mid-point which means
-                // it is inevitable that it will tip the other way. Therefore, we need to make correction
-                // by going the opposite way for a small distance bringing the robot's CG back to the
-                // center. (Need to determine this "small distance")
-                double correctionDir = -Math.signum(robot.robotDrive.getGyroRoll());
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, correctionDir*0.15, 0.0, 0.0);
+                // Robot is tipped. Drive the robot to the climb direction.
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB);
                 break;
             
             default:
             case DONE:
                 robot.robotDrive.disableTiltTrigger();
-                robot.robotDrive.cancel();
+                robot.robotDrive.disableDistanceTrigger();
+                robot.robotDrive.driveBase.stop(currOwner);
                 robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 stopAutoTask(true);
                 break;
