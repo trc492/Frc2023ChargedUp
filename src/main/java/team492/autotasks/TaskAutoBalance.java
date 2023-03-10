@@ -42,17 +42,15 @@ import team492.FrcAuto.BalanceStrafeDir;
 public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 {
     private static final String moduleName = "TaskAutoBalance";
-    private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
 
     public enum State
     {
         START,
         CLIMB,
-        WAIT_BALANCE,
-        CHECK_BALANCE,
-        ADJUST_BALANCE,
+        SETTLE,
+        CHECK,
         DONE
-    }
+    }   //enum State
 
     private final String owner;
     private final Robot robot;
@@ -61,7 +59,6 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final TrcTimer timer;
     private String currOwner = null;
     private double startDir;
-    private boolean isBalanced;
 
     /**
      * Constructor: Create an instance of the object.
@@ -106,6 +103,13 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
      */
     public void autoAssistCancel()
     {
+        final String funcName = "autoAssistCancel";
+
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo( funcName, "%s: canceled.", moduleName);
+        }
+
         stopAutoTask(false);
     }   //autoAssistCancel
 
@@ -180,10 +184,14 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         boolean leveling = robot.robotDrive.startingToLevel();
         boolean tiltSignaled = tiltEvent.isSignaled();
 
-        globalTracer.traceInfo(
-            moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, leveling=%s, tiltSignaled=%s",
-            TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
-            inBalance, leveling, tiltSignaled);
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(
+                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, leveling=%s, tiltSignaled=%s",
+                TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
+                inBalance, leveling, tiltSignaled);
+        }
+
         switch (state)
         {
             case START:
@@ -201,9 +209,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     {
                         // We are starting to level off, drive a fixed distance to the center of the charging station.
                         // Arm a distance trigger to do this.
-                        isBalanced = false;
                         robot.robotDrive.enableDistanceTrigger(20.0, event);
-                        sm.waitForSingleEvent(event, State.WAIT_BALANCE);
+                        sm.waitForSingleEvent(event, State.SETTLE);
                     }
                     else
                     {
@@ -218,23 +225,27 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 }
                 break;
 
-            case WAIT_BALANCE:
-                // It takes time for the charging station to balance, wait for it.
+            case SETTLE:
+                // It takes time for the charging station to balance, wait for it to settle.
                 robot.robotDrive.driveBase.stop(currOwner);
                 timer.set(1.0, event);
                 sm.addEvent(event);
                 sm.addEvent(tiltEvent);
-                sm.waitForEvents(State.CHECK_BALANCE, false);
+                sm.waitForEvents(State.CHECK, false);
                 break;
 
-            case CHECK_BALANCE:
-                sm.setState(inBalance? State.DONE: State.ADJUST_BALANCE);
-                break;
-
-            case ADJUST_BALANCE:
-                // Robot is tipped. Drive the robot to the climb direction.
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
-                sm.waitForSingleEvent(tiltEvent, State.CLIMB);
+            case CHECK:
+                if (!inBalance)
+                {
+                    // Robot is tipped. Drive the robot to the climb direction.
+                    robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
+                    sm.waitForSingleEvent(tiltEvent, State.CLIMB);
+                }
+                else
+                {
+                    // We are balanced, done.
+                    sm.setState(State.DONE);
+                }
                 break;
             
             default:
