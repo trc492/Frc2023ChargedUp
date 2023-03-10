@@ -198,7 +198,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 // Arm tilt trigger to signal tiltEvent.
                 // Strafe up the charging station slowly with a safety limit of 5 seconds.
                 robot.robotDrive.enableTiltTrigger(tiltEvent);
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, startDir*0.2, 0.0, 0.0);
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, startDir*0.25, 0.0, 0.0);
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                 break;
 
@@ -228,10 +228,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             case SETTLE:
                 // It takes time for the charging station to balance, wait for it to settle.
                 robot.robotDrive.driveBase.stop(currOwner);
-                timer.set(1.0, event);
-                sm.addEvent(event);
-                sm.addEvent(tiltEvent);
-                sm.waitForEvents(State.CHECK, false);
+                timer.set(0.5, event);
+                sm.waitForSingleEvent(event, State.CHECK);
                 break;
 
             case CHECK:
