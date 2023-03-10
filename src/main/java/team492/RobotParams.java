@@ -313,8 +313,8 @@ public class RobotParams
     public static final double GYRO_TURN_KD                     = 0.0;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
-    public static final double[] GYRO_TILT_THRESHOLDS           = {-5.0, 5.0};
-    public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {-12.0, 12.0};
+    public static final double[] GYRO_TILT_THRESHOLDS           = {-12.5, -5.0, 5.0, 12.5};
+    public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {-44.0, 44.0};
 
     public static final double GYRO_PITCH_KP                    = 0.0095;
     public static final double GYRO_PITCH_KI                    = 0.0;

@@ -48,8 +48,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     {
         START,
         CLIMB,
-        ADJUST_BALANCE,
         CHECK_BALANCE,
+        ADJUST_BALANCE,
         DONE
     }
 
@@ -60,7 +60,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final TrcTimer timer;
     private String currOwner = null;
     private double dir;
-    private boolean balanceIsStable;
+    private boolean isBalance;
 
     /**
      * Constructor: Create an instance of the object.
@@ -173,7 +173,15 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     protected void runTaskState(
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
-        globalTracer.traceInfo(moduleName, "State:%s, gyro:%.3f", sm.getState(), robot.robotDrive.getGyroRoll());
+        double tiltAngle = robot.robotDrive.getGyroRoll();
+        boolean inBalance = robot.robotDrive.inBalanceZone();
+        boolean leveling = robot.robotDrive.startingToLevel();
+        boolean tiltSignaled = tiltEvent.isSignaled();
+
+        globalTracer.traceInfo(
+            moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, leveling=%s, tiltSignaled=%s",
+            TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
+            inBalance, leveling, tiltSignaled);
         switch (state)
         {
             case START:
@@ -182,57 +190,26 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 robot.robotDrive.enableTiltTrigger(tiltEvent);
                 robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
-                // sm.addEvent(tiltEvent);
-                // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.1);
-                // TODO (Code Review): 20 feet is a bit much, don't you think? May be 6 feet? If you are running
-                // towards the GRID, don't want to hit the GRID. Check that distance as your worst case distance.
-                // robot.robotDrive.purePursuitDrive.start(
-                //     currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                //     new TrcPose2D(dir*240.0, 0.0, 0.0));
-                // sm.addEvent(driveEvent);
-                // sm.waitForEvents(State.CLIMB, false);
                 break;
 
             case CLIMB:
-                if (tiltEvent.isSignaled())
+                if (tiltSignaled)
                 {
-                    // Robot started to tilt, meaning we are starting to climb. Continue the climb.
-                    // sm.addEvent(tiltEvent);
-                    // robot.robotDrive.enableDistanceTrigger(event);
-                    // sm.addEvent(event);
-                    // sm.waitForEvents(State.ADJUST_BALANCE, false);
-                    sm.waitForSingleEvent(tiltEvent, State.ADJUST_BALANCE);
+                    if (leveling)
+                    {
+                        // We are starting to level off, stop the robot now!
+                        robot.robotDrive.driveBase.stop(currOwner);
+                        sm.waitForSingleEvent(tiltEvent, State.CHECK_BALANCE, 1.0);
+                    }
+                    else
+                    {
+                        // We are still going uphill, keep climbinig.
+                        sm.waitForSingleEvent(tiltEvent, State.CLIMB);
+                    }
                 }
                 else
                 {
-                    // Tilt trigger did not fire but purePursuit did, meaning we missed the platform.
-                    sm.setState(State.DONE);
-                }
-                break;
-            
-            case ADJUST_BALANCE:
-                if (tiltEvent.isSignaled())
-                {
-                    // Robot started leveling. Unfortunately, this means it will tip the other way because
-                    // charging station won't level unless the robot's CG has past the mid-point which means
-                    // it is inevitable that it will tip the other way. Therefore, we need to make correction
-                    // by going the opposite way for a small distance bringing the robot's CG back to the
-                    // center. (Need to determine this "small distance")
-                    double correctionDir = -Math.signum(robot.robotDrive.getGyroRoll());
-                    balanceIsStable = false;
-                    robot.robotDrive.driveBase.holonomicDrive(currOwner, correctionDir*0.15, 0.0, 0.0);
-                    sm.waitForSingleEvent(tiltEvent, State.CHECK_BALANCE, 0.2);
-                    // sm.addEvent(tiltEvent);
-                    // TODO (Code Review): Verify and adjust the 6-inch.
-                    // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
-                    // robot.robotDrive.purePursuitDrive.start(
-                    //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    //     new TrcPose2D(robot.robotDrive.getGyroRoll() < 0.0? 12.0: -12.0, 0.0, 0.0));
-                    // sm.addEvent(event);
-                    // sm.waitForEvents(State.CHECK_BALANCE, false);
-                }
-                else
-                {
+                    // We timed out. We somehow missed the charging station, quit.
                     sm.setState(State.DONE);
                 }
                 break;
@@ -240,27 +217,29 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             case CHECK_BALANCE:
                 // If tiltEvent signaled, we went too far tipping the other way, go do more correction.
                 // Otherwise, we are balanced and done.
-                if (tiltEvent.isSignaled())
+                if (tiltSignaled)
                 {
                     // We went too far and tipped the other way. Do more correction.
                     sm.setState(State.ADJUST_BALANCE);
                 }
-                else if (!balanceIsStable)
-                {
-                    // We did not tip, keep an eye on it for a period of time to make sure it's stable.
-                    balanceIsStable = true;
-                    sm.addEvent(tiltEvent);
-                    timer.set(1.5, event);
-                    sm.addEvent(event);
-                    sm.waitForEvents(State.CHECK_BALANCE, false);
-                }
                 else
                 {
-                    // Balance was stable for a period of time, call it done.
+                    // We were balanced and stable for the timeouot period, so we are done.
                     sm.setState(State.DONE);
                 }
                 break;
 
+            case ADJUST_BALANCE:
+                // Robot started leveling. Unfortunately, this means it will tip the other way because
+                // charging station won't level unless the robot's CG has past the mid-point which means
+                // it is inevitable that it will tip the other way. Therefore, we need to make correction
+                // by going the opposite way for a small distance bringing the robot's CG back to the
+                // center. (Need to determine this "small distance")
+                double correctionDir = -Math.signum(robot.robotDrive.getGyroRoll());
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, correctionDir*0.15, 0.0, 0.0);
+                sm.waitForSingleEvent(tiltEvent, State.CLIMB);
+                break;
+            
             default:
             case DONE:
                 robot.robotDrive.disableTiltTrigger();
