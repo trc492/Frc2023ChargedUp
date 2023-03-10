@@ -88,7 +88,7 @@ public class Elevator
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, current=%.1f, pos=%.1f/%.1f, Enc=%.0f, LimitSw=%s/%s",
+            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, LimitSw=%s/%s",
             moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
             pidActuator.getPidController().getTarget(), actuatorMotor.motor.getEncoder().getPosition(),
             pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());

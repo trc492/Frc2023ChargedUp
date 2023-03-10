@@ -457,10 +457,10 @@ public class RobotParams
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
-    public static final double ARM_KP                           = 0.018;
-    public static final double ARM_KI                           = 0.00;
-    public static final double ARM_KD                           = 0.000;
-    public static final double ARM_KF                           = 0.000;
+    public static final double ARM_KP                           = 0.02;
+    public static final double ARM_KI                           = 0.0;
+    public static final double ARM_KD                           = 0.0;
+    public static final double ARM_KF                           = 0.0005;
     public static final double ARM_IZONE                        = 10.0;
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = -0.2;
