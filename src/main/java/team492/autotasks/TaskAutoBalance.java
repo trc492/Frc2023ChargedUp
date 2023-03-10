@@ -48,6 +48,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     {
         START,
         CLIMB,
+        WAIT_BALANCE,
         CHECK_BALANCE,
         ADJUST_BALANCE,
         DONE
@@ -202,9 +203,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                         // Arm a distance trigger to do this.
                         isBalanced = false;
                         robot.robotDrive.enableDistanceTrigger(20.0, event);
-                        sm.addEvent(event);
-                        sm.addEvent(tiltEvent);
-                        sm.waitForEvents(State.CHECK_BALANCE, false);
+                        sm.waitForSingleEvent(event, State.WAIT_BALANCE);
                     }
                     else
                     {
@@ -218,32 +217,18 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     sm.setState(State.DONE);
                 }
                 break;
-            
+
+            case WAIT_BALANCE:
+                // It takes time for the charging station to balance, wait for it.
+                robot.robotDrive.driveBase.stop(currOwner);
+                timer.set(1.0, event);
+                sm.addEvent(event);
+                sm.addEvent(tiltEvent);
+                sm.waitForEvents(State.CHECK_BALANCE, false);
+                break;
+
             case CHECK_BALANCE:
-                if (inBalance)
-                {
-                    robot.robotDrive.driveBase.stop(currOwner);
-                    if (!isBalanced)
-                    {
-                        // We are balanced. Make sure we stay that way for a period of time.
-                        isBalanced = true;
-                        timer.set(1.0, event);
-                        sm.addEvent(event);
-                        sm.addEvent(tiltEvent);
-                        sm.waitForEvents(State.CHECK_BALANCE, false);
-                    }
-                    else
-                    {
-                        // We are balanced for a period of time, we are done.
-                        sm.setState(State.DONE);
-                    }
-                }
-                else
-                {
-                    // We either did not go far enough or went too far and tipped the other way. Either way,
-                    // perform correction.
-                    sm.setState(State.ADJUST_BALANCE);
-                }
+                sm.setState(inBalance? State.DONE: State.ADJUST_BALANCE);
                 break;
 
             case ADJUST_BALANCE:
