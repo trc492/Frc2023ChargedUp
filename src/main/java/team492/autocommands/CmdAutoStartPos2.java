@@ -125,14 +125,16 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         else
         {
             double tiltAngle = robot.robotDrive.getGyroRoll();
-            boolean inBalance = robot.robotDrive.inBalanceZone();
+            // boolean inBalance = robot.robotDrive.inBalanceZone();
+            boolean enteringBalance = robot.robotDrive.enteringBalanceZone();
+            boolean exitingBalance = robot.robotDrive.exitingBalanceZone();
             boolean tiltSignaled = tiltEvent.isSignaled();
 
             robot.dashboard.displayPrintf(8, "State: %s", state);
             robot.globalTracer.traceInfo(
-                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, tiltSignaled=%s",
+                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, enteringBalance=%s, exitingBalance=%s, tiltSignaled=%s",
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
-                inBalance, tiltSignaled);
+                enteringBalance, exitingBalance, tiltSignaled);
             
             switch (state)
             {
@@ -199,7 +201,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                             sm.waitForSingleEvent(tiltEvent, State.DESCEND);
                         }
                         else {
-                            sm.waitForSingleEvent(tiltEvent, State.CLIMB);
+                            sm.waitForSingleEvent(tiltEvent, State.LEVEL);
                         }
                     }
                     else
@@ -211,8 +213,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case DESCEND: // we're descending down the other side of the station until we're flat on the ground, in which case we've left the community and can now go balance
                     if (tiltEvent.isSignaled()) {
                         if (robot.robotDrive.enteringBalanceZone()) {
-                            robot.robotDrive.cancel();
-                            sm.setState(State.BALANCE);
+                            robot.robotDrive.enableDistanceTrigger(60.0, event);
+                            sm.waitForSingleEvent(event, State.BALANCE);
+
                         }
                         else {
 
@@ -226,15 +229,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
 
                 case BALANCE: //we're now next to the station outside of community, so we can do autobalance!
-                    if (doAutoBalance)
-                    {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
-                        sm.waitForSingleEvent(event, State.DONE);
-                    }
-                    else
-                    {
-                        sm.setState(State.DONE);
-                    }
+                    robot.robotDrive.driveBase.stop();
+                    robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
+                    sm.waitForSingleEvent(event, State.DONE);
                     break;
 
                 default:

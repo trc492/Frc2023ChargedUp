@@ -28,6 +28,8 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.BalanceStrafeDir;
+import team492.FrcAuto.ObjectType;
+import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -334,6 +336,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BACK:
+                if (pressed)
+                {
+                    if (robot.autoBalanceTask.isActive())
+                    {
+                        robot.autoBalanceTask.autoAssistCancel();
+                    }
+                    else
+                    {
+                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, null);
+                    }
+                }
                 break;
 
             case FrcXboxController.START:
@@ -345,7 +358,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else
                     {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, null);
+                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.RIGHT, null);
                     }
                 }
                 break;
@@ -729,6 +742,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
                 armControl = pressed;
+                if(robot.arm != null &&!armControl){
+                    robot.armPidActuator.setPidPower(0);
+
+                }
                 // if(pressed){
                 //     robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
                 // }
@@ -770,7 +787,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.PANEL_BUTTON_RED2:
                     //auto score testing
-                    // robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
+                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:

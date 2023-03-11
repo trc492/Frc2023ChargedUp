@@ -170,6 +170,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         if (success)
         {
             currOwner = ownerName;
+            robot.globalTracer.traceInfo("Acquired Ownership ownerName", "currOwner & ownerName:%s", currOwner);
         }
         else
         {
@@ -191,7 +192,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     protected void releaseSubsystemsOwnership()
     {
         final String funcName = "releaseSubsystemsOwnership";
-
         if (ownerName != null)
         {
             if (msgTracer != null)
@@ -208,6 +208,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             robot.armPidActuator.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }
+        else{
+            robot.globalTracer.traceInfo("OwnerName is NULL", "OWNER NAME IS NULL");
+        }
     }   //releaseSubsystemsOwnership
 
     /**
@@ -217,8 +220,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     protected void stopSubsystems()
     {
         robot.robotDrive.cancel(currOwner);
+        robot.globalTracer.traceInfo("stopSubsystems", "finished canceling drive");
         robot.elevatorPidActuator.cancel(currOwner);
+        robot.globalTracer.traceInfo("stopSubsystems", "finished canceling elevatorPidActuator");
         robot.armPidActuator.cancel(currOwner);
+        robot.globalTracer.traceInfo("stopSubsystems", "DONE");
     }   //stopSubsystems
 
     /**
@@ -261,7 +267,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
 
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 2.0);
+                    currOwner, 1.0, elevatorPos, true, 1.0, elevatorEvent, 2.0);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
                     currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
@@ -304,7 +310,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 //for now, testing the basic version without vision/autoassist
                 robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 20, 0));
+                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 12, 0));
                 sm.waitForSingleEvent(event, State.SCORE_OBJECT, 3.0);
                 break;
 
@@ -343,14 +349,13 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 robot.elevatorPidActuator.setPosition(
                     currOwner, 0.5, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    currOwner, 1.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 sm.waitForSingleEvent(event, State.DONE, 2.0);
                 break; 
 
             default:
             case DONE:
                 // Stop task.
-                
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(1.0);
                 stopAutoTask(true);
                 break;

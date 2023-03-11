@@ -65,8 +65,8 @@ public class RobotParams
         public static final boolean useBalancePidDrive          = false;
         // Subsystems
         public static final boolean useSubsystems               = true;
-        public static final boolean useElevator                 = true;
-        public static final boolean useArm                      = true;
+        public static final boolean useElevator                 = false;
+        public static final boolean useArm                      = false;
         public static final boolean useGrabber                  = true;
         public static final boolean useVacuum                   = false;
         public static final boolean useIntake                   = true;
@@ -85,7 +85,7 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSubsystems             = false;
+        public static final boolean debugSubsystems             = true;
         public static final boolean debugSwerveSteering         = false;
         public static final boolean debugArmEncoder             = false;
         public static final boolean debugLoopTime               = false;
@@ -350,7 +350,7 @@ public class RobotParams
 
     public static final double DRIVE_SLOW_SCALE                 = 0.2;
     public static final double TURN_SLOW_SCALE                  = 0.15;
-    public static final double DRIVE_MEDIUM_SCALE               = 0.5;
+    public static final double DRIVE_MEDIUM_SCALE               = 0.65;
     public static final double TURN_MEDIUM_SCALE                = 0.3;
     public static final double DRIVE_FAST_SCALE                 = 1.0;
     public static final double TURN_FAST_SCALE                  = 1.0;
@@ -468,7 +468,7 @@ public class RobotParams
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify
-    public static final double ARM_TRAVEL_POSITION              = 20.0;     //TODO
+    public static final double ARM_TRAVEL_POSITION              = 50.0;     //TODO
     public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
     // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =
@@ -486,8 +486,8 @@ public class RobotParams
     {
         20, ARM_MAX_POS, ARM_MAX_POS
     };
-    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.8; 
+    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.7; //0.8 
     public static final double INTAKE_CONE_PICKUP_POWER         = 0.8;
-    public static final double INTAKE_SPIT_POWER                = -0.5; 
+    public static final double INTAKE_SPIT_POWER                = -0.5; //-0.5 
 
 }   //class RobotParams

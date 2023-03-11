@@ -228,7 +228,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             case SETTLE:
                 // It takes time for the charging station to balance, wait for it to settle.
                 robot.robotDrive.driveBase.stop(currOwner);
-                timer.set(0.5, event);
+                timer.set(1.0, event);
                 sm.waitForSingleEvent(event, State.CHECK);
                 break;
 
