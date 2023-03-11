@@ -46,6 +46,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         TURN,
         START_TO_CLIMB,
         CLIMB,
+        LEVEL,
         DESCEND,
         BALANCE,
         DONE
@@ -179,8 +180,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 
                 case CLIMB: // we're climbing up the station, going to the next state when we're level on the station
                     if (tiltEvent.isSignaled()) {
-                        if (robot.robotDrive.inBalanceZone()) {
-                            sm.waitForSingleEvent(tiltEvent, State.DESCEND);
+                        if (robot.robotDrive.enteringBalanceZone()) {
+                            sm.waitForSingleEvent(tiltEvent, State.LEVEL);
                         }
                         else {
                             sm.waitForSingleEvent(tiltEvent, State.CLIMB);
@@ -192,9 +193,24 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     }
                     break;
 
+                case LEVEL:
+                    if (tiltEvent.isSignaled()) {
+                        if (robot.robotDrive.exitingBalanceZone()) {
+                            sm.waitForSingleEvent(tiltEvent, State.DESCEND);
+                        }
+                        else {
+                            sm.waitForSingleEvent(tiltEvent, State.CLIMB);
+                        }
+                    }
+                    else
+                    {
+                        sm.setState(State.DONE);
+                    }
+                    break;
+
                 case DESCEND: // we're descending down the other side of the station until we're flat on the ground, in which case we've left the community and can now go balance
                     if (tiltEvent.isSignaled()) {
-                        if (robot.robotDrive.inBalanceZone()) {
+                        if (robot.robotDrive.enteringBalanceZone()) {
                             robot.robotDrive.cancel();
                             sm.setState(State.BALANCE);
                         }
