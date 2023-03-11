@@ -26,6 +26,7 @@ import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
+import TrcCommonLib.trclib.TrcTimer;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
@@ -122,7 +123,16 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         }
         else
         {
+            double tiltAngle = robot.robotDrive.getGyroRoll();
+            boolean inBalance = robot.robotDrive.inBalanceZone();
+            boolean tiltSignaled = tiltEvent.isSignaled();
+
             robot.dashboard.displayPrintf(8, "State: %s", state);
+            robot.globalTracer.traceInfo(
+                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, tiltSignaled=%s",
+                TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
+                inBalance, tiltSignaled);
+            
             switch (state)
             {
                 case START:
@@ -170,7 +180,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case CLIMB: // we're climbing up the station, going to the next state when we're level on the station
                     if (tiltEvent.isSignaled()) {
                         if (robot.robotDrive.inBalanceZone()) {
-                            sm.setState(State.DESCEND);
+                            sm.waitForSingleEvent(tiltEvent, State.DESCEND);
                         }
                         else {
                             sm.waitForSingleEvent(tiltEvent, State.CLIMB);
