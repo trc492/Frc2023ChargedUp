@@ -24,6 +24,7 @@ package team492;
 
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
+import TrcCommonLib.trclib.TrcTriggerThresholdZones;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
@@ -42,6 +43,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     // Global objects.
     //
     protected final Robot robot;
+    private final TrcTriggerThresholdZones elevatorTrigger;
     private boolean controlsEnabled = false;
 
     private boolean fastIntake = false;
@@ -60,6 +62,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         // Create and initialize global object.
         //
         this.robot = robot;
+        if (robot.elevator != null)
+        {
+            elevatorTrigger = new TrcTriggerThresholdZones(
+                "elevatorTrigger", robot.elevatorPidActuator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
+        }
+        else
+        {
+            elevatorTrigger = null;
+        }
     }   //FrcTeleOp
 
     //
@@ -89,6 +100,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
             robot.robotDrive.turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
         }
+
+        if (elevatorTrigger != null)
+        {
+            elevatorTrigger.enableTrigger(this::elevatorTriggerCallback);
+        }
     }   //startMode
 
     /**
@@ -108,8 +124,27 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         //
         // Disable subsystems before exiting if necessary.
         //
-
+        if (elevatorTrigger != null)
+        {
+            elevatorTrigger.disableTrigger();
+        }
     }   //stopMode
+
+    /**
+     * This method is called when the elevator position crosses a certain threshold.
+     *
+     * @param context specifies the callback parameters.
+     */
+    private void elevatorTriggerCallback(Object context)
+    {
+        TrcTriggerThresholdZones.CallbackContext params = (TrcTriggerThresholdZones.CallbackContext) context;
+
+        if (robot.intake != null && params.prevZone == 0 && params.currZone == 1)
+        {
+            // Elevator is going up.
+            robot.intake.retract();
+        }
+    }   //elevatorTriggerCallback
 
     /**
      * This method is called periodically on the main robot thread. Typically, you put TeleOp control code here that
