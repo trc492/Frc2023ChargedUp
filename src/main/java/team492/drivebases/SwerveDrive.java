@@ -66,7 +66,7 @@ public class SwerveDrive extends RobotDrive
     private static final String ZERO_CAL_FILE = "steerzeros.txt";
     private static final boolean logPoseEvents = false;
     private static final boolean tracePidInfo = false;
-    private static final double DEBOUNCE_TIME = 0.1;
+    private static final double DEBOUNCE_TIME = 0.01;
     //
     // Swerve steering motors and modules.
     //
