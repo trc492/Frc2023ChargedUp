@@ -401,9 +401,11 @@ public class RobotParams
     public static final double PPD_TURN_TOLERANCE               = 2.0;
     public static final double PPD_MOVE_DEF_OUTPUT_LIMIT        = 0.5;
     public static final double PPD_ROT_DEF_OUTPUT_LIMIT         = 0.3;
+
     //
     // Other subsystems.
     //
+
     // Elevator subsystem.
     public static final int ELEVATOR_ZERO                       = 1635;
     public static final int NEO_CPR                             = 42;
@@ -443,6 +445,7 @@ public class RobotParams
     {
        0, 0, 22
     };
+
     // Arm subsystem.
     // public static final double ARM_MAX_VEL                      = (FALCON_MAX_RPM*0.81/STEER_GEAR_RATIO/60.0)*360.0;
     public static final int ARM_ENCODER_CPR                     = 4096;
@@ -486,8 +489,10 @@ public class RobotParams
     {
         20, ARM_MAX_POS, ARM_MAX_POS
     };
-    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.7; //0.8 
+
+    // Intake subsystem.
+    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.7;  //0.8
     public static final double INTAKE_CONE_PICKUP_POWER         = 0.8;
-    public static final double INTAKE_SPIT_POWER                = -0.5; //-0.5 
+    public static final double INTAKE_SPIT_POWER                = -0.5;
 
 }   //class RobotParams

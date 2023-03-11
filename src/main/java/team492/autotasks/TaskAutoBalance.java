@@ -26,9 +26,9 @@ import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
+import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTimer;
-import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import team492.Robot;
 import team492.FrcAuto.BalanceStrafeDir;
 
@@ -59,6 +59,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final TrcTimer timer;
     private String currOwner = null;
     private double startDir;
+    private boolean correcting = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -94,7 +95,6 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         }
 
         startDir = strafeDir == BalanceStrafeDir.LEFT? -1.0: 1.0;
-
         startAutoTask(State.START, null, completionEvent);
     }   //autoAssistBalance
 
@@ -209,7 +209,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     {
                         // We are starting to level off, drive a fixed distance to the center of the charging station.
                         // Arm a distance trigger to do this.
-                        robot.robotDrive.enableDistanceTrigger(20.0, event);
+                        robot.robotDrive.enableDistanceTrigger(correcting? 12.0: 20.0, event);
                         sm.waitForSingleEvent(event, State.SETTLE);
                     }
                     else
@@ -236,6 +236,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 if (!inBalance)
                 {
                     // Robot is tipped. Drive the robot to the climb direction.
+                    correcting = true;
                     robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB);
                 }

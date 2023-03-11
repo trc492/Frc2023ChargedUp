@@ -33,7 +33,6 @@ import team492.RobotParams;
 import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
-import team492.drivebases.RobotDrive;
 
 public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 {
@@ -48,7 +47,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         CLIMB,
         LEVEL,
         DESCEND,
-        BALANCE,
+        GO_BALANCE,
         DONE
 
     }   //enum State
@@ -61,7 +60,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
     private int scoreLevel;
     private boolean scorePreload;
-    private boolean doAutoBalance;
+    // private boolean doAutoBalance;
 
     /**
      * Constructor: Create an instance of the object.
@@ -125,23 +124,22 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         else
         {
             double tiltAngle = robot.robotDrive.getGyroRoll();
-            // boolean inBalance = robot.robotDrive.inBalanceZone();
-            boolean enteringBalance = robot.robotDrive.enteringBalanceZone();
-            boolean exitingBalance = robot.robotDrive.exitingBalanceZone();
+            boolean enterBalance = robot.robotDrive.enteringBalanceZone();
+            boolean exitBalance = robot.robotDrive.exitingBalanceZone();
             boolean tiltSignaled = tiltEvent.isSignaled();
 
             robot.dashboard.displayPrintf(8, "State: %s", state);
             robot.globalTracer.traceInfo(
                 moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, enteringBalance=%s, exitingBalance=%s, tiltSignaled=%s",
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
-                enteringBalance, exitingBalance, tiltSignaled);
+                enterBalance, exitBalance, tiltSignaled);
             
             switch (state)
             {
                 case START:
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     // TODO (Code Review): setFieldPosition will no longer work since it was assuming robot touching GRID.
                     // May want to use vision to determine exact location, or you don't care about odometry in this auto.
                     robot.robotDrive.setFieldPosition(null, false);
@@ -180,55 +178,40 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
                 
-                case CLIMB: // we're climbing up the station, going to the next state when we're level on the station
-                    if (tiltEvent.isSignaled()) {
-                        if (robot.robotDrive.enteringBalanceZone()) {
-                            sm.waitForSingleEvent(tiltEvent, State.LEVEL);
-                        }
-                        else {
-                            sm.waitForSingleEvent(tiltEvent, State.CLIMB);
-                        }
-                    }
-                    else //we missed the platform because our angle hasn't changed
+                case CLIMB:
+                    // We're climbing up the station, going to the next state when we're level on the station.
+                    if (tiltSignaled)
                     {
+                        // When entering the balance zone, we are about to level off. If not, we are still climbing.
+                        sm.waitForSingleEvent(tiltEvent, enterBalance? State.LEVEL: State.CLIMB);
+                    }
+                    else
+                    {
+                        // We missed the platform because our angle hasn't changed.
                         sm.setState(State.DONE);
                     }
                     break;
 
                 case LEVEL:
-                    if (tiltEvent.isSignaled()) {
-                        if (robot.robotDrive.exitingBalanceZone()) {
-                            sm.waitForSingleEvent(tiltEvent, State.DESCEND);
-                        }
-                        else {
-                            sm.waitForSingleEvent(tiltEvent, State.LEVEL);
-                        }
+                    // When exiting the balance zone, we are descending the charging station. If not, keep waiting.
+                    sm.waitForSingleEvent(tiltEvent, exitBalance? State.DESCEND: State.LEVEL);
+                    break;
+
+                case DESCEND:
+                    // We are about leveling again which means we are getting on flat ground but we should run
+                    // the robot a little longer to make sure it clears the charging station.
+                    if (enterBalance)
+                    {
+                        robot.robotDrive.enableDistanceTrigger(36.0, event);
+                        sm.waitForSingleEvent(event, State.GO_BALANCE);
                     }
                     else
                     {
-                        sm.setState(State.DONE);
+                        sm.waitForSingleEvent(tiltEvent, State.DESCEND);
                     }
                     break;
 
-                case DESCEND: // we're descending down the other side of the station until we're flat on the ground, in which case we've left the community and can now go balance
-                    if (tiltEvent.isSignaled()) {
-                        if (robot.robotDrive.enteringBalanceZone()) {
-                            robot.robotDrive.enableDistanceTrigger(60.0, event);
-                            sm.waitForSingleEvent(event, State.BALANCE);
-
-                        }
-                        else {
-
-                            sm.waitForSingleEvent(tiltEvent, State.DESCEND);
-                        }
-                    }
-                    else
-                    {
-                        sm.setState(State.DONE);
-                    }
-                    break;
-
-                case BALANCE: //we're now next to the station outside of community, so we can do autobalance!
+                case GO_BALANCE: //we're now next to the station outside of community, so we can do autobalance!
                     robot.robotDrive.driveBase.stop();
                     robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
                     sm.waitForSingleEvent(event, State.DONE);

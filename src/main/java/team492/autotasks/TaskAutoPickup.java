@@ -59,13 +59,11 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         ObjectType objectType;
         boolean useVision;
-        boolean pickupOnly;
 
-        TaskParams(ObjectType objectType, boolean useVision, boolean pickupOnly)
+        TaskParams(ObjectType objectType, boolean useVision)
         {
             this.objectType = objectType;
             this.useVision = useVision;
-            this.pickupOnly = pickupOnly;
         }   //TaskParams
     }   //class TaskParams
 
@@ -102,19 +100,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
      *
      * @param objectType specifies the object type to pickup (cone or cube).
      * @param useVision specifies true to use vision assist, false otherwise.
-     * @param completionEvent specifies the event to signal when done, can be null if none provided.
-     */
-    public void 
-    autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
-    {
-        autoAssistPickup(objectType, useVision, false, completionEvent);
-    }   //autoAssistPickup
-
-    /**
-     * This method starts the auto-assist operation to pickup an object.
-     *
-     * @param objectType specifies the object type to pickup (cone or cube).
-     * @param useVision specifies true to use vision assist, false otherwise.
+     * @param pickupOnly specifies true to only do pickup and not use vision nor to approach the object.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
     public void 
@@ -126,13 +112,25 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, useVision=%s, event=%s",
-                moduleName, objectType, useVision, completionEvent);
+                funcName, "%s: objectType=%s, useVision=%s, pickupOnly=%s, event=%s",
+                moduleName, objectType, useVision, pickupOnly, completionEvent);
         }
 
-        startAutoTask(startState, new TaskParams(objectType, useVision, pickupOnly), completionEvent);
+        startAutoTask(startState, new TaskParams(objectType, useVision), completionEvent);
     }   //autoAssistPickup
 
+    /**
+     * This method starts the auto-assist operation to pickup an object.
+     *
+     * @param objectType specifies the object type to pickup (cone or cube).
+     * @param useVision specifies true to use vision assist, false otherwise.
+     * @param completionEvent specifies the event to signal when done, can be null if none provided.
+     */
+    public void 
+    autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
+    {
+        autoAssistPickup(objectType, useVision, false, completionEvent);
+    }   //autoAssistPickup
 
     /**
      * This method cancels an in progress auto-assist operation if any.
@@ -330,7 +328,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     robot.grabber.grabCube();
                 }
                 robot.grabber.releaseCone();
-                sm.setState(State.PICKUP_OBJECT );
+                sm.setState(State.PICKUP_OBJECT);
                 break;
             
             case PICKUP_OBJECT:

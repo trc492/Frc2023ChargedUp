@@ -742,9 +742,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
                 armControl = pressed;
-                if(robot.arm != null &&!armControl){
-                    robot.armPidActuator.setPidPower(0);
-
+                if (robot.arm != null && !armControl)
+                {
+                    robot.armPidActuator.setPidPower(0.0);
                 }
                 // if(pressed){
                 //     robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
@@ -760,6 +760,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
                 armPosControl = pressed;
+                if (robot.arm != null && !armPosControl)
+                {
+                    robot.armPidActuator.cancel();
+                }
                 // high pole cone scoring
                 // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[2], true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[2], true, 1.0, null, 0.0);

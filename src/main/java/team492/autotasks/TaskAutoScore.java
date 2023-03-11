@@ -101,10 +101,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        this.elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
-        this.armEvent = new TrcEvent(moduleName + ".armEvent");
-        event = new TrcEvent(moduleName);
+
+        elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
+        armEvent = new TrcEvent(moduleName + ".armEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
+        event = new TrcEvent(moduleName);
         timer = new TrcTimer(moduleName);
     }   //TaskAutoScore
 
@@ -170,7 +171,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         if (success)
         {
             currOwner = ownerName;
-            robot.globalTracer.traceInfo("Acquired Ownership ownerName", "currOwner & ownerName:%s", currOwner);
         }
         else
         {
@@ -192,6 +192,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     protected void releaseSubsystemsOwnership()
     {
         final String funcName = "releaseSubsystemsOwnership";
+
         if (ownerName != null)
         {
             if (msgTracer != null)
@@ -207,9 +208,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             robot.elevatorPidActuator.releaseExclusiveAccess(currOwner);
             robot.armPidActuator.releaseExclusiveAccess(currOwner);
             currOwner = null;
-        }
-        else{
-            robot.globalTracer.traceInfo("OwnerName is NULL", "OWNER NAME IS NULL");
         }
     }   //releaseSubsystemsOwnership
 

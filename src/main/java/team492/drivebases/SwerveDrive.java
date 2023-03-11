@@ -45,6 +45,7 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcPurePursuitDrive;
 import TrcCommonLib.trclib.TrcSwerveDriveBase;
 import TrcCommonLib.trclib.TrcSwerveModule;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANCoder;
@@ -65,6 +66,7 @@ public class SwerveDrive extends RobotDrive
     private static final String ZERO_CAL_FILE = "steerzeros.txt";
     private static final boolean logPoseEvents = false;
     private static final boolean tracePidInfo = false;
+    private static final double DEBOUNCE_TIME = 0.1;
     //
     // Swerve steering motors and modules.
     //
@@ -75,6 +77,8 @@ public class SwerveDrive extends RobotDrive
     private final TrcTriggerThresholdZones tiltTrigger;
     private final TrcTriggerThresholdZones distanceTrigger;
     private Double startXPosition = null;
+    private Double lastEnterBalanceTimestamp = null;
+    private Double lastExitBalanceTimestamp = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -575,14 +579,38 @@ public class SwerveDrive extends RobotDrive
 
     public boolean enteringBalanceZone()
     {
-        int prevZone = tiltTrigger.getPreviousZone();
-        return (prevZone == 1 || prevZone == 3) && tiltTrigger.getCurrentZone() == 2;
+        boolean confirm = false;
+        double currTime = TrcTimer.getCurrentTime();
+
+        if (lastEnterBalanceTimestamp == null || (currTime - lastEnterBalanceTimestamp) > DEBOUNCE_TIME)
+        {
+            int prevZone = tiltTrigger.getPreviousZone();
+            if ((prevZone == 1 || prevZone == 3) && tiltTrigger.getCurrentZone() == 2)
+            {
+                lastEnterBalanceTimestamp = currTime;
+                confirm = true;
+            }
+        }
+
+        return confirm;
     }   //enteringBalanceZone
 
     public boolean exitingBalanceZone()
     {
-        int currZone = tiltTrigger.getCurrentZone();
-        return (currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() == 2;
+        boolean confirm = false;
+        double currTime = TrcTimer.getCurrentTime();
+
+        if (lastExitBalanceTimestamp == null || (currTime - lastExitBalanceTimestamp) > DEBOUNCE_TIME)
+        {
+            int currZone = tiltTrigger.getCurrentZone();
+            if ((currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() == 2)
+            {
+                lastExitBalanceTimestamp = currTime;
+                confirm = true;
+            }
+        }
+
+        return confirm;
     }   //exitingBalanceZone
 
     public boolean inBalanceZone()
