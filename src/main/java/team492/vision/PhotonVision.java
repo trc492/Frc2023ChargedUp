@@ -53,10 +53,10 @@ public class PhotonVision extends FrcPhotonVision
 
     public enum PipelineType
     {
-        POLE(0),
-        CUBE(1),
-        APRILTAG(2),
-        CONE(3);
+        APRILTAG(0),
+        CONE(1),
+        CUBE(2),
+        POLE(3);
 
         public int pipelineIndex;
 
@@ -118,7 +118,7 @@ public class PhotonVision extends FrcPhotonVision
                 moduleName, "[%.3f] Loading AprilTag field layout took %.3f sec.", endTime, endTime - startTime);
         }
 
-        setPipeline(PipelineType.POLE);
+        setPipeline(PipelineType.CONE);
     }   //PhotonVision
 
     /**
@@ -245,7 +245,10 @@ public class PhotonVision extends FrcPhotonVision
         switch (pipelineType)
         {
             case APRILTAG:
-                targetHeight = getAprilTagPose(target.getFiducialId()).getZ();
+                if (target != null)
+                {
+                    targetHeight = getAprilTagPose(target.getFiducialId()).getZ();
+                }
                 break;
 
             case CUBE:

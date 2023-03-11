@@ -85,7 +85,7 @@ public class RobotParams
         public static final boolean debugPurePursuitDrive       = false;
         public static final boolean debugPidDrive               = false;
 
-        public static final boolean debugSubsystems             = true;
+        public static final boolean debugSubsystems             = false;
         public static final boolean debugSwerveSteering         = false;
         public static final boolean debugArmEncoder             = false;
         public static final boolean debugLoopTime               = false;
@@ -264,8 +264,8 @@ public class RobotParams
     public static final double VISION_TARGET_HEIGHT             = 104.0;    // Inches from the floor
     public static final double CAMERA_Y_OFFSET                  = 11.6625;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
-    public static final double CAMERA_HEIGHT                    = 41.5;     // Inches from the floor
-    public static final double CAMERA_PITCH                     = -44.5;    // Degrees from horizontal
+    public static final double CAMERA_HEIGHT                    = 41.7;     // Inches from the floor
+    public static final double CAMERA_PITCH                     = -44.6;    // Degrees from horizontal
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH, 
                           CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
