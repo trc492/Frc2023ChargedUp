@@ -573,6 +573,18 @@ public class SwerveDrive extends RobotDrive
         return pos;
     }   //adjustPosByAlliance
 
+    public boolean enteringBalanceZone()
+    {
+        int prevZone = tiltTrigger.getPreviousZone();
+        return (prevZone == 1 || prevZone == 3) && tiltTrigger.getCurrentZone() == 2;
+    }   //enteringBalanceZone
+
+    public boolean exitingBalanceZone()
+    {
+        int currZone = tiltTrigger.getCurrentZone();
+        return (currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() == 2;
+    }   //exitingBalanceZone
+
     public boolean inBalanceZone()
     {
         return tiltTrigger.getCurrentZone() == 2;
