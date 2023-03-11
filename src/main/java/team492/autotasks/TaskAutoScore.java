@@ -29,7 +29,6 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -80,7 +79,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcEvent armEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent event;
-    private final TrcTimer timer;
     private String currOwner = null;
 
     //Cube High: Arm-Max, Elevator-19.6
@@ -106,7 +104,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         armEvent = new TrcEvent(moduleName + ".armEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         event = new TrcEvent(moduleName);
-        timer = new TrcTimer(moduleName);
     }   //TaskAutoScore
 
     /**
@@ -318,10 +315,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
                     robot.globalTracer.traceInfo("RELEASING THE CUBE", "CUBE");
-                    robot.grabber.grabCube();
-                    //timer.set() isn't working, didnt have time to debug 
-                    sm.waitForSingleEvent(event, State.RESET, 0.2);
-
+                    robot.grabber.grabCube(event);
+                    sm.waitForSingleEvent(event, State.RESET);
                 }
                 else
                 {

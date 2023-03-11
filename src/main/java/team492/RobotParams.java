@@ -495,4 +495,8 @@ public class RobotParams
     public static final double INTAKE_CONE_PICKUP_POWER         = 0.8;
     public static final double INTAKE_SPIT_POWER                = -0.5;
 
+    // Grabber subsystem.
+    public static final double GRABBER_GRAB_DURATION            = 0.2;
+    public static final double GRABBER_RELEASE_DURATION         = 0.2;
+
 }   //class RobotParams

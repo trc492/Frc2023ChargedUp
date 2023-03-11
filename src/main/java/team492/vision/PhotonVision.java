@@ -200,7 +200,7 @@ public class PhotonVision extends FrcPhotonVision
             Optional<EstimatedRobotPose> optionalPose = poseEstimator.update();
             if (optionalPose.isPresent())
             {
-                DetectedObject.pose3dToTrcPose2D(optionalPose.get().estimatedPose);
+                estimatedRobotPose = DetectedObject.pose3dToTrcPose2D(optionalPose.get().estimatedPose);
             }
         }
 

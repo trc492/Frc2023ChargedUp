@@ -24,6 +24,7 @@ package team492.subsystems;
 
 import java.util.Locale;
 
+import TrcCommonLib.trclib.TrcEvent;
 import TrcFrcLib.frclib.FrcPWMTalonSRX;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -91,9 +92,19 @@ public class Grabber
         cubeGrabber.extend(delay);
     }   //grabCube
 
+    public void grabCube(TrcEvent event)
+    {
+        cubeGrabber.extend(RobotParams.GRABBER_GRAB_DURATION, event);
+    }   //grabCube
+
     public void releaseCube()
     {
         cubeGrabber.retract();
+    }   //releaseCube
+
+    public void releaseCube(TrcEvent event)
+    {
+        cubeGrabber.retract(RobotParams.GRABBER_RELEASE_DURATION, event);
     }   //releaseCube
 
     //This method is called to grab a cone, extends both pneumatics for a complete grab
@@ -115,6 +126,11 @@ public class Grabber
         coneGrabber.extend(delay);
     }   //grabCone
 
+    public void grabCone(TrcEvent event)
+    {
+        coneGrabber.extend(RobotParams.GRABBER_GRAB_DURATION, event);
+    }   //grabCone
+
     public void releaseCone()
     {
         coneGrabber.retract();
@@ -123,6 +139,11 @@ public class Grabber
     public void releaseCone(double delay)
     {
         coneGrabber.retract(delay);
+    }   //releaseCone
+
+    public void releaseCone(TrcEvent event)
+    {
+        coneGrabber.retract(RobotParams.GRABBER_RELEASE_DURATION, event);
     }   //releaseCone
 
     //This method is called to open the grabber, retracting the pneumatics
