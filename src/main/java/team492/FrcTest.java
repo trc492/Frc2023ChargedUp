@@ -713,16 +713,12 @@ public class FrcTest extends FrcTeleOp
                 lineNum++;
 
                 // line 2
-                robot.dashboard.displayPrintf(lineNum, "TargetPose2D: %s", targetInfo.targetPose);
+                robot.dashboard.displayPrintf(lineNum, "TargetPoseFrom2D: %s", targetInfo.targetPoseFrom2D);
                 lineNum++;
 
                 // line 3
                 robot.dashboard.displayPrintf(
-                    lineNum, "TargetPose3D: x=%.3f, y=%.3f, z=%.3f, yaw=%.3f",
-                    targetInfo.targetPose3d.getTranslation().getX(),
-                    targetInfo.targetPose3d.getTranslation().getY(),
-                    targetInfo.targetPose3d.getTranslation().getZ(),
-                    targetInfo.targetPose3d.getRotation().getZ());
+                    lineNum, "TargetPoseFrom3D: x=%.3f, y=%.3f, yaw=%.3f", targetInfo.targetPoseFrom3D);
                 lineNum++;
 
                 TrcPose2D robotPose =

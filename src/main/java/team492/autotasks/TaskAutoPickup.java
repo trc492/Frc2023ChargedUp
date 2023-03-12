@@ -300,7 +300,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     DetectedObject target = robot.photonVision.getLastDetectedBestObject();
                     if (target != null)
                     {
-                        targetPos = target.targetPose;
+                        targetPos = target.targetPoseFrom2D;
                         robot.globalTracer.traceInfo(
                             moduleName, "Detected %s: targetPos=%s", taskParams.objectType, targetPos);
                     }
