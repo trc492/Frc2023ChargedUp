@@ -71,6 +71,7 @@ public class Intake implements TrcExclusiveSubsystem
         intakeSensor = new FrcDigitalInput("intakeSensor", RobotParams.DIO_INTAKE_SENSOR);
         intakeSensor.setInverted(true);
         intakeTrigger = new TrcTriggerDigitalInput("intakeTrigger", intakeSensor);
+        // enableTrigger(triggerEvent);
     }   //Intake
 
     /**
@@ -80,7 +81,7 @@ public class Intake implements TrcExclusiveSubsystem
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployer=%s, hasObject=%s",
+            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployed=%s, hasObject=%s",
             moduleName, getLeftMotorPower(), getRightMotorPower(), isExtended(), hasObject());
     }   //toString
 

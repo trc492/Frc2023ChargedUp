@@ -65,8 +65,8 @@ public class RobotParams
         public static final boolean useBalancePidDrive          = false;
         // Subsystems
         public static final boolean useSubsystems               = true;
-        public static final boolean useElevator                 = false;
-        public static final boolean useArm                      = false;
+        public static final boolean useElevator                 = true;
+        public static final boolean useArm                      = true;
         public static final boolean useGrabber                  = true;
         public static final boolean useVacuum                   = false;
         public static final boolean useIntake                   = true;
@@ -244,8 +244,9 @@ public class RobotParams
     //
     public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 6;
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
-    public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 5;
-    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 2;
+    public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
+    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 5
+    ;
     public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
     public static final int PNEUMATIC_INTAKE_EXTEND             = 3;
     //
@@ -308,9 +309,9 @@ public class RobotParams
     public static final double SWERVE_KF                        = 0.0;
     public static final double SWERVE_TOLERANCE                 = 2.0;
 
-    public static final double GYRO_TURN_KP                     = 0.012;
+    public static final double GYRO_TURN_KP                     = 0.007;
     public static final double GYRO_TURN_KI                     = 0.0;
-    public static final double GYRO_TURN_KD                     = 0.0;
+    public static final double GYRO_TURN_KD                     = 0.0006;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
     public static final double[] GYRO_TILT_THRESHOLDS           = {-15.0, -5.0, 5.0, 15.0};
@@ -400,7 +401,7 @@ public class RobotParams
     public static final double PPD_POS_TOLERANCE                = 2.0;
     public static final double PPD_TURN_TOLERANCE               = 2.0;
     public static final double PPD_MOVE_DEF_OUTPUT_LIMIT        = 0.5;
-    public static final double PPD_ROT_DEF_OUTPUT_LIMIT         = 0.3;
+    public static final double PPD_ROT_DEF_OUTPUT_LIMIT         = 0.5;
 
     //
     // Other subsystems.
@@ -427,7 +428,7 @@ public class RobotParams
     public static final double ELEVATOR_KF                      = 0.0;
     public static final double ELEVATOR_IZONE                   = 0.0;
     public static final double ELEVATOR_TOLERANCE               = 1.0;
-    public static final double ELEVATOR_CAL_POWER               = -0.2;
+    public static final double ELEVATOR_CAL_POWER               = -0.4;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
     public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
     public static final double[] ELEVATOR_TRIGGERS              = {15.0};
@@ -450,14 +451,14 @@ public class RobotParams
     // Arm subsystem.
     // public static final double ARM_MAX_VEL                      = (FALCON_MAX_RPM*0.81/STEER_GEAR_RATIO/60.0)*360.0;
     public static final int ARM_ENCODER_CPR                     = 4096;
-    public static final int ARM_ZERO                            = 1663;
+    public static final int ARM_ZERO                            = 1683;
 
     public static final boolean ARM_MOTOR_INVERTED              = false;
     public static final boolean ARM_LOWER_LIMIT_INVERTED        = true;
     public static final boolean ARM_UPPER_LIMIT_INVERTED        = true;
     public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
-    public static final double ARM_LOW_POS                      = 0.0;
+    public static final double ARM_LOW_POS                      = 11.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
@@ -472,7 +473,7 @@ public class RobotParams
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify
-    public static final double ARM_TRAVEL_POSITION              = 50.0;     //TODO
+    public static final double ARM_TRAVEL_POSITION              = 30.0;     //TODO
     public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
     // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =
