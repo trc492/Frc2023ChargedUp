@@ -84,6 +84,7 @@ public class PhotonVision extends FrcPhotonVision
     private final LEDIndicator ledIndicator;
     private final AprilTagFieldLayout aprilTagFieldLayout;
     private final PhotonPoseEstimator poseEstimator;
+    private PipelineType currPipeline;
 
     /**
      * Constructor: Create an instance of the object.
@@ -214,8 +215,12 @@ public class PhotonVision extends FrcPhotonVision
      */
     public void setPipeline(PipelineType pipelineType)
     {
-        setPipelineIndex(pipelineType.pipelineIndex);
-        setLED(pipelineType == PipelineType.POLE? VisionLEDMode.kOn: VisionLEDMode.kOff);
+        if (pipelineType != currPipeline)
+        {
+            currPipeline = pipelineType;
+            setPipelineIndex(pipelineType.pipelineIndex);
+            setLED(pipelineType == PipelineType.POLE? VisionLEDMode.kOn: VisionLEDMode.kOff);
+        }
     }   //setPipeline
 
     /**
@@ -225,7 +230,8 @@ public class PhotonVision extends FrcPhotonVision
      */
     public PipelineType getPipeline()
     {
-        return PipelineType.getType(getPipelineIndex());
+        currPipeline = PipelineType.getType(getPipelineIndex());
+        return currPipeline;
     }   //getPipeline
 
     //
