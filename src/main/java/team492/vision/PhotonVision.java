@@ -25,7 +25,6 @@ package team492.vision;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.opencv.core.Rect;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -49,7 +48,7 @@ public class PhotonVision extends FrcPhotonVision
 {
     private static final String moduleName = "PhotonVision";
     private static final TrcDbgTrace globalTracer = TrcDbgTrace.getGlobalTracer();
-    private static final boolean debugEnabled = true;
+    private static final boolean debugEnabled = false;
 
     public enum PipelineType
     {
@@ -155,22 +154,22 @@ public class PhotonVision extends FrcPhotonVision
     /**
      * This method returns the absolute field location of the camera with the given detected AprilTag object.
      *
-     * @param aprilTagObj specifies the AprilTag object detected by the camera.
+     * @param detectedObj specifies the AprilTag object detected by the camera.
      * @return camera's absolute field location.
      */
-    public TrcPose2D getRobotFieldPosition(DetectedObject aprilTagObj)
+    public TrcPose2D getRobotFieldPosition(DetectedObject detectedObj)
     {
         final String funcName = "getRobotFieldPosition";
         TrcPose2D robotPose = null;
-        int aprilTagId = aprilTagObj.target.getFiducialId();
+        int aprilTagId = detectedObj.target.getFiducialId();
         // aprilTagPose is the absolute field position of the AprilTag.
         Pose3d aprilTagPose = getAprilTagPose(aprilTagId);
-        System.out.println("AprilTagPose: " + aprilTagPose);
+
         if (aprilTagPose != null)
         {
             // camPose3d is the absolute field position of the camera.
-            Pose3d camPose3d = aprilTagPose.transformBy(aprilTagObj.target.getBestCameraToTarget().inverse());
-            // robotPose2d is the absolute field position of the robot centroid projected on the ground.
+            Pose3d camPose3d = aprilTagPose.transformBy(detectedObj.target.getBestCameraToTarget().inverse());
+            // robotPose3d is the absolute 3D field position of the robot centroid on the ground.
             Pose3d robotPose3d = camPose3d.transformBy(RobotParams.CAMERA_TRANSFORM3D.inverse());
             // robotPose is the absolute field position of the robot adjusted to the robot coordinate system.
             robotPose = DetectedObject.pose3dToTrcPose2D(robotPose3d);
@@ -262,9 +261,7 @@ public class PhotonVision extends FrcPhotonVision
                 break;
 
             case CONE:
-                Rect targetRect = DetectedObject.getRect(target);
-                targetHeight = targetRect.height > targetRect.width?
-                    RobotParams.CONE_HALF_HEIGHT: RobotParams.CONE_HALF_WIDTH;
+                targetHeight = RobotParams.CONE_HALF_HEIGHT;
                 break;
 
             case POLE:
