@@ -267,10 +267,11 @@ public class RobotParams
     public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
     public static final double CAMERA_HEIGHT                    = 41.7;     // Inches from the floor
     public static final double CAMERA_PITCH                     = -44.6;    // Degrees from horizontal
-    public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
-        new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH, 
-                          CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
-        new Rotation3d(0.0, Math.toRadians(CAMERA_PITCH), 0.0));
+    public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d();
+    // public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
+    //     new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH, 
+    //                       CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
+    //     new Rotation3d(0.0, Math.toRadians(CAMERA_PITCH), 0.0));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
     // Camera: Logitech C310
     public static final double WEBCAM_FX                        = 821.993;  // in pixels
