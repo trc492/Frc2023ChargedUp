@@ -100,7 +100,6 @@ public class PhotonVision extends FrcPhotonVision
         double startTime = TrcTimer.getModeElapsedTime();
         try
         {
-            // aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
             aprilTagFieldLayout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
             poseEstimator = new PhotonPoseEstimator(
                 aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, this, RobotParams.CAMERA_TRANSFORM3D);
