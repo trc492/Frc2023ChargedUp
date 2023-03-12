@@ -583,7 +583,7 @@ public class FrcTest extends FrcTeleOp
     {
         Test test = testChoices.getTest();
 
-        return test == Test.SUBSYSTEMS_TEST || test == Test.DRIVE_SPEED_TEST;
+        return test == Test.SUBSYSTEMS_TEST || test == Test.VISION_TEST || test == Test.DRIVE_SPEED_TEST;
     }   //allowTeleOp
 
     /**
@@ -697,7 +697,7 @@ public class FrcTest extends FrcTeleOp
      */
     private void doVisionTest()
     {
-        int lineNum = 8;
+        int lineNum = 1;
 
         if (robot.photonVision != null)
         {
@@ -706,19 +706,38 @@ public class FrcTest extends FrcTeleOp
 
             if (targetInfo != null)
             {
-                // line 8
-                robot.dashboard.displayPrintf(lineNum, "PhotonVision[%s]: targetInfo=%s", pipelineType, targetInfo);
+                // line 1
+                robot.dashboard.displayPrintf(
+                    lineNum, "PhotonVision[%s]: timestamp=%.3f, targetInfo=%s",
+                    pipelineType, targetInfo.timestamp, targetInfo);
                 lineNum++;
 
-                // line 9
-                robot.dashboard.displayPrintf(lineNum, "TargetPose: %s", targetInfo.targetPose);
+                // line 2
+                robot.dashboard.displayPrintf(lineNum, "TargetPose2D: %s", targetInfo.targetPose);
+                lineNum++;
+
+                // line 3
+                robot.dashboard.displayPrintf(
+                    lineNum, "TargetPose3D: x=%.3f, y=%.3f, z=%.3f, yaw=%.3f",
+                    targetInfo.targetPose3d.getTranslation().getX(),
+                    targetInfo.targetPose3d.getTranslation().getY(),
+                    targetInfo.targetPose3d.getTranslation().getZ(),
+                    targetInfo.targetPose3d.getRotation().getZ());
                 lineNum++;
 
                 TrcPose2D robotPose =
                     robot.photonVision.getEstimatedFieldPosition(robot.robotDrive.driveBase.getFieldPosition());
                 if (robotPose != null)
                 {
-                    // line 10
+                    // line 4
+                    robot.dashboard.displayPrintf(lineNum, "RobotEstimatedPose: %s", robotPose);
+                    lineNum++;
+                }
+
+                robotPose = robot.photonVision.getRobotFieldPosition(targetInfo);
+                if (robotPose != null)
+                {
+                    // line 5
                     robot.dashboard.displayPrintf(lineNum, "RobotPose: %s", robotPose);
                     lineNum++;
                 }
