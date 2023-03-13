@@ -835,8 +835,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-                // TODO (Code Review): You should call Auto-Assist pickup only. Why duplicating the effort here?
-                //prepare pickup position 
+                //this is the button we press after scoring so the robot is in position to drive around the field safely 
                 robot.elevatorPidActuator.setPosition(
                     moduleName, 0, 10.0, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(
@@ -858,15 +857,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     //autopickup
                     // pickupObject = ObjectType.CONE;
                     // robot.ph%otonVision.setPipeline(PipelineType.CONE);
-                    //preset to help me
-                    // TODO (Code Review): Why do this??? Don't you have a Auto-Assist PickupOnly???
-                    // This sounds like a subset of that.
-                    robot.grabber.grabCube(); 
-                    robot.grabber.releaseCone(); 
-                    robot.elevatorPidActuator.setPosition(
-                        moduleName, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0.25, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);  
+                    robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
+                    //keeping this until I can test autoPickup(pickup only)
+                    // robot.grabber.grabCube(); 
+                    // robot.grabber.releaseCone(); 
+                    // robot.elevatorPidActuator.setPosition(
+                    //     moduleName, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
+                    // robot.armPidActuator.setPosition(
+                    //     moduleName, 0.25, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);  
                 }
                 break;
 
