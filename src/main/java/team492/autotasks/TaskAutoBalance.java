@@ -214,7 +214,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     }
                     else
                     {
-                        // We are still going uphill, keep climbinig.
+                        // We are still going uphill, keep climbing.
                         sm.waitForSingleEvent(tiltEvent, State.CLIMB);
                     }
                 }
