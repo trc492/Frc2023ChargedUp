@@ -376,8 +376,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
         if (aprilTagObj != null)
         {
-            Pose3d aprilTagPos = robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId());
-            scoringPosX = aprilTagPos.getX();
+            TrcPose2D aprilTagPos = DetectedObject.pose3dToTrcPose2D(
+                robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId()));
+            scoringPosX = aprilTagPos.x;
         } 
         else 
         {  
