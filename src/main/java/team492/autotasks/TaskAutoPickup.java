@@ -363,30 +363,31 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 robot.armPidActuator.setMsgTracer(msgTracer, true);
                 if (robot.intake.hasObject())
                 {
+                    //arm isn't low enough to pickup the objects if its not at the lowest pos, may have to add something to keep it from stalling the motor
                     robot.elevatorPidActuator.setPosition(
                         currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 0.8, null, 0.0);
                     robot.armPidActuator.setPosition(
-                        currOwner, 0.5, RobotParams.ARM_LOW_POS + 1.5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                        currOwner, 0.75, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     if (taskParams.objectType == ObjectType.CUBE)
                     {
-                        robot.grabber.grabCube(0.75);
+                        robot.grabber.grabCube(1.5);
                     }
                     else
                     {
-                        robot.grabber.grabCone(1.25);
+                        //TODO: Tune this value, needs to be after the arm goes down. 
+                        //Could make this a separate state after arm.setPosition() but arm.setPosition() might stall because its trying to go to the low pos
+                        robot.grabber.grabCone(1.5);
                     }
-                    // TODO (Code Review): Really? You are going to hang the robot for 5 seconds??? Why???
-                    // Also, you are going to DONE after this??? Shouldn't you go to PREP_FOR_TRAVEL?
-                    timer.set(5.0, event);
-                    sm.waitForSingleEvent(event, State.DONE);
+
+                    //go to the next state after 1.75 seconds(grabber fires after 1.5 seconds)
+                    sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL, 1.75);
                 }
                 else
                 {
-                    // TODO (Code Review): If you don't have the object and retrying, what makes you think you will get
-                    // an object eventually? You need to timeout this wait or you will hang forever.
+                    // try to pickup object for 2 seconds
                     robot.intake.enableTrigger(intakeEvent);
                     robot.intake.setPower(currOwner, 0, 1.0, 1.0, 0.0);
-                    sm.waitForSingleEvent(intakeEvent, State.PICKUP_OBJECT);
+                    sm.waitForSingleEvent(intakeEvent, State.PICKUP_OBJECT, 2);
                     // sm.setState(State.PREP_FOR_TRAVEL);
                 }
                 break;
