@@ -270,7 +270,7 @@ public class RobotParams
     // public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
     //     new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH, 
     //                       CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
-    //     new Rotation3d(0.0, Math.toRadians(CAMERA_PITCH), 0.0));
+    //     new Rotation3d(0.0, Math.toRadians(-CAMERA_PITCH), 0.0));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
     // Camera: Logitech C310
     public static final double WEBCAM_FX                        = 821.993;  // in pixels

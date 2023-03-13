@@ -104,8 +104,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
      * @param pickupOnly specifies true to only do pickup and not use vision nor to approach the object.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void 
-    autoAssistPickup(ObjectType objectType, boolean useVision, boolean pickupOnly, TrcEvent completionEvent)
+    public void autoAssistPickup(
+        ObjectType objectType, boolean useVision, boolean pickupOnly, TrcEvent completionEvent)
     {
         final String funcName = "autoAssistPickup";
         State startState = pickupOnly? State.PREP_FOR_PICKUP_ONLY: State.START;
@@ -127,8 +127,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
      * @param useVision specifies true to use vision assist, false otherwise.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void 
-    autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
+    public void autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
     {
         autoAssistPickup(objectType, useVision, false, completionEvent);
     }   //autoAssistPickup
@@ -263,7 +262,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 }
                 robot.grabber.releaseCone();
 
-
                 if (taskParams.useVision)
                 {
                     robot.photonVision.setPipeline(
@@ -271,6 +269,11 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
                     // If using vision, we need to move the arm and elevator out of the way so LL can see the target
+                    // TODO (Code Review): Really? I thought the elevator should be at the lowest to unblock the camera.
+                    // Besides, if you raise the elevator to 13-inch, that would be different from the else case.
+                    // In the next state, you don't know if the elevator was 13 or SAFE_HEIGHT. What is SAFE_HEIGHT
+                    // anyway? Why 10-inch?
+                    // Also, Vision has a 0.5 sec timeout. Is that enough time to get the elevator and arm "out of view"?
                     robot.elevatorPidActuator.setPosition(
                         currOwner, 0.0, 13.0, true, 1.0, elevatorEvent, 0.5);
                     robot.armPidActuator.setPosition(
@@ -306,8 +309,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.2);
                 robot.robotDrive.purePursuitDrive.setRotOutputLimit(0.2);
 
-                DetectedObject target = robot.photonVision.getLastDetectedBestObject();
-                if (taskParams.useVision && target != null)
+                DetectedObject target;
+                if (taskParams.useVision && (target = robot.photonVision.getLastDetectedBestObject()) != null)
                 {
                     double targetDist = TrcUtil.magnitude(target.targetPoseFrom2D.x, target.targetPoseFrom2D.y);
                     double targetAngle = target.targetPoseFrom2D.angle;
@@ -372,11 +375,15 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     {
                         robot.grabber.grabCone(1.25);
                     }
+                    // TODO (Code Review): Really? You are going to hang the robot for 5 seconds??? Why???
+                    // Also, you are going to DONE after this??? Shouldn't you go to PREP_FOR_TRAVEL?
                     timer.set(5.0, event);
                     sm.waitForSingleEvent(event, State.DONE);
                 }
                 else
                 {
+                    // TODO (Code Review): If you don't have the object and retrying, what makes you think you will get
+                    // an object eventually? You need to timeout this wait or you will hang forever.
                     robot.intake.enableTrigger(intakeEvent);
                     robot.intake.setPower(currOwner, 0, 1.0, 1.0, 0.0);
                     sm.waitForSingleEvent(intakeEvent, State.PICKUP_OBJECT);

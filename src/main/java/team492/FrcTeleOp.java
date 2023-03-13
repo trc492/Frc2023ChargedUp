@@ -25,7 +25,6 @@ package team492;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTriggerThresholdZones;
-import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
@@ -644,7 +643,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON10:
                 if (pressed)
                 {
-                    robot.autoPickupTask.autoAssistPickup(pickupObject, true, null);;
+                    // TODO (Code Review): Where is the button to do Auto-AssistPickup with PickupOnly? You asked
+                    // Kenny to implement it but you are not using it anywhere???
+                    robot.autoPickupTask.autoAssistPickup(pickupObject, true, null);
                 }
                 break;
 
@@ -834,6 +835,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
+                // TODO (Code Review): You should call Auto-Assist pickup only. Why duplicating the effort here?
                 //prepare pickup position 
                 robot.elevatorPidActuator.setPosition(
                     moduleName, 0, 10.0, true, 1.0, null, 0.0);
@@ -843,18 +845,22 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
-                if (pressed) {
+                if (pressed)
+                {
                     pickupObject = ObjectType.CUBE;
                     robot.photonVision.setPipeline(PipelineType.CUBE);
                 }
                 break;
             //nose out cone pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                if (pressed) {
+                if (pressed)
+                {
                     //autopickup
                     // pickupObject = ObjectType.CONE;
                     // robot.ph%otonVision.setPipeline(PipelineType.CONE);
-                    //preset to help me 
+                    //preset to help me
+                    // TODO (Code Review): Why do this??? Don't you have a Auto-Assist PickupOnly???
+                    // This sounds like a subset of that.
                     robot.grabber.grabCube(); 
                     robot.grabber.releaseCone(); 
                     robot.elevatorPidActuator.setPosition(
