@@ -182,14 +182,14 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         double dir = -Math.signum(tiltAngle);
         boolean inBalance = robot.robotDrive.inBalanceZone();
         boolean leveling = robot.robotDrive.startingToLevel();
-        boolean tiltSignaled = tiltEvent.isSignaled();
+        boolean tiltTriggered = tiltEvent.isSignaled();
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, leveling=%s, tiltSignaled=%s",
+                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, leveling=%s, tiltTriggered=%s",
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
-                inBalance, leveling, tiltSignaled);
+                inBalance, leveling, tiltTriggered);
         }
 
         switch (state)
@@ -203,7 +203,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 break;
 
             case CLIMB:
-                if (tiltSignaled)
+                if (tiltTriggered)
                 {
                     if (leveling)
                     {

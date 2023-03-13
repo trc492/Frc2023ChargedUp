@@ -126,13 +126,13 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             double tiltAngle = robot.robotDrive.getGyroRoll();
             boolean enterBalance = robot.robotDrive.enteringBalanceZone();
             boolean exitBalance = robot.robotDrive.exitingBalanceZone();
-            boolean tiltSignaled = tiltEvent.isSignaled();
+            boolean tiltTriggered = tiltEvent.isSignaled();
 
             robot.dashboard.displayPrintf(8, "State: %s", state);
             robot.globalTracer.traceInfo(
-                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, enteringBalance=%s, exitingBalance=%s, tiltSignaled=%s",
+                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, enteringBalance=%s, exitingBalance=%s, tiltTriggered=%s",
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
-                enterBalance, exitBalance, tiltSignaled);
+                enterBalance, exitBalance, tiltTriggered);
             
             switch (state)
             {
@@ -180,7 +180,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 
                 case CLIMB:
                     // We're climbing up the station, going to the next state when we're level on the station.
-                    if (tiltSignaled)
+                    if (tiltTriggered)
                     {
                         // When entering the balance zone, we are about to level off. If not, we are still climbing.
                         sm.waitForSingleEvent(tiltEvent, enterBalance? State.LEVEL: State.CLIMB);
