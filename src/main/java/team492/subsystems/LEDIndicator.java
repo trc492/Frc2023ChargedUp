@@ -54,14 +54,16 @@ public class LEDIndicator
         private static final TrcAddressableLED.Pattern[] priorities =
         new TrcAddressableLED.Pattern[]
         {
-            nominalPattern,
-            inverseOrientedPattern,
-            robotOrientedPattern,
-            fieldOrientedPattern,
-            intakeHasObjectPattern,
-            detectedConePattern,
+            // Highest priority.
+            detectedAprilTagPattern,
             detectedCubePattern,
-            detectedAprilTagPattern
+            detectedConePattern,
+            intakeHasObjectPattern,
+            fieldOrientedPattern,
+            robotOrientedPattern,
+            inverseOrientedPattern,
+            nominalPattern
+            // Lowest priority.
         };
 
     private final FrcAddressableLED led;
