@@ -202,6 +202,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // the robot a little longer to make sure it clears the charging station.
                     if (enterBalance)
                     {
+                        robot.globalTracer.traceInfo(moduleName, "WE'REONFLATGROUND");
                         robot.robotDrive.enableDistanceTrigger(36.0, event);
                         sm.waitForSingleEvent(event, State.GO_BALANCE);
                     }

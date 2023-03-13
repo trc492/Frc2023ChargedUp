@@ -25,6 +25,7 @@ package team492;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTriggerThresholdZones;
+import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
@@ -32,6 +33,7 @@ import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
+import team492.vision.PhotonVision.PipelineType;
 
 /**
  * This class implements the code to run in TeleOp Mode.
@@ -50,6 +52,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean intakeReversed = false;
     private boolean armControl = false;
     private boolean armPosControl = false;
+    private ObjectType pickupObject = ObjectType.CUBE;
 
     /**
      * Constructor: Create an instance of the object.
@@ -231,6 +234,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     //     if (intakeLeftPower > 0.0)
                     //     {
                     //         robot.intake.setPower(RobotParams.INTAKE_CUBE_PICKUP_POWER, RobotParams.INTAKE_CUBE_PICKUP_POWER);
+                    //     }
+                    // }
+
+                    // if(lookForObj)
+                    // {
+                    //     if (robot.photonVision.getBestDetectedObject() != null)
+                    //     {
+                    //         robot.dashboard.displayPrintf(
+                    //             4, "Found obj in %s ms", System.currentTimeMillis()-visionTime);
+                    //         visionTime = 0;
+                    //         lookForObj = false;
                     //     }
                     // }
                 }
@@ -630,18 +644,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON10:
                 if (pressed)
                 {
-                //     robot.armPidActuator.setPosition(moduleName, 0.0, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                //     // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, null);
-                // }
-                // else
-                // {
-                //     robot.armPidActuator.setPosition(moduleName,0.0,RobotParams.ARM_LOW_POS,true,RobotParams.ARM_MAX_POWER,null,0.0);
+                    robot.autoPickupTask.autoAssistPickup(pickupObject, true, null);;
                 }
-                // if (robot.elevator != null && pressed)
-                // {
-                //     // Must acquire ownership to override analog control of the elevator.
-                //     robot.elevatorPidActuator.presetPositionDown(moduleName);
-                // }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
@@ -815,52 +819,67 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
-                // if (pressed)
-                // {
-                //     robot.autoPickupTask.autoAssistCancel();
-                // }
+                if (pressed)
+                {
+                    robot.autoPickupTask.autoAssistCancel();
+                }
                 robot.armPidActuator.releaseExclusiveAccess(moduleName);
                 robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
                 robot.autoScoreTask.autoAssistCancel();
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:
-                    //auto score testing
-                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
+                //auto score testing
+                robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-                    if (pressed) {
-                        // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, null);;
-                    }
+                //prepare pickup position 
+                robot.elevatorPidActuator.setPosition(
+                    moduleName, 0, 10.0, true, 1.0, null, 0.0);
+                robot.armPidActuator.setPosition(
+                    moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                robot.intake.extend(); 
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
-                    if (pressed) {
-                        // robot.autoPickupTask.autoAssistPickup(ObjectType.CUBE, false, null);;
-                    }
+                if (pressed) {
+                    pickupObject = ObjectType.CUBE;
+                    robot.photonVision.setPipeline(PipelineType.CUBE);
+                }
                 break;
-
+            //nose out cone pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                // robot.autoPickupTask.autoAssistCancel();
+                if (pressed) {
+                    //autopickup
+                    // pickupObject = ObjectType.CONE;
+                    // robot.ph%otonVision.setPipeline(PipelineType.CONE);
+                    //preset to help me 
+                    robot.grabber.grabCube(); 
+                    robot.grabber.releaseCone(); 
+                    robot.elevatorPidActuator.setPosition(
+                        moduleName, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0.25, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);  
+                }
                 break;
 
-            case FrcJoystick.PANEL_BUTTON_WHITE2:
-                // TODO (Code Review): This code won't work because it doesn't release ownership. See operationStick button 9.
-                // if (robot.elevator != null && pressed && robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
-                // {
-                //     if(robot.elevatorPidActuator.acquireExclusiveAccess("TeleOp"))
-                //     {
-                //         robot.elevatorPidActuator.zeroCalibrate("TeleOp");
-                //     }
-                //     else
-                //     {
-                //         robot.dashboard.displayPrintf(
-                //             2, "elevator could not get owner");
-                //     }
-                // }
+            // case FrcJoystick.PANEL_BUTTON_WHITE2:
+            //     if (pressed)
+            //     {
+            //         if (robot.photonVision.getPipeline().equals(PipelineType.CUBE))
+            //         {
+            //             robot.photonVision.setPipeline(PipelineType.CONE);
+            //         }
+            //         else
+            //         {
+            //             robot.photonVision.setPipeline(PipelineType.CUBE);
+            //         }
+            //         visionTime = System.currentTimeMillis();
+            //         lookForObj = true;
+            //     }
 
-                break;
+                // break;
         }
     }   //buttonPanelButtonEvent
 

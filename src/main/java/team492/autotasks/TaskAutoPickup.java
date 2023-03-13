@@ -30,6 +30,7 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTimer;
+import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import team492.Robot;
@@ -262,12 +263,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 }
                 robot.grabber.releaseCone();
 
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, 6.0, true, 1.0, elevatorEvent, 0.5);
-                sm.addEvent(elevatorEvent);
-                robot.armPidActuator.setPosition(
-                    currOwner, 0.0, 45.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
-                sm.addEvent(armEvent);
 
                 if (taskParams.useVision)
                 {
@@ -275,46 +270,62 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                         taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
+                    // If using vision, we need to move the arm and elevator out of the way so LL can see the target
+                    robot.elevatorPidActuator.setPosition(
+                        currOwner, 0.0, 13.0, true, 1.0, elevatorEvent, 0.5);
+                    robot.armPidActuator.setPosition(
+                        currOwner, 0.0, 65.7, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
                 }
-
+                else
+                {
+                    robot.elevatorPidActuator.setPosition(
+                        currOwner, 0.0, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
+                    robot.armPidActuator.setPosition(
+                        currOwner, 0.0, 45.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
+                }
+                sm.addEvent(elevatorEvent);
+                sm.addEvent(armEvent);
                 sm.waitForEvents(State.DRIVE_TO_OBJECT, true);
+                // sm.waitForEvents(State.DONE, true);
                 break;
             
             case DRIVE_TO_OBJECT:
                 // Turn on whacker with speed appropriate for cube or cone.
                 // Arm intake sensor, signal event when has object.
                 // If useVision and vision detected object use detected object position,
-                //      otherwise set position to 36-inch forward.
+                //      otherwise set position to 60-inch forward.
                 // Call purePursuit to go to object position, signal event.
                 // Wait for either events, then goto PICKUP_OBJECT.
-                TrcPose2D targetPos = null;
                 double intakePower = taskParams.objectType == ObjectType.CUBE?
                     RobotParams.INTAKE_CUBE_PICKUP_POWER: RobotParams.INTAKE_CONE_PICKUP_POWER;
 
-                robot.intake.setPower(currOwner, 0.0, intakePower, intakePower, 0.0);
                 robot.intake.enableTrigger(intakeEvent);
+                robot.intake.setPower(currOwner, 0.0, intakePower, intakePower, 0.0);
                 sm.addEvent(intakeEvent);
 
-                if (taskParams.useVision)
-                {
-                    DetectedObject target = robot.photonVision.getLastDetectedBestObject();
-                    if (target != null)
-                    {
-                        targetPos = target.targetPoseFrom2D;
-                        robot.globalTracer.traceInfo(
-                            moduleName, "Detected %s: targetPos=%s", taskParams.objectType, targetPos);
-                    }
-                }
+                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.2);
+                robot.robotDrive.purePursuitDrive.setRotOutputLimit(0.2);
 
-                if (targetPos == null)
+                DetectedObject target = robot.photonVision.getLastDetectedBestObject();
+                if (taskParams.useVision && target != null)
                 {
-                    targetPos = new TrcPose2D(0.0, 36.0, 0.0);
+                    double targetDist = TrcUtil.magnitude(target.targetPoseFrom2D.x, target.targetPoseFrom2D.y);
+                    double targetAngle = target.targetPoseFrom2D.angle;
+                    robot.globalTracer.traceInfo(
+                        moduleName, "Detected %s: targetDist=%s, targetAngle=%s", taskParams.objectType, targetDist, targetAngle);
+                    robot.robotDrive.purePursuitDrive.start(
+                        currOwner, event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, 6.0, targetAngle),
+                        new TrcPose2D(0.0, targetDist + 48.0, 0.0));
                 }
-
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner,event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, targetPos);
+                else
+                {
+                    // No vision or no target, just drive forwards 5 feet
+                    robot.robotDrive.purePursuitDrive.start(
+                        currOwner, event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, 60.0, 0.0));
+                }
                 sm.addEvent(event);
-
                 sm.waitForEvents(State.PICKUP_OBJECT);
                 break;
 
@@ -342,29 +353,34 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // Set a delay timer and signal event.
                 // Wait for timer event then goto PREP_FOR_TRAVEL.
                 robot.robotDrive.purePursuitDrive.cancel();
-                robot.intake.cancel();
+                robot.intake.cancel(currOwner);
                 robot.intake.disableTrigger();
 
+                robot.elevatorPidActuator.setMsgTracer(msgTracer, true);
+                robot.armPidActuator.setMsgTracer(msgTracer, true);
                 if (robot.intake.hasObject())
                 {
                     robot.elevatorPidActuator.setPosition(
-                        currOwner, 0.0, 3.0, true, 1.0, null, 0.0);
+                        currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 0.8, null, 0.0);
                     robot.armPidActuator.setPosition(
-                        currOwner, 0.0, 5.0, true, RobotParams.ARM_MAX_POWER, visionEvent, 0.0);
+                        currOwner, 0.5, RobotParams.ARM_LOW_POS + 1.5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                     if (taskParams.objectType == ObjectType.CUBE)
                     {
-                        robot.grabber.grabCube(1.0);
+                        robot.grabber.grabCube(0.75);
                     }
                     else
                     {
-                        robot.grabber.grabCone(1.0);
+                        robot.grabber.grabCone(1.25);
                     }
-                    timer.set(1.5, event);
-                    sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL);
+                    timer.set(5.0, event);
+                    sm.waitForSingleEvent(event, State.DONE);
                 }
                 else
                 {
-                    sm.setState(State.PREP_FOR_TRAVEL);
+                    robot.intake.enableTrigger(intakeEvent);
+                    robot.intake.setPower(currOwner, 0, 1.0, 1.0, 0.0);
+                    sm.waitForSingleEvent(intakeEvent, State.PICKUP_OBJECT);
+                    // sm.setState(State.PREP_FOR_TRAVEL);
                 }
                 break;
             
@@ -372,10 +388,12 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // Raise elevator to 5-inch, signal event.
                 // Set arm at 5-deg.
                 // Wait for event, then goto DONE.
+                robot.elevatorPidActuator.setMsgTracer(msgTracer, false);
+                robot.armPidActuator.setMsgTracer(msgTracer, false);
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, 5.0, true, 1.0, event, 0.0);
+                    currOwner, 1.0, 5.0, true, 1.0, event, 0.0);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    currOwner, 1.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 sm.waitForSingleEvent(event, State.DONE);
                 break;
 

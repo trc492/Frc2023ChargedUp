@@ -227,12 +227,13 @@ public class RobotParams
     // Digital Input/Output ports.
     //
     public static final int DIO_INTAKE_SENSOR                   = 0;    // Black
+    public static final int DIO_GRABBER_SENSOR                  = 1;
     //
     // PWM channels.
     //
-    public static final int NUM_LEDS                            = 100;
-    public static final int PWM_CHANNEL_LED                     = 0;
-    public static final int PWM_VACUUM                          = 9;
+    public static final int NUM_LEDS                            = 95;
+    public static final int PWM_CHANNEL_LED                     = 9;
+    public static final int PWM_VACUUM                          = 0;
     //
     // Relay channels.
     //
@@ -457,7 +458,7 @@ public class RobotParams
     public static final boolean ARM_UPPER_LIMIT_INVERTED        = true;
     public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
-    public static final double ARM_LOW_POS                      = 11.0;
+    public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 90.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
