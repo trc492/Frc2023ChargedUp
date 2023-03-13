@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -248,6 +249,12 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // Retract whacker.
                 // If useVision, call vision to detect target with a timeout, signal vision event.
                 // Wait for all events and goto DRIVE_TO_SCORING_POS.
+                // if (runMode == RunMode.AUTO_MODE)
+                {
+                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
+                }
+
+                robot.intake.extend();
                 double elevatorPos, armPos;
                 // Determine arm, elevator scoring positions based on scoringLevel and objectType.
                 if (taskParams.objectType == ObjectType.CONE)
@@ -262,10 +269,10 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
 
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 1.0, elevatorPos, true, 1.0, elevatorEvent, 2.0);
+                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 2.0);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
+                    currOwner, 1.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
                 sm.addEvent(armEvent);
 
                 robot.intake.retract(0.5);
@@ -275,7 +282,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
                 }
-                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true, 3.0);
+                sm.waitForEvents(State.DONE, true);
+                // sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true, 3.0);
                 break;
 
             case DRIVE_TO_SCORING_POS:
@@ -314,7 +322,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
-                    robot.globalTracer.traceInfo("RELEASING THE CUBE", "CUBE");
                     robot.grabber.grabCube(event);
                     sm.waitForSingleEvent(event, State.RESET);
                 }

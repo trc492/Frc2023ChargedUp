@@ -225,7 +225,6 @@ public class Robot extends FrcRobotBase
         if (RobotParams.Preferences.usePhotonVision)
         {
             photonVision = new PhotonVision("OV5647", ledIndicator, null);
-            photonVision.setPipeline(PipelineType.APRILTAG);
         }
 
         if (RobotParams.Preferences.useLimeLightVision)
@@ -604,6 +603,14 @@ public class Robot extends FrcRobotBase
                         robotDrive.driveBase.getHeading(), robotDrive.getGyroPitch(), robotDrive.getGyroRoll());
                     lineNum++;
                     dashboard.putNumber("Graphs/GyroRoll", robotDrive.getGyroRoll());
+                }
+
+                if (photonVision != null)
+                {
+                    PipelineType pipelineType = photonVision.getPipeline();
+                    TrcPose2D robotPose =  pipelineType == PipelineType.APRILTAG?
+                        photonVision.getEstimatedFieldPosition(null): null;
+                    dashboard.displayPrintf(lineNum, "Vision[%s]: robotPose=%s", pipelineType, robotPose);
                     lineNum++;
                 }
             }
@@ -710,7 +717,7 @@ public class Robot extends FrcRobotBase
         double timeout = 0.0;
         // Do we need to move the arm to let the intake retract?
         if(armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&
-            elevatorPidActuator.getPosition() <= RobotParams.ELEVATOR_SAFE_HEIGHT)
+            elevator.getPosition() <= RobotParams.ELEVATOR_SAFE_HEIGHT)
         {
             timeout = 0.2;
             // Move elevator & arm out of the way

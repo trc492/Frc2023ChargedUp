@@ -636,7 +636,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON9:
                 if (robot.elevator != null && pressed)
                 {
-                    robot.elevatorPidActuator.zeroCalibrate(moduleName);
+                    robot.elevator.zeroCalibrate(moduleName);
                 }
                 break;
 

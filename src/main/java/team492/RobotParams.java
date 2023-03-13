@@ -410,6 +410,7 @@ public class RobotParams
 
     // Elevator subsystem.
     public static final int ELEVATOR_ZERO                       = 1635;
+    public static final double ELEVATOR_AUTOSTART_OFFSET        = 3.7;
     public static final int NEO_CPR                             = 42;
     public static final double NEO_NOLOAD_RPM                   = 5676.0;
     public static final boolean ELEVATOR_MOTOR_INVERTED         = true;

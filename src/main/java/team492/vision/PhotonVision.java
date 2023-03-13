@@ -117,7 +117,7 @@ public class PhotonVision extends FrcPhotonVision
                 moduleName, "[%.3f] Loading AprilTag field layout took %.3f sec.", endTime, endTime - startTime);
         }
 
-        setPipeline(PipelineType.CONE);
+        setPipeline(PipelineType.APRILTAG);
     }   //PhotonVision
 
     /**
@@ -187,7 +187,7 @@ public class PhotonVision extends FrcPhotonVision
     /**
      * This method uses the PhotonVision Pose Estimator to get an estimated absolute field position of the robot.
      *
-     * @return absolute robot field position.
+     * @return absolute robot field position, can be null if not provided.
      */
     public TrcPose2D getEstimatedFieldPosition(TrcPose2D robotPose)
     {
@@ -195,7 +195,10 @@ public class PhotonVision extends FrcPhotonVision
 
         if (poseEstimator != null)
         {
-            poseEstimator.setReferencePose(DetectedObject.trcPose2DToPose3d(robotPose));
+            if (robotPose != null)
+            {
+                poseEstimator.setReferencePose(DetectedObject.trcPose2DToPose3d(robotPose));
+            }
             Optional<EstimatedRobotPose> optionalPose = poseEstimator.update();
             if (optionalPose.isPresent())
             {

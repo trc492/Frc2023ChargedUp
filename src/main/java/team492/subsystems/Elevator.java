@@ -36,9 +36,10 @@ public class Elevator
     private static final String moduleName = "Elevator";
     // private static final String ZERO_CAL_FILE = "elevatorzero.txt";
 
-    // private final TrcDbgTrace msgTracer;
+    private final TrcDbgTrace msgTracer;
     private final FrcCANSparkMax actuatorMotor;
     private final TrcPidActuator pidActuator;
+    private double autoStartOffset = 0.0;
     // private final TrcDigitalInputTrigger zeroTrigger;
 
     /**
@@ -57,11 +58,11 @@ public class Elevator
             .setPosPresets(RobotParams.ELEVATOR_PRESET_TOLERANCE, RobotParams.elevatorPresets)
             .setZeroCalibratePower(RobotParams.ELEVATOR_CAL_POWER);
 
-        // this.msgTracer = msgTracer;
+        this.msgTracer = msgTracer;
         actuatorMotor = new FrcCANSparkMax("ElevatorMotor", RobotParams.CANID_ELEVATOR, true);
         actuatorMotor.resetFactoryDefault();
         actuatorMotor.setMotorInverted(RobotParams.ELEVATOR_MOTOR_INVERTED);
-        actuatorMotor.setBrakeModeEnabled(true);
+        actuatorMotor.setBrakeModeEnabled(false);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
 
         // int zeroOffset = getZeroPosition(RobotParams.ELEVATOR_ZERO);
@@ -89,7 +90,7 @@ public class Elevator
     {
         return String.format(
             Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, LimitSw=%s/%s",
-            moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
+            moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), getPosition(),
             pidActuator.getPidController().getTarget(), actuatorMotor.motor.getEncoder().getPosition(),
             pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
     }   //toString
@@ -103,6 +104,45 @@ public class Elevator
     {
         return pidActuator;
     }   //getPidActuator
+
+    /**
+     * This method sets the elevator position offset at the start of autonomous.
+     */
+    public void setAutoStartOffset(double offset)
+    {
+        final String funcName = "setAutoStartOffset";
+
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(funcName, "offset=%.3f", offset);
+        }
+
+        pidActuator.getMotor().resetMotorPosition();
+        autoStartOffset = offset;
+    }   //setAutoStartOffset
+
+    /**
+     * This method returns the elevator position. When a match is started in autonomous, the arm is tucked inside
+     * the robot and we can't zero calibrate it and the elevator is slightly up to accommodate the arm. Therefore,
+     * we will compensate this height. Once the elevator is calibrated, this compensation will be cleared.
+     *
+     * @return elevator position in inches extension.
+     */
+    public double getPosition()
+    {
+        return pidActuator.getPosition() + autoStartOffset;
+    }   //getPosition
+
+    /**
+     * This method starts the zero calibration process.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the motor.
+     */
+    public void zeroCalibrate(String owner)
+    {
+        autoStartOffset = 0.0;
+        pidActuator.zeroCalibrate(owner);
+    }   //zeroCalibrate
 
     // /**
     //  * This method is called to zero calibrate the elevator and save the absolute zero encoder position into a file.

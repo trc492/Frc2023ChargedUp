@@ -9,7 +9,6 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "titleType": 0,
         "tiles": {
           "0,0": {
             "size": [
@@ -19,9 +18,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///FMSInfo/EventName",
-              "_title": "Event Name",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "Event Name"
             }
           },
           "0,2": {
@@ -32,9 +29,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///FMSInfo/MatchType",
-              "_title": "Match Type",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "Match Type"
             }
           },
           "5,2": {
@@ -45,9 +40,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///FMSInfo/MatchNumber",
-              "_title": "Match Number",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "Match Number"
             }
           },
           "0,4": {
@@ -58,9 +51,7 @@
             "content": {
               "_type": "Toggle Button",
               "_source0": "network_table:///FMSInfo/IsRedAlliance",
-              "_title": "Alliance",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "Alliance"
             }
           },
           "5,4": {
@@ -72,12 +63,9 @@
               "_type": "Number Slider",
               "_source0": "network_table:///FMSInfo/StationNumber",
               "_title": "Station Number",
-              "_glyph": 148,
-              "_showGlyph": false,
               "Slider Settings/Min": 1.0,
               "Slider Settings/Max": 3.0,
-              "Slider Settings/Block increment": 1.0,
-              "Visuals/Display value": true
+              "Slider Settings/Block increment": 1.0
             }
           },
           "0,6": {
@@ -88,9 +76,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///FMSInfo/GameSpecificMessage",
-              "_title": "Game Specific Message",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "Game Specific Message"
             }
           }
         }
@@ -105,7 +91,6 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "titleType": 0,
         "tiles": {
           "0,0": {
             "size": [
@@ -115,8 +100,6 @@
             "content": {
               "_type": "Grid Layout",
               "_title": "Dashboard",
-              "_glyph": 149,
-              "_showGlyph": false,
               "Layout/Number of columns": 2,
               "Layout/Number of rows": 8,
               "Layout/Label position": "TOP",
@@ -124,114 +107,82 @@
                 "0,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/00",
-                  "_title": "SmartDashboard/00",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/00"
                 },
                 "0,1": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/01",
-                  "_title": "SmartDashboard/01",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/01"
                 },
                 "0,2": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/02",
-                  "_title": "SmartDashboard/02",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/02"
                 },
                 "0,3": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/03",
-                  "_title": "SmartDashboard/03",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/03"
                 },
                 "0,4": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/04",
-                  "_title": "SmartDashboard/04",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/04"
                 },
                 "0,5": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/05",
-                  "_title": "SmartDashboard/05",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/05"
                 },
                 "0,6": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/06",
-                  "_title": "SmartDashboard/06",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/06"
                 },
                 "0,7": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/07",
-                  "_title": "SmartDashboard/07",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/07"
                 },
                 "1,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/08",
-                  "_title": "SmartDashboard/08",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/08"
                 },
                 "1,1": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/09",
-                  "_title": "SmartDashboard/09",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/09"
                 },
                 "1,2": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/10",
-                  "_title": "SmartDashboard/10",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/10"
                 },
                 "1,3": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/11",
-                  "_title": "SmartDashboard/11",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/11"
                 },
                 "1,4": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/12",
-                  "_title": "SmartDashboard/12",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/12"
                 },
                 "1,5": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/13",
-                  "_title": "SmartDashboard/13",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/13"
                 },
                 "1,6": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/14",
-                  "_title": "SmartDashboard/14",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/14"
                 },
                 "1,7": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/15",
-                  "_title": "SmartDashboard/15",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "SmartDashboard/15"
                 }
               }
             }
@@ -248,7 +199,6 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "titleType": 0,
         "tiles": {
           "3,0": {
             "size": [
@@ -258,9 +208,7 @@
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Auto/Alliance",
-              "_title": "SmartDashboard/Auto/Alliance",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/Alliance"
             }
           },
           "6,2": {
@@ -271,9 +219,7 @@
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Auto/StartPos",
-              "_title": "SmartDashboard/Auto/StartPos",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/StartPos"
             }
           },
           "6,0": {
@@ -284,9 +230,7 @@
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Auto/Strategy",
-              "_title": "SmartDashboard/Auto/Strategy",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/Strategy"
             }
           },
           "9,4": {
@@ -297,9 +241,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/DrivePower",
-              "_title": "SmartDashboard/Auto/DrivePower",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/DrivePower"
             }
           },
           "0,6": {
@@ -310,9 +252,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/DriveTime",
-              "_title": "SmartDashboard/Auto/DriveTime",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/DriveTime"
             }
           },
           "0,2": {
@@ -323,9 +263,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/PathFile",
-              "_title": "SmartDashboard/Auto/PathFile",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/PathFile"
             }
           },
           "0,0": {
@@ -336,9 +274,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/StartDelay",
-              "_title": "SmartDashboard/Auto/StartDelay",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/StartDelay"
             }
           },
           "6,4": {
@@ -349,9 +285,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/TurnAngle",
-              "_title": "SmartDashboard/Auto/TurnAngle",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/TurnAngle"
             }
           },
           "0,4": {
@@ -362,9 +296,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/XDriveDistance",
-              "_title": "SmartDashboard/Auto/XDriveDistance",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/XDriveDistance"
             }
           },
           "3,4": {
@@ -375,9 +307,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Auto/YDriveDistance",
-              "_title": "SmartDashboard/Auto/YDriveDistance",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/YDriveDistance"
             }
           },
           "15,0": {
@@ -388,9 +318,7 @@
             "content": {
               "_type": "Toggle Switch",
               "_source0": "network_table:///SmartDashboard/Auto/GetSecondPiece",
-              "_title": "SmartDashboard/Auto/GetSecondPiece",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/GetSecondPiece"
             }
           },
           "12,0": {
@@ -401,9 +329,7 @@
             "content": {
               "_type": "Toggle Switch",
               "_source0": "network_table:///SmartDashboard/Auto/DoAutoBalance",
-              "_title": "SmartDashboard/Auto/DoAutoBalance",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/DoAutoBalance"
             }
           },
           "12,2": {
@@ -414,9 +340,7 @@
             "content": {
               "_type": "Toggle Switch",
               "_source0": "network_table:///SmartDashboard/Auto/ScorePreload",
-              "_title": "SmartDashboard/Auto/ScorePreload",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "SmartDashboard/Auto/ScorePreload"
             }
           }
         }
@@ -431,7 +355,6 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "titleType": 0,
         "tiles": {
           "0,0": {
             "size": [
@@ -441,9 +364,7 @@
             "content": {
               "_type": "ComboBox Chooser",
               "_source0": "network_table:///SmartDashboard/Test/Tests",
-              "_title": "TestMode",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "TestMode"
             }
           },
           "0,3": {
@@ -454,8 +375,6 @@
             "content": {
               "_type": "Grid Layout",
               "_title": "Drive Config",
-              "_glyph": 149,
-              "_showGlyph": false,
               "Layout/Number of columns": 5,
               "Layout/Number of rows": 2,
               "Layout/Label position": "BOTTOM",
@@ -463,37 +382,27 @@
                 "0,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Test/XDriveDistance",
-                  "_title": "X Distance",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "X Distance"
                 },
                 "1,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Test/YDriveDistance",
-                  "_title": "Y Distance",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "Y Distance"
                 },
                 "3,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Test/DrivePower",
-                  "_title": "Power Limit",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "Power Limit"
                 },
                 "4,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Test/DriveTime",
-                  "_title": "Drive Time",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "Drive Time"
                 },
                 "2,0": {
                   "_type": "Text View",
                   "_source0": "network_table:///SmartDashboard/Test/TurnAngle",
-                  "_title": "Turn Angle",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_title": "Turn Angle"
                 }
               }
             }
@@ -506,15 +415,11 @@
             "content": {
               "_type": "List Layout",
               "_title": "PID Tuning",
-              "_glyph": 149,
-              "_showGlyph": false,
               "Layout/Label position": "HIDDEN",
               "_children": [
                 {
                   "_type": "Grid Layout",
                   "_title": "Tune PID Constants",
-                  "_glyph": 149,
-                  "_showGlyph": false,
                   "Layout/Number of columns": 4,
                   "Layout/Number of rows": 1,
                   "Layout/Label position": "BOTTOM",
@@ -522,30 +427,22 @@
                     "0,0": {
                       "_type": "Text View",
                       "_source0": "network_table:///SmartDashboard/Test/TuneKp",
-                      "_title": "Tune Kp",
-                      "_glyph": 148,
-                      "_showGlyph": false
+                      "_title": "Tune Kp"
                     },
                     "1,0": {
                       "_type": "Text View",
                       "_source0": "network_table:///SmartDashboard/Test/TuneKi",
-                      "_title": "Tune Ki",
-                      "_glyph": 148,
-                      "_showGlyph": false
+                      "_title": "Tune Ki"
                     },
                     "2,0": {
                       "_type": "Text View",
                       "_source0": "network_table:///SmartDashboard/Test/TuneKd",
-                      "_title": "Tune Kd",
-                      "_glyph": 148,
-                      "_showGlyph": false
+                      "_title": "Tune Kd"
                     },
                     "3,0": {
                       "_type": "Text View",
                       "_source0": "network_table:///SmartDashboard/Test/TuneKf",
-                      "_title": "Tune Kf",
-                      "_glyph": 148,
-                      "_showGlyph": false
+                      "_title": "Tune Kf"
                     }
                   }
                 }
@@ -564,7 +461,6 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "titleType": 0,
         "tiles": {
           "0,0": {
             "size": [
@@ -575,8 +471,6 @@
               "_type": "Camera Stream",
               "_source0": "camera_server://trc-photonvision_Port_1182_MJPEG_Server",
               "_title": "trc-photonvision",
-              "_glyph": 148,
-              "_showGlyph": false,
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": false,
@@ -599,7 +493,6 @@
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
-        "titleType": 0,
         "tiles": {}
       }
     }
