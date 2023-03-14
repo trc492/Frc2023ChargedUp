@@ -29,7 +29,6 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
@@ -72,7 +71,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
     private final TrcEvent elevatorEvent, armEvent, intakeEvent, visionEvent, event;
-    private final TrcTimer timer;
     private String currOwner = null;
 
     /**
@@ -93,7 +91,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         event = new TrcEvent(moduleName);
-        timer = new TrcTimer(moduleName + ".timer");
     }   //TaskAutoPickup
 
     /**
@@ -378,7 +375,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                         //Could make this a separate state after arm.setPosition() but arm.setPosition() might stall because its trying to go to the low pos
                         robot.grabber.grabCone(1.5);
                     }
-
                     //go to the next state after 1.75 seconds(grabber fires after 1.5 seconds)
                     sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL, 1.75);
                 }

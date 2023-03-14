@@ -29,9 +29,7 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
-import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
@@ -80,6 +78,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcEvent armEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent event;
+    private final Alliance alliance;
     private String currOwner = null;
 
     //Cube High: Arm-Max, Elevator-19.6
@@ -105,6 +104,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         armEvent = new TrcEvent(moduleName + ".armEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         event = new TrcEvent(moduleName);
+        alliance = FrcAuto.autoChoices.getAlliance();
     }   //TaskAutoScore
 
     /**
@@ -216,11 +216,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     protected void stopSubsystems()
     {
         robot.robotDrive.cancel(currOwner);
-        robot.globalTracer.traceInfo("stopSubsystems", "finished canceling drive");
         robot.elevatorPidActuator.cancel(currOwner);
-        robot.globalTracer.traceInfo("stopSubsystems", "finished canceling elevatorPidActuator");
         robot.armPidActuator.cancel(currOwner);
-        robot.globalTracer.traceInfo("stopSubsystems", "DONE");
     }   //stopSubsystems
 
     /**
@@ -249,12 +246,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // Retract whacker.
                 // If useVision, call vision to detect target with a timeout, signal vision event.
                 // Wait for all events and goto DRIVE_TO_SCORING_POS.
-                // if (runMode == RunMode.AUTO_MODE)
-                {
-                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
-                }
-
-                robot.intake.extend();
                 double elevatorPos, armPos;
                 // Determine arm, elevator scoring positions based on scoringLevel and objectType.
                 if (taskParams.objectType == ObjectType.CONE)
@@ -272,10 +263,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 2.0);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
-                    currOwner, 1.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
+                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
                 sm.addEvent(armEvent);
 
-                robot.intake.retract(1.2);
                 if (taskParams.useVision)
                 {
                     robot.photonVision.setPipeline(PipelineType.APRILTAG);
@@ -283,7 +273,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     sm.addEvent(visionEvent);
                 }
                 sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true);
-                // sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true, 3.0);
                 break;
 
             case DRIVE_TO_SCORING_POS:
@@ -298,7 +287,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     if (detectedTarget != null)
                     {
                         TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
-                        robotPose.angle = robot.robotDrive.gyro.getZHeading().value;
+                        // TODO: We are supposed to trust the Robot Pose provided by AprilTag detection because
+                        // odometry may be off if we go over cable protector or Charging Station.
+                        // Samuel claimed AprilTag's heading is not accurate, we should try to tune out the error.
+                        // For now, just trust odometry.
+                        robotPose.angle = alliance == Alliance.Red? 0.0: 180.0;
                         robot.robotDrive.driveBase.setFieldPosition(robotPose);
                         robot.globalTracer.traceInfo(
                             moduleName, "Detected %s: robotPose=%s", robot.photonVision.getPipeline(), robotPose);
@@ -306,23 +299,17 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
                 // getScoringPos will return the scoring position either from vision detected target or from drive
                 // base odometry if not using vision or vision did not detect target.
-                // targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
-                // robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
-                // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
-                // robot.robotDrive.purePursuitDrive.start(
-                //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
-                //for now, testing the basic version without vision/autoassist
+                targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
+                robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
+                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                 robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 20, 0));
-    
-                sm.waitForSingleEvent(event, State.SCORE_OBJECT, 5);
+                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
+                sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 break;
 
             case SCORE_OBJECT:
                 // If object is a CUBE, release cube grabber, goto RESET.
                 // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
-                TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition(); 
-                robot.globalTracer.traceInfo(moduleName, "After Drive RobotPose:%s", robotPose);
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
                     robot.grabber.releaseCube(event);
@@ -337,7 +324,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.grabber.releaseCone(0.2);
                     sm.waitForSingleEvent(event, State.DONE);
                 }
-
                 break;
 
             case RESET:
@@ -345,7 +331,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // Lower elevator to 0 height after a delay to make sure we don't hit anything.
                 // Lower arm to TRAVEL_POS after a delay to make sure we don't hit anything.
                 // goto DONE.
-
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -383,9 +368,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             TrcPose2D aprilTagPos = DetectedObject.pose3dToTrcPose2D(
                 robot.photonVision.getAprilTagPose(aprilTagObj.target.getFiducialId()));
             scoringPosX = aprilTagPos.x;
-        } 
-        else 
-        {  
+        }
+        else
+        {
             TrcPose2D robotPos = robot.robotDrive.driveBase.getFieldPosition();
             double minXDist = Math.abs(robotPos.x - RobotParams.startPosX[0]);
             int minXDistIndex = 0;
@@ -405,8 +390,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         if (objectType == ObjectType.CONE)
         {
             // Pole is 22 inches to the left or right of the StartPos.
-            if (FrcAuto.autoChoices.getAlliance() == Alliance.Blue && scoreLocation == ScoreLocation.LEFT ||
-                FrcAuto.autoChoices.getAlliance() == Alliance.Red && scoreLocation == ScoreLocation.RIGHT)
+            if (alliance == Alliance.Blue && scoreLocation == ScoreLocation.LEFT ||
+                alliance == Alliance.Red && scoreLocation == ScoreLocation.RIGHT)
             {
                 scoringPosX += 22.0;
             }
@@ -418,9 +403,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
         return new TrcPose2D(
             scoringPosX,
-            FrcAuto.autoChoices.getAlliance() == Alliance.Blue?
-                RobotParams.STARTPOS_BLUE_Y - 20.0 : RobotParams.STARTPOS_RED_Y + 20.0,
-            FrcAuto.autoChoices.getAlliance() == Alliance.Blue? 180.0: 0.0);
+            alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 20.0: RobotParams.STARTPOS_RED_Y + 20.0,
+            alliance == Alliance.Blue? 180.0: 0.0);
     }   //getScoringPos
  
  }   //class TaskAutoScore

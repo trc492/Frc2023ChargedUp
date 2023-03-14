@@ -212,8 +212,13 @@ public class RobotParams
     public static final int PDP_CHANNEL_INTAKE_RIGHT            = 14;   // Gray: 30A
 
     public static final int PDP_CHANNEL_ROBORIO                 = 20;   // 10A
-    public static final int PDP_CHANNEL_VRM                     = 21;   // 10A
-    public static final int PDP_CHANNEL_RADIO_POE               = 22;   // 10A
+    public static final int PDP_CHANNEL_VRM                     = 22;   // 10A
+    public static final int PDP_CHANNEL_PCM                     = 19;
+    public static final int PDP_CHANNEL_RADIO_POE               = 18;   // 10A
+    public static final int PDP_CHANNEL_ETHERNET_SWITCH         = 21;
+    public static final int PDP_CHANNEL_LIMELIGHT               = 0;
+    public static final int PDP_CHANNEL_LED                     = 10;
+    public static final int PDP_DIGITAL_SENSORS                 = 11;
 
     public static final double BATTERY_NOMINAL_VOLTAGE          = 12.0;
     public static final double BATTERY_CAPACITY_WATT_HOUR       = 18.0*12.0;
@@ -246,8 +251,7 @@ public class RobotParams
     public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 6;
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
     public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
-    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 5
-    ;
+    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 5;
     public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
     public static final int PNEUMATIC_INTAKE_EXTEND             = 3;
     //

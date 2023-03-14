@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
- package team492.autocommands;
+package team492.autocommands;
 
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPose2D;
@@ -49,7 +49,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         DESCEND,
         GO_BALANCE,
         DONE
-
     }   //enum State
 
 
@@ -60,7 +59,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
     private int scoreLevel;
     private boolean scorePreload;
-    // private boolean doAutoBalance;
+    private boolean doAutoBalance;
 
     /**
      * Constructor: Create an instance of the object.
@@ -133,46 +132,52 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, enteringBalance=%s, exitingBalance=%s, tiltTriggered=%s",
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
                 enterBalance, exitBalance, tiltTriggered);
-            
+
             switch (state)
             {
                 case START:
+                    // Read autoChoices.
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
-                    // TODO (Code Review): setFieldPosition will no longer work since it was assuming robot touching GRID.
-                    // May want to use vision to determine exact location, or you don't care about odometry in this auto.
+                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
+                    // When the arm is tucked in, the elevator is raised with a pre-determined offset. Since we
+                    // can't zero calibrate, set the elevator to that offset.
+                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
+                    // Deploy the intake so the arm can come out.
+                    robot.intake.extend();
+                    // Depoly the arm by raising elevator and untuck the arm (fire and forget).
+                    robot.elevatorPidActuator.setPosition(
+                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0.2, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
-                    if (scorePreload)
-                    {
-                        // robot.elevatorPidActuator.setPosition(
-                        //     RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
-                        // robot.armPidActuator.setPosition(
-                        //     moduleName, 0.2, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.5);
-                        sm.setState(State.SCORE_PRELOAD);
-                    }
-                    else
-                    {
-                        sm.setState(State.TURN);
-                    }
+                    robot.robotDrive.purePursuitDrive.start(
+                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, -20.0, 0.0));
+
+                    sm.waitForSingleEvent(event, scorePreload? State.SCORE_PRELOAD: State.TURN);
                     break;
 
                 case SCORE_PRELOAD:
+                    // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
                         ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, event);
                     sm.waitForSingleEvent(event, State.TURN);
                     break;
                 
-                case TURN: // turn right to prepare to crab over the station
+                case TURN:
+                    // Turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(
-                        //TODO: we might want to move over a bit to be more in the middle of the station
-                        event, 1.5, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
                     sm.waitForSingleEvent(event, State.START_TO_CLIMB);
                     break;
 
                 case START_TO_CLIMB:
+                    // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
                     robot.robotDrive.driveBase.holonomicDrive(0.3, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
@@ -202,7 +207,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // the robot a little longer to make sure it clears the charging station.
                     if (enterBalance)
                     {
-                        robot.globalTracer.traceInfo(moduleName, "WE'REONFLATGROUND");
                         robot.robotDrive.enableDistanceTrigger(6.0, event);
                         sm.waitForSingleEvent(event, State.GO_BALANCE);
                     }
@@ -212,12 +216,20 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     }
                     break;
 
-                case GO_BALANCE: //we're now next to the station outside of community, so we can do autobalance!
+                case GO_BALANCE:
+                    // We're now next to the station outside of community, so we can do autobalance!
                     robot.robotDrive.driveBase.stop();
                     robot.robotDrive.disableDistanceTrigger();
                     robot.robotDrive.disableTiltTrigger();
-                    robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
-                    sm.waitForSingleEvent(event, State.DONE);
+                    if (doAutoBalance)
+                    {
+                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
+                        sm.waitForSingleEvent(event, State.DONE);
+                    }
+                    else
+                    {
+                        sm.setState(State.DONE);
+                    }
                     break;
 
                 default:
