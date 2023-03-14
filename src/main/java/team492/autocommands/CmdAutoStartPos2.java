@@ -123,8 +123,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         else
         {
             double tiltAngle = robot.robotDrive.getGyroRoll();
-            boolean enterBalance = robot.robotDrive.enteringBalanceZone();
-            boolean exitBalance = robot.robotDrive.exitingBalanceZone();
+            boolean enterBalance = robot.robotDrive.enteringBalanceZone(false);
+            boolean exitBalance = robot.robotDrive.exitingBalanceZone(false);
             boolean tiltTriggered = tiltEvent.isSignaled();
 
             robot.dashboard.displayPrintf(8, "State: %s", state);

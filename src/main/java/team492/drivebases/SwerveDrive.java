@@ -45,7 +45,6 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcPurePursuitDrive;
 import TrcCommonLib.trclib.TrcSwerveDriveBase;
 import TrcCommonLib.trclib.TrcSwerveModule;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANCoder;
@@ -66,7 +65,6 @@ public class SwerveDrive extends RobotDrive
     private static final String ZERO_CAL_FILE = "steerzeros.txt";
     private static final boolean logPoseEvents = false;
     private static final boolean tracePidInfo = false;
-    private static final double DEBOUNCE_TIME = 0.01;
     //
     // Swerve steering motors and modules.
     //
@@ -77,7 +75,6 @@ public class SwerveDrive extends RobotDrive
     private final TrcTriggerThresholdZones tiltTrigger;
     private final TrcTriggerThresholdZones distanceTrigger;
     private Double startXPosition = null;
-    private Double lastBalanceTimestamp = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -576,46 +573,36 @@ public class SwerveDrive extends RobotDrive
         return pos;
     }   //adjustPosByAlliance
 
-    public boolean enteringBalanceZone()
+    public boolean inBalanceZone()
+    {
+        return tiltTrigger.getCurrentZone() == 2;
+    }   //inBalanceZone
+
+    public boolean enteringBalanceZone(boolean strafeLeft)
     {
         boolean confirm = false;
-        double currTime = TrcTimer.getCurrentTime();
+        int prevZone = tiltTrigger.getPreviousZone();
 
-        if (lastBalanceTimestamp == null || (currTime - lastBalanceTimestamp) > DEBOUNCE_TIME)
+        if ((prevZone == 1 || prevZone == 3) && tiltTrigger.getCurrentZone() == 2)
         {
-            int prevZone = tiltTrigger.getPreviousZone();
-            if ((prevZone == 1 || prevZone == 3) && tiltTrigger.getCurrentZone() == 2)
-            {
-                lastBalanceTimestamp = currTime;
-                confirm = true;
-            }
+            confirm = strafeLeft && prevZone == 3 || !strafeLeft && prevZone == 1;
         }
 
         return confirm;
     }   //enteringBalanceZone
 
-    public boolean exitingBalanceZone()
+    public boolean exitingBalanceZone(boolean strafeLeft)
     {
         boolean confirm = false;
-        double currTime = TrcTimer.getCurrentTime();
+        int currZone = tiltTrigger.getCurrentZone();
 
-        if (lastBalanceTimestamp == null || (currTime - lastBalanceTimestamp) > DEBOUNCE_TIME)
+        if ((currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() == 2)
         {
-            int currZone = tiltTrigger.getCurrentZone();
-            if ((currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() == 2)
-            {
-                lastBalanceTimestamp = currTime;
-                confirm = true;
-            }
+            confirm = strafeLeft && currZone == 1 || !strafeLeft && currZone == 3;
         }
 
         return confirm;
     }   //exitingBalanceZone
-
-    public boolean inBalanceZone()
-    {
-        return tiltTrigger.getCurrentZone() == 2;
-    }   //inBalanceZone
 
     public boolean startingToLevel()
     {
