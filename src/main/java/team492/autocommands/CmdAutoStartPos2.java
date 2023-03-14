@@ -75,7 +75,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         event = new TrcEvent(moduleName);
         tiltEvent = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        sm.start(State.START_TO_CLIMB);//START);
+        sm.start(State.START);
     }   //CmdAutoStartPos2
 
     //
@@ -203,7 +203,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     if (enterBalance)
                     {
                         robot.globalTracer.traceInfo(moduleName, "WE'REONFLATGROUND");
-                        robot.robotDrive.enableDistanceTrigger(36.0, event);
+                        robot.robotDrive.enableDistanceTrigger(6.0, event);
                         sm.waitForSingleEvent(event, State.GO_BALANCE);
                     }
                     else
@@ -214,6 +214,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case GO_BALANCE: //we're now next to the station outside of community, so we can do autobalance!
                     robot.robotDrive.driveBase.stop();
+                    robot.robotDrive.disableDistanceTrigger();
+                    robot.robotDrive.disableTiltTrigger();
                     robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
