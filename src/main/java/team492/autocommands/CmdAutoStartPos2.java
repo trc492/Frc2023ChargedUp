@@ -33,6 +33,7 @@ import team492.RobotParams;
 import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
+import team492.drivebases.SwerveDrive.TiltDir;
 
 public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 {
@@ -123,8 +124,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         else
         {
             double tiltAngle = robot.robotDrive.getGyroRoll();
-            boolean enterBalance = robot.robotDrive.enteringBalanceZone(false);
-            boolean exitBalance = robot.robotDrive.exitingBalanceZone(false);
+            TiltDir enterBalance = robot.robotDrive.enteringBalanceZone();
+            TiltDir exitBalance = robot.robotDrive.exitingBalanceZone();
             boolean tiltTriggered = tiltEvent.isSignaled();
 
             robot.dashboard.displayPrintf(8, "State: %s", state);
@@ -188,7 +189,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     if (tiltTriggered)
                     {
                         // When entering the balance zone, we are about to level off. If not, we are still climbing.
-                        sm.waitForSingleEvent(tiltEvent, enterBalance? State.LEVEL: State.CLIMB);
+                        sm.waitForSingleEvent(
+                            tiltEvent,
+                            enterBalance != null && enterBalance == TiltDir.TILT_LEFT? State.LEVEL: State.CLIMB);
                     }
                     else
                     {
@@ -199,13 +202,15 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case LEVEL:
                     // When exiting the balance zone, we are descending the charging station. If not, keep waiting.
-                    sm.waitForSingleEvent(tiltEvent, exitBalance? State.DESCEND: State.LEVEL);
+                    sm.waitForSingleEvent(
+                        tiltEvent,
+                        exitBalance != null && exitBalance == TiltDir.TILT_LEFT? State.DESCEND: State.LEVEL);
                     break;
 
                 case DESCEND:
                     // We are about leveling again which means we are getting on flat ground but we should run
                     // the robot a little longer to make sure it clears the charging station.
-                    if (enterBalance)
+                    if (enterBalance != null && enterBalance == TiltDir.TILT_RIGHT)
                     {
                         robot.robotDrive.enableDistanceTrigger(6.0, event);
                         sm.waitForSingleEvent(event, State.GO_BALANCE);

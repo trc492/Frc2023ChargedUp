@@ -573,58 +573,103 @@ public class SwerveDrive extends RobotDrive
         return pos;
     }   //adjustPosByAlliance
 
+    /**
+     * This method checks if the robot is in the balance zone.
+     *
+     * @return true if robot is in the balance zone.
+     */
     public boolean inBalanceZone()
     {
         return tiltTrigger.getCurrentZone() == 2;
     }   //inBalanceZone
 
-    public boolean enteringBalanceZone(boolean strafeLeft)
+    public static enum TiltDir
     {
-        boolean confirm = false;
+        TILT_LEFT,
+        TILT_RIGHT
+    }   //enum TiltDir
+
+    /**
+     * This method checks if the robot enters the balance zone.
+     *
+     * @return tilt direction before entering balance zone, null if not entering balance zone.
+     */
+    public TiltDir enteringBalanceZone()
+    {
+        TiltDir tiltDir = null;
         int prevZone = tiltTrigger.getPreviousZone();
 
         if ((prevZone == 1 || prevZone == 3) && tiltTrigger.getCurrentZone() == 2)
         {
-            confirm = strafeLeft && prevZone == 3 || !strafeLeft && prevZone == 1;
+            tiltDir = prevZone == 1? TiltDir.TILT_LEFT: TiltDir.TILT_RIGHT;
         }
 
-        return confirm;
+        return tiltDir;
     }   //enteringBalanceZone
 
-    public boolean exitingBalanceZone(boolean strafeLeft)
+    /**
+     * This method checks if the robot exits the balance zone.
+     *
+     * @return tilt direction after exiting balance zone, null if not exiting balance zone.
+     */
+    public TiltDir exitingBalanceZone()
     {
-        boolean confirm = false;
+        TiltDir tiltDir = null;
         int currZone = tiltTrigger.getCurrentZone();
 
         if ((currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() == 2)
         {
-            confirm = strafeLeft && currZone == 1 || !strafeLeft && currZone == 3;
+            tiltDir = currZone == 1? TiltDir.TILT_LEFT: TiltDir.TILT_RIGHT;
         }
 
-        return confirm;
+        return tiltDir;
     }   //exitingBalanceZone
 
+    /**
+     * This method checks if the robot is about to level off where it is entering zone 1 or 3 from steeper tilt.
+     *
+     * @return true if starting to level off, false otherwise.
+     */
     public boolean startingToLevel()
     {
         int currZone = tiltTrigger.getCurrentZone();
         return (currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() != 2;
     }   //startingToLevel
 
+    /**
+     * This method enables the tilt sensor trigger.
+     *
+     * @param event specifies the event to signal when triggered.
+     */
     public void enableTiltTrigger(TrcEvent event)
     {
         tiltTrigger.enableTrigger(event);
     }   //enableTiltTrigger
 
+    /**
+     * This method disables the tilt sensor trigger.
+     */
     public void disableTiltTrigger()
     {
         tiltTrigger.disableTrigger();
     }   //disableTiltTrigger
 
+    /**
+     * This method returns the distance traveled since the distance trigger is enabled.
+     *
+     * @return distance traveled since the distance trigger is enabled.
+     */
     private double getXDistanceTraveled()
     {
         return startXPosition != null? Math.abs(driveBase.getXPosition() - startXPosition): 0.0;
     }   //getXDistanceTraveled
 
+    /**
+     * This method enables the distance trigger and will trigger after the robot strafe the given distance.
+     *
+     * @param distance specifies the traveled distance for the trigger to activate.
+     * @param event specifies the event to signal when triggered.
+     */
     public void enableDistanceTrigger(double distance, TrcEvent event)
     {
         distanceTrigger.setThresholds(new double[]{distance});
@@ -632,6 +677,9 @@ public class SwerveDrive extends RobotDrive
         distanceTrigger.enableTrigger(event);
     }   //enableDistanceTrigger
 
+    /**
+     * This method disables the distance trigger.
+     */
     public void disableDistanceTrigger()
     {
         distanceTrigger.disableTrigger();
