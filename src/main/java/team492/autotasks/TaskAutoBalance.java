@@ -60,6 +60,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private String currOwner = null;
     private double startDir;
     private boolean correcting = false;
+    private double triggerDistance = 20.0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -209,7 +210,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     {
                         // We are starting to level off, drive a fixed distance to the center of the charging station.
                         // Arm a distance trigger to do this.
-                        robot.robotDrive.enableDistanceTrigger(correcting? 12.0: 20.0, event);
+                        robot.robotDrive.enableDistanceTrigger(triggerDistance, event);
                         sm.waitForSingleEvent(event, State.SETTLE);
                     }
                     else
@@ -228,6 +229,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             case SETTLE:
                 // It takes time for the charging station to balance, wait for it to settle.
                 robot.robotDrive.driveBase.stop(currOwner);
+                robot.robotDrive.disableDistanceTrigger();
+                correcting = false;
                 timer.set(1.0, event);
                 sm.waitForSingleEvent(event, State.CHECK);
                 break;
@@ -237,21 +240,22 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // Robot is tipped. Drive the robot to the climb direction.
                     correcting = true;
-                    robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.2, 0.0, 0.0);
+                    triggerDistance /= 4.0;
+                    robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.1, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB);
                 }
                 else
                 {
-                    // We are balanced, done.
-                    sm.setState(State.DONE);
+                    // We are balanced. If we were correcting, we are done, otherwise
+                    sm.setState(correcting? State.SETTLE: State.DONE);
                 }
                 break;
             
             default:
             case DONE:
+                robot.robotDrive.driveBase.stop(currOwner);
                 robot.robotDrive.disableTiltTrigger();
                 robot.robotDrive.disableDistanceTrigger();
-                robot.robotDrive.driveBase.stop(currOwner);
                 robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 stopAutoTask(true);
                 break;

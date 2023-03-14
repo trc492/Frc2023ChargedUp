@@ -156,7 +156,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -20.0, 0.0));
 
                     sm.waitForSingleEvent(event, scorePreload? State.SCORE_PRELOAD: State.TURN);
@@ -204,7 +204,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // When exiting the balance zone, we are descending the charging station. If not, keep waiting.
                     sm.waitForSingleEvent(
                         tiltEvent,
-                        exitBalance != null && exitBalance == TiltDir.TILT_LEFT? State.DESCEND: State.LEVEL);
+                        exitBalance != null && exitBalance == TiltDir.TILT_RIGHT? State.DESCEND: State.LEVEL);
                     break;
 
                 case DESCEND:

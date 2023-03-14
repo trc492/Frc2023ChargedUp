@@ -161,18 +161,18 @@ public class FrcAuto implements TrcRobot.RobotMode
             //
             // Populate autonomous mode choice menus.
             //
-            allianceMenu.addChoice("Red", DriverStation.Alliance.Red, true, false);
-            allianceMenu.addChoice("Blue", DriverStation.Alliance.Blue, false, true);
+            allianceMenu.addChoice("Red", DriverStation.Alliance.Red);
+            allianceMenu.addChoice("Blue", DriverStation.Alliance.Blue, true, true);
 
-            autoStrategyMenu.addChoice("Auto StartPos 1 or 3", AutoStrategy.AUTO_STARTPOS_1OR3, true, false);
-            autoStrategyMenu.addChoice("Auto StartPos 2", AutoStrategy.AUTO_STARTPOS_2);
+            autoStrategyMenu.addChoice("Auto StartPos 1 or 3", AutoStrategy.AUTO_STARTPOS_1OR3);
+            autoStrategyMenu.addChoice("Auto StartPos 2", AutoStrategy.AUTO_STARTPOS_2, true, false);
             autoStrategyMenu.addChoice("Pure Pursuit Drive", AutoStrategy.PP_DRIVE);
             autoStrategyMenu.addChoice("PID Drive", AutoStrategy.PID_DRIVE);
             autoStrategyMenu.addChoice("Timed Drive", AutoStrategy.TIMED_DRIVE);
             autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
-            autoStartPosMenu.addChoice("Start Position 1", AutoStartPos.POS_1, true, false);
-            autoStartPosMenu.addChoice("Start Position 2", AutoStartPos.POS_2);
+            autoStartPosMenu.addChoice("Start Position 1", AutoStartPos.POS_1);
+            autoStartPosMenu.addChoice("Start Position 2", AutoStartPos.POS_2, true, false);
             autoStartPosMenu.addChoice("Start Position 3", AutoStartPos.POS_3, false, true);
 
             autoPreloadedObjMenu.addChoice("Cube", ObjectType.CUBE, true, false);
