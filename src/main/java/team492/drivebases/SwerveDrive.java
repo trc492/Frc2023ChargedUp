@@ -77,8 +77,7 @@ public class SwerveDrive extends RobotDrive
     private final TrcTriggerThresholdZones tiltTrigger;
     private final TrcTriggerThresholdZones distanceTrigger;
     private Double startXPosition = null;
-    private Double lastEnterBalanceTimestamp = null;
-    private Double lastExitBalanceTimestamp = null;
+    private Double lastBalanceTimestamp = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -582,12 +581,12 @@ public class SwerveDrive extends RobotDrive
         boolean confirm = false;
         double currTime = TrcTimer.getCurrentTime();
 
-        if (lastEnterBalanceTimestamp == null || (currTime - lastEnterBalanceTimestamp) > DEBOUNCE_TIME)
+        if (lastBalanceTimestamp == null || (currTime - lastBalanceTimestamp) > DEBOUNCE_TIME)
         {
             int prevZone = tiltTrigger.getPreviousZone();
             if ((prevZone == 1 || prevZone == 3) && tiltTrigger.getCurrentZone() == 2)
             {
-                lastEnterBalanceTimestamp = currTime;
+                lastBalanceTimestamp = currTime;
                 confirm = true;
             }
         }
@@ -600,12 +599,12 @@ public class SwerveDrive extends RobotDrive
         boolean confirm = false;
         double currTime = TrcTimer.getCurrentTime();
 
-        if (lastExitBalanceTimestamp == null || (currTime - lastExitBalanceTimestamp) > DEBOUNCE_TIME)
+        if (lastBalanceTimestamp == null || (currTime - lastBalanceTimestamp) > DEBOUNCE_TIME)
         {
             int currZone = tiltTrigger.getCurrentZone();
             if ((currZone == 1 || currZone == 3) && tiltTrigger.getPreviousZone() == 2)
             {
-                lastExitBalanceTimestamp = currTime;
+                lastBalanceTimestamp = currTime;
                 confirm = true;
             }
         }

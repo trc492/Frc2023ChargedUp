@@ -831,13 +831,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.PANEL_BUTTON_RED2:
                 //auto score testing
-                robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
+                robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, true, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
                 //this is the button we press after scoring so the robot is in position to drive around the field safely 
                 robot.elevatorPidActuator.setPosition(
-                    moduleName, 0, 10.0, true, 1.0, null, 0.0);
+                    moduleName, 0, 12.0, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(
                     moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 robot.intake.extend(); 
@@ -857,14 +857,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     //autopickup
                     // pickupObject = ObjectType.CONE;
                     // robot.ph%otonVision.setPipeline(PipelineType.CONE);
-                    robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
+                    // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
                     //keeping this until I can test autoPickup(pickup only)
-                    // robot.grabber.grabCube(); 
-                    // robot.grabber.releaseCone(); 
-                    // robot.elevatorPidActuator.setPosition(
-                    //     moduleName, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-                    // robot.armPidActuator.setPosition(
-                    //     moduleName, 0.25, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);  
+                    robot.grabber.grabCube(); 
+                    robot.grabber.releaseCone(); 
+                    robot.elevatorPidActuator.setPosition(
+                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);  
                 }
                 break;
 

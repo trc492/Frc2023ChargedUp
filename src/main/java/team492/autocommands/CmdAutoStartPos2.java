@@ -75,7 +75,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         event = new TrcEvent(moduleName);
         tiltEvent = new TrcEvent(moduleName);
         sm = new TrcStateMachine<>(moduleName);
-        sm.start(State.TURN);
+        sm.start(State.START_TO_CLIMB);//START);
     }   //CmdAutoStartPos2
 
     //
@@ -146,10 +146,10 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
                     if (scorePreload)
                     {
-                        robot.elevatorPidActuator.setPosition(
-                            RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
-                        robot.armPidActuator.setPosition(
-                            moduleName, 0.2, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.5);
+                        // robot.elevatorPidActuator.setPosition(
+                        //     RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                        // robot.armPidActuator.setPosition(
+                        //     moduleName, 0.2, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.5);
                         sm.setState(State.SCORE_PRELOAD);
                     }
                     else

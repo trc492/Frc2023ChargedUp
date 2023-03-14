@@ -433,7 +433,7 @@ public class RobotParams
     public static final double ELEVATOR_CAL_POWER               = -0.4;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
     public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
-    public static final double[] ELEVATOR_TRIGGERS              = {15.0};
+    public static final double[] ELEVATOR_TRIGGERS              = {22.0};
     // Important: presets must be sorted in increasing order.
     public static final double[] elevatorPresets                =
     {

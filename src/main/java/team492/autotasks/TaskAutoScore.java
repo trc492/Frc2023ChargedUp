@@ -275,14 +275,14 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     currOwner, 1.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
                 sm.addEvent(armEvent);
 
-                robot.intake.retract(0.5);
+                robot.intake.retract(1.2);
                 if (taskParams.useVision)
                 {
                     robot.photonVision.setPipeline(PipelineType.APRILTAG);
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
                 }
-                sm.waitForEvents(State.DONE, true);
+                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true);
                 // sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true, 3.0);
                 break;
 
@@ -298,6 +298,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     if (detectedTarget != null)
                     {
                         TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
+                        robotPose.angle = robot.robotDrive.gyro.getZHeading().value;
                         robot.robotDrive.driveBase.setFieldPosition(robotPose);
                         robot.globalTracer.traceInfo(
                             moduleName, "Detected %s: robotPose=%s", robot.photonVision.getPipeline(), robotPose);
@@ -305,24 +306,26 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
                 // getScoringPos will return the scoring position either from vision detected target or from drive
                 // base odometry if not using vision or vision did not detect target.
-                targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
-                robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
+                // targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
+                // robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
                 // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                 // robot.robotDrive.purePursuitDrive.start(
                 //     currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
-                // sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 //for now, testing the basic version without vision/autoassist
                 robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 12, 0));
-                sm.waitForSingleEvent(event, State.SCORE_OBJECT, 3.0);
+                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 20, 0));
+    
+                sm.waitForSingleEvent(event, State.SCORE_OBJECT, 5);
                 break;
 
             case SCORE_OBJECT:
                 // If object is a CUBE, release cube grabber, goto RESET.
                 // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
+                TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition(); 
+                robot.globalTracer.traceInfo(moduleName, "After Drive RobotPose:%s", robotPose);
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
-                    robot.grabber.grabCube(event);
+                    robot.grabber.releaseCube(event);
                     sm.waitForSingleEvent(event, State.RESET);
                 }
                 else
@@ -332,7 +335,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                         currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, event, 0);
                     robot.grabber.releaseCube();
                     robot.grabber.releaseCone(0.2);
-                    sm.waitForSingleEvent(event, State.RESET);
+                    sm.waitForSingleEvent(event, State.DONE);
                 }
 
                 break;
@@ -342,6 +345,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // Lower elevator to 0 height after a delay to make sure we don't hit anything.
                 // Lower arm to TRAVEL_POS after a delay to make sure we don't hit anything.
                 // goto DONE.
+
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
@@ -415,7 +419,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         return new TrcPose2D(
             scoringPosX,
             FrcAuto.autoChoices.getAlliance() == Alliance.Blue?
-                RobotParams.STARTPOS_BLUE_Y + 24.0: RobotParams.STARTPOS_RED_Y - 24.0,
+                RobotParams.STARTPOS_BLUE_Y - 20.0 : RobotParams.STARTPOS_RED_Y + 20.0,
             FrcAuto.autoChoices.getAlliance() == Alliance.Blue? 180.0: 0.0);
     }   //getScoringPos
  
