@@ -175,16 +175,20 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         //we havent scored anything, so we are scoring the preload and going to startdelay
                         nextState = State.START_DELAY;
                         robot.autoScoreTask.autoAssistScoreObject(
-                            ObjectType.CUBE, 2, ScoreLocation.MIDDLE, true,  event);
+                            ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false,  event);
+                        sm.waitForSingleEvent(event, nextState);
+
                     }
                     else
                     {
-                        //we've scored the preload, so we are scoring the second piece. since we're not parking, we're done
+                        //we've already scored the preload, score the second piece on the low level (spit intake, set 1 second timer)
                         nextState = doAutoBalance? State.GO_TO_CHARGING_STATION: State.DONE;
-                        robot.autoScoreTask.autoAssistScoreObject(
-                            ObjectType.CUBE, 1, ScoreLocation.MIDDLE, useVision, event);
+                        robot.intake.setPower(moduleName, 0, RobotParams.INTAKE_CUBE_PICKUP_POWER, RobotParams.INTAKE_CUBE_PICKUP_POWER, 0.5);
+                        TrcTimer timer = new TrcTimer(moduleName); 
+                        timer.set(1, event);
+                        sm.waitForSingleEvent(event, nextState);
+
                     }
-                    sm.waitForSingleEvent(event, nextState);
                     piecesScored++;
                     break;
 
@@ -267,8 +271,8 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     else {
                         nextState = State.GO_TO_CHARGING_STATION;
                     }
-                    // Second game piece will be a cube, third game piece will be a cone.
-                    robot.autoPickupTask.autoAssistPickup(
+                    // pick up cube with approach only(only sucks it into the weedwhacker)
+                    robot.autoPickupTask.autoAssistPickupApproachOnly(
                         //piecesScored == 1? ObjectType.CUBE: Right now, we are assuming that we can pick up a cone reliably
                         ObjectType.CUBE, useVision, event);
                     //if (piecesScored == 1) {
@@ -279,23 +283,38 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     sm.waitForSingleEvent(event, nextState);
                     break;
 
+                //drive in front of the rightmost/leftmost pole to prepare for scoring cube on low 
                 case GO_TO_SCORE_POSITION:
-                    // Drives to the scoring position, determining the location based on our startpos and alliance
+                    //we will be scoring low next, so spin intake to make sure cube doesn't fall out like teleop 
+                    robot.intake.setPower(moduleName, 0, RobotParams.INTAKE_CUBE_PICKUP_POWER, RobotParams.INTAKE_CUBE_PICKUP_POWER, 0.0);
+                    //drives in front of the rightmost pole to score cube on low
+                    //startPos 0 and startPos 2 should be the equivalent of 1 and 3 on shuffleboard
                     if (startPos == 0 && alliance == Alliance.Blue || startPos == 2 && alliance == Alliance.Red)
                     {
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                            //intermediate point so that we turn before entering the community
+                            robot.robotDrive.adjustPosByAlliance(
+                                alliance, 
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 220.0, 180.0)), 
+                            //right in front of the rightmost pole, may need to tune 
                             robot.robotDrive.adjustPosByAlliance(
                                 alliance,
-                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85.0, 180.0)));
+                                new TrcPose2D(-14.2, 75.0, 180.0)));
                     }
+                    //drive in front of the leftmost pole(startpos 2 for blue, startpos 0 for red)
                     else
                     {
-                        //TODO: find points
                         robot.robotDrive.purePursuitDrive.start(
                             event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                            new TrcPose2D(0, 0, 0.0),
-                            new TrcPose2D(0, 0, 0));
+                            //intermediate point so that we turn before entering the community
+                            robot.robotDrive.adjustPosByAlliance(
+                                alliance, 
+                                new TrcPose2D(-186, 220.0, 180.0)), 
+                            //right in front of the leftmost pole, may need to tune 
+                            robot.robotDrive.adjustPosByAlliance(
+                                alliance,
+                                new TrcPose2D(-200, 75.0, 180.0)));
                     }
                     /* again we are not going to have time to get a 3rd piece, keeping just in case
                     else if (piecesScored == 2)

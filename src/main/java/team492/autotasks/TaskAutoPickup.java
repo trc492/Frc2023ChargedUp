@@ -72,6 +72,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent elevatorEvent, armEvent, intakeEvent, visionEvent, event;
     private String currOwner = null;
+    private boolean approachOnly = false; 
 
     /**
      * Constructor: Create an instance of the object.
@@ -128,6 +129,13 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         autoAssistPickup(objectType, useVision, false, completionEvent);
     }   //autoAssistPickup
+
+    //approach only pickup: sucks cone/cube into intake without grabbing it
+    //need this to pick up objects for scoring low in auto 
+    public void autoAssistPickupApproachOnly(ObjectType objectType, boolean useVision, TrcEvent completionEvent){
+        approachOnly = true; 
+        autoAssistPickup(objectType, useVision, false, completionEvent); 
+    }
 
     /**
      * This method cancels an in progress auto-assist operation if any.
@@ -326,7 +334,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                         new TrcPose2D(0.0, 60.0, 0.0));
                 }
                 sm.addEvent(event);
-                sm.waitForEvents(State.PICKUP_OBJECT);
+                //if its approach only we only grab it with weedwhacker, don't try to pick it up
+                sm.waitForEvents(approachOnly? State.DONE : State.PICKUP_OBJECT);
                 break;
 
             case PREP_FOR_PICKUP_ONLY:
