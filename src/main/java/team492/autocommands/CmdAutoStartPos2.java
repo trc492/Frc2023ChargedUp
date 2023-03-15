@@ -59,9 +59,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private final TrcEvent tiltEvent;
     private final TrcStateMachine<State> sm;
 
-    private int scoreLevel;
-    private boolean scorePreload;
-    private boolean doAutoBalance;
+    private int scoreLevel = 0;
+    private boolean scorePreload = true;
+    private boolean doAutoBalance = true;
 
     /**
      * Constructor: Create an instance of the object.
@@ -158,8 +158,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     {
                         if (scoreLevel == 0)
                         {
-                            robot.intake.extend(0.5);
-                            robot.intake.setPower(0.7, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.0);
+                            robot.intake.extend();
+                            robot.intake.setPower(0.25, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.5);
                             nextState = State.UNTUCK_ARM;
                         }
                         else
@@ -186,7 +186,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case UNTUCK_ARM:
                     // Just finished scoring at level 0, untuck the arm and prepare to turn.
                     robot.elevatorPidActuator.setPosition(
-                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.0);
+                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
                     robot.armPidActuator.setPosition(
                         null, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
                         null, 0.0);
@@ -212,7 +212,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case START_TO_CLIMB:
                     // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
-                    robot.robotDrive.driveBase.holonomicDrive(0.3, 0.0, 0.0);
+                    robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.2);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
@@ -246,8 +246,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // the robot a little longer to make sure it clears the charging station.
                     if (enterBalance != null && enterBalance == TiltDir.TILT_RIGHT)
                     {
-                        robot.robotDrive.enableDistanceTrigger(6.0, event);
-                        sm.waitForSingleEvent(event, State.GO_BALANCE);
+                        robot.robotDrive.driveBase.stop();
+                        robot.robotDrive.disableTiltTrigger();
+                        sm.setState(State.GO_BALANCE);
                     }
                     else
                     {
@@ -257,9 +258,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case GO_BALANCE:
                     // We're now next to the station outside of community, so we can do autobalance!
-                    robot.robotDrive.driveBase.stop();
-                    robot.robotDrive.disableDistanceTrigger();
-                    robot.robotDrive.disableTiltTrigger();
                     if (doAutoBalance)
                     {
                         robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);

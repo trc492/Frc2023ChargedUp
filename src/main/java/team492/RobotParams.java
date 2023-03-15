@@ -460,7 +460,8 @@ public class RobotParams
     public static final int ARM_ENCODER_CPR                     = 4096;
     public static final int ARM_ZERO                            = 1683;
 
-    public static final boolean ARM_MOTOR_INVERTED              = false;
+    public static final boolean ARM_MOTOR_INVERTED              = true;
+    public static final boolean ARM_ENCODER_INVERTED            = true;
     public static final boolean ARM_LOWER_LIMIT_INVERTED        = true;
     public static final boolean ARM_UPPER_LIMIT_INVERTED        = true;
     public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;

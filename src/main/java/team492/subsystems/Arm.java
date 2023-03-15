@@ -69,6 +69,7 @@ public class Arm
         actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
         actuatorMotor.resetFactoryDefault();
         actuatorMotor.setMotorInverted(RobotParams.ARM_MOTOR_INVERTED);
+        actuatorMotor.setPositionSensorInverted(RobotParams.ARM_ENCODER_INVERTED);
         actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
         actuatorMotor.setBrakeModeEnabled(true);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
@@ -99,9 +100,10 @@ public class Arm
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, LimitSw=%s/%s",
+            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f/%d, LimitSw=%s/%s",
             moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
             pidActuator.getPidController().getTarget(), actuatorMotor.motor.getSelectedSensorPosition(),
+            actuatorMotor.motor.getSensorCollection().getPulseWidthPosition(),
             pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
     }   //toString
 

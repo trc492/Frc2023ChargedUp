@@ -178,9 +178,9 @@ public class FrcAuto implements TrcRobot.RobotMode
             autoPreloadedObjMenu.addChoice("Cube", ObjectType.CUBE, true, false);
             autoPreloadedObjMenu.addChoice("Cone", ObjectType.CONE, false, true);
 
-            autoScoreLevelMenu.addChoice("Ground Level", ScoreLevel.GROUND);
+            autoScoreLevelMenu.addChoice("Ground Level", ScoreLevel.GROUND, true, false);
             autoScoreLevelMenu.addChoice("Level 1", ScoreLevel.LEVEL_1);
-            autoScoreLevelMenu.addChoice("Level 2", ScoreLevel.LEVEL_2, true, true);
+            autoScoreLevelMenu.addChoice("Level 2", ScoreLevel.LEVEL_2, false, true);
 
             autoScoreLocationMenu.addChoice("Left", ScoreLocation.LEFT);
             autoScoreLocationMenu.addChoice("Middle", ScoreLocation.MIDDLE, true, false);

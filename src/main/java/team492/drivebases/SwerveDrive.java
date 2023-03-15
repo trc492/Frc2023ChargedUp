@@ -37,6 +37,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 
 import TrcCommonLib.trclib.TrcTriggerThresholdZones;
+import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPidController;
@@ -74,7 +75,9 @@ public class SwerveDrive extends RobotDrive
     public final TrcSwerveModule lfWheel, lbWheel, rfWheel, rbWheel;
     private final TrcTriggerThresholdZones tiltTrigger;
     private final TrcTriggerThresholdZones distanceTrigger;
+    private String antiDefenseOwner = null;
     private Double startXPosition = null;
+    private Double startYPosition = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -244,7 +247,7 @@ public class SwerveDrive extends RobotDrive
         tiltTrigger = new TrcTriggerThresholdZones(
             "tiltTrigger", this::getGyroRoll, RobotParams.GYRO_TILT_THRESHOLDS, false);
         distanceTrigger = new TrcTriggerThresholdZones(
-            "distanceTrigger", this::getXDistanceTraveled, RobotParams.DRIVE_DISTANCE_THRESHOLDS, false);
+            "distanceTrigger", this::getDistanceTraveled, RobotParams.DRIVE_DISTANCE_THRESHOLDS, false);
     }   //SwerveDrive
 
     /**
@@ -506,12 +509,20 @@ public class SwerveDrive extends RobotDrive
      */
     public void setAntiDefenseEnabled(String owner, boolean enabled)
     {
-        if (owner == null || !enabled || driveBase.acquireExclusiveAccess(owner))
+        boolean requireOwnership = owner != null && enabled && !driveBase.hasOwnership(owner);
+
+        if (requireOwnership && driveBase.acquireExclusiveAccess(owner))
+        {
+            antiDefenseOwner = owner;
+        }
+
+        if (!requireOwnership || antiDefenseOwner != null)
         {
             ((TrcSwerveDriveBase) driveBase).setAntiDefenseEnabled(owner, enabled);
-            if (!enabled)
+            if (antiDefenseOwner != null)
             {
-                driveBase.releaseExclusiveAccess(owner);
+                driveBase.releaseExclusiveAccess(antiDefenseOwner);
+                antiDefenseOwner = null;
             }
         }
     }   //setAntiDefenseEnabled
@@ -659,10 +670,12 @@ public class SwerveDrive extends RobotDrive
      *
      * @return distance traveled since the distance trigger is enabled.
      */
-    private double getXDistanceTraveled()
+    private double getDistanceTraveled()
     {
-        return startXPosition != null? Math.abs(driveBase.getXPosition() - startXPosition): 0.0;
-    }   //getXDistanceTraveled
+        return startXPosition == null || startYPosition == null? 0.0:
+               TrcUtil.magnitude(driveBase.getXPosition() - startXPosition,
+                                 driveBase.getYPosition() - startYPosition);
+    }   //getDistanceTraveled
 
     /**
      * This method enables the distance trigger and will trigger after the robot strafe the given distance.
@@ -674,7 +687,10 @@ public class SwerveDrive extends RobotDrive
     {
         distanceTrigger.setThresholds(new double[]{distance});
         startXPosition = driveBase.getXPosition();
+        startYPosition = driveBase.getYPosition();
         distanceTrigger.enableTrigger(event);
+        robot.globalTracer.traceInfo(
+            "enableDistanceTrigger", "distance=%.2f", distance);
     }   //enableDistanceTrigger
 
     /**
