@@ -36,6 +36,7 @@ import TrcFrcLib.frclib.FrcUserChoices;
 import edu.wpi.first.wpilibj.DriverStation;
 import team492.autocommands.CmdAutoStartPos1Or3;
 import team492.autocommands.CmdAutoStartPos2;
+import team492.autocommands.CmdAutoStartPos2ScoreLow;
 
 /**
  * This class implements the code to run in Autonomous Mode.
@@ -56,6 +57,7 @@ public class FrcAuto implements TrcRobot.RobotMode
     {
         AUTO_STARTPOS_1OR3,
         AUTO_STARTPOS_2,
+        AUTO_STARTPOS_2_SCORE_LOW,
         PP_DRIVE,
         PID_DRIVE,
         TIMED_DRIVE,
@@ -166,6 +168,7 @@ public class FrcAuto implements TrcRobot.RobotMode
 
             autoStrategyMenu.addChoice("Auto StartPos 1 or 3", AutoStrategy.AUTO_STARTPOS_1OR3);
             autoStrategyMenu.addChoice("Auto StartPos 2", AutoStrategy.AUTO_STARTPOS_2, true, false);
+            autoStrategyMenu.addChoice("Auto StartPos 2 Score Low", AutoStrategy.AUTO_STARTPOS_2_SCORE_LOW);
             autoStrategyMenu.addChoice("Pure Pursuit Drive", AutoStrategy.PP_DRIVE);
             autoStrategyMenu.addChoice("PID Drive", AutoStrategy.PID_DRIVE);
             autoStrategyMenu.addChoice("Timed Drive", AutoStrategy.TIMED_DRIVE);
@@ -408,6 +411,10 @@ public class FrcAuto implements TrcRobot.RobotMode
 
             case AUTO_STARTPOS_2:
                 autoCommand = new CmdAutoStartPos2(robot);
+                break;
+
+            case AUTO_STARTPOS_2_SCORE_LOW:
+                autoCommand = new CmdAutoStartPos2ScoreLow(robot);
                 break;
 
             case PP_DRIVE:

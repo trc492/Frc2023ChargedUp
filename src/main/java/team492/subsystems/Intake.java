@@ -147,10 +147,16 @@ public class Intake implements TrcExclusiveSubsystem
         intakePneumatic.extend();
     }   //extend
 
+    public void extend(double delay)
+    {
+        intakePneumatic.extend(delay);
+    }   //extend
+
     public void retract()
     {
         intakePneumatic.retract();
     }   //retract
+
     public void retract(double delay){
         intakePneumatic.retract(delay);
     }
