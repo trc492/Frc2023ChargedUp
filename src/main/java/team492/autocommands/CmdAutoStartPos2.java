@@ -42,6 +42,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
+        UNTUCK_ARM,
         SCORE_PRELOAD,
         TURN,
         START_TO_CLIMB,
@@ -127,6 +128,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             TiltDir enterBalance = robot.robotDrive.enteringBalanceZone();
             TiltDir exitBalance = robot.robotDrive.exitingBalanceZone();
             boolean tiltTriggered = tiltEvent.isSignaled();
+            State nextState;
 
             robot.dashboard.displayPrintf(8, "State: %s", state);
             robot.globalTracer.traceInfo(
@@ -146,20 +148,50 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // When the arm is tucked in, the elevator is raised with a pre-determined offset. Since we
                     // can't zero calibrate, set the elevator to that offset.
                     robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
-                    // Deploy the intake so the arm can come out.
-                    robot.intake.extend();
-                    // Depoly the arm by raising elevator and untuck the arm (fire and forget).
-                    robot.elevatorPidActuator.setPosition(
-                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
-                    robot.armPidActuator.setPosition(
-                        null, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
                     robot.robotDrive.purePursuitDrive.start(
                         event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
 
-                    sm.waitForSingleEvent(event, scorePreload? State.SCORE_PRELOAD: State.TURN);
+                    if (scorePreload)
+                    {
+                        if (scoreLevel == 0)
+                        {
+                            robot.intake.extend(0.5);
+                            robot.intake.setPower(0.7, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.0);
+                            nextState = State.UNTUCK_ARM;
+                        }
+                        else
+                        {
+                            // Deploy the intake so the arm can come out.
+                            robot.intake.extend();
+                            // Depoly the arm by raising elevator and untuck the arm (fire and forget).
+                            robot.elevatorPidActuator.setPosition(
+                                RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
+                            robot.armPidActuator.setPosition(
+                                null, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
+                                null, 0.0);
+                            nextState = State.SCORE_PRELOAD;
+                        }
+                    }
+                    else
+                    {
+                        nextState = State.TURN;
+                    }
+
+                    sm.waitForSingleEvent(event, nextState);
+                    break;
+
+                case UNTUCK_ARM:
+                    // Just finished scoring at level 0, untuck the arm and prepare to turn.
+                    robot.elevatorPidActuator.setPosition(
+                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.0);
+                    robot.armPidActuator.setPosition(
+                        null, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
+                        null, 0.0);
+                    robot.intake.retract(0.5);
+                    sm.waitForSingleEvent(event, State.TURN);
                     break;
 
                 case SCORE_PRELOAD:
