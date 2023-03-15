@@ -272,10 +272,11 @@ public class RobotParams
     public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
     public static final double CAMERA_HEIGHT                    = 41.7;     // Inches from the floor
     public static final double CAMERA_PITCH                     = -44.6;    // Degrees from horizontal
+    public static final double CAMERA_YAW                       = -2.4946892723;
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH,
                           CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
-        new Rotation3d(0.0, Math.toRadians(-CAMERA_PITCH), 0.0));
+        new Rotation3d(0.0, Math.toRadians(-CAMERA_PITCH), Math.toRadians(-CAMERA_YAW)));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
     // Camera: Logitech C310
     public static final double WEBCAM_FX                        = 821.993;  // in pixels
@@ -308,13 +309,13 @@ public class RobotParams
 
     // Tuned 3/02/2023
     public static final double SWERVE_INCHES_PER_COUNT          = 9.3802993133e-4;
-    public static final double SWERVE_KP                        = 0.015;
+    public static final double SWERVE_KP                        = 0.016;
     public static final double SWERVE_KI                        = 0.0;
     public static final double SWERVE_KD                        = 0.004;
     public static final double SWERVE_KF                        = 0.0;
     public static final double SWERVE_TOLERANCE                 = 2.0;
 
-    public static final double GYRO_TURN_KP                     = 0.007;
+    public static final double GYRO_TURN_KP                     = 0.0075;
     public static final double GYRO_TURN_KI                     = 0.0;
     public static final double GYRO_TURN_KD                     = 0.0006;
     public static final double GYRO_TURN_KF                     = 0.0;
@@ -499,8 +500,8 @@ public class RobotParams
     };
 
     // Intake subsystem.
-    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.7;  //0.8
-    public static final double INTAKE_CONE_PICKUP_POWER         = 0.8;
+    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.8;
+    public static final double INTAKE_CONE_PICKUP_POWER         = 0.9;
     public static final double INTAKE_SPIT_POWER                = -0.5;
 
     // Grabber subsystem.

@@ -260,7 +260,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
 
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 2.0);
+                    currOwner, 0.3, elevatorPos, true, 1.0, elevatorEvent, 2.0);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
                     currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
@@ -276,6 +276,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 break;
 
             case DRIVE_TO_SCORING_POS:
+                robot.intake.retract();
                 // If useVision, set robot's field position using detected target info.
                 // Determine scoring position either by vision or drive base odometry.
                 // Drive to the scoring position slowly, then goto SCORE_OBJECT.
@@ -300,14 +301,17 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // getScoringPos will return the scoring position either from vision detected target or from drive
                 // base odometry if not using vision or vision did not detect target.
                 targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
+                targetPose.y += 24.0;
                 robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
+                robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, true, true);
                 robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
+                    currOwner, event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
                 sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 break;
 
             case SCORE_OBJECT:
+                robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, false, false);
                 // If object is a CUBE, release cube grabber, goto RESET.
                 // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
                 if (taskParams.objectType == ObjectType.CUBE)

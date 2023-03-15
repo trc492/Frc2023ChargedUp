@@ -276,7 +276,7 @@ public class Robot extends FrcRobotBase
                 if (RobotParams.Preferences.useGrabber)
                 {
                     grabber = new Grabber();
-                    grabber.releaseAll();
+                    // grabber.releaseAll();
                 }
 
                 autoScoreTask = new TaskAutoScore("TaskAutoScore", this, globalTracer);

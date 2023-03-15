@@ -199,7 +199,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 // Arm tilt trigger to signal tiltEvent.
                 // Strafe up the charging station slowly with a safety limit of 5 seconds.
                 robot.robotDrive.enableTiltTrigger(tiltEvent);
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, startDir*0.25, 0.0, 0.0);
+                robot.robotDrive.driveBase.holonomicDrive(currOwner, startDir*0.2, 0.0, 0.0);
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                 break;
 
@@ -230,6 +230,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 // It takes time for the charging station to balance, wait for it to settle.
                 robot.robotDrive.driveBase.stop(currOwner);
                 robot.robotDrive.disableDistanceTrigger();
+                robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 correcting = false;
                 timer.set(1.0, event);
                 sm.waitForSingleEvent(event, State.CHECK);
@@ -241,6 +242,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     // Robot is tipped. Drive the robot to the climb direction.
                     correcting = true;
                     triggerDistance /= 4.0;
+                    robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
                     robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.1, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB);
                 }
@@ -256,7 +258,6 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 robot.robotDrive.driveBase.stop(currOwner);
                 robot.robotDrive.disableTiltTrigger();
                 robot.robotDrive.disableDistanceTrigger();
-                robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 stopAutoTask(true);
                 break;
         }

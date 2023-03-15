@@ -362,7 +362,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 {
                     //arm isn't low enough to pickup the objects if its not at the lowest pos, may have to add something to keep it from stalling the motor
                     robot.elevatorPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 0.8, null, 0.0);
+                        currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 0.7, null, 0.0);
                     robot.armPidActuator.setPosition(
                         currOwner, 0.75, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     if (taskParams.objectType == ObjectType.CUBE)
@@ -395,9 +395,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 robot.elevatorPidActuator.setMsgTracer(msgTracer, false);
                 robot.armPidActuator.setMsgTracer(msgTracer, false);
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 1.0, 5.0, true, 1.0, event, 0.0);
+                    currOwner, 1.0, 5.0, true, 1.0, event, 2.0);
                 robot.armPidActuator.setPosition(
-                    currOwner, 1.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    currOwner, 1.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 2.0);
                 sm.waitForSingleEvent(event, State.DONE);
                 break;
 

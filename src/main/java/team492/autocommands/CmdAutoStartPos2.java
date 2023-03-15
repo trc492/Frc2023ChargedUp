@@ -152,12 +152,12 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.elevatorPidActuator.setPosition(
                         RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.2, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                        null, 0.5, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
                     robot.robotDrive.purePursuitDrive.start(
                         event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, -20.0, 0.0));
+                        new TrcPose2D(0.0, -24.0, 0.0));
 
                     sm.waitForSingleEvent(event, scorePreload? State.SCORE_PRELOAD: State.TURN);
                     break;
@@ -172,7 +172,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case TURN:
                     // Turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
                     sm.waitForSingleEvent(event, State.START_TO_CLIMB);
                     break;
@@ -181,8 +181,10 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
                     robot.robotDrive.driveBase.holonomicDrive(0.3, 0.0, 0.0);
+                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.2);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
+                    
                 
                 case CLIMB:
                     // We're climbing up the station, going to the next state when we're level on the station.

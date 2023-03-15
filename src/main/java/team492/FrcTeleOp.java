@@ -799,10 +799,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
-                armPosControl = pressed;
-                if (robot.arm != null && !armPosControl)
+                if (pressed)
                 {
-                    robot.armPidActuator.cancel();
+                    //this is the button we press after scoring so the robot is in position to drive around the field safely 
+                    robot.elevatorPidActuator.setPosition(
+                        moduleName, 0, 12.0, true, 1.0, null, 0.0);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    robot.intake.extend(); 
                 }
                 // high pole cone scoring
                 // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[2], true, RobotParams.ARM_MAX_POWER, null, 0.0);
@@ -810,11 +814,33 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:
+                if (pressed)
+                {
+                    robot.autoPickupTask.autoAssistCancel();
+                }
+                robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
+                robot.autoScoreTask.autoAssistCancel();
                 // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[1], true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[1], true, 1.0, null, 0.0);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
+                if (pressed)
+                {
+                    //autopickup
+                    // pickupObject = ObjectType.CONE;
+                    // robot.photonVision.setPipeline(PipelineType.CONE);
+                    //robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
+                    //keeping this until I can test autoPickup(pickup only)
+                    robot.grabber.grabCube(); 
+                    
+                    robot.grabber.releaseCone(); 
+                    robot.elevatorPidActuator.setPosition(
+                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);  
+                }
                 // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[0], true, RobotParams.ARM_MAX_POWER, null, 0.0);
                 // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[0], true, 1.0, null, 0.0);
                 break;
@@ -835,12 +861,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-                //this is the button we press after scoring so the robot is in position to drive around the field safely 
-                robot.elevatorPidActuator.setPosition(
-                    moduleName, 0, 12.0, true, 1.0, null, 0.0);
-                robot.armPidActuator.setPosition(
-                    moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                robot.intake.extend(); 
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
@@ -852,20 +872,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
             //nose out cone pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                if (pressed)
-                {
-                    //autopickup
-                    // pickupObject = ObjectType.CONE;
-                    // robot.ph%otonVision.setPipeline(PipelineType.CONE);
-                    // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
-                    //keeping this until I can test autoPickup(pickup only)
-                    robot.grabber.grabCube(); 
-                    robot.grabber.releaseCone(); 
-                    robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);  
-                }
                 break;
 
             // case FrcJoystick.PANEL_BUTTON_WHITE2:
