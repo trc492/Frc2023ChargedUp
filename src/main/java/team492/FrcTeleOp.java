@@ -48,6 +48,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean controlsEnabled = false;
 
     private boolean fastIntake = false;
+    private boolean fastSpitOut = false; 
     private boolean intakeReversed = false;
     private boolean armControl = false;
     private boolean armPosControl = false;
@@ -539,9 +540,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
                     robot.intake.extend();
-                    double intakePower = fastIntake? RobotParams.INTAKE_CONE_PICKUP_POWER: RobotParams.INTAKE_CUBE_PICKUP_POWER;
+                    double intakePower = RobotParams.INTAKE_CUBE_PICKUP_POWER;
                     if(intakeReversed){
-                        robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER);
+                        intakePower = fastSpitOut? -1.0: RobotParams.INTAKE_SPIT_POWER;
+                        robot.intake.setPower(intakePower);
                     }
                     else{
                         robot.intake.setPower(intakePower);
@@ -846,13 +848,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
-                if (pressed)
-                {
-                    robot.autoPickupTask.autoAssistCancel();
+                if(pressed){
+                    robot.intake.setPower(-1);
                 }
-                robot.armPidActuator.releaseExclusiveAccess(moduleName);
-                robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
-                robot.autoScoreTask.autoAssistCancel();
+                // if (pressed)
+                // {
+                //     robot.autoPickupTask.autoAssistCancel();
+                // }
+                // robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                // robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
+                // robot.autoScoreTask.autoAssistCancel();
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:
@@ -861,6 +866,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
+            //testing autoPickup 
+                robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
@@ -874,22 +881,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
                 break;
 
-            // case FrcJoystick.PANEL_BUTTON_WHITE2:
-            //     if (pressed)
-            //     {
-            //         if (robot.photonVision.getPipeline().equals(PipelineType.CUBE))
-            //         {
-            //             robot.photonVision.setPipeline(PipelineType.CONE);
-            //         }
-            //         else
-            //         {
-            //             robot.photonVision.setPipeline(PipelineType.CUBE);
-            //         }
-            //         visionTime = System.currentTimeMillis();
-            //         lookForObj = true;
-            //     }
+            case FrcJoystick.PANEL_BUTTON_WHITE2:
+                if (pressed)
+                {
+                    robot.autoPickupTask.autoAssistCancel();
+                }
+                robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
+                robot.autoScoreTask.autoAssistCancel();
+            
 
-                // break;
+                break;
         }
     }   //buttonPanelButtonEvent
 

@@ -50,6 +50,7 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANCoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
+import TrcFrcLib.frclib.FrcDashboard;
 import TrcFrcLib.frclib.FrcEncoder;
 import TrcFrcLib.frclib.FrcFalconServo;
 import TrcFrcLib.frclib.FrcPdp;
@@ -66,6 +67,7 @@ public class SwerveDrive extends RobotDrive
     private static final String ZERO_CAL_FILE = "steerzeros.txt";
     private static final boolean logPoseEvents = false;
     private static final boolean tracePidInfo = false;
+    private static final FrcDashboard dashboard = FrcDashboard.getInstance();
     //
     // Swerve steering motors and modules.
     //
@@ -191,7 +193,8 @@ public class SwerveDrive extends RobotDrive
         xPosPidCoeff = yPosPidCoeff = new TrcPidController.PidCoefficients(
             RobotParams.SWERVE_KP, RobotParams.SWERVE_KI, RobotParams.SWERVE_KD, RobotParams.SWERVE_KF);
         turnPidCoeff = new TrcPidController.PidCoefficients(
-            RobotParams.GYRO_TURN_KP, RobotParams.GYRO_TURN_KI, RobotParams.GYRO_TURN_KD, RobotParams.GYRO_TURN_KF);
+            RobotParams.GYRO_TURN_KP, RobotParams.GYRO_TURN_KI, RobotParams.GYRO_TURN_KD, RobotParams.GYRO_TURN_KF,
+            RobotParams.GYRO_TURN_IZONE);
         velPidCoeff = new TrcPidController.PidCoefficients(
             RobotParams.ROBOT_VEL_KP, RobotParams.ROBOT_VEL_KI, RobotParams.ROBOT_VEL_KD, RobotParams.ROBOT_VEL_KF);
 
@@ -376,6 +379,12 @@ public class SwerveDrive extends RobotDrive
     {
         final String funcName = "createSwerveModule";
         // getPosition returns a value in the range of 0 to 1.0 of one revolution.
+        double avg = 0;
+        for(int i = 0; i < 10000; i++)
+        {
+            dashboard.putNumber(name, steerEncoder.getPosition());
+            avg += steerEncoder.getPosition();
+        }
         double encoderPos = steerEncoder.getPosition() * RobotParams.STEER_MOTOR_CPR;
         ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);
         if (errCode != ErrorCode.OK)

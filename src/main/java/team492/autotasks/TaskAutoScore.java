@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
@@ -78,6 +79,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcEvent armEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent event;
+    private final TrcTimer timer;
     private final Alliance alliance;
     private String currOwner = null;
 
@@ -103,7 +105,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         armEvent = new TrcEvent(moduleName + ".armEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
-        event = new TrcEvent(moduleName);
+        event = new TrcEvent(moduleName + ".event");
+        timer = new TrcTimer(moduleName + ".timer");
         alliance = FrcAuto.autoChoices.getAlliance();
     }   //TaskAutoScore
 
@@ -260,10 +263,10 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
 
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.3, elevatorPos, true, 1.0, elevatorEvent, 2.0);
+                    currOwner, 0.3, elevatorPos, true, 1.0, elevatorEvent, 1.5);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 3.0);
+                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.5);
                 sm.addEvent(armEvent);
 
                 if (taskParams.useVision)
@@ -306,7 +309,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                 robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, true, true);
                 robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
+                    currOwner, event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
                 sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 break;
 
@@ -316,7 +319,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
-                    robot.grabber.releaseCube(event);
+                    robot.grabber.releaseCube();
+                    timer.set(0.2, event);
                     sm.waitForSingleEvent(event, State.RESET);
                 }
                 else

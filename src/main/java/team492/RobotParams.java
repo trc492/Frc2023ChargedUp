@@ -270,9 +270,9 @@ public class RobotParams
     public static final double VISION_TARGET_HEIGHT             = 104.0;    // Inches from the floor
     public static final double CAMERA_Y_OFFSET                  = 11.6625;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
-    public static final double CAMERA_HEIGHT                    = 41.7;     // Inches from the floor
-    public static final double CAMERA_PITCH                     = -44.6;    // Degrees from horizontal
-    public static final double CAMERA_YAW                       = -2.4946892723;
+    public static final double CAMERA_HEIGHT                    = 42;     // Inches from the floor
+    public static final double CAMERA_PITCH                     = -45.9094323859;    // Degrees from horizontal
+    public static final double CAMERA_YAW                       = -1.7346883895;
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH,
                           CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
@@ -315,10 +315,11 @@ public class RobotParams
     public static final double SWERVE_KF                        = 0.0;
     public static final double SWERVE_TOLERANCE                 = 2.0;
 
-    public static final double GYRO_TURN_KP                     = 0.0075;
-    public static final double GYRO_TURN_KI                     = 0.0;
-    public static final double GYRO_TURN_KD                     = 0.0006;
+    public static final double GYRO_TURN_KP                     = 0.0085;
+    public static final double GYRO_TURN_KI                     = 0.001;
+    public static final double GYRO_TURN_KD                     = 0.0007;
     public static final double GYRO_TURN_KF                     = 0.0;
+    public static final double GYRO_TURN_IZONE                  = 10.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
     public static final double[] GYRO_TILT_THRESHOLDS           = {-15.0, -5.0, 5.0, 15.0};
     public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {20.0};
@@ -356,7 +357,7 @@ public class RobotParams
     public static final double ROBOT_VEL_KF                     = 1.0 / ROBOT_MAX_VELOCITY;
 
     public static final double DRIVE_SLOW_SCALE                 = 0.2;
-    public static final double TURN_SLOW_SCALE                  = 0.15;
+    public static final double TURN_SLOW_SCALE                  = 0.10; //0.15
     public static final double DRIVE_MEDIUM_SCALE               = 0.65;
     public static final double TURN_MEDIUM_SCALE                = 0.3;
     public static final double DRIVE_FAST_SCALE                 = 1.0;
@@ -468,7 +469,7 @@ public class RobotParams
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
-    public static final double ARM_MAX_POS                      = 90.0;
+    public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_KP                           = 0.02;
     public static final double ARM_KI                           = 0.0;
