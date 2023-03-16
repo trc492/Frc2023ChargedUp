@@ -47,7 +47,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private final TrcTriggerThresholdZones elevatorTrigger;
     private boolean controlsEnabled = false;
 
-    private boolean fastIntake = false;
     private boolean fastSpitOut = false; 
     private boolean intakeReversed = false;
     private boolean armControl = false;

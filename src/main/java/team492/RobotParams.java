@@ -234,7 +234,7 @@ public class RobotParams
     // Digital Input/Output ports.
     //
     public static final int DIO_INTAKE_SENSOR                   = 0;    // Black
-    public static final int DIO_GRABBER_SENSOR                  = 1;
+    public static final int DIO_GRABBER_SENSOR                  = 1;    // Brown
     //
     // PWM channels.
     //
@@ -270,7 +270,7 @@ public class RobotParams
     public static final double VISION_TARGET_HEIGHT             = 104.0;    // Inches from the floor
     public static final double CAMERA_Y_OFFSET                  = 11.6625;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
-    public static final double CAMERA_HEIGHT                    = 42;     // Inches from the floor
+    public static final double CAMERA_HEIGHT                    = 42;       // Inches from the floor
     public static final double CAMERA_PITCH                     = -45.9094323859;    // Degrees from horizontal
     public static final double CAMERA_YAW                       = -1.7346883895;
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
@@ -469,6 +469,8 @@ public class RobotParams
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
+    public static final double ARM_MIN_POS_INTAKE_DOWN          = ARM_LOW_POS;
+    public static final double ARM_MIN_POS_INTAKE_UP            = ARM_LOW_POS;
     public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_KP                           = 0.02;

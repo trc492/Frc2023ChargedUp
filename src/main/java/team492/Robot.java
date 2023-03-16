@@ -270,7 +270,7 @@ public class Robot extends FrcRobotBase
 
                 if (RobotParams.Preferences.useIntake)
                 {
-                    intake = new Intake(ledIndicator, globalTracer);
+                    intake = new Intake(this, globalTracer);
                 }
 
                 if (RobotParams.Preferences.useGrabber)

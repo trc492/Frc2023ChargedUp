@@ -34,13 +34,14 @@ import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcDigitalInput;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import team492.Robot;
 import team492.RobotParams;
 
 public class Intake implements TrcExclusiveSubsystem
 { 
     private static final String moduleName = "Intake";
 
-    private final LEDIndicator ledIndicator;
+    private final Robot robot;
     private final TrcDbgTrace msgTracer;
     private final FrcCANTalon intakeLeftMotor;
     private final FrcCANTalon intakeRightMotor;
@@ -50,9 +51,9 @@ public class Intake implements TrcExclusiveSubsystem
     private boolean sensorActive = false;
     private TrcEvent triggerEvent = null;
 
-    public Intake(LEDIndicator ledIndicator, TrcDbgTrace msgTracer)
+    public Intake(Robot robot, TrcDbgTrace msgTracer)
     {
-        this.ledIndicator = ledIndicator;
+        this.robot = robot;
         this.msgTracer = msgTracer;
 
         intakeLeftMotor = new FrcCANTalon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
@@ -142,24 +143,33 @@ public class Intake implements TrcExclusiveSubsystem
         setPower(null, 0.0, power, power, 0.0);
     }   //setPower
 
-    public void extend()
-    {
-        intakePneumatic.extend();
-    }   //extend
-
     public void extend(double delay)
     {
         intakePneumatic.extend(delay);
+        if (robot.armPidActuator != null)
+        {
+            robot.armPidActuator.setPositionRange(RobotParams.ARM_MIN_POS_INTAKE_DOWN, RobotParams.ARM_MAX_POS);
+        }
     }   //extend
+
+    public void extend()
+    {
+        extend(0.0);
+    }   //extend
+
+    public void retract(double delay)
+    {
+        intakePneumatic.retract(delay);
+        if (robot.armPidActuator != null)
+        {
+            robot.armPidActuator.setPositionRange(RobotParams.ARM_MIN_POS_INTAKE_UP, RobotParams.ARM_MAX_POS);
+        }
+    }
 
     public void retract()
     {
-        intakePneumatic.retract();
+        retract(0.0);
     }   //retract
-
-    public void retract(double delay){
-        intakePneumatic.retract(delay);
-    }
 
     public boolean isExtended()
     {
@@ -219,9 +229,9 @@ public class Intake implements TrcExclusiveSubsystem
             triggerEvent.signal();
         }
 
-        if (ledIndicator != null)
+        if (robot.ledIndicator != null)
         {
-            ledIndicator.setIntakeHasObject(sensorActive);
+            robot.ledIndicator.setIntakeHasObject(sensorActive);
         }
 
         if (msgTracer != null)

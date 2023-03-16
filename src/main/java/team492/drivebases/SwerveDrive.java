@@ -46,11 +46,12 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcPurePursuitDrive;
 import TrcCommonLib.trclib.TrcSwerveDriveBase;
 import TrcCommonLib.trclib.TrcSwerveModule;
+// import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANCoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
-import TrcFrcLib.frclib.FrcDashboard;
+// import TrcFrcLib.frclib.FrcDashboard;
 import TrcFrcLib.frclib.FrcEncoder;
 import TrcFrcLib.frclib.FrcFalconServo;
 import TrcFrcLib.frclib.FrcPdp;
@@ -67,7 +68,7 @@ public class SwerveDrive extends RobotDrive
     private static final String ZERO_CAL_FILE = "steerzeros.txt";
     private static final boolean logPoseEvents = false;
     private static final boolean tracePidInfo = false;
-    private static final FrcDashboard dashboard = FrcDashboard.getInstance();
+    // private static final FrcDashboard dashboard = FrcDashboard.getInstance();
     //
     // Swerve steering motors and modules.
     //
@@ -379,12 +380,20 @@ public class SwerveDrive extends RobotDrive
     {
         final String funcName = "createSwerveModule";
         // getPosition returns a value in the range of 0 to 1.0 of one revolution.
-        double avg = 0;
-        for(int i = 0; i < 10000; i++)
-        {
-            dashboard.putNumber(name, steerEncoder.getPosition());
-            avg += steerEncoder.getPosition();
-        }
+
+        // final int maxLoops = 10000;
+        // double startTime = TrcTimer.getCurrentTime();
+        // double firstReading = steerEncoder.getPosition();
+        // double avg = firstReading;
+        // for(int i = 1; i < maxLoops; i++)
+        // {
+        //     dashboard.putNumber("Graphs/" + name, steerEncoder.getPosition());
+        //     avg += steerEncoder.getPosition();
+        // }
+        // robot.globalTracer.traceInfo(
+        //     funcName, "%s: firstReading=%.0f, avgReading=%.0f, elapsedTime=%.3f",
+        //     firstReading, avg/maxLoops, TrcTimer.getCurrentTime() - startTime);
+
         double encoderPos = steerEncoder.getPosition() * RobotParams.STEER_MOTOR_CPR;
         ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);
         if (errCode != ErrorCode.OK)
