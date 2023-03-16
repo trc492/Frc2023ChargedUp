@@ -215,7 +215,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
-                    
                 
                 case CLIMB:
                     // We're climbing up the station, going to the next state when we're level on the station.
