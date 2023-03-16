@@ -246,9 +246,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // the robot a little longer to make sure it clears the charging station.
                     if (enterBalance != null && enterBalance == TiltDir.TILT_RIGHT)
                     {
-                        robot.robotDrive.driveBase.stop();
-                        robot.robotDrive.disableTiltTrigger();
-                        sm.setState(State.GO_BALANCE);
+                        robot.robotDrive.enableDistanceTrigger(2.0, event);
+                        sm.waitForSingleEvent(event, State.GO_BALANCE);
                     }
                     else
                     {
@@ -258,6 +257,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case GO_BALANCE:
                     // We're now next to the station outside of community, so we can do autobalance!
+                    robot.robotDrive.driveBase.stop();
+                    robot.robotDrive.disableDistanceTrigger();
+                    robot.robotDrive.disableTiltTrigger();
                     if (doAutoBalance)
                     {
                         robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);

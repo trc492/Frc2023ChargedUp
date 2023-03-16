@@ -689,8 +689,6 @@ public class SwerveDrive extends RobotDrive
         startXPosition = driveBase.getXPosition();
         startYPosition = driveBase.getYPosition();
         distanceTrigger.enableTrigger(event);
-        robot.globalTracer.traceInfo(
-            "enableDistanceTrigger", "distance=%.2f", distance);
     }   //enableDistanceTrigger
 
     /**
