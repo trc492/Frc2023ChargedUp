@@ -176,17 +176,8 @@ public class Robot extends FrcRobotBase
             rightDriveStick.setYInverted(true);
         }
 
-        if (RobotParams.Preferences.useOperatorXboxController)
-        {
-            operatorController = new FrcXboxController("OperatorController", RobotParams.XBOX_OPERATOR_CONTROLLER);
-            operatorController.setLeftYInverted(true);
-            operatorController.setRightYInverted(true);
-        }
-        else
-        {
-            operatorStick = new FrcJoystick("operatorStick", RobotParams.JSPORT_OPERATORSTICK);
-            operatorStick.setYInverted(true);
-        }
+        operatorStick = new FrcJoystick("operatorStick", RobotParams.JSPORT_OPERATORSTICK);
+        operatorStick.setYInverted(true);
 
         if (RobotParams.Preferences.useButtonPanels)
         {

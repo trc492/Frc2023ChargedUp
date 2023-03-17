@@ -58,11 +58,11 @@ public class Intake implements TrcExclusiveSubsystem
 
         intakeLeftMotor = new FrcCANTalon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
         intakeLeftMotor.resetFactoryDefault();
-        intakeLeftMotor.setMotorInverted(false);
+        intakeLeftMotor.setMotorInverted(true);
 
         intakeRightMotor = new FrcCANTalon(moduleName + ".rightMotor", RobotParams.CANID_INTAKE_RIGHT);
         intakeRightMotor.resetFactoryDefault();
-        intakeRightMotor.setMotorInverted(false);
+        intakeRightMotor.setMotorInverted(true);
 
         intakePneumatic = new FrcPneumatic(
             moduleName + ".pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,

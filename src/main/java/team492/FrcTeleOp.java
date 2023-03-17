@@ -192,16 +192,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     if (robot.elevator != null && !armControl)
                     {
-                        double elevatorPower = 0.0;
-                        if (RobotParams.Preferences.useOperatorXboxController)
-                        {
-                            elevatorPower = robot.operatorController.getRightYWithDeadband(true);
-                        }
-                        else
-                        {
-                            elevatorPower = robot.operatorStick.getYWithDeadband(true);
-                        }
-                        // robot.elevatorPidActuator.setPower(elevatorPower);
+                        double elevatorPower = robot.operatorStick.getYWithDeadband(true);
                         robot.elevatorPidActuator.setPidPower(elevatorPower, true);
                     }
 
@@ -276,15 +267,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.leftDriveStick.setButtonHandler(enabled? this::leftDriveStickButtonEvent: null);
             robot.rightDriveStick.setButtonHandler(enabled? this::rightDriveStickButtonEvent: null);
         }
-
-        if (RobotParams.Preferences.useOperatorXboxController)
-        {
-            robot.operatorController.setButtonHandler(enabled? this::operatorControllerButtonEvent: null);
-        }
-        else
-        {
-            robot.operatorStick.setButtonHandler(enabled? this::operatorStickButtonEvent: null);
-        }
+        robot.operatorStick.setButtonHandler(enabled? this::operatorStickButtonEvent: null);
 
         if (RobotParams.Preferences.useButtonPanels)
         {
@@ -365,8 +348,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcXboxController.LEFT_BUMPER:
                 if (pressed)
                 {
-                    // Reset all swerve steering to point absolute forward.
-                    robot.robotDrive.setSteerAngleZero(false);
+                    robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_FAST_SCALE;
+                    robot.robotDrive.turnSpeedScale = RobotParams.TURN_FAST_SCALE;
+                }
+                else
+                {
+                    robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_MEDIUM_SCALE;
+                    robot.robotDrive.turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
                 }
                 break;
 
@@ -646,7 +634,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     // TODO (Code Review): Where is the button to do Auto-AssistPickup with PickupOnly? You asked
                     // Kenny to implement it but you are not using it anywhere???
-                    robot.autoPickupTask.autoAssistPickup(pickupObject, true, null);
+                    // robot.autoPickupTask.autoAssistPickup(pickupObject, true, null);
                 }
                 break;
 
@@ -670,103 +658,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
         }
     }   //operatorStickButtonEvent
-
-    /**
-     * This method is called when an operator stick button event is detected.
-     *
-     * @param button specifies the button ID that generates the event
-     * @param pressed specifies true if the button is pressed, false otherwise.
-     */
-    private void operatorControllerButtonEvent(int button, boolean pressed)
-    {
-        robot.dashboard.displayPrintf(
-            8, "OperatorController: button=0x%04x %s", button, pressed ? "pressed" : "released");
-
-        switch (button)
-        {
-            case FrcXboxController.BUTTON_A:
-                break;
-
-            case FrcXboxController.BUTTON_B:
-                break;
-
-            case FrcXboxController.BUTTON_X:
-                if (robot.grabber != null && pressed)
-                {
-                    if(robot.grabber.grabbedCube())
-                    {
-                        robot.grabber.releaseCube();
-                    }
-                    else
-                    {
-                        robot.grabber.grabCube();
-                    }
-                }
-                break;
-
-            case FrcXboxController.BUTTON_Y:
-                if (robot.grabber != null && pressed)
-                {
-                    if(robot.grabber.grabbedCone())
-                    {
-                        robot.grabber.releaseCone();
-                    }
-                    else
-                    {
-                        robot.grabber.grabCone();
-                    }
-                }
-                break;
-
-            case FrcXboxController.LEFT_BUMPER:
-                intakeReversed = pressed;
-                break;
-
-            case FrcXboxController.RIGHT_BUMPER:
-                if (robot.intake != null && pressed)
-                {
-                    if(robot.intake.isExtended())
-                    {
-                        robot.intake.retract();
-                    }
-                    else
-                    {
-                        robot.intake.extend();
-                    }
-                }
-                break;
-
-            case FrcXboxController.BACK:
-                // if (pressed)
-                // {
-                //     // TODO (Code Review): Why not use presetPositionDown???
-                //     if(elevatorPresetIndex >= 0)
-                //     {
-                //         elevatorPresetIndex--;
-                //     }
-                //     robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
-                // }
-                break;
-
-            case FrcXboxController.START:
-                break;
-
-            case FrcXboxController.LEFT_STICK_BUTTON:
-                break;
-
-            case FrcXboxController.RIGHT_STICK_BUTTON:
-                // if (pressed)
-                // {
-                //     // TODO (Code Review): Why not use presetPositionUp???
-                //     if(elevatorPresetIndex < 6)
-                //     {
-                //         elevatorPresetIndex++;
-                //     }
-                //     robot.elevatorPidActuator.setPosition(RobotParams.elevatorPresets[elevatorPresetIndex], true);
-                // }
-                break; 
-        }  
-    }
 
     /**
      * This method is called when a button panel button event is detected.
@@ -847,34 +738,31 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
-                if(pressed){
-                    robot.intake.setPower(-1);
+                if (pressed)
+                {
+                    robot.autoPickupTask.autoAssistCancel();
                 }
-                // if (pressed)
-                // {
-                //     robot.autoPickupTask.autoAssistCancel();
-                // }
-                // robot.armPidActuator.releaseExclusiveAccess(moduleName);
-                // robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
-                // robot.autoScoreTask.autoAssistCancel();
+                robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
+                robot.autoScoreTask.autoAssistCancel();
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:
                 //auto score testing
-                robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, true, null);
+                // robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, true, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
             //testing autoPickup 
-                robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, null);
+                // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
-                if (pressed)
-                {
-                    pickupObject = ObjectType.CUBE;
-                    robot.photonVision.setPipeline(PipelineType.CUBE);
-                }
+                // if (pressed)
+                // {
+                //     pickupObject = ObjectType.CUBE;
+                //     robot.photonVision.setPipeline(PipelineType.CUBE);
+                // }
                 break;
             //nose out cone pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:

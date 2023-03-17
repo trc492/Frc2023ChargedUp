@@ -212,7 +212,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case START_TO_CLIMB:
                     // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
-                    robot.robotDrive.driveBase.holonomicDrive(0.2, 0.0, 0.0);
+                    robot.robotDrive.driveBase.holonomicDrive(0.5, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
                 

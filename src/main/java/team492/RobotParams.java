@@ -41,7 +41,6 @@ public class RobotParams
     {
         // Inputs
         public static final boolean useDriverXboxController     = true;
-        public static final boolean useOperatorXboxController   = false;
         public static final boolean useButtonPanels             = true;
         public static final boolean doOneStickDrive             = false;
         // Sensors
@@ -164,7 +163,6 @@ public class RobotParams
     public static final int XBOX_DRIVER_CONTROLLER              = 0;
     public static final int JSPORT_DRIVER_LEFTSTICK             = 0;
     public static final int JSPORT_DRIVER_RIGHTSTICK            = 1;
-    public static final int XBOX_OPERATOR_CONTROLLER            = 2;
     public static final int JSPORT_OPERATORSTICK                = 2;
     public static final int JSPORT_BUTTON_PANEL                 = 3;
     public static final int JSPORT_SWITCH_PANEL                 = 4;
