@@ -62,6 +62,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private int scoreLevel = 0;
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
+    private boolean untuck = true;
 
     /**
      * Constructor: Create an instance of the object.
@@ -140,19 +141,22 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             {
                 case START:
                     // Read autoChoices.
-                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
-                    scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    // scorePreload = FrcAuto.autoChoices.getScorePreload();
+                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
-                    // When the arm is tucked in, the elevator is raised with a pre-determined offset. Since we
-                    // can't zero calibrate, set the elevator to that offset.
-                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
+                    if (untuck)
+                    {
+                        // When the arm is tucked in, the elevator is raised with a pre-determined offset. Since we
+                        // can't zero calibrate, set the elevator to that offset.
+                        // robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);                        
+                    }
+
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
-                    robot.robotDrive.purePursuitDrive.start(
-                        event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, -24.0, 0.0));
+
 
                     if (scorePreload)
                     {
@@ -161,6 +165,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                             robot.intake.extend(0.05);
                             robot.intake.setPower(0.2, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.5);
                             nextState = State.UNTUCK_ARM;
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                                new TrcPose2D(0.0, -24.0, 0.0));
                         }
                         else
                         {
@@ -179,18 +186,25 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     {
                         nextState = doAutoBalance? State.TURN: State.DONE;
                     }
-
+                    
                     sm.waitForSingleEvent(event, nextState);
                     break;
 
                 case UNTUCK_ARM:
-                    // Just finished scoring at level 0, untuck the arm and prepare to turn.
-                    robot.elevatorPidActuator.setPosition(
-                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
-                    robot.armPidActuator.setPosition(
-                        null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
-                        null, 0.0);
-                    robot.intake.retract(0.8);
+                    if (untuck)
+                    {
+                        // Just finished scoring at level 0, untuck the arm and prepare to turn.
+                        // robot.elevatorPidActuator.setPosition(
+                        //     RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                        // robot.armPidActuator.setPosition(
+                        //     null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
+                        //     null, 0.0);
+                    }
+
+                    robot.intake.retract(untuck? 0.8: 0.1);
+                    robot.robotDrive.purePursuitDrive.start(
+                        event, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, -156.0, 0.0));
                     sm.waitForSingleEvent(event, doAutoBalance? State.TURN: State.DONE);
                     break;
 
@@ -212,7 +226,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case START_TO_CLIMB:
                     // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
-                    robot.robotDrive.driveBase.holonomicDrive(0.5, 0.0, 0.0);
+                    robot.robotDrive.driveBase.holonomicDrive(0.35, 0.0, 0.0);
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
                 

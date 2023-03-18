@@ -386,8 +386,8 @@ public class RobotParams
 
     // Zeroes are normalized offsets which are in the unit of percentage revolution (0.0 to 1.0).
     // This is a backup if file is not found: LF, RF, LB, RB.
-    // 3/05/2023 13:35
-    public static final double[] STEER_ZEROS                    = new double[] {0.712430, 0.279410, 0.900320, 0.445040};
+    // 3/17/2023 14:11
+    public static final double[] STEER_ZEROS                    = new double[] {0.478490, 0.281852, 0.408304, 0.445881};
 
     public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0;
     // public static final TrcPidController.PidCoefficients magicSteerCoeff =
@@ -414,7 +414,7 @@ public class RobotParams
 
     // Elevator subsystem.
     public static final int ELEVATOR_ZERO                       = 1635;
-    public static final double ELEVATOR_AUTOSTART_OFFSET        = 3.7;
+    public static final double ELEVATOR_AUTOSTART_OFFSET        = 2.5;
     public static final int NEO_CPR                             = 42;
     public static final double NEO_NOLOAD_RPM                   = 5676.0;
     public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
@@ -434,7 +434,7 @@ public class RobotParams
     public static final double ELEVATOR_KF                      = 0.0;
     public static final double ELEVATOR_IZONE                   = 0.0;
     public static final double ELEVATOR_TOLERANCE               = 1.0;
-    public static final double ELEVATOR_CAL_POWER               = -0.4;
+    public static final double ELEVATOR_CAL_POWER               = -0.3;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
     public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
     public static final double[] ELEVATOR_TRIGGERS              = {22.0};
@@ -468,7 +468,7 @@ public class RobotParams
     public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
     public static final double ARM_MIN_POS_INTAKE_DOWN          = ARM_LOW_POS;
-    public static final double ARM_MIN_POS_INTAKE_UP            = ARM_LOW_POS;
+    public static final double ARM_MIN_POS_INTAKE_UP            = 20.0;
     public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_KP                           = 0.02;

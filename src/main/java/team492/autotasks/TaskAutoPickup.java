@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
@@ -51,6 +52,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         DRIVE_TO_OBJECT,
         PREP_FOR_PICKUP_ONLY,
         PICKUP_OBJECT,
+        PICKUP_OBJECT_PICKUP_ONLY,
         PREP_FOR_TRAVEL,
         DONE
     }   //enum State
@@ -342,14 +344,28 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
                     robot.grabber.releaseCube();
+                    TrcTimer timer = new TrcTimer("pickupTimer");
+                    timer.set(1, event); 
+                    
                 }
                 else
                 {
-                    robot.grabber.grabCube();
+                    robot.grabber.grabCube(); 
+                    robot.grabber.releaseCone(); 
+                    robot.elevatorPidActuator.setPosition(
+                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 2.0);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 2.0);  
+                    sm.addEvent(elevatorEvent);
+                    sm.addEvent(armEvent); 
                 }
-                robot.grabber.releaseCone();
-                sm.setState(State.PICKUP_OBJECT);
+                sm.waitForEvents(State.PICKUP_OBJECT_PICKUP_ONLY);
                 break;
+            case PICKUP_OBJECT_PICKUP_ONLY:
+                //close cone grabber
+                robot.grabber.grabCone(event); 
+                sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL);
+                break; 
             
             case PICKUP_OBJECT:
                 // Cancel purePursuit drive.

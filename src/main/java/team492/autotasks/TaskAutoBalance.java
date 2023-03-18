@@ -60,7 +60,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private String currOwner = null;
     private double startDir;
     private boolean correcting = false;
-    private double triggerDistance = 20.0;
+    private double triggerDistance = 24.0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -232,8 +232,9 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 robot.robotDrive.disableDistanceTrigger();
                 robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
                 correcting = false;
-                timer.set(1.0, event);
-                sm.waitForSingleEvent(event, State.CHECK);
+                timer.set(2.0, event);
+                // Correcting algorithm does not work, we will just stay on the charging station
+                sm.waitForSingleEvent(event, State.DONE);//CHECK);
                 break;
 
             case CHECK:
