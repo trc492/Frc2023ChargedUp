@@ -79,6 +79,8 @@ public class Elevator
             "Elevator", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer);
 
+        actuatorMotor.resetPositionOnDigitalInput(lowerLimitSw);
+
         // zeroTrigger = new TrcDigitalInputTrigger(moduleName, lowerLimitSw, this::zeroCalCompletion);
     }   //Elevator
 

@@ -42,6 +42,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
+        DRIVE_BACK,
         UNTUCK_ARM,
         SCORE_GAME_PIECE,
         START_DELAY,
@@ -61,21 +62,25 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     private final TrcEvent event;
     private final TrcStateMachine<State> sm;
 
-    private Alliance alliance;
-    private int startPos;
+    private Alliance alliance = Alliance.Blue;
+    /*
+     * 0: Blue right, red left
+     * 2: blue left, red right
+     */
+    private int startPos = 2;
     // private ObjectType loadedObjType;
-    private int scoreLevel;
-    private ScoreLocation scoreLocation;
-    private boolean useVision;
-    private boolean scorePreload;
-    private boolean doAutoBalance;
-    private boolean scoreSecondPiece;
+    private int scoreLevel = 0;
+    private ScoreLocation scoreLocation = ScoreLocation.MIDDLE;
+    private boolean useVision = false;
+    private boolean scorePreload = true;
+    private boolean doAutoBalance = false;
+    private boolean scoreSecondPiece = false;
     //scoreSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
     //!scoreSecondPiece && doAutoBalance: after the start delay, we go out of the community, pickup a second piece, and then park
     //scoreSecondPiece && !doAutoBalance: after the start delay, we go for a second piece and score it
     //!scoreSecondPiece && !doAutoBalance: after the start delay, we stop
     private int piecesScored = 0;
-    private boolean untuck = true;
+    private boolean untuck = false;
     // private ScoreLocation scoreLocation;
 
     /**
@@ -147,15 +152,15 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
             {
                 // TODO: need to add code to check match time in order to determine if we have enough time to fetch 2nd piece. If not, check if we can go balance.
                 case START:
-                    alliance = FrcAuto.autoChoices.getAlliance();
-                    //TODO: should we make startpos 1, 2, or 3 to make it match with shuffleboard?
-                    startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
-                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
-                    scoreLocation = FrcAuto.autoChoices.getScoreLocation();
-                    useVision = FrcAuto.autoChoices.getUseVision();
-                    scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
-                    scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
+                    // alliance = FrcAuto.autoChoices.getAlliance();
+                    // //TODO: should we make startpos 1, 2, or 3 to make it match with shuffleboard?
+                    // startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
+                    // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    // scoreLocation = FrcAuto.autoChoices.getScoreLocation();
+                    // useVision = FrcAuto.autoChoices.getUseVision();
+                    // scorePreload = FrcAuto.autoChoices.getScorePreload();
+                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
                     // Set robot's start position according to autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
                     if(untuck)
@@ -164,22 +169,23 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
                     }
 
-                    // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
-                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
-                    robot.robotDrive.purePursuitDrive.start(
-                        event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, -24.0, 0.0));
-
                     if (scorePreload)
                     {
                         if (scoreLevel == 0)
                         {
                             robot.intake.extend(0.05);
                             robot.intake.setPower(0.2, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.5);
-                            nextState = untuck? State.UNTUCK_ARM: State.EXIT_COMMUNITY;
+                            timer.set(0.9, event);
+                            nextState = State.DRIVE_BACK;
+                            // nextState = untuck? State.UNTUCK_ARM: State.EXIT_COMMUNITY;
                         }
                         else
                         {
+                            // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
+                            robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
+                            robot.robotDrive.purePursuitDrive.start(
+                                event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                                new TrcPose2D(0.0, -24.0, 0.0));
                             // Deploy the intake so the arm can come out.
                             robot.intake.extend(0.05);
                             // Depoly the arm by raising elevator and untuck the arm (fire and forget).
@@ -196,6 +202,15 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         nextState = State.EXIT_COMMUNITY;
                     }
                     sm.waitForSingleEvent(event, nextState);
+                    break;
+
+                case DRIVE_BACK:
+                    // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
+                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
+                    robot.robotDrive.purePursuitDrive.start(
+                        event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, -24.0, 0.0));
+                    sm.waitForSingleEvent(event, untuck? State.UNTUCK_ARM: State.EXIT_COMMUNITY);
                     break;
 
                 case UNTUCK_ARM:
@@ -425,9 +440,19 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     break;
 
                 case EXIT_COMMUNITY:
+                    double xOffset = 0.0;
+                    if((alliance == Alliance.Blue && startPos == 0) || (alliance == Alliance.Red && startPos == 2))
+                    {
+                        xOffset = -RobotParams.EXIT_COMMUNITY_X_OFFSET_MAGNITUDE;
+                    }
+                    else if ((alliance == Alliance.Blue && startPos == 2) || (alliance == Alliance.Red && startPos == 0))
+                    {
+                        xOffset = RobotParams.EXIT_COMMUNITY_X_OFFSET_MAGNITUDE;
+                    }
+                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
                     robot.robotDrive.purePursuitDrive.start(
-                            event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                            new TrcPose2D(startPos == 0? -12.0: 12.0, -156.0, 0.0));
+                            event, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                            new TrcPose2D(xOffset, -156.0, 0.0));
                     sm.waitForSingleEvent(event, State.DONE);
                     break;
 

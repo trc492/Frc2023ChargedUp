@@ -51,6 +51,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean intakeReversed = false;
     private boolean armControl = false;
     private boolean armPosControl = false;
+    private boolean manualElevator = false;
     private ObjectType pickupObject = ObjectType.CUBE;
 
     /**
@@ -193,7 +194,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     if (robot.elevator != null && !armControl)
                     {
                         double elevatorPower = robot.operatorStick.getYWithDeadband(true);
-                        robot.elevatorPidActuator.setPidPower(elevatorPower, true);
+                        if (manualElevator)
+                        {
+                            robot.elevatorPidActuator.setPower(elevatorPower);
+                        }
+                        else
+                        {
+                            robot.elevatorPidActuator.setPidPower(elevatorPower, true);
+                        }
                     }
 
                     if (robot.arm != null)
@@ -328,7 +336,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BUTTON_X:
-                robot.robotDrive.setAntiDefenseEnabled(moduleName, pressed);
+                // Ownership issues
+                // robot.robotDrive.setAntiDefenseEnabled(moduleName, pressed);
                 break;
 
             case FrcXboxController.BUTTON_Y:
@@ -728,7 +737,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     //robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
 
                     //AutoPickup PickupOnly
-                    robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
+                    // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
 
                     //AutoPickup Manual Version
                     robot.grabber.grabCube(); 
@@ -755,6 +764,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:
+                manualElevator = pressed;
                 //auto score testing
                 // robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, true, null);
                 break;
@@ -773,6 +783,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
             //nose out cone pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
+                if (pressed)
+                {
+                    robot.robotDrive.purePursuitDrive.start(
+                            null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                            new TrcPose2D(0.0, -120.0, 0.0));                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:

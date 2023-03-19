@@ -62,7 +62,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private int scoreLevel = 0;
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
-    private boolean untuck = true;
+    private boolean untuck = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -164,7 +164,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                         {
                             robot.intake.extend(0.05);
                             robot.intake.setPower(0.2, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.5);
-                            nextState = State.UNTUCK_ARM;
+                            // nextState = untuck? State.UNTUCK_ARM: State.TURN;
                             robot.robotDrive.purePursuitDrive.start(
                                 event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                                 new TrcPose2D(0.0, -24.0, 0.0));
@@ -187,7 +187,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                         nextState = doAutoBalance? State.TURN: State.DONE;
                     }
                     
-                    sm.waitForSingleEvent(event, nextState);
+                    sm.waitForSingleEvent(event, State.TURN);
                     break;
 
                 case UNTUCK_ARM:

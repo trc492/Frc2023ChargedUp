@@ -149,6 +149,8 @@ public class RobotParams
     public static final double CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X =
         (RobotParams.CHARGING_STATION_CENTER_X + RobotParams.CHARGING_STATION_WIDTH/2.0)/2.0;
 
+    public static final double EXIT_COMMUNITY_X_OFFSET_MAGNITUDE= 6.0;
+
     public static final double HIGH_POLE_HEIGHT                 = 3.0*12.0 + 10.0;
     public static final double LOW_POLE_HEIGHT                  = 2.0*12.0 + 10.0;
     public static final double HIGH_POLE_TAPE_HEIGHT            = HIGH_POLE_HEIGHT - 2.1875;
@@ -434,7 +436,7 @@ public class RobotParams
     public static final double ELEVATOR_KF                      = 0.0;
     public static final double ELEVATOR_IZONE                   = 0.0;
     public static final double ELEVATOR_TOLERANCE               = 1.0;
-    public static final double ELEVATOR_CAL_POWER               = -0.3;
+    public static final double ELEVATOR_CAL_POWER               = -0.5;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
     public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
     public static final double[] ELEVATOR_TRIGGERS              = {22.0};
