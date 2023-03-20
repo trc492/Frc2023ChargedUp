@@ -393,6 +393,7 @@ public class SwerveDrive extends RobotDrive
             robot.globalTracer.traceInfo(
                 funcName, "[%.3f] %s: firstReading=%f, averageReading=%f",
                 TrcTimer.getCurrentTime() - startTime, name, firstReading, encoderPos/maxLoops);
+            encoderPos /= maxLoops;
         }
 
         encoderPos *= RobotParams.STEER_MOTOR_CPR;
