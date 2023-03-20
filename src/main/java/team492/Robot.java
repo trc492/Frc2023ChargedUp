@@ -350,11 +350,11 @@ public class Robot extends FrcRobotBase
         //
         if (runMode != RunMode.DISABLED_MODE && RobotParams.Preferences.useTraceLog)
         {
-            openTraceLog(matchInfo);
+            openTraceLog(matchInfo, runMode);
             setTraceLogEnabled(true);
         }
         globalTracer.traceInfo(
-            funcName, "[%.3f] %s: ***** %s *****", TrcTimer.getModeElapsedTime(), matchInfo.eventDate, runMode);
+            funcName, "%s: [%.3f] ***** Start %s *****", matchInfo.eventDate, TrcTimer.getModeElapsedTime(), runMode);
 
         //
         // Start subsystems.
@@ -377,7 +377,7 @@ public class Robot extends FrcRobotBase
     {
         final String funcName = "robotStopMode";
 
-        globalTracer.traceInfo(funcName, "[%.3f] STOPPING: ***** %s *****", TrcTimer.getModeElapsedTime(), runMode);
+        globalTracer.traceInfo(funcName, "[%.3f] ***** Stop %s *****", TrcTimer.getModeElapsedTime(), runMode);
         //
         // Stop subsystems.
         //
@@ -651,14 +651,17 @@ public class Robot extends FrcRobotBase
      * to enable/disable it.
      *
      * @param matchInfo specifies the match info from which the trace log file name is derived.
+     * @param runMode specifies the current run mode.
      */
-    public void openTraceLog(FrcMatchInfo matchInfo)
+    public void openTraceLog(FrcMatchInfo matchInfo, RunMode runMode)
     {
         if (RobotParams.Preferences.useTraceLog && !traceLogOpened)
         {
             String fileName = matchInfo.eventName != null?
-                String.format(Locale.US, "%s_%s%03d", matchInfo.eventName, matchInfo.matchType, matchInfo.matchNumber):
-                getCurrentRunMode().name();
+                String.format(
+                    Locale.US, "%s_%s%03d_%s",
+                    matchInfo.eventName, matchInfo.matchType, matchInfo.matchNumber, runMode):
+                runMode.name();
 
             traceLogOpened = globalTracer.openTraceLog(RobotParams.TEAM_FOLDER + "/tracelogs", fileName);
         }

@@ -71,8 +71,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
      */
     public CmdAutoStartPos2(Robot robot)
     {
-        robot.globalTracer.traceInfo(moduleName, ">>> robot=%s, choices=%s", robot, FrcAuto.autoChoices);
-
         this.robot = robot;
         event = new TrcEvent(moduleName);
         tiltEvent = new TrcEvent(moduleName);

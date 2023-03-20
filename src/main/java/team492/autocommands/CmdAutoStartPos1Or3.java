@@ -90,8 +90,6 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
      */
     public CmdAutoStartPos1Or3(Robot robot)
     {
-        robot.globalTracer.traceInfo(moduleName, ">>> robot=%s, choices=%s", robot, FrcAuto.autoChoices);
-
         this.robot = robot;
         timer = new TrcTimer(moduleName);
         event = new TrcEvent(moduleName);
