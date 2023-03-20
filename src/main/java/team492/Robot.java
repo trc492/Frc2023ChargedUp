@@ -241,7 +241,6 @@ public class Robot extends FrcRobotBase
             // Create and initialize RobotDrive subsystem.
             //
             robotDrive = new SwerveDrive(this);
-
             //
             // Create and initialize other subsystems.
             //
@@ -344,7 +343,6 @@ public class Robot extends FrcRobotBase
         // Read FMS Match info.
         //
         FrcMatchInfo matchInfo = FrcMatchInfo.getMatchInfo();
-
         //
         // Start trace logging.
         //
@@ -355,7 +353,6 @@ public class Robot extends FrcRobotBase
         }
         globalTracer.traceInfo(
             funcName, "%s: [%.3f] ***** Start %s *****", matchInfo.eventDate, TrcTimer.getModeElapsedTime(), runMode);
-
         //
         // Start subsystems.
         //
@@ -390,7 +387,6 @@ public class Robot extends FrcRobotBase
         {
         }
         ledIndicator.reset();
-
         //
         // Performance status report.
         //
@@ -406,7 +402,6 @@ public class Robot extends FrcRobotBase
         {
             printPerformanceMetrics(globalTracer);
         }
-
         //
         // Stop trace logging.
         //
@@ -706,22 +701,28 @@ public class Robot extends FrcRobotBase
         return (pressureSensor.getVoltage() - 0.5) * 50.0;
     }   //getPressure
 
+    /**
+     * This method configures the subsystems to Turtle Mode which means to retract everything so that the robot can
+     * safely travel without damaging the subsystems.
+     */
     public void turtleMode(String owner)
     {
-        double timeout = 0.0;
+        double delay = 0.0;
         // Do we need to move the arm to let the intake retract?
-        if(armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&
+        if (armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&
             elevator.getPosition() <= RobotParams.ELEVATOR_SAFE_HEIGHT)
         {
-            timeout = 0.2;
+            delay = 0.2;
             // Move elevator & arm out of the way
-            elevatorPidActuator.setPosition(owner, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, timeout);
-            armPidActuator.setPosition(owner, RobotParams.ARM_SAFE_POSITION, true, RobotParams.ARM_MAX_POWER, null, timeout);
+            elevatorPidActuator.setPosition(owner, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
+            armPidActuator.setPosition(
+                owner, RobotParams.ARM_SAFE_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
         }
-        intake.retract(timeout);
+        intake.retract(delay);
         // Move elevator & arm to turtle position
-        elevatorPidActuator.setPosition(owner, timeout, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-        armPidActuator.setPosition(owner, timeout, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-    }
+        elevatorPidActuator.setPosition(owner, delay, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
+        armPidActuator.setPosition(
+            owner, delay, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+    }   //turtleMode
 
 }   //class Robot

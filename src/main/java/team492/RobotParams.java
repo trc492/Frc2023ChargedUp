@@ -58,12 +58,13 @@ public class RobotParams
         public static final boolean useExternalOdometry         = false;
         public static final boolean useCANCoder                 = false;
         public static final boolean useAnalogEncoder            = true;
+        public static final boolean avgAnalogEncoder            = true;
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
         public static final boolean useAntiTipping              = false;
         public static final boolean useBalancePidDrive          = false;
         // Subsystems
-        public static final boolean useSubsystems               = true;
+        public static final boolean useSubsystems               = true;     // Master switch for all subsystems.
         public static final boolean useElevator                 = true;
         public static final boolean useArm                      = true;
         public static final boolean useGrabber                  = true;
@@ -158,7 +159,6 @@ public class RobotParams
     public static final double CONE_HALF_HEIGHT                 = 6.34375;  // Inches
     public static final double CONE_HALF_WIDTH                  = 4.0;      // Inches
     public static final double CUBE_HALF_HEIGHT                 = 4.5;      // Inches
-
     //
     // Joystick ports.
     //
@@ -185,7 +185,7 @@ public class RobotParams
     public static final int CANID_RIGHTFRONT_STEER              = 14;
     public static final int CANID_LEFTBACK_STEER                = 15;
     public static final int CANID_RIGHTBACK_STEER               = 16;
-
+    // Applicable only for Swerve Drive if using CANCoders for steering.
     public static final int CANID_LEFTFRONT_STEER_ENCODER       = 23;
     public static final int CANID_RIGHTFRONT_STEER_ENCODER      = 24;
     public static final int CANID_LEFTBACK_STEER_ENCODER        = 25;
@@ -207,18 +207,18 @@ public class RobotParams
     public static final int PDP_CHANNEL_RIGHT_BACK_STEER        = 9;    // Blue: 40A
 
     public static final int PDP_CHANNEL_ELEVATOR                = 2;    // Purple: 40A
-    public static final int PDP_CHANNEL_ARM                     = 1;    // Gray: 40A
+    public static final int PDP_CHANNEL_ARM                     = 1;    // Gray: 20A
     public static final int PDP_CHANNEL_INTAKE_LEFT             = 15;   // Purple: 30A
     public static final int PDP_CHANNEL_INTAKE_RIGHT            = 14;   // Gray: 30A
 
     public static final int PDP_CHANNEL_ROBORIO                 = 20;   // 10A
-    public static final int PDP_CHANNEL_VRM                     = 22;   // 10A
-    public static final int PDP_CHANNEL_PCM                     = 19;
-    public static final int PDP_CHANNEL_RADIO_POE               = 18;   // 10A
-    public static final int PDP_CHANNEL_ETHERNET_SWITCH         = 21;
-    public static final int PDP_CHANNEL_LIMELIGHT               = 0;
-    public static final int PDP_CHANNEL_LED                     = 10;
-    public static final int PDP_DIGITAL_SENSORS                 = 11;
+    public static final int PDP_CHANNEL_VRM                     = 18;   // 10A
+    public static final int PDP_CHANNEL_PCM                     = 19;   // 10A
+    public static final int PDP_CHANNEL_RADIO_POE               = 22;   // 10A
+    public static final int PDP_CHANNEL_ETHERNET_SWITCH         = 21;   // 10A
+    public static final int PDP_CHANNEL_LIMELIGHT               = 0;    // 10A
+    public static final int PDP_CHANNEL_LED                     = 10;   // 10A
+    public static final int PDP_DIGITAL_SENSORS                 = 11;   // 10A
 
     public static final double BATTERY_NOMINAL_VOLTAGE          = 12.0;
     public static final double BATTERY_CAPACITY_WATT_HOUR       = 18.0*12.0;
@@ -263,22 +263,22 @@ public class RobotParams
     //
     // Vision subsystem.
     //
-    public static final int CAMERA_IMAGE_WIDTH                  = 320;
-    public static final int CAMERA_IMAGE_HEIGHT                 = 240;
+    public static final int CAMERA_IMAGE_WIDTH                  = 320;      // in pixels
+    public static final int CAMERA_IMAGE_HEIGHT                 = 240;      // in pixels
     public static final double CAMERA_DATA_TIMEOUT              = 0.5;      // 500ms
     public static final double VISION_TIMEOUT                   = 0.5;      // 500ms
-    public static final double VISION_TARGET_HEIGHT             = 104.0;    // Inches from the floor
+    public static final double VISION_TARGET_HEIGHT             = 104.0;    // Inches from the floor (not used)
     public static final double CAMERA_Y_OFFSET                  = 11.6625;  // Inches from the center of the robot
     public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
     public static final double CAMERA_HEIGHT                    = 42;       // Inches from the floor
-    public static final double CAMERA_PITCH                     = -45.9094323859;    // Degrees from horizontal
-    public static final double CAMERA_YAW                       = -1.7346883895;
+    public static final double CAMERA_PITCH                     = -45.9094323859;   // degrees from horizontal
+    public static final double CAMERA_YAW                       = -1.7346883895;    // degrees from front
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH,
                           CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
         new Rotation3d(0.0, Math.toRadians(-CAMERA_PITCH), Math.toRadians(-CAMERA_YAW)));
     public static final double APRILTAG_SIZE                    = 6.0 / TrcUtil.INCHES_PER_METER;   //  in meters
-    // Camera: Logitech C310
+    // Camera: Logitech C310 (not used)
     public static final double WEBCAM_FX                        = 821.993;  // in pixels
     public static final double WEBCAM_FY                        = 821.993;  // in pixels
     public static final double WEBCAM_CX                        = 330.489;  // in pixels
@@ -286,13 +286,14 @@ public class RobotParams
     //
     // DriveBase subsystem.
     //
+    // West Coast Drive Base (not used);
     public static final double WCD_INCHES_PER_COUNT             = 2.2421;
     public static final double WCD_KP                           = 0.011;
     public static final double WCD_KI                           = 0.0;
     public static final double WCD_KD                           = 0.0013;
     public static final double WCD_KF                           = 0.0;
     public static final double WCD_TOLERANCE                    = 2.0;
-
+    // Mecanum Drive Base (not used).
     public static final double MECANUM_X_INCHES_PER_COUNT       = 2.2421;
     public static final double MECANUM_X_KP                     = 0.011;
     public static final double MECANUM_X_KI                     = 0.0;
@@ -307,6 +308,7 @@ public class RobotParams
     public static final double MECANUM_Y_KF                     = 0.0;
     public static final double MECANUM_Y_TOLERANCE              = 2.0;
 
+    // Swerve Drive Base.
     // Tuned 3/02/2023
     public static final double SWERVE_INCHES_PER_COUNT          = 9.3802993133e-4;
     public static final double SWERVE_KP                        = 0.016;
@@ -323,7 +325,7 @@ public class RobotParams
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
     public static final double[] GYRO_TILT_THRESHOLDS           = {-15.0, -5.0, 5.0, 15.0};
     public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {20.0};
-
+    // For BalancePidDrive (not used).
     public static final double GYRO_PITCH_KP                    = 0.0095;
     public static final double GYRO_PITCH_KI                    = 0.0;
     public static final double GYRO_PITCH_KD                    = 0.001;
@@ -334,7 +336,7 @@ public class RobotParams
     public static final double GYRO_PITCH_PID_RAMP_RATE         = 0.2;
 
     public static final double GYRO_ASSIST_TURN_GAIN            = 0.1;
-
+    // Not tuned (not used).
     public static final double X_TIPPING_KP                     = 0.01;
     public static final double X_TIPPING_KI                     = 0.0;
     public static final double X_TIPPING_KD                     = 0.0;
@@ -347,9 +349,9 @@ public class RobotParams
     public static final double Y_TIPPING_TOLERANCE              = 10.0;
     public static final double Y_TIPPING_SETTLING_TIME          = 0.2;
 
-    public static final double ROBOT_MAX_VELOCITY               = 180.0;
-    public static final double ROBOT_MAX_ACCELERATION           = 2100.0;
-    public static final double ROBOT_MAX_TURN_RATE              = 1000.0;
+    public static final double ROBOT_MAX_VELOCITY               = 180.0;    // TODO: Please tune
+    public static final double ROBOT_MAX_ACCELERATION           = 2100.0;   // TODO: Please tune
+    public static final double ROBOT_MAX_TURN_RATE              = 1000.0;   // TODO: Please tune
     public static final double ROBOT_VEL_KP                     = 0.0;
     public static final double ROBOT_VEL_KI                     = 0.0;
     public static final double ROBOT_VEL_KD                     = 0.0;
@@ -364,8 +366,8 @@ public class RobotParams
     public static final double TURN_FAST_SCALE                  = 1.0;
 
     public static final double DRIVE_MAX_XPID_POWER             = 0.5;
-    public static final double DRIVE_MAX_YPID_POWER             = 0.6;
-    public static final double DRIVE_MAX_TURNPID_POWER          = 1.0;
+    public static final double DRIVE_MAX_YPID_POWER             = 0.6;  // TODO: Why is this different from X???
+    public static final double DRIVE_MAX_TURNPID_POWER          = 1.0;  // TODO: Really? Full power turn???
 
     public static final double DRIVE_MAX_XPID_RAMP_RATE         = 0.5;
     public static final double DRIVE_MAX_YPID_RAMP_RATE         = 0.6;
@@ -388,8 +390,8 @@ public class RobotParams
 
     // Zeroes are normalized offsets which are in the unit of percentage revolution (0.0 to 1.0).
     // This is a backup if file is not found: LF, RF, LB, RB.
-    // 3/17/2023 14:11
-    public static final double[] STEER_ZEROS                    = new double[] {0.478490, 0.281852, 0.408304, 0.445881};
+    // 3/20/2023 14:18
+    public static final double[] STEER_ZEROS                    = new double[] {0.482676, 0.278620, 0.406128, 0.441751};
 
     public static final double STEER_MAX_VEL_COUNT_PER_100MS    = (STEER_MAX_VEL / STEER_DEGREES_PER_COUNT) / 10.0;
     // public static final TrcPidController.PidCoefficients magicSteerCoeff =
@@ -415,7 +417,7 @@ public class RobotParams
     //
 
     // Elevator subsystem.
-    public static final int ELEVATOR_ZERO                       = 1635;
+    public static final int ELEVATOR_ZERO                       = 1628;
     public static final double ELEVATOR_AUTOSTART_OFFSET        = 2.5;
     public static final int NEO_CPR                             = 42;
     public static final double NEO_NOLOAD_RPM                   = 5676.0;

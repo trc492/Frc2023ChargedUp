@@ -29,10 +29,7 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.BalanceStrafeDir;
-import team492.FrcAuto.ObjectType;
-import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
-import team492.vision.PhotonVision.PipelineType;
 
 /**
  * This class implements the code to run in TeleOp Mode.
@@ -52,7 +49,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean armControl = false;
     private boolean armPosControl = false;
     private boolean manualElevator = false;
-    private ObjectType pickupObject = ObjectType.CUBE;
 
     /**
      * Constructor: Create an instance of the object.
@@ -315,7 +311,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      * @param button specifies the button ID that generates the event.
      * @param pressed specifies true if the button is pressed, false otherwise.
      */
-    private void driverControllerButtonEvent(int button, boolean pressed)
+    protected void driverControllerButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(
             8, "DriverController: button=0x%04x %s", button, pressed ? "pressed" : "released");
@@ -422,7 +418,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      * @param button specifies the button ID that generates the event
      * @param pressed specifies true if the button is pressed, false otherwise.
      */
-    private void leftDriveStickButtonEvent(int button, boolean pressed)
+    protected void leftDriveStickButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(
             8, "LeftDriveStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
@@ -473,7 +469,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      * @param button specifies the button ID that generates the event
      * @param pressed specifies true if the button is pressed, false otherwise.
      */
-    private void rightDriveStickButtonEvent(int button, boolean pressed)
+    protected void rightDriveStickButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(
             8, "RightDriveStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
@@ -522,7 +518,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      * @param button specifies the button ID that generates the event
      * @param pressed specifies true if the button is pressed, false otherwise.
      */
-    private void operatorStickButtonEvent(int button, boolean pressed)
+    protected void operatorStickButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(
             8, "OperatorStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
@@ -674,7 +670,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      * @param button specifies the button ID that generates the event
      * @param pressed specifies true if the button is pressed, false otherwise.
      */
-    private void buttonPanelButtonEvent(int button, boolean pressed)
+    protected void buttonPanelButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(
             8, "ButtonPanel: button=0x%04x %s", button, pressed ? "pressed" : "released");
@@ -810,7 +806,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      * @param button specifies the button ID that generates the event
      * @param pressed specifies true if the button is pressed, false otherwise.
      */
-    private void switchPanelButtonEvent(int button, boolean pressed)
+    protected void switchPanelButtonEvent(int button, boolean pressed)
     {
         robot.dashboard.displayPrintf(
             8, "SwitchPanel: button=0x%04x %s", button, pressed ? "pressed" : "released");

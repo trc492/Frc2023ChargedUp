@@ -27,13 +27,16 @@ import java.util.Locale;
 import TrcCommonLib.command.CmdDriveMotorsTest;
 import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import team492.drivebases.SwerveDrive;
 import team492.vision.OpenCvVision.ObjectType;
 import team492.vision.PhotonVision.PipelineType;
+import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcChoiceMenu;
 import TrcFrcLib.frclib.FrcPhotonVision;
 import TrcFrcLib.frclib.FrcUserChoices;
+import TrcFrcLib.frclib.FrcXboxController;
 import TrcCommonLib.trclib.TrcMotor;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
 import TrcCommonLib.trclib.TrcPidActuator;
@@ -217,6 +220,7 @@ public class FrcTest extends FrcTeleOp
     private double prevVelocity = 0.0;
     private double[] steerZeros = new double[4];
     private long steerZeroSumCount = 0;
+    private boolean swerveCalibrating = false;
 
     private TrcPidController tunePidCtrl = null;
     private TrcPidController.PidCoefficients savedPidCoeffs = null;
@@ -272,17 +276,6 @@ public class FrcTest extends FrcTeleOp
                 {
                     robot.openCvVision.setDetectObjectType(ObjectType.APRILTAG);
                     robot.openCvVision.setVideoOutput(0, true);
-                }
-                break;
-
-            case SWERVE_CALIBRATION:
-                if (robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
-                {
-                    for (int i = 0; i < steerZeros.length; i++)
-                    {
-                        steerZeros[i] = 0.0;
-                    }
-                    steerZeroSumCount = 0;
                 }
                 break;
 
@@ -392,15 +385,6 @@ public class FrcTest extends FrcTeleOp
     public void stopMode(RunMode prevMode, RunMode nextMode)
     {
         super.stopMode(prevMode, nextMode);
-        if (testChoices.getTest() == Test.SWERVE_CALIBRATION &&
-            robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
-        {
-            for (int i = 0; i < steerZeros.length; i++)
-            {
-                steerZeros[i] /= steerZeroSumCount;
-            }
-            SwerveDrive.saveSteerZeroPositions(steerZeros);
-        }
     }   //stopMode
 
     //
@@ -462,9 +446,9 @@ public class FrcTest extends FrcTeleOp
                 prevTime = currTime;
                 prevVelocity = velocity;
 
-                robot.dashboard.displayPrintf(8, "Drive Vel: (%.1f/%.1f)", velocity, maxDriveVelocity);
-                robot.dashboard.displayPrintf(9, "Drive Accel: (%.1f/%.1f)", acceleration, maxDriveAcceleration);
-                robot.dashboard.displayPrintf(10, "Turn Rate: (%.1f/%.1f)", turnRate, maxTurnRate);
+                robot.dashboard.displayPrintf(1, "Drive Vel: (%.1f/%.1f)", velocity, maxDriveVelocity);
+                robot.dashboard.displayPrintf(2, "Drive Accel: (%.1f/%.1f)", acceleration, maxDriveAcceleration);
+                robot.dashboard.displayPrintf(3, "Turn Rate: (%.1f/%.1f)", turnRate, maxTurnRate);
                 break;
 
             default:
@@ -496,7 +480,7 @@ public class FrcTest extends FrcTeleOp
                     break;
 
                 case SWERVE_CALIBRATION:
-                    if (robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                    if (robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive && swerveCalibrating)
                     {
                         SwerveDrive swerveDrive = (SwerveDrive) robot.robotDrive;
                         double[] rawPos = new double[steerZeros.length];
@@ -508,12 +492,20 @@ public class FrcTest extends FrcTeleOp
                         }
                         steerZeroSumCount++;
                         robot.dashboard.displayPrintf(
-                            8, "SteerZeros.Raw: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
-                            rawPos[0], rawPos[1], rawPos[2], rawPos[3]);
+                            1, "SteerEncVolt(%.3f): lf:%.3f, rf:%.3f, lb:%.3f, rb:%.3f",
+                            RobotController.getVoltage5V(),
+                            ((FrcAnalogEncoder) swerveDrive.steerEncoders[0]).getRawVoltage(),
+                            ((FrcAnalogEncoder) swerveDrive.steerEncoders[1]).getRawVoltage(),
+                            ((FrcAnalogEncoder) swerveDrive.steerEncoders[2]).getRawVoltage(),
+                            ((FrcAnalogEncoder) swerveDrive.steerEncoders[3]).getRawVoltage());
                         robot.dashboard.displayPrintf(
-                            9, "SteerZeros.Avg: lf=%.3f,rf=%.3f,lb=%.3f,rb=%.3f",
-                            steerZeros[0]/steerZeroSumCount, steerZeros[1]/steerZeroSumCount,
-                            steerZeros[2]/steerZeroSumCount, steerZeros[3]/steerZeroSumCount);
+                            2, "SteerEnc(Raw/Avg): lf=%.3f/%f, rf=%.3f/%f, lb=%.3f/%f, rb=%.3f/%f",
+                            rawPos[0], steerZeros[0]/steerZeroSumCount, rawPos[1], steerZeros[1]/steerZeroSumCount,
+                            rawPos[2], steerZeros[2]/steerZeroSumCount, rawPos[3], steerZeros[3]/steerZeroSumCount);
+                        robot.dashboard.displayPrintf(
+                            3, "SteerEncPos: lf=%.3f, rf=%.3f, lb=%.3f, rb=%.3f",
+                            swerveDrive.steerEncoders[0].getPosition(), swerveDrive.steerEncoders[1].getPosition(),
+                            swerveDrive.steerEncoders[2].getPosition(), swerveDrive.steerEncoders[3].getPosition());
                     }
                     break;
 
@@ -523,10 +515,10 @@ public class FrcTest extends FrcTeleOp
                     double rfEnc = robot.robotDrive.rfDriveMotor.getPosition();
                     double lbEnc = robot.robotDrive.lbDriveMotor.getPosition();
                     double rbEnc = robot.robotDrive.rbDriveMotor.getPosition();
-                    robot.dashboard.displayPrintf(8, "Enc:lf=%.0f,rf=%.0f", lfEnc, rfEnc);
-                    robot.dashboard.displayPrintf(9, "Enc:lb=%.0f,rb=%.0f", lbEnc, rbEnc);
-                    robot.dashboard.displayPrintf(10, "EncAverage=%f", (lfEnc + rfEnc + lbEnc + rbEnc) / 4.0);
-                    robot.dashboard.displayPrintf(11, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
+                    robot.dashboard.displayPrintf(1, "Enc:lf=%.0f,rf=%.0f", lfEnc, rfEnc);
+                    robot.dashboard.displayPrintf(2, "Enc:lb=%.0f,rb=%.0f", lbEnc, rbEnc);
+                    robot.dashboard.displayPrintf(3, "EncAverage=%f", (lfEnc + rfEnc + lbEnc + rbEnc) / 4.0);
+                    robot.dashboard.displayPrintf(4, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
                     break;
 
                 case PP_DRIVE:
@@ -535,7 +527,7 @@ public class FrcTest extends FrcTeleOp
                 case TUNE_Y_PID:
                 case TUNE_TURN_PID:
                     TrcPidController xPidCtrl, yPidCtrl, turnPidCtrl;
-                    int lineNum = 9;
+                    int lineNum = 2;
 
                     if (testChoices.getTest() == Test.PP_DRIVE)
                     {
@@ -550,7 +542,7 @@ public class FrcTest extends FrcTeleOp
                         turnPidCtrl = robot.robotDrive.pidDrive.getTurnPidCtrl();
                     }
 
-                    robot.dashboard.displayPrintf(8, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
+                    robot.dashboard.displayPrintf(1, "RobotPose=%s", robot.robotDrive.driveBase.getFieldPosition());
                     if (xPidCtrl != null)
                     {
                         xPidCtrl.displayPidInfo(lineNum);
@@ -583,8 +575,69 @@ public class FrcTest extends FrcTeleOp
     {
         Test test = testChoices.getTest();
 
-        return test == Test.SUBSYSTEMS_TEST || test == Test.VISION_TEST || test == Test.DRIVE_SPEED_TEST;
+        return test == Test.SUBSYSTEMS_TEST || test == Test.VISION_TEST || test == Test.DRIVE_SPEED_TEST ||
+               test == Test.SWERVE_CALIBRATION;
     }   //allowTeleOp
+
+    //
+    // Overrides ButtonHandler in TeleOp.
+    //
+
+    /**
+     * This method is called when an operator stick button event is detected.
+     *
+     * @param button specifies the button ID that generates the event
+     * @param pressed specifies true if the button is pressed, false otherwise.
+     */
+    @Override
+    protected void driverControllerButtonEvent(int button, boolean pressed)
+    {
+        if (allowTeleOp())
+        {
+            boolean processed = false;
+            //
+            // In addition to or instead of the button controls handled by FrcTeleOp, we can add to or override the
+            // FrcTeleOp button actions.
+            //
+            robot.dashboard.displayPrintf(
+                8, "OperatorStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
+            switch (button)
+            {
+                case FrcXboxController.BUTTON_A:
+                    if (testChoices.getTest() == Test.SWERVE_CALIBRATION &&
+                        robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                    {
+                        if (pressed)
+                        {
+                            startSwerveCalibration();
+                            swerveCalibrating = true;
+                        }
+                        processed = true;
+                    }
+                    break;
+
+                case FrcXboxController.BUTTON_B:
+                    if (testChoices.getTest() == Test.SWERVE_CALIBRATION &&
+                        robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                    {
+                        if (pressed)
+                        {
+                            swerveCalibrating = false;
+                            endSwerveCalibration();
+                        }
+                        processed = true;
+                    }
+                    break;
+            }
+            //
+            // If the control was not processed by this method, pass it back to TeleOp.
+            //
+            if (!processed)
+            {
+                super.driverControllerButtonEvent(button, pressed);
+            }
+        }
+    }   //driverControllerButtonEvent
 
     /**
      * This method sets the PID coefficients of the given PID Actuator to values entered from ShuffleBoard for PID
@@ -620,18 +673,18 @@ public class FrcTest extends FrcTeleOp
      */
     private void displaySensorStates()
     {
-        int lineNum = 8;
+        int lineNum = 1;
         //
         // Display drivebase info.
         //
         if (robot.robotDrive != null)
         {
-            // line 8
+            // line 1
             robot.dashboard.displayPrintf(
                 lineNum, "DriveBase: Pose=%s,Vel=%s",
                 robot.robotDrive.driveBase.getFieldPosition(), robot.robotDrive.driveBase.getFieldVelocity());
             lineNum++;
-            // line 9
+            // line 2
             robot.dashboard.displayPrintf(
                 lineNum, "Drive(Pwr/Enc): lf=%.2f/%.0f,rf=%.2f/%.0f,lb=%.2f/%.0f,rb=%.2f/%.0f",
                 robot.robotDrive.lfDriveMotor.getMotorPower(), robot.robotDrive.lfDriveMotor.getPosition(),
@@ -642,7 +695,7 @@ public class FrcTest extends FrcTeleOp
             if (robot.robotDrive instanceof SwerveDrive)
             {
                 SwerveDrive swerveDrive = (SwerveDrive) robot.robotDrive;
-                // line 10
+                // line 3
                 robot.dashboard.displayPrintf(
                     lineNum, "Steer(Enc/Angle): lf=%.3f/%.3f,rf=%.3f/%.3f,lb=%.3f/%.3f,rb=%.3f/%.3f",
                     swerveDrive.lfSteerEncoder.getPosition(), swerveDrive.lfWheel.getSteerAngle(),
@@ -657,35 +710,35 @@ public class FrcTest extends FrcTeleOp
         //
         if (robot.elevator != null)
         {
-            // line 11
+            // line 4
             robot.dashboard.displayPrintf(lineNum, robot.elevator.toString());
             lineNum++;
         }
 
         if (robot.arm != null)
         {
-            // line 12
+            // line 5
             robot.dashboard.displayPrintf(lineNum, robot.arm.toString());
             lineNum++;
         }
 
         if (robot.intake != null)
         {
-            // line 13
+            // line 6
             robot.dashboard.displayPrintf(lineNum, robot.intake.toString());
             lineNum++;
         }
 
         if (robot.grabber != null)
         {
-            // line 14
+            // line 7
             robot.dashboard.displayPrintf(lineNum, robot.grabber.toString());
             lineNum++;
         }
 
         if (robot.battery != null)
         {
-            // line 15
+            // line 8
             robot.dashboard.displayPrintf(lineNum, robot.battery.toString());
             lineNum++;
         }
@@ -746,12 +799,36 @@ public class FrcTest extends FrcTeleOp
 
             if (targetInfo != null)
             {
-                // line 8
+                // line 1
                 robot.dashboard.displayPrintf(
                     lineNum, "OpenCvVision[%s]: targetInfo=%s", robot.openCvVision.getPipeline(), targetInfo);
                 lineNum++;
             }
         }
     }   //doVisionTest
+
+    /**
+     * This methods starts Swerve steering alignment calibration.
+     */
+    private void startSwerveCalibration()
+    {
+        for (int i = 0; i < steerZeros.length; i++)
+        {
+            steerZeros[i] = 0.0;
+        }
+        steerZeroSumCount = 0;
+    }   //startSwerveCalibration
+
+    /**
+     * This methods ends Swerve steering alignment calibration and save the results to the steerzero file.
+     */
+    private void endSwerveCalibration()
+    {
+        for (int i = 0; i < steerZeros.length; i++)
+        {
+            steerZeros[i] /= steerZeroSumCount;
+        }
+        SwerveDrive.saveSteerZeroPositions(steerZeros);
+    }   //endSwerveCalibration
 
 }   //class FrcTest
