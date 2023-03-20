@@ -1,0 +1,93 @@
+globalTracer.robotStartMode_Info: [0.019] Fri Mar 17 15:20:16 PDT 2023: ***** TELEOP_MODE *****
+globalTracer.registerWatchdog_Warn: Watchdog TrcMotor.odometryTask was already registered.
+globalTracer.printThreadStack_Info: thread stack: 
+java.base/java.lang.Thread.getStackTrace(Unknown Source)
+TrcCommonLib.trclib.TrcDbgTrace.printThreadStack(TrcDbgTrace.java:197)
+TrcCommonLib.trclib.TrcDbgTrace.printThreadStack(TrcDbgTrace.java:210)
+TrcCommonLib.trclib.TrcWatchdogMgr.registerWatchdog(TrcWatchdogMgr.java:274)
+TrcCommonLib.trclib.TrcWatchdogMgr.registerWatchdog(TrcWatchdogMgr.java:290)
+TrcCommonLib.trclib.TrcPeriodicThread.run(TrcPeriodicThread.java:385)
+java.base/java.lang.Thread.run(Unknown Source)
+globalTracer.startCompetition_Warn: TELEOP_MODE.periodic took too long (0.048s/0.040s)
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.168/0.020)
+globalTracer.setPower_Info: [10.470] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.040/0.020)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [15.021813] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  13.0, dT=0.020467, CurrErr=  -5.0, ErrRate=   0.0, Output=-0.096(-1.000/ 1.000)
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [28.096748] Arm.pidActuator.pidCtrl: Target=   8.0, Input=   6.6, dT=0.020489, CurrErr=   1.4, ErrRate=  60.1, Output= 0.032(-1.000/ 1.000)
+globalTracer.setPower_Info: [32.936] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [38.137641] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  11.3, dT=0.020517, CurrErr=  -3.3, ErrRate=   0.0, Output=-0.063(-1.000/ 1.000)
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.setPower_Info: [41.783] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [49.993] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [50.501576] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  12.8, dT=0.020455, CurrErr=  -4.8, ErrRate=  -4.3, Output=-0.093(-1.000/ 1.000)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [55.611021] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  11.8, dT=0.020462, CurrErr=  -3.8, ErrRate= -12.9, Output=-0.072(-1.000/ 1.000)
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [70.519160] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  11.0, dT=0.020430, CurrErr=  -3.0, ErrRate=  12.9, Output=-0.056(-1.000/ 1.000)
+globalTracer.setPower_Info: [77.823] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [81.241508] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  11.8, dT=0.020497, CurrErr=  -3.8, ErrRate=   8.6, Output=-0.072(-1.000/ 1.000)
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.setPower_Info: [89.209] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [95.253199] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  13.2, dT=0.019836, CurrErr=  -5.2, ErrRate=   0.0, Output=-0.100(-1.000/ 1.000)
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.setPower_Info: [98.061] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [100.740550] Arm.pidActuator.pidCtrl: Target=   8.0, Input=   8.4, dT=0.020672, CurrErr=  -0.4, ErrRate= -17.0, Output=-0.005(-1.000/ 1.000)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [103.670087] Arm.pidActuator.pidCtrl: Target=   8.0, Input=  11.6, dT=0.020512, CurrErr=  -3.6, ErrRate=  -8.6, Output=-0.068(-1.000/ 1.000)
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [114.074781] Arm.pidActuator.pidCtrl: Target=   8.0, Input=   9.3, dT=0.020375, CurrErr=  -1.3, ErrRate= -17.3, Output=-0.022(-1.000/ 1.000)
+globalTracer.setPower_Info: [118.013] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [118.898] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [129.238] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.startCompetition_Warn: TELEOP_MODE.periodic took too long (0.548s/0.040s)
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.558/0.020)
+globalTracer.startCompetition_Info: *** Transitioning from TELEOP_MODE to DISABLED_MODE ***
+globalTracer.robotStopMode_Info: [0.007] STOPPING: ***** TELEOP_MODE *****
+globalTracer.FrcRobotBase_Info: (TELEOP_MODE->DISABLED_MODE) Performance Metrics: LoopCount=6849
+globalTracer.FrcRobotBase_Info: RobotInit=5.109429, PrevModeStopTask=0.005603, PrevStopMode=0.000849, PrevRobotStopMode=0.002582, RobotStartMode=0.033269, startMode=0.067251, startTask=0.000058
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.000719/0.020624
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.001382/0.548472
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.000082/0.003787
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003314/0.010018
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.000326/0.996304
+globalTracer.TaskPerformance_Info: DriverController.buttonEvent: PRE_PERIODIC_TASK=0.000011/0.019761
+globalTracer.TaskPerformance_Info: operatorStick.buttonEvent: PRE_PERIODIC_TASK=0.000017/0.019761
+globalTracer.TaskPerformance_Info: buttonPanel.buttonEvent: PRE_PERIODIC_TASK=0.000016/0.019761
+globalTracer.TaskPerformance_Info: switchPanel.buttonEvent: PRE_PERIODIC_TASK=0.000004/0.019761
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000030/0.020413
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000058/0.000074
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.000187/38.386620
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.000209/38.386677
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000057/38.386522
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000024/38.386516
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000024/38.386515
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.000526/0.020190
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.000205/38.386514
+globalTracer.TaskPerformance_Info: purePursuitDrive.driveTask: POST_PERIODIC_TASK=0.004693/0.020086
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.pidMotorTask: OUTPUT_TASK=0.000183/0.021213
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.stopMotorTask: STOP_TASK=0.000310/0.000000
+globalTracer.TaskPerformance_Info: Arm.pidActuator.pidMotorTask: OUTPUT_TASK=0.000171/0.020543
+globalTracer.TaskPerformance_Info: Arm.pidActuator.stopMotorTask: STOP_TASK=0.004648/0.000000
+globalTracer.TaskPerformance_Info: elevatorTrigger.triggerTask: PRE_PERIODIC_TASK=0.000088/0.019761

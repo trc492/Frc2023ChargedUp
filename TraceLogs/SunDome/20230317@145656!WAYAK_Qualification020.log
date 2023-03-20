@@ -1,0 +1,63 @@
+globalTracer.robotStartMode_Info: [0.028] Fri Mar 17 14:56:38 PDT 2023: ***** TELEOP_MODE *****
+globalTracer.registerWatchdog_Warn: Watchdog TrcMotor.odometryTask was already registered.
+globalTracer.printThreadStack_Info: thread stack: 
+java.base/java.lang.Thread.getStackTrace(Unknown Source)
+TrcCommonLib.trclib.TrcDbgTrace.printThreadStack(TrcDbgTrace.java:197)
+TrcCommonLib.trclib.TrcDbgTrace.printThreadStack(TrcDbgTrace.java:210)
+TrcCommonLib.trclib.TrcWatchdogMgr.registerWatchdog(TrcWatchdogMgr.java:274)
+TrcCommonLib.trclib.TrcWatchdogMgr.registerWatchdog(TrcWatchdogMgr.java:290)
+TrcCommonLib.trclib.TrcPeriodicThread.run(TrcPeriodicThread.java:385)
+java.base/java.lang.Thread.run(Unknown Source)
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.168/0.020)
+globalTracer.setPower_Info: [4.263] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [15.673] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [22.514] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [29.052] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [30.585] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [31.467] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [39.083] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [41.203] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.startCompetition_Warn: TELEOP_MODE.periodic took too long (0.042s/0.040s)
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.064/0.020)
+globalTracer.setPower_Info: [52.658] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [58.313] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [72.770] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [73.779] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [75.310] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [76.896] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [79.082] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [85.023] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [93.619] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [99.340] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [111.940] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [117.177] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000
+globalTracer.setPower_Info: [118.770] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.setPower_Info: [119.655] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000
+globalTracer.startCompetition_Warn: TELEOP_MODE.periodic took too long (0.550s/0.040s)
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.561/0.020)
+globalTracer.startCompetition_Info: *** Transitioning from TELEOP_MODE to DISABLED_MODE ***
+globalTracer.robotStopMode_Info: [0.005] STOPPING: ***** TELEOP_MODE *****
+globalTracer.FrcRobotBase_Info: (TELEOP_MODE->DISABLED_MODE) Performance Metrics: LoopCount=6845
+globalTracer.FrcRobotBase_Info: RobotInit=4.982855, PrevModeStopTask=0.004599, PrevStopMode=0.000293, PrevRobotStopMode=0.012804, RobotStartMode=0.030198, startMode=0.072718, startTask=0.000054
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.000676/0.012911
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.001476/0.550179
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.000077/0.002776
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003214/0.007480
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.000395/0.995578
+globalTracer.TaskPerformance_Info: DriverController.buttonEvent: PRE_PERIODIC_TASK=0.000009/0.019751
+globalTracer.TaskPerformance_Info: operatorStick.buttonEvent: PRE_PERIODIC_TASK=0.000022/0.019751
+globalTracer.TaskPerformance_Info: buttonPanel.buttonEvent: PRE_PERIODIC_TASK=0.000004/0.019750
+globalTracer.TaskPerformance_Info: switchPanel.buttonEvent: PRE_PERIODIC_TASK=0.000003/0.019750
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000029/0.020384
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000056/0.000072
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.001106/38.374811
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.001717/38.375647
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000032/38.375565
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000049/38.375561
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000027/38.375533
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.000503/0.020201
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.000216/38.375528
+globalTracer.TaskPerformance_Info: purePursuitDrive.driveTask: POST_PERIODIC_TASK=0.005487/0.021171
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.pidMotorTask: OUTPUT_TASK=0.000187/0.020425
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.stopMotorTask: STOP_TASK=0.000478/0.000000
+globalTracer.TaskPerformance_Info: elevatorTrigger.triggerTask: PRE_PERIODIC_TASK=0.000082/0.019750

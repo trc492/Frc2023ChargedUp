@@ -1,0 +1,94 @@
+globalTracer.robotStartMode_Info: [0.029] Fri Mar 17 16:37:11 PDT 2023: ***** AUTO_MODE *****
+globalTracer.FrcAuto_Info: <Info name="MatchInfo" date="Fri Mar 17 16:37:11 PDT 2023" event="WAYAK" type="Qualification" match=32 replay=1 alliance="Red" location=3 gameMsg="" />
+globalTracer.FrcAuto_Info: <Info name="AutoChoices" alliance="Red" strategy="AUTO_STARTPOS_2" startPos="1" preloadedObj="CUBE" scoreLevel="0" scoreLocation="MIDDLE" useVision="true" scorePreload="true" doAutoBalance="false" scoreSecondPiece="true" startDelay=0 sec pathFile="DrivePath.csv" xDistance=6.0 ft yDistance=6.0 ft turnDegrees=90 deg driveTime=4 sec drivePower=4.0 />
+globalTracer.CmdAutoStartPos2_Info: >>> robot=Robot2023_ChargedUp, choices=alliance="Red" strategy="AUTO_STARTPOS_2" startPos="1" preloadedObj="CUBE" scoreLevel="0" scoreLocation="MIDDLE" useVision="true" scorePreload="true" doAutoBalance="false" scoreSecondPiece="true" startDelay=0 sec pathFile="DrivePath.csv" xDistance=6.0 ft yDistance=6.0 ft turnDegrees=90 deg driveTime=4 sec drivePower=4.0
+globalTracer.startCompetition_Warn: AUTO_MODE.prePeriodicTasks took too long (0.089s/0.040s)
+globalTracer.CmdAutoStartPos2_Info: [0.196] START: xDist=0.0, tilt=-0.200, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.start_Info: Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=-108.2,y=554.8,angle=0.0),vel=0.00), TrcWaypoint(pose=(x=-108.2,y=530.8,angle=0.0),vel=0.00)])
+globalTracer.setPower_Info: [0.300] owner=null, delay=0.2, leftPower=-0.5, rightPower=-0.5, duration=0.500
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="0.316" tag=">>>>>" CmdAutoStartPos2.state="START" RobotPose=(x=-108.2,y=554.8,angle=0.0) TargetPose=(x=-108.2,y=530.8,angle=0.0) vel=(x=0.0,y=0.0,angle=0.0) Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=0.0,y=0.0,angle=0.0),vel=0.00), TrcWaypoint(pose=(x=0.0,y=-24.0,angle=0.0),vel=0.00)]) />
+globalTracer.checkForExpiration_Warn: [1679096231.476] watchdog {[1679096231.476] main.watchdog: threshold=1.000, expiredTime=1678328177.493, expired=true, paused=false} expired.
+globalTracer.printThreadStack_Info: thread stack: 
+java.base@17.0.3.7-frc/java.util.regex.Pattern$GroupTail.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$BmpCharProperty.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$GroupHead.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$Branch.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$BranchConn.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$GroupTail.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$BmpCharPropertyGreedy.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$BmpCharProperty.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$GroupHead.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$Branch.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$Branch.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$BranchConn.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$GroupTail.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$BmpCharPropertyGreedy.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$GroupHead.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$Branch.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$Branch.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$BmpCharProperty.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Pattern$Start.match(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Matcher.search(Unknown Source)
+java.base@17.0.3.7-frc/java.util.regex.Matcher.find(Unknown Source)
+java.base@17.0.3.7-frc/java.util.Formatter.parse(Unknown Source)
+java.base@17.0.3.7-frc/java.util.Formatter.format(Unknown Source)
+java.base@17.0.3.7-frc/java.util.Formatter.format(Unknown Source)
+java.base@17.0.3.7-frc/java.lang.String.format(Unknown Source)
+app//team492.subsystems.Elevator.toString(Elevator.java:91)
+app//team492.Robot.updateStatus(Robot.java:563)
+app//team492.FrcAuto.periodic(FrcAuto.java:490)
+app//TrcFrcLib.frclib.FrcRobotBase.startCompetition(FrcRobotBase.java:657)
+app//edu.wpi.first.wpilibj.RobotBase.runRobot(RobotBase.java:349)
+app//edu.wpi.first.wpilibj.RobotBase.startRobot(RobotBase.java:442)
+app//team492.Main.main(Main.java:33)
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.153s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.041s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (768055.042/0.020)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: purePursuitDrive: Stalled=false, Timedout=true
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Done[index=1/2]: stalled=false, timeout=true, posOnTarget=false, headingOnTarget=true
+globalTracer.printPidInfo_Info: [1.249221] purePursuitDrive.xPosPid: Target=-108.2, Input=-108.5, dT=0.020550, CurrErr=   0.3, ErrRate=  -0.5, Output= 0.003(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [1.252815] purePursuitDrive.yPosPid: Target= 530.9, Input= 537.4, dT=0.020546, CurrErr=  -6.5, ErrRate=  -2.2, Output=-0.113(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [1.255871] purePursuitDrive.turnPid: Target=   0.0, Input=  -0.4, dT=0.020547, CurrErr=   0.4, ErrRate=   4.4, Output= 0.006(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [1.259065] purePursuitDrive.velPid: Target=   0.0, Input=   0.0, dT=0.000000, CurrErr=   0.0, ErrRate=   0.0, Output= 0.000(-1.000/ 1.000)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Signal finished event.
+globalTracer.CmdAutoStartPos2_Info: [1.271] UNTUCK_ARM: xDist=-108.5, tilt=-0.110, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.start_Info: Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=-108.5,y=537.4,angle=-0.4),vel=0.00), TrcWaypoint(pose=(x=-108.1,y=477.4,angle=-0.4),vel=0.00)])
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="1.286" tag=">>>>>" CmdAutoStartPos2.state="UNTUCK_ARM" RobotPose=(x=-108.5,y=537.4,angle=-0.4) TargetPose=(x=-108.1,y=477.4,angle=-0.4) vel=(x=-1.5,y=-10.6,angle=0.0) Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=0.0,y=0.0,angle=0.0),vel=0.00), TrcWaypoint(pose=(x=-0.0,y=-60.0,angle=0.0),vel=0.00)]) />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.059s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.092/0.020)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: purePursuitDrive: Stalled=false, Timedout=true
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Done[index=1/2]: stalled=false, timeout=true, posOnTarget=false, headingOnTarget=true
+globalTracer.printPidInfo_Info: [3.298760] purePursuitDrive.xPosPid: Target=-108.1, Input=-110.4, dT=0.019415, CurrErr=   2.3, ErrRate=  -0.2, Output= 0.036(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [3.305941] purePursuitDrive.yPosPid: Target= 477.4, Input= 481.7, dT=0.019414, CurrErr=  -4.3, ErrRate=   2.5, Output=-0.059(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [3.315221] purePursuitDrive.turnPid: Target=  -0.4, Input=   0.5, dT=0.019414, CurrErr=  -0.9, ErrRate=   2.6, Output=-0.006(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [3.326911] purePursuitDrive.velPid: Target=   0.0, Input=  10.7, dT=0.000000, CurrErr= -10.7, ErrRate=   0.0, Output= 0.000(-1.000/ 1.000)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Signal finished event.
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.053s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.060/0.020)
+globalTracer.CmdAutoStartPos2_Info: [3.349] DONE: xDist=-110.4, tilt=0.100, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoBalance: canceled.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="3.358" tag=">>>>>" CmdAutoStartPos2.state="DONE" />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.059s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.067/0.020)
+globalTracer.startCompetition_Info: *** Transitioning from AUTO_MODE to DISABLED_MODE ***
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoBalance: canceled.
+globalTracer.robotStopMode_Info: [0.019] STOPPING: ***** AUTO_MODE *****
+globalTracer.FrcRobotBase_Info: (AUTO_MODE->DISABLED_MODE) Performance Metrics: LoopCount=742
+globalTracer.FrcRobotBase_Info: RobotInit=5.803508, PrevModeStopTask=0.006402, PrevStopMode=0.012087, PrevRobotStopMode=0.003106, RobotStartMode=0.048250, startMode=0.048717, startTask=0.000044
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.001246/0.089451
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.002396/0.153444
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.000736/0.053311
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003470/0.007715
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.017436/0.979604
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000024/0.020369
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000049/0.000067
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.003213/7.668132
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.000306/7.670969
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000035/7.670789
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000024/7.670784
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000026/7.670781
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.001165/0.020504
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.000478/7.670779
+globalTracer.TaskPerformance_Info: purePursuitDrive.driveTask: POST_PERIODIC_TASK=0.003407/0.020651
