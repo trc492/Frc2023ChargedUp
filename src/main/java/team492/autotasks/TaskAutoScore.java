@@ -262,12 +262,12 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
                 }
 
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.3, elevatorPos, true, 1.0, elevatorEvent, 1.5);
-                sm.addEvent(elevatorEvent);
-                robot.armPidActuator.setPosition(
-                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.5);
-                sm.addEvent(armEvent);
+                // robot.elevatorPidActuator.setPosition(
+                //     currOwner, 0.3, elevatorPos, true, 1.0, elevatorEvent, 1.5);
+                // sm.addEvent(elevatorEvent);
+                // robot.armPidActuator.setPosition(
+                //     currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.5);
+                // sm.addEvent(armEvent);
 
                 if (taskParams.useVision)
                 {
@@ -295,22 +295,33 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                         // odometry may be off if we go over cable protector or Charging Station.
                         // Samuel claimed AprilTag's heading is not accurate, we should try to tune out the error.
                         // For now, just trust odometry.
-                        robotPose.angle = alliance == Alliance.Red? 0.0: 180.0;
                         robot.robotDrive.driveBase.setFieldPosition(robotPose);
                         robot.globalTracer.traceInfo(
                             moduleName, "Detected %s: robotPose=%s", robot.photonVision.getPipeline(), robotPose);
+                            targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
+                            robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
+                            robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.50);
+                            robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, true, true);
+                        robot.robotDrive.purePursuitDrive.start(
+                                currOwner, event, 6.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
+                                sm.waitForSingleEvent(event, State.DONE);
+
+                    }
+                    //if its vision and we didn't see the target, don't use odometry, not tested
+                    else{
+                        sm.setState(State.DONE); 
                     }
                 }
+                //for now assume its auto preload if no vision
+                else{
+                    robot.robotDrive.purePursuitDrive.start(
+                        currOwner, event, 6.0, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0, 20, 0));
+                        sm.waitForSingleEvent(event, State.DONE);
+                }
+
                 // getScoringPos will return the scoring position either from vision detected target or from drive
                 // base odometry if not using vision or vision did not detect target.
-                targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
-                targetPose.y += 24.0;
-                robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
-                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
-                robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, true, true);
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner, event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
-                sm.waitForSingleEvent(event, State.SCORE_OBJECT);
+
                 break;
 
             case SCORE_OBJECT:
@@ -353,6 +364,10 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             default:
             case DONE:
                 // Stop task.
+                robot.globalTracer.traceInfo("AutoScore Done", "Robot thinks it is at:%s", robot.robotDrive.driveBase.getFieldPosition());
+
+                   
+
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(1.0);
                 stopAutoTask(true);
                 break;
@@ -411,7 +426,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
         return new TrcPose2D(
             scoringPosX,
-            alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 20.0: RobotParams.STARTPOS_RED_Y + 20.0,
+            alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 30.0: RobotParams.STARTPOS_RED_Y + 20.0,
             alliance == Alliance.Blue? 180.0: 0.0);
     }   //getScoringPos
  

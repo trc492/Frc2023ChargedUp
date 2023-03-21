@@ -29,6 +29,8 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.BalanceStrafeDir;
+import team492.FrcAuto.ObjectType;
+import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -760,13 +762,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:
-                manualElevator = pressed;
+                // manualElevator = pressed;
                 //auto score testing
-                // robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, true, null);
+                robot.autoScoreTask.autoAssistScoreObject(ObjectType.CONE, 2, ScoreLocation.LEFT, true, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-            //testing autoPickup 
+            //testing autoPickup
+                manualElevator = pressed;
                 // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, null);
                 break;
 

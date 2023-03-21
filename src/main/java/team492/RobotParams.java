@@ -58,7 +58,7 @@ public class RobotParams
         public static final boolean useExternalOdometry         = false;
         public static final boolean useCANCoder                 = false;
         public static final boolean useAnalogEncoder            = true;
-        public static final boolean avgAnalogEncoder            = true;
+        public static final boolean avgAnalogEncoder            = false;
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
         public static final boolean useAntiTipping              = false;
@@ -71,6 +71,7 @@ public class RobotParams
         public static final boolean useVacuum                   = false;
         public static final boolean useIntake                   = true;
         // Miscellaneous
+        public static final boolean homeField                   = true;
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
         // Debug
@@ -407,7 +408,7 @@ public class RobotParams
         new TrcPidController.PidCoefficients(STEER_KP, STEER_KI, STEER_KD, STEER_KF, STEER_IZONE);
 
     public static final double PPD_FOLLOWING_DISTANCE           = 12.0;
-    public static final double PPD_POS_TOLERANCE                = 2.0;
+    public static final double PPD_POS_TOLERANCE                = 1.0;
     public static final double PPD_TURN_TOLERANCE               = 2.0;
     public static final double PPD_MOVE_DEF_OUTPUT_LIMIT        = 0.5;
     public static final double PPD_ROT_DEF_OUTPUT_LIMIT         = 0.5;

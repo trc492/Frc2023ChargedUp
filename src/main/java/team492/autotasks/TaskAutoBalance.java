@@ -30,6 +30,7 @@ import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTimer;
 import team492.Robot;
+import team492.RobotParams;
 import team492.FrcAuto.BalanceStrafeDir;
 
 /**
@@ -60,7 +61,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private String currOwner = null;
     private double startDir;
     private boolean correcting = false;
-    private double triggerDistance = 24.0;
+    private double triggerDistance = RobotParams.Preferences.homeField? 19.0: 24.0;
 
     /**
      * Constructor: Create an instance of the object.

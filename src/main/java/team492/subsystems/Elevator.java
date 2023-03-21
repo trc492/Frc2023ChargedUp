@@ -56,7 +56,8 @@ public class Elevator
                 RobotParams.ELEVATOR_KP, RobotParams.ELEVATOR_KI, RobotParams.ELEVATOR_KD, RobotParams.ELEVATOR_KF,
                 RobotParams.ELEVATOR_IZONE, RobotParams.ELEVATOR_TOLERANCE)
             .setPosPresets(RobotParams.ELEVATOR_PRESET_TOLERANCE, RobotParams.elevatorPresets)
-            .setZeroCalibratePower(RobotParams.ELEVATOR_CAL_POWER);
+            .setZeroCalibratePower(RobotParams.ELEVATOR_CAL_POWER)
+            .resetPositionOnLowerLimit(false);
 
         this.msgTracer = msgTracer;
         actuatorMotor = new FrcCANSparkMax("ElevatorMotor", RobotParams.CANID_ELEVATOR, true);
@@ -78,8 +79,6 @@ public class Elevator
         pidActuator = new FrcMotorActuator(
             "Elevator", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer);
-
-        actuatorMotor.resetPositionOnDigitalInput(lowerLimitSw);
 
         // zeroTrigger = new TrcDigitalInputTrigger(moduleName, lowerLimitSw, this::zeroCalCompletion);
     }   //Elevator

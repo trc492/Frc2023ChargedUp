@@ -33,6 +33,7 @@ import team492.RobotParams;
 import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
+import team492.drivebases.RobotDrive;
 import team492.drivebases.SwerveDrive.TiltDir;
 
 public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
@@ -42,6 +43,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
+        BACK_UP,
         UNTUCK_ARM,
         SCORE_PRELOAD,
         TURN,
@@ -49,7 +51,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         CLIMB,
         LEVEL,
         DESCEND,
-        GO_BALANCE,
+        BALANCE,
         DONE
     }   //enum State
 
@@ -59,6 +61,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private final TrcEvent tiltEvent;
     private final TrcStateMachine<State> sm;
 
+    // TODO: Test all iterations to verify State shenanigans
     private int scoreLevel = 0;
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
@@ -145,78 +148,79 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
-                    if (untuck)
-                    {
-                        // When the arm is tucked in, the elevator is raised with a pre-determined offset. Since we
-                        // can't zero calibrate, set the elevator to that offset.
-                        // robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);                        
-                    }
 
+                    if (scorePreload && scoreLevel == 0)
+                    {
+                        // Deploying & Spinning intake before backing up to reduce chance of cube bouncing out
+                        robot.intake.extend();
+                        robot.intake.setPower(0.2, -0.4, -0.4, 0.5);
+                    }
+                    sm.setState(State.BACK_UP);
+                    break;
+
+                case BACK_UP:
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
+                    robot.robotDrive.purePursuitDrive.start(
+                        event, 0.9, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, -24.0, 0.0));
 
-
-                    if (scorePreload)
+                    if (!scorePreload || scoreLevel == 0)
                     {
-                        if (scoreLevel == 0)
+                        // If we don't need to score or have already scored, check if we want to untuck before
+                        // checking if we want to balance or not.
+                        if (untuck)
                         {
-                            robot.intake.extend(0.05);
-                            robot.intake.setPower(0.2, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.5);
-                            // nextState = untuck? State.UNTUCK_ARM: State.TURN;
-                            robot.robotDrive.purePursuitDrive.start(
-                                event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                                new TrcPose2D(0.0, -24.0, 0.0));
+                            nextState = State.UNTUCK_ARM;
                         }
                         else
                         {
-                            // Deploy the intake so the arm can come out.
-                            robot.intake.extend(0.05);
-                            // Depoly the arm by raising elevator and untuck the arm (fire and forget).
-                            robot.elevatorPidActuator.setPosition(
-                                RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.5);
-                            robot.armPidActuator.setPosition(
-                                null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
-                                null, 0.0);
-                            nextState = State.SCORE_PRELOAD;
+                            robot.intake.retract(0.5);
+                            nextState = doAutoBalance? State.TURN: State.DONE;
                         }
                     }
                     else
                     {
-                        nextState = doAutoBalance? State.TURN: State.DONE;
+                        // We are scoring on a higher level, requiring the arm to be untucked
+                        nextState = State.UNTUCK_ARM;
                     }
-                    
-                    sm.waitForSingleEvent(event, State.TURN);
+                    sm.waitForSingleEvent(event, nextState);
                     break;
 
                 case UNTUCK_ARM:
-                    if (untuck)
+                    robot.intake.extend();
+                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
+                    robot.elevatorPidActuator.setPosition(
+                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                    robot.armPidActuator.setPosition(
+                        null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
+                        null, 0.0);
+                    robot.intake.retract(0.8);
+                    if (scorePreload && scoreLevel > 0)
                     {
-                        // Just finished scoring at level 0, untuck the arm and prepare to turn.
-                        // robot.elevatorPidActuator.setPosition(
-                        //     RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
-                        // robot.armPidActuator.setPosition(
-                        //     null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
-                        //     null, 0.0);
+                        nextState = State.SCORE_PRELOAD;
                     }
-
-                    robot.intake.retract(untuck? 0.8: 0.1);
-                    robot.robotDrive.purePursuitDrive.start(
-                        event, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, -156.0, 0.0));
-                    sm.waitForSingleEvent(event, doAutoBalance? State.TURN: State.DONE);
+                    else
+                    {
+                        // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
+                        robot.elevatorPidActuator.setPosition(
+                            RobotParams.ELEVATOR_MIN_POS, true, 1.0, event, 0.5);
+                        nextState = doAutoBalance? State.TURN: State.DONE;
+                    }
+                    sm.waitForSingleEvent(event, nextState);
                     break;
 
                 case SCORE_PRELOAD:
                     // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
                         ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, event);
-                    sm.waitForSingleEvent(event, State.TURN);
+                    sm.waitForSingleEvent(event, (doAutoBalance? State.TURN: State.DONE));
                     break;
                 
                 case TURN:
                     // Turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
                     sm.waitForSingleEvent(event, State.START_TO_CLIMB);
                     break;
@@ -224,7 +228,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case START_TO_CLIMB:
                     // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
-                    robot.robotDrive.driveBase.holonomicDrive(0.35, 0.0, 0.0);
+                    robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
+                    robot.robotDrive.driveBase.holonomicDrive(null, 0.0, 0.3, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
                 
@@ -257,7 +262,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     if (enterBalance != null && enterBalance == TiltDir.TILT_RIGHT)
                     {
                         robot.robotDrive.enableDistanceTrigger(2.0, event);
-                        sm.waitForSingleEvent(event, State.GO_BALANCE);
+                        sm.waitForSingleEvent(event, State.BALANCE);
                     }
                     else
                     {
@@ -265,7 +270,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     }
                     break;
 
-                case GO_BALANCE:
+                case BALANCE:
                     // We're now next to the station outside of community, so we can do autobalance!
                     robot.robotDrive.driveBase.stop();
                     robot.robotDrive.disableDistanceTrigger();
