@@ -27,13 +27,11 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
-import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
-import team492.drivebases.RobotDrive;
 import team492.drivebases.SwerveDrive.TiltDir;
 
 public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
@@ -228,7 +226,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 case START_TO_CLIMB:
                     // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
-                    robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
                     robot.robotDrive.driveBase.holonomicDrive(null, 0.0, 0.3, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;

@@ -52,6 +52,9 @@ public class RobotParams
         public static final boolean useLimeLightVision          = false;
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
+        // Auto Options
+        public static final boolean homeField                   = true;
+        public static final boolean doBalanceCorrection         = true;
         // Robot
         public static final boolean noRobot                     = false;
         // Drive Base
@@ -71,7 +74,6 @@ public class RobotParams
         public static final boolean useVacuum                   = false;
         public static final boolean useIntake                   = true;
         // Miscellaneous
-        public static final boolean homeField                   = true;
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
         // Debug

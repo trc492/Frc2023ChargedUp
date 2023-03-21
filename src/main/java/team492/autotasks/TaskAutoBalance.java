@@ -57,10 +57,9 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event, tiltEvent;
-    private final TrcTimer timer;
     private String currOwner = null;
     private double startDir;
-    private boolean correcting = false;
+    private boolean balanced = false;
     private double triggerDistance = RobotParams.Preferences.homeField? 19.0: 24.0;
 
     /**
@@ -77,7 +76,6 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         this.robot = robot;
         this.msgTracer = msgTracer;
         event = new TrcEvent(moduleName);
-        timer = new TrcTimer(moduleName);
         tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
     }   //TaskAutoBalance
 
@@ -197,10 +195,11 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         switch (state)
         {
             case START:
-                // Arm tilt trigger to signal tiltEvent.
-                // Strafe up the charging station slowly with a safety limit of 5 seconds.
+                // Monitor robot tilt angle and signal event when triggered.
+                // Strafe up the charging station slowly with a time limit of 5 seconds.
                 robot.robotDrive.enableTiltTrigger(tiltEvent);
-                robot.robotDrive.driveBase.holonomicDrive(currOwner, startDir*0.2, 0.0, 0.0);
+                robot.robotDrive.driveBase.holonomicDrive(
+                    currOwner, 0.0, startDir*0.2, robot.robotDrive.driveBase.getHeading());
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                 break;
 
@@ -209,8 +208,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     if (leveling)
                     {
-                        // We are starting to level off, drive a fixed distance to the center of the charging station.
-                        // Arm a distance trigger to do this.
+                        // We are starting to level off, drive a tuned distance to the center of the charging station.
                         robot.robotDrive.enableDistanceTrigger(triggerDistance, event);
                         sm.waitForSingleEvent(event, State.SETTLE);
                     }
@@ -232,26 +230,36 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 robot.robotDrive.driveBase.stop(currOwner);
                 robot.robotDrive.disableDistanceTrigger();
                 robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
-                correcting = false;
-                timer.set(2.0, event);
-                // Correcting algorithm does not work, we will just stay on the charging station
-                sm.waitForSingleEvent(event, State.DONE);//CHECK);
+                balanced = false;
+                sm.waitForSingleEvent(
+                    tiltEvent, RobotParams.Preferences.doBalanceCorrection? State.CHECK: State.DONE,
+                    RobotParams.Preferences.homeField? 2.0: 1.0);
                 break;
 
             case CHECK:
-                if (!inBalance)
+                if (inBalance)
                 {
-                    // Robot is tipped. Drive the robot to the climb direction.
-                    correcting = true;
-                    triggerDistance /= 4.0;
-                    robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
-                    robot.robotDrive.driveBase.holonomicDrive(currOwner, dir*0.1, 0.0, 0.0);
-                    sm.waitForSingleEvent(tiltEvent, State.CLIMB);
+                    if (!balanced)
+                    {
+                        // We just entered the balance zone, make sure we stay there for a while.
+                        // Check balance again either timed out or tilt triggered.
+                        balanced = true;
+                        sm.waitForSingleEvent(tiltEvent, State.CHECK, RobotParams.Preferences.homeField? 2.0: 1.0);
+                    }
+                    else
+                    {
+                        // We have stayed in the balance zone for a while which means balance is stable. We are done.
+                        sm.setState(State.DONE);
+                    }
                 }
                 else
                 {
-                    // We are balanced. If we were correcting, we are done, otherwise
-                    sm.setState(correcting? State.SETTLE: State.DONE);
+                    // Robot is still tipped. Drive the robot in the climb direction for a short distance.
+                    robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
+                    robot.robotDrive.enableDistanceTrigger(4.0, event);
+                    robot.robotDrive.driveBase.holonomicDrive(
+                        currOwner, 0.0, dir*0.1, robot.robotDrive.driveBase.getHeading());
+                    sm.waitForSingleEvent(tiltEvent, State.SETTLE);
                 }
                 break;
             
