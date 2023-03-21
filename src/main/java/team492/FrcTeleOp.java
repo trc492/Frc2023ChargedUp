@@ -66,7 +66,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         if (robot.elevator != null)
         {
             elevatorTrigger = new TrcTriggerThresholdZones(
-                "elevatorTrigger", robot.elevatorPidActuator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
+                "elevatorTrigger", robot.elevator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
         }
         else
         {
