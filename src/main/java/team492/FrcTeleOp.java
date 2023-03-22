@@ -744,7 +744,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     //robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
 
                     //AutoPickup PickupOnly
-                    // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
+                     robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
 
                     //AutoPickup Manual Version
                     robot.grabber.grabCube(); 
@@ -753,7 +753,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
                     robot.armPidActuator.setPosition(
                         moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);  
-                    //not sure if this works
                     robot.grabber.grabCone(1.5); 
                 }
                 // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[0], true, RobotParams.ARM_MAX_POWER, null, 0.0);
@@ -789,13 +788,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //     robot.photonVision.setPipeline(PipelineType.CUBE);
                 // }
                 break;
-            //nose out cone pickup 
+            // TURTLE MODE: TODO: Add label on button panel
+            //use this for defense/before balance
+            //assumes that when the intake goes up it will not hit the arm
+            //need to have just finished scoring before using this or 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
                 if (pressed)
                 {
-                    robot.robotDrive.purePursuitDrive.start(
-                            null, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                            new TrcPose2D(0.0, -120.0, 0.0));                }
+                robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
+                robot.armPidActuator.setPosition(moduleName, 1.0, RobotParams.ARM_MIN_POS + 3, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                robot.intake.retract();
+                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
