@@ -286,10 +286,8 @@ public class FrcTest extends FrcTeleOp
                 break;
 
             case DRIVE_MOTORS_TEST:
-                //
                 // Initialize motor array with the wheel motors. For 2-motor drive base, it is leftWheel and
                 // rightWheel. For 4-motor drive base, it is lfWheel, rfWheel, lbWheel, rbWheel.
-                //
                 testCommand = new CmdDriveMotorsTest(
                     new TrcMotor[] {
                         robot.robotDrive.lfDriveMotor, robot.robotDrive.rfDriveMotor,
@@ -412,10 +410,6 @@ public class FrcTest extends FrcTeleOp
         //
         switch (testChoices.getTest())
         {
-            case SENSORS_TEST:
-                super.periodic(elapsedTime, slowPeriodicLoop);
-                break;
-
             case DRIVE_SPEED_TEST:
                 double currTime = TrcTimer.getCurrentTime();
                 TrcPose2D velPose = robot.robotDrive.driveBase.getFieldVelocity();

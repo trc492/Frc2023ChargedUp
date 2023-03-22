@@ -159,10 +159,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     @Override
     public void periodic(double elapsedTime, boolean slowPeriodicLoop)
     {
-        //
-        // Do subsystem auto-assist here if necessary.
-        //
-
         if (slowPeriodicLoop)
         {
             if (controlsEnabled)
@@ -218,31 +214,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             robot.dashboard.displayPrintf(1, "Arm: pos=%.2f", armPos);
                         }
                     }
-
-                    // if (robot.intake != null)
-                    // {
-                    //     double intakeLeftPower = robot.operatorController.getLeftTriggerWithDeadband(true);
-                    //     double intakeRightPower = robot.operatorController.getRightTriggerWithDeadband(true);
-                    //     if (intakeRightPower > 0.0)
-                    //     {
-                    //         robot.intake.setPower(RobotParams.INTAKE_CONE_PICKUP_POWER, RobotParams.INTAKE_CONE_PICKUP_POWER);
-                    //     }
-                    //     if (intakeLeftPower > 0.0)
-                    //     {
-                    //         robot.intake.setPower(RobotParams.INTAKE_CUBE_PICKUP_POWER, RobotParams.INTAKE_CUBE_PICKUP_POWER);
-                    //     }
-                    // }
-
-                    // if(lookForObj)
-                    // {
-                    //     if (robot.photonVision.getBestDetectedObject() != null)
-                    //     {
-                    //         robot.dashboard.displayPrintf(
-                    //             4, "Found obj in %s ms", System.currentTimeMillis()-visionTime);
-                    //         visionTime = 0;
-                    //         lookForObj = false;
-                    //     }
-                    // }
                 }
             }
             //
@@ -479,37 +450,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.SIDEWINDER_TRIGGER:
-                if (pressed)
-                {
-                    robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.INVERTED);
-                }
-                else
-                {
-                    robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-                if (pressed)
-                {
-                    if (robot.robotDrive.driveOrientation != RobotDrive.DriveOrientation.FIELD)
-                    {
-                        robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.FIELD);
-                    }
-                    else
-                    {
-                        robot.robotDrive.setDriveOrientation(RobotDrive.DriveOrientation.ROBOT);
-                    }
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON4:
-                if (pressed)
-                {
-                    TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
-                    robotPose.angle = 0.0;
-                    robot.robotDrive.driveBase.setFieldPosition(robotPose);
-                }
                 break;
         }
     }   //rightDriveStickButtonEvent
@@ -527,25 +473,31 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         switch (button)
         {
-            //gathers cones, cubes into the intake 
-            //if pressed, extends intake if its not extended, spins intake
-            //otherwise stops
             case FrcJoystick.LOGITECH_TRIGGER:
-                if (pressed)
+                // gathers cones, cubes into the intake
+                // if pressed, extends intake if its not extended, spins intake
+                // otherwise stops
+                if (robot.intake != null)
                 {
-                    robot.intake.extend();
-                    double intakePower = RobotParams.INTAKE_CUBE_PICKUP_POWER;
-                    if(intakeReversed){
-                        intakePower = fastSpitOut? -1.0: RobotParams.INTAKE_SPIT_POWER;
+                    if (pressed)
+                    {
+                        double intakePower;
+
+                        robot.intake.extend();
+                        if (intakeReversed)
+                        {
+                            intakePower = fastSpitOut? -1.0: RobotParams.INTAKE_SPIT_POWER;
+                        }
+                        else
+                        {
+                            intakePower = RobotParams.INTAKE_CUBE_PICKUP_POWER;
+                        }
                         robot.intake.setPower(intakePower);
                     }
-                    else{
-                        robot.intake.setPower(intakePower);
+                    else
+                    {
+                        robot.intake.cancel();
                     }
-                }
-                else
-                {
-                    robot.intake.cancel();
                 }
                 break;
 
@@ -594,39 +546,36 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
                 break;
-            //raises the arm and elevator one preset position
+
             case FrcJoystick.LOGITECH_BUTTON6:
+                //raises the arm and elevator one preset position
                 if (robot.arm != null && pressed)
                 {
                     robot.armPidActuator.presetPositionUp(moduleName, RobotParams.ARM_MAX_POWER);
                 }
                 break;
-            //lowers the arm and elevator one preset position 
+
             case FrcJoystick.LOGITECH_BUTTON7:
+                //lowers the arm and elevator one preset position
                 if (robot.arm != null && pressed)
                 {
                     robot.armPidActuator.presetPositionDown(moduleName, RobotParams.ARM_MAX_POWER);
                 }
                 break;
 
-            //spits objects out 
             case FrcJoystick.LOGITECH_BUTTON8:
-                if (pressed)
+                //spits objects out
+                if (robot.intake != null)
                 {
-                    robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
+                    if (pressed)
+                    {
+                        robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
+                    }
+                    else
+                    {
+                        robot.intake.cancel();
+                    }
                 }
-                else
-                {
-                    robot.intake.cancel();
-                }
-                // if(pressed){
-                //     robot.intake.acquireExclusiveAccess("teleop");
-                //     robot.intake.setPower("teleop", 0.0, -RobotParams.INTAKE_LEFT_PICKUP_POWER, -RobotParams.INTAKE_RIGHT_PICKUP_POWER, 0.0);
-                // }
-                // else{
-                //     robot.intake.releaseExclusiveAccess("teleop");
-                //     robot.intake.cancel("teleop");
-                // }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
@@ -637,7 +586,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                if (pressed)
+                if (robot.grabber != null && pressed)
                 {
                     if (robot.grabber.poked())
                     {
@@ -647,29 +596,24 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     {
                         robot.grabber.extendPoker();
                     }
-                    // TODO (Code Review): Where is the button to do Auto-AssistPickup with PickupOnly? You asked
-                    // Kenny to implement it but you are not using it anywhere???
-                    // robot.autoPickupTask.autoAssistPickup(pickupObject, true, null);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-                // if (robot.elevator != null && pressed)
-                // {
-                //     // Must acquire ownership to override analog control of the elevator.
-                //     robot.elevatorPidActuator.presetPositionUp(moduleName);
-                // }
-                //puts robot in scoring position for high poles 
-                // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.ELEVATOR_MAX_POS, true, 1.0, null, 0.0); 
-                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_MAX_POS, true, 1.0, null, 0.0); 
-                robot.intake.retract(1.0); 
+                if (robot.arm != null && robot.intake != null && pressed)
+                {
+                    robot.armPidActuator.setPosition(
+                        moduleName, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    robot.intake.retract(1.0);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
-                // Turtle mode, use this while driving.
-                // Must acquire ownership moving the elevator and arm or analog control will interfere.
-                // robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
-                robot.armPidActuator.setPosition(moduleName, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                if (robot.arm != null && pressed)
+                {
+                    robot.armPidActuator.setPosition(
+                        moduleName, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                }
                 break;
         }
     }   //operatorStickButtonEvent
@@ -693,52 +637,40 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     robot.armPidActuator.setPidPower(0.0);
                 }
-                // if(pressed){
-                //     robot.autoScoreTask.autoAssistScoreObject(ObjectType.CUBE, 2, ScoreLocation.MIDDLE, false, null);
-                // }
-                // if (robot.arm != null && !pressed)
-                // {
-                //     robot.armPidActuator.setPower(0.0);
-                // }
-                //prepare for pickup
-                //extend intake
-                //lower the arm and elevator to min position
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
-                if (pressed)
+                if (robot.elevator != null && robot.arm != null && pressed)
                 {
-                    //this is the button we press after scoring so the robot is in position to drive around the field safely 
+                    //this is the button we press after scoring so the robot is in position to drive around the field safely
                     robot.elevatorPidActuator.setPosition(
-                        moduleName, 0, 12.0, true, 1.0, null, 0.0);
+                        moduleName, 0.0, 12.0, true, 1.0, null, 0.0);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                    robot.intake.extend(); 
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    robot.intake.extend();
                 }
-                // high pole cone scoring
-                // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[2], true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[2], true, 1.0, null, 0.0);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:
                 // Cube pickup (Bends polycarb)
-                if (pressed)
+                if (robot.elevator != null && robot.arm != null && robot.grabber != null && pressed)
                 {
-                    robot.grabber.releaseCube(); 
-                    robot.grabber.releaseCone(); 
+                    robot.grabber.releaseCube();
+                    robot.grabber.releaseCone();
                     robot.elevatorPidActuator.setPosition(
                         moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);  
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     //not sure if this works
-                    robot.grabber.grabCube(1); 
+                    robot.grabber.grabCube(1.0);
                 }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
-                if (pressed)
+                // Cone pickup
+                if (robot.elevator != null && robot.arm != null && robot.grabber != null && pressed)
                 {
-                    //AutoPickup Vision Version 
+                    //AutoPickup Vision Version
                     // pickupObject = ObjectType.CONE;
                     // robot.photonVision.setPipeline(PipelineType.CONE);
                     //robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
@@ -747,70 +679,67 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                      robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
 
                     //AutoPickup Manual Version
-                    robot.grabber.grabCube(); 
-                    robot.grabber.releaseCone(); 
+                    robot.grabber.grabCube();
+                    robot.grabber.releaseCone();
                     robot.elevatorPidActuator.setPosition(
                         moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);  
-                    robot.grabber.grabCone(1.5); 
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
+                    //not sure if this works
+                    robot.grabber.grabCone(1.5);
                 }
-                // robot.armPidActuator.setPosition(moduleName, RobotParams.armConeScorePresets[0], true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                // robot.elevatorPidActuator.setPosition(moduleName, RobotParams.elevatorConeScoringPresets[0], true, 1.0, null, 0.0);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
                 if (pressed)
                 {
-                    robot.autoPickupTask.autoAssistCancel();
+                    if (robot.autoPickupTask != null) robot.autoPickupTask.autoAssistCancel();
+                    if (robot.autoScoreTask != null) robot.autoScoreTask.autoAssistCancel();
+                    if (robot.arm != null ) robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                    if (robot.elevator != null) robot.elevatorPidActuator.releaseExclusiveAccess(moduleName);
                 }
-                robot.armPidActuator.releaseExclusiveAccess(moduleName);
-                robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
-                robot.autoScoreTask.autoAssistCancel();
                 break;
 
             case FrcJoystick.PANEL_BUTTON_RED2:
                 // manualElevator = pressed;
                 //auto score testing
-                robot.autoScoreTask.autoAssistScoreObject(ObjectType.CONE, 2, ScoreLocation.LEFT, true, null);
+                if (robot.autoScoreTask != null && pressed)
+                {
+                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CONE, 2, ScoreLocation.LEFT, true, null);
+                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-            //testing autoPickup
                 manualElevator = pressed;
-                // robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, null);
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
-                // if (pressed)
-                // {
-                //     pickupObject = ObjectType.CUBE;
-                //     robot.photonVision.setPipeline(PipelineType.CUBE);
-                // }
                 break;
-            // TURTLE MODE: TODO: Add label on button panel
-            //use this for defense/before balance
-            //assumes that when the intake goes up it will not hit the arm
-            //need to have just finished scoring before using this or 
+                // TURTLE MODE: TODO: Add label on button panel
+                //use this for defense/before balance
+                //assumes that when the intake goes up it will not hit the arm
+                //need to have just finished scoring before using this or
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                if (pressed)
+                //nose out cone pickup
+                // TODO (Code Review): What is this??? Driving backward 10 feet blindly??? That's dangerous!!!
+                if (robot.elevator != null && robot.arm != null && robot.intake != null && pressed)
                 {
-                robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
-                robot.armPidActuator.setPosition(moduleName, 1.0, RobotParams.ARM_MIN_POS + 3, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                robot.intake.retract();
+                    robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 1.0, RobotParams.ARM_MIN_POS + 3, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    robot.intake.retract();
                 }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
-                if (pressed)
-                {
-                    robot.autoPickupTask.autoAssistCancel();
-                }
-                robot.armPidActuator.releaseExclusiveAccess(moduleName);
-                robot.elevatorPidActuator.releaseExclusiveAccess(moduleName); 
-                robot.autoScoreTask.autoAssistCancel();
-            
-
+                // TODO (Code Review): This is identical to WHITE1???!!!
+                // if (pressed)
+                // {
+                //     robot.autoPickupTask.autoAssistCancel();
+                // }
+                // robot.armPidActuator.releaseExclusiveAccess(moduleName);
+                // robot.elevatorPidActuator.releaseExclusiveAccess(moduleName);
+                // robot.autoScoreTask.autoAssistCancel();
                 break;
         }
     }   //buttonPanelButtonEvent

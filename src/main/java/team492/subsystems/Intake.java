@@ -164,7 +164,7 @@ public class Intake implements TrcExclusiveSubsystem
         {
             robot.armPidActuator.setPositionRange(RobotParams.ARM_MIN_POS_INTAKE_UP, RobotParams.ARM_MAX_POS);
         }
-    }
+    }   //retract
 
     public void retract()
     {
@@ -174,7 +174,7 @@ public class Intake implements TrcExclusiveSubsystem
     public boolean isExtended()
     {
         return intakePneumatic.isExtended();
-    }
+    }   //isExtended
 
     /**
      * This method checks if the intake sensor is active.

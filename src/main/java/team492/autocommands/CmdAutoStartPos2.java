@@ -41,7 +41,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
-        BACK_UP,
         UNTUCK_ARM,
         SCORE_PRELOAD,
         TURN,
@@ -55,9 +54,11 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
 
     private final Robot robot;
-    private final TrcEvent event;
-    private final TrcTimer timer;
+    private final TrcEvent driveEvent;
+    private final TrcEvent elevatorEvent;
+    private final TrcEvent autoAssistEvent;
     private final TrcEvent tiltEvent;
+    private final TrcEvent distanceEvent;
     private final TrcStateMachine<State> sm;
 
     // TODO: Test all iterations to verify State shenanigans
@@ -74,9 +75,11 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     public CmdAutoStartPos2(Robot robot)
     {
         this.robot = robot;
-        event = new TrcEvent(moduleName);
-        tiltEvent = new TrcEvent(moduleName);
-        timer = new TrcTimer(moduleName);
+        driveEvent = new TrcEvent(moduleName + ".driveEvent");
+        elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
+        autoAssistEvent = new TrcEvent(moduleName + ".autoAssistEvent");
+        tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
+        distanceEvent = new TrcEvent(moduleName + ".distanceEvent");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
     }   //CmdAutoStartPos2
@@ -148,21 +151,23 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
+                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
 
                     if (scorePreload && scoreLevel == 0)
                     {
                         // Deploying & Spinning intake before backing up to reduce chance of cube bouncing out
+                        // TODO (Code Review): Do you realize your backing up is immediate and not after the intake spinning?
                         robot.intake.extend();
                         robot.intake.setPower(0.2, -0.4, -0.4, 0.5);
                     }
-                    sm.setState(State.BACK_UP);
-                    break;
+                //     sm.setState(State.BACK_UP);
+                //     break;
 
-                case BACK_UP:
+                // case BACK_UP:
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
 
                     if (!scorePreload || scoreLevel == 0)
@@ -172,7 +177,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                         if (untuck)
                         {
                             nextState = State.UNTUCK_ARM;
-                            timer.set(1.0, event);
+                            // TODO (Code Review): Why wait for 1 second here??? And you are using the same event as ppDrive!!!
+                            // timer.set(1.0, event);
                         }
                         else
                         {
@@ -185,14 +191,13 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                         // We are scoring on a higher level, requiring the arm to be untucked
                         nextState = State.UNTUCK_ARM;
                     }
-                    sm.waitForSingleEvent(event, nextState);
+                    sm.waitForSingleEvent(driveEvent, nextState);
                     break;
 
                 case UNTUCK_ARM:
                     robot.intake.extend();
-                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
                     robot.elevatorPidActuator.setPosition(
-                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
                     robot.armPidActuator.setPosition(
                         null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
                         null, 0.0);
@@ -200,37 +205,38 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     if (scorePreload && scoreLevel > 0)
                     {
                         nextState = State.SCORE_PRELOAD;
-
                     }
                     else
                     {
                         // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
+                        // TODO (Code Review): You are overriding and canceling the previous elevator.setPosition above??!!!
                         robot.elevatorPidActuator.setPosition(
-                            null, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, event, 0.5);
+                            null, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.5);
                         nextState = doAutoBalance? State.TURN: State.DONE;
                     }
-                    sm.waitForSingleEvent(event, nextState);
+                    sm.waitForSingleEvent(elevatorEvent, nextState);
                     break;
 
                 case SCORE_PRELOAD:
                     // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
-                        ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, event);
-                    sm.waitForSingleEvent(event, (doAutoBalance? State.TURN: State.DONE));
+                        ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
+                    sm.waitForSingleEvent(autoAssistEvent, (doAutoBalance? State.TURN: State.DONE));
                     break;
                 
                 case TURN:
                     // Turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 0.7, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        driveEvent, 0.7, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 0.0, 90.0));
-                    sm.waitForSingleEvent(event, State.START_TO_CLIMB);
+                    sm.waitForSingleEvent(driveEvent, State.START_TO_CLIMB);
                     break;
 
                 case START_TO_CLIMB:
                     // Start climbing the charging station and enable tilt trigger to monitor different climbing stages.
                     robot.robotDrive.enableTiltTrigger(tiltEvent);
-                    robot.robotDrive.driveBase.holonomicDrive(null, 0.0, 0.3, 0.0, robot.robotDrive.driveBase.getHeading());
+                    robot.robotDrive.driveBase.holonomicDrive(
+                        null, 0.0, 0.3, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                     break;
                 
@@ -262,8 +268,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // the robot a little longer to make sure it clears the charging station.
                     if (enterBalance != null && enterBalance == TiltDir.TILT_RIGHT)
                     {
-                        robot.robotDrive.enableDistanceTrigger(2.0, event);
-                        sm.waitForSingleEvent(event, State.BALANCE);
+                        robot.robotDrive.enableDistanceTrigger(2.0, distanceEvent);
+                        sm.waitForSingleEvent(distanceEvent, State.BALANCE);
                     }
                     else
                     {
@@ -278,8 +284,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.disableTiltTrigger();
                     if (doAutoBalance)
                     {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, event);
-                        sm.waitForSingleEvent(event, State.DONE);
+                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, autoAssistEvent);
+                        sm.waitForSingleEvent(autoAssistEvent, State.DONE);
                     }
                     else
                     {

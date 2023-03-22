@@ -71,7 +71,6 @@ public class RobotParams
         public static final boolean useElevator                 = true;
         public static final boolean useArm                      = true;
         public static final boolean useGrabber                  = true;
-        public static final boolean useVacuum                   = false;
         public static final boolean useIntake                   = true;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
@@ -114,7 +113,7 @@ public class RobotParams
     // Robot starting positions. All dimensions are from Game Manual, do not adjust.
     //
     public static final double GRID_TAPE_EDGE_BLUE_Y            = 54.25;
-    public static final double STARTPOS_Y_OFFSET                = 24.0;
+    public static final double STARTPOS_Y_OFFSET                = 0.0;
     public static final double STARTPOS_BLUE_Y                  = GRID_TAPE_EDGE_BLUE_Y +
                                                                   RobotParams.ROBOT_LENGTH/2.0 +
                                                                   STARTPOS_Y_OFFSET;

@@ -262,7 +262,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     elevatorPos = RobotParams.elevatorCubeScoringPresets[taskParams.scoreLevel];
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
                 }
-                if(robot.getCurrentRunMode() != RunMode.TELEOP_MODE){
+
+                if (runMode == RunMode.AUTO_MODE)
+                {
                     robot.elevatorPidActuator.setPosition(
                         currOwner, 0.3, elevatorPos, true, 1.0, elevatorEvent, 1.0);
                     sm.addEvent(elevatorEvent);
@@ -270,7 +272,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                         currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
                     sm.addEvent(armEvent);
                 }
-                else{
+                else
+                {
+                    // TODO (Code Review): What's the reason of not moving elevator in teleop mode???
                     robot.armPidActuator.setPosition(
                         currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
                     sm.addEvent(armEvent);        
@@ -282,11 +286,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
                 }
+
                 sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true);
                 break;
 
             case DRIVE_TO_SCORING_POS:
-                event.clear();
                 robot.intake.retract();
                 // If useVision, set robot's field position using detected target info.
                 // Determine scoring position either by vision or drive base odometry.
@@ -299,38 +303,33 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     if (detectedTarget != null)
                     {
                         TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
-                        // TODO: We are supposed to trust the Robot Pose provided by AprilTag detection because
-                        // odometry may be off if we go over cable protector or Charging Station.
-                        // Samuel claimed AprilTag's heading is not accurate, we should try to tune out the error.
-                        // For now, just trust odometry.
                         robot.robotDrive.driveBase.setFieldPosition(robotPose);
                         robot.globalTracer.traceInfo(
                             moduleName, "Detected %s: robotPose=%s", robot.photonVision.getPipeline(), robotPose);
+                        // getScoringPos will return the scoring position either from vision detected target or from drive
+                        // base odometry if not using vision or vision did not detect target.
                         targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
                         robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
-                        robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.50);
+                        robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
                         robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, true, true);
                         robot.robotDrive.purePursuitDrive.start(
-                                currOwner, event, 4.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
+                            currOwner, event, 4.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
                         sm.waitForSingleEvent(event, State.SCORE_OBJECT);
-
                     }
-                    //if its vision and we didn't see the target, don't use odometry, not tested
-                    else{
+                    else
+                    {
+                        // We are using vision but vision doesn't see the target, don't use odometry, not tested.
                         sm.setState(State.DONE); 
                     }
                 }
-                //for now assume its auto preload if no vision
                 else
                 {
+                    // For now, assume its auto preload if no vision.
                     robot.robotDrive.purePursuitDrive.start(
-                        currOwner, event, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true, new TrcPose2D(0.0, 16.0, 0));
+                        currOwner, event, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, 16.0, 0));
                     sm.waitForSingleEvent(event, State.SCORE_OBJECT);
                 }
-
-                // getScoringPos will return the scoring position either from vision detected target or from drive
-                // base odometry if not using vision or vision did not detect target.
-
                 break;
 
             case SCORE_OBJECT:
@@ -349,7 +348,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     // Move the arm down to cap the pole, then release the cone with a slight delay.
                     //teleop, leave it up
                     robot.armPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, event, 0);
+                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, event, 0.0);
                     robot.grabber.releaseCube();
                     robot.grabber.releaseCone(0.2);
                     sm.waitForSingleEvent(event, State.DONE);
@@ -365,22 +364,22 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 robot.grabber.retractPoker();
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                 robot.robotDrive.purePursuitDrive.start(
-                    currOwner, null, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    currOwner, event, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     new TrcPose2D(0.0, -24.0, 0.0));
                 robot.elevatorPidActuator.setPosition(
                     currOwner, 0.4, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(
                     currOwner, 0.9, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                // TODO (Code Review): You are waiting for an event that nobody will signal??!!! I fixed it by letting ppDrive to signal the event.
                 sm.waitForSingleEvent(event, State.DONE, 2.0);
                 break; 
 
             default:
             case DONE:
                 // Stop task.
-                robot.globalTracer.traceInfo("AutoScore Done", "Robot thinks it is at:%s", robot.robotDrive.driveBase.getFieldPosition());
-
-                   
-
+                robot.globalTracer.traceInfo(
+                    "AutoScore Done", "Robot thinks it is at:%s",
+                    robot.robotDrive.driveBase.getFieldPosition());
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(1.0);
                 stopAutoTask(true);
                 break;
@@ -407,6 +406,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         }
         else
         {
+            // We did not use vision or vision did not find AprilTag, use odometry position and find the nearest
+            // AprilTag.
             TrcPose2D robotPos = robot.robotDrive.driveBase.getFieldPosition();
             double minXDist = Math.abs(robotPos.x - RobotParams.startPosX[0]);
             int minXDistIndex = 0;
@@ -425,7 +426,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
         if (objectType == ObjectType.CONE)
         {
-            // Pole is 22 inches to the left or right of the StartPos.
+            // Pole is some distance offset to the left or right of the StartPos.
             if (alliance == Alliance.Blue && scoreLocation == ScoreLocation.LEFT ||
                 alliance == Alliance.Red && scoreLocation == ScoreLocation.RIGHT)
             {
@@ -436,19 +437,23 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 scoringPosX -= 18.0;
             }
         }
-        if(robot.getCurrentRunMode() == RunMode.TELEOP_MODE){
-            return new TrcPose2D(
-                scoringPosX,
-                alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 20.0: RobotParams.STARTPOS_RED_Y + 10.0,
-                alliance == Alliance.Blue? 180.0: 0.0);
-        }
-        else{
-            return new TrcPose2D(
-                scoringPosX,
-                alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 30.0: RobotParams.STARTPOS_RED_Y + 20.0,
-                alliance == Alliance.Blue? 180.0: 0.0);
-        }
 
+        // TODO (Code Review): What is this??? STARTPOS_Y_OFFSET was 24.0 which is wrong. I changed it to 0 and adjusted
+        // the numbers below. Please re-test.
+        if (robot.getCurrentRunMode() == RunMode.TELEOP_MODE)
+        {
+            return new TrcPose2D(
+                scoringPosX,
+                alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y + 4.0: RobotParams.STARTPOS_RED_Y - 14.0,
+                alliance == Alliance.Blue? 180.0: 0.0);
+        }
+        else
+        {
+            return new TrcPose2D(
+                scoringPosX,
+                alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 6.0: RobotParams.STARTPOS_RED_Y + 4.0,
+                alliance == Alliance.Blue? 180.0: 0.0);
+        }
     }   //getScoringPos
  
  }   //class TaskAutoScore

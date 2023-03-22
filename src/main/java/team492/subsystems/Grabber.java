@@ -106,30 +106,15 @@ public class Grabber
         cubeGrabber.retract();
     }   //releaseCube
 
+    public void releaseCube(double delay)
+    {
+        cubeGrabber.retract(delay);
+    }   //releaseCube
+
     public void releaseCube(TrcEvent event)
     {
         cubeGrabber.retract(RobotParams.GRABBER_RELEASE_DURATION, event);
     }   //releaseCube
-
-    public void extendPoker()
-    {
-        cubePoker.extend();
-    }
-
-    public void extendPoker(double delay)
-    {
-        cubePoker.extend(delay);
-    }
-
-    public void retractPoker()
-    {
-        cubePoker.retract();
-    }
-
-    public void retractPoker(double delay)
-    {
-        cubePoker.retract(delay);
-    }
 
     //This method is called to grab a cone, extends both pneumatics for a complete grab
     public void grabCone()
@@ -162,6 +147,16 @@ public class Grabber
         coneGrabber.retract(RobotParams.GRABBER_RELEASE_DURATION, event);
     }   //releaseCone
 
+    public void extendPoker()
+    {
+        cubePoker.extend();
+    }   //extendPoker
+
+    public void retractPoker()
+    {
+        cubePoker.retract();
+    }   //retractPoker
+
     //This method is called to open the grabber, retracting the pneumatics
     public void releaseAll()
     {
@@ -182,7 +177,7 @@ public class Grabber
     public boolean poked()
     {
         return cubePoker.isExtended();
-    }
+    }   //poked
 
     /**
      * This method checks if the grabber sensor is active.
