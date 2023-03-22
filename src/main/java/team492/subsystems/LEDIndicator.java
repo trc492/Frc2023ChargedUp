@@ -34,15 +34,15 @@ public class LEDIndicator
     private static final TrcAddressableLED.Pattern nominalPattern =             // Black
         new TrcAddressableLED.Pattern("Nominal", new FrcColor(0, 0, 0), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern inverseOrientedPattern =     // Red
-        new TrcAddressableLED.Pattern("InverseOriented", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern inverseOrientedPattern =     // Blue
+        new TrcAddressableLED.Pattern("InverseOriented", new FrcColor(0, 0, 63), RobotParams.NUM_LEDS);
     private static final TrcAddressableLED.Pattern robotOrientedPattern =       // White
         new TrcAddressableLED.Pattern("RobotOriented", new FrcColor(63, 63, 63), RobotParams.NUM_LEDS);
     private static final TrcAddressableLED.Pattern fieldOrientedPattern =       // Cyan
         new TrcAddressableLED.Pattern("FieldOriented", new FrcColor(0, 63, 63), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern hasObjectPattern =           // Blue
-        new TrcAddressableLED.Pattern("hasObject", new FrcColor(0, 0, 63), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern hasObjectPattern =           // Red
+        new TrcAddressableLED.Pattern("hasObject", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
 
     private static final TrcAddressableLED.Pattern detectedConePattern =        // Yellow
         new TrcAddressableLED.Pattern("detectedCone", new FrcColor(63, 63, 0), RobotParams.NUM_LEDS);

@@ -81,7 +81,8 @@ public class Grabber
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: grabbedCube=%s, grabbedCone=%s, poked=%s", moduleName, grabbedCube(), grabbedCone(), poked());
+            Locale.US, "%s: grabbedCube=%s, grabbedCone=%s, poked=%s, hasObject=%s",
+            moduleName, grabbedCube(), grabbedCone(), poked(), hasObject());
     }   //toString
 
     //This method is called to grab a cube, extends the left pneumatic for a partial grab
