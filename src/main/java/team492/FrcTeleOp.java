@@ -724,13 +724,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Cube pickup (Bends polycarb)
                 if (pressed)
                 {
-                    // robot.armPidActuator.setPosition(
-                    //     moduleName, 0.0, 20.0, true, RobotParams.ARM_MAX_POWER, null, 0.5);
-                    // robot.grabber.releaseAll();
-                    // robot.elevatorPidActuator.setPosition(
-                    //     moduleName, 0.5, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-                    // robot.armPidActuator.setPosition(
-                    //     moduleName, 1.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 2.0);
+                    robot.grabber.releaseCube(); 
+                    robot.grabber.releaseCone(); 
+                    robot.elevatorPidActuator.setPosition(
+                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);  
+                    //not sure if this works
+                    robot.grabber.grabCube(1); 
                 }
                 break;
 

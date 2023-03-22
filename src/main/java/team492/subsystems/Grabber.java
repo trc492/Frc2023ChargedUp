@@ -69,7 +69,7 @@ public class Grabber
             RobotParams.PNEUMATIC_POKER_EXTEND, RobotParams.PNEUMATIC_POKER_RETRACT);
 
         grabberSensor = new FrcDigitalInput(moduleName + ".sensor", RobotParams.DIO_GRABBER_SENSOR);
-        grabberSensor.setInverted(true);
+        grabberSensor.setInverted(false);
         grabberTrigger = new TrcTriggerDigitalInput(moduleName + ".trigger", grabberSensor);
         enableTrigger(null);
     }   //Grabber

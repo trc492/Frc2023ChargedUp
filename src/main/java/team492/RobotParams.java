@@ -365,7 +365,7 @@ public class RobotParams
 
     public static final double DRIVE_SLOW_SCALE                 = 0.2;
     public static final double TURN_SLOW_SCALE                  = 0.10; //0.15
-    public static final double DRIVE_MEDIUM_SCALE               = 0.65;
+    public static final double DRIVE_MEDIUM_SCALE               = 0.75;
     public static final double TURN_MEDIUM_SCALE                = 0.3;
     public static final double DRIVE_FAST_SCALE                 = 1.0;
     public static final double TURN_FAST_SCALE                  = 1.0;

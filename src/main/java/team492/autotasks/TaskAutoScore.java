@@ -270,6 +270,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                         currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
                     sm.addEvent(armEvent);
                 }
+                else{
+                    robot.armPidActuator.setPosition(
+                        currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
+                    sm.addEvent(armEvent);        
+                }
 
                 if (taskParams.useVision)
                 {
@@ -342,6 +347,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 else
                 {
                     // Move the arm down to cap the pole, then release the cone with a slight delay.
+                    //teleop, leave it up
                     robot.armPidActuator.setPosition(
                         currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, event, 0);
                     robot.grabber.releaseCube();
@@ -433,7 +439,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         if(robot.getCurrentRunMode() == RunMode.TELEOP_MODE){
             return new TrcPose2D(
                 scoringPosX,
-                alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 10.0: RobotParams.STARTPOS_RED_Y + 10.0,
+                alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_Y - 20.0: RobotParams.STARTPOS_RED_Y + 10.0,
                 alliance == Alliance.Blue? 180.0: 0.0);
         }
         else{
