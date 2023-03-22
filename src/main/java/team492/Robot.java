@@ -265,7 +265,7 @@ public class Robot extends FrcRobotBase
 
                 if (RobotParams.Preferences.useGrabber)
                 {
-                    grabber = new Grabber();
+                    grabber = new Grabber(this, globalTracer);
                     // grabber.releaseAll();
                 }
 

@@ -23,29 +23,41 @@
 package team492.subsystems;
 
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
-import TrcFrcLib.frclib.FrcPWMTalonSRX;
+import TrcCommonLib.trclib.TrcTimer;
+import TrcCommonLib.trclib.TrcTriggerDigitalInput;
+import TrcFrcLib.frclib.FrcDigitalInput;
 import TrcFrcLib.frclib.FrcPneumatic;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import team492.Robot;
 import team492.RobotParams;
 
 public class Grabber
 {
     private static final String moduleName = "Grabber";
+
+    private final Robot robot;
+    private final TrcDbgTrace msgTracer;
     private final FrcPneumatic coneGrabber;
     private final FrcPneumatic cubeGrabber;
     private final FrcPneumatic cubePoker;
-    
+    private final FrcDigitalInput grabberSensor;
+    private final TrcTriggerDigitalInput grabberTrigger;
+    private TrcEvent triggerEvent = null;
+    private boolean sensorActive = false;
+
     /**
      * Constructor: Create an instance of the object.
      *
      */
-
-
-    //Does not require robot param, may need to add
-    public Grabber()
+    public Grabber(Robot robot, TrcDbgTrace msgTracer)
     {
+        this.robot = robot;
+        this.msgTracer = msgTracer;
+
         coneGrabber = new FrcPneumatic(
             moduleName + ".cone", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_CONE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CONE_GRABBER_EXTEND);
@@ -55,6 +67,11 @@ public class Grabber
         cubePoker = new FrcPneumatic(
             moduleName + ".poker", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_POKER_EXTEND, RobotParams.PNEUMATIC_POKER_RETRACT);
+
+        grabberSensor = new FrcDigitalInput(moduleName + ".sensor", RobotParams.DIO_GRABBER_SENSOR);
+        grabberSensor.setInverted(true);
+        grabberTrigger = new TrcTriggerDigitalInput(moduleName + ".trigger", grabberSensor);
+        enableTrigger(null);
     }   //Grabber
 
     /**
@@ -98,9 +115,19 @@ public class Grabber
         cubePoker.extend();
     }
 
+    public void extendPoker(double delay)
+    {
+        cubePoker.extend(delay);
+    }
+
     public void retractPoker()
     {
         cubePoker.retract();
+    }
+
+    public void retractPoker(double delay)
+    {
+        cubePoker.retract(delay);
     }
 
     //This method is called to grab a cone, extends both pneumatics for a complete grab
@@ -155,5 +182,69 @@ public class Grabber
     {
         return cubePoker.isExtended();
     }
+
+    /**
+     * This method checks if the grabber sensor is active.
+     *
+     * @return true if grabber sensor is active, false otherwise.
+     */
+    public boolean hasObject()
+    {
+        return sensorActive;
+    }   //hasObject
+
+    /**
+     * This method enables the sensor trigger.
+     *
+     * @param event specifies the event to signal if the sensor is triggered.
+     */
+    public void enableTrigger(TrcEvent event)
+    {
+        triggerEvent = event;
+        if (triggerEvent != null)
+        {
+            triggerEvent.clear();
+        }
+        grabberTrigger.enableTrigger(this::grabberTriggerCallback);
+    }   //enableTrigger
+
+    /**
+     * This method disables the sensor trigger.
+     */
+    public void disableTrigger()
+    {
+        if (triggerEvent != null)
+        {
+            triggerEvent.cancel();
+            triggerEvent = null;
+        }
+        grabberTrigger.disableTrigger();
+    }   //disableTrigger
+
+    /**
+     * This method is called when the grabber sensor is triggered.
+     *
+     * @param context specifies true if an object is captured, false otherwise.
+     */
+    private void grabberTriggerCallback(Object context)
+    {
+        final String funcName = "grabberTriggerCallback";
+        sensorActive = ((AtomicBoolean) context).get();
+
+        if (triggerEvent != null)
+        {
+            triggerEvent.signal();
+        }
+
+        if (robot.ledIndicator != null)
+        {
+            robot.ledIndicator.setHasObject(sensorActive);
+        }
+
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(funcName, "[%.3f] active=%s", TrcTimer.getModeElapsedTime(), sensorActive);
+        }
+    }   //grabberTriggerCallback
 
 }   //class Grabber

@@ -48,8 +48,8 @@ public class Intake implements TrcExclusiveSubsystem
     private final FrcPneumatic intakePneumatic;
     private final FrcDigitalInput intakeSensor;
     private final TrcTriggerDigitalInput intakeTrigger;
-    private boolean sensorActive = false;
     private TrcEvent triggerEvent = null;
+    private boolean sensorActive = false;
 
     public Intake(Robot robot, TrcDbgTrace msgTracer)
     {
@@ -69,10 +69,10 @@ public class Intake implements TrcExclusiveSubsystem
             RobotParams.PNEUMATIC_INTAKE_RETRACT, RobotParams.PNEUMATIC_INTAKE_EXTEND);
         intakePneumatic.retract();
 
-        intakeSensor = new FrcDigitalInput("intakeSensor", RobotParams.DIO_INTAKE_SENSOR);
+        intakeSensor = new FrcDigitalInput(moduleName + ".sensor", RobotParams.DIO_INTAKE_SENSOR);
         intakeSensor.setInverted(true);
-        intakeTrigger = new TrcTriggerDigitalInput("intakeTrigger", intakeSensor);
-        // enableTrigger(triggerEvent);
+        intakeTrigger = new TrcTriggerDigitalInput(moduleName + ".trigger", intakeSensor);
+        enableTrigger(null);
     }   //Intake
 
     /**
@@ -231,7 +231,7 @@ public class Intake implements TrcExclusiveSubsystem
 
         if (robot.ledIndicator != null)
         {
-            robot.ledIndicator.setIntakeHasObject(sensorActive);
+            robot.ledIndicator.setHasObject(sensorActive);
         }
 
         if (msgTracer != null)

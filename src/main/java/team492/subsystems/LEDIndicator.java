@@ -41,8 +41,8 @@ public class LEDIndicator
     private static final TrcAddressableLED.Pattern fieldOrientedPattern =       // Cyan
         new TrcAddressableLED.Pattern("FieldOriented", new FrcColor(0, 63, 63), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern intakeHasObjectPattern =     // Blue
-        new TrcAddressableLED.Pattern("intakeHasObject", new FrcColor(0, 0, 63), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern hasObjectPattern =           // Blue
+        new TrcAddressableLED.Pattern("hasObject", new FrcColor(0, 0, 63), RobotParams.NUM_LEDS);
 
     private static final TrcAddressableLED.Pattern detectedConePattern =        // Yellow
         new TrcAddressableLED.Pattern("detectedCone", new FrcColor(63, 63, 0), RobotParams.NUM_LEDS);
@@ -58,7 +58,7 @@ public class LEDIndicator
             detectedAprilTagPattern,
             detectedCubePattern,
             detectedConePattern,
-            intakeHasObjectPattern,
+            hasObjectPattern,
             fieldOrientedPattern,
             robotOrientedPattern,
             inverseOrientedPattern,
@@ -145,13 +145,13 @@ public class LEDIndicator
     }   //setVisionDetectedObject
 
     /**
-     * This method sets the LED to indicate intake has an object.
+     * This method sets the LED to indicate intake or grabber has an object.
      *
-     * @param hasObject specifies true to indicate intake has an object, false otherwise.
+     * @param hasObject specifies true to indicate intake or grabber has an object, false otherwise.
      */
-    public void setIntakeHasObject(boolean hasObject)
+    public void setHasObject(boolean hasObject)
     {
-        led.setPatternState(intakeHasObjectPattern, hasObject);
-    }   //setIntakeHasObject
+        led.setPatternState(hasObjectPattern, hasObject);
+    }   //setHasObject
 
 }   //class LEDIndicator
