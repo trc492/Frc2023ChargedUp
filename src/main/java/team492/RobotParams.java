@@ -255,6 +255,8 @@ public class RobotParams
     public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
     public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
     public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 5;
+    public static final int PNEUMATIC_POKER_EXTEND              = 7;
+    public static final int PNEUMATIC_POKER_RETRACT             = 0;
     public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
     public static final int PNEUMATIC_INTAKE_EXTEND             = 3;
     //
@@ -368,9 +370,9 @@ public class RobotParams
     public static final double DRIVE_FAST_SCALE                 = 1.0;
     public static final double TURN_FAST_SCALE                  = 1.0;
 
-    public static final double DRIVE_MAX_XPID_POWER             = 0.5;
-    public static final double DRIVE_MAX_YPID_POWER             = 0.6;  // TODO: Why is this different from X???
-    public static final double DRIVE_MAX_TURNPID_POWER          = 1.0;  // TODO: Really? Full power turn???
+    public static final double DRIVE_MAX_XPID_POWER             = 0.6;
+    public static final double DRIVE_MAX_YPID_POWER             = 0.6;
+    public static final double DRIVE_MAX_TURNPID_POWER          = 0.8;
 
     public static final double DRIVE_MAX_XPID_RAMP_RATE         = 0.5;
     public static final double DRIVE_MAX_YPID_RAMP_RATE         = 0.6;

@@ -28,7 +28,7 @@ import TrcCommonLib.trclib.TrcTriggerThresholdZones;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
-import team492.FrcAuto.BalanceStrafeDir;
+import team492.FrcAuto.BalanceInitSide;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
@@ -387,7 +387,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else
                     {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, null);
+                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, null);
                     }
                 }
                 break;
@@ -401,7 +401,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else
                     {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.RIGHT, null);
+                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, null);
                     }
                 }
                 break;
@@ -639,6 +639,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON10:
                 if (pressed)
                 {
+                    if (robot.grabber.poked())
+                    {
+                        robot.grabber.retractPoker();
+                    }
+                    else
+                    {
+                        robot.grabber.extendPoker();
+                    }
                     // TODO (Code Review): Where is the button to do Auto-AssistPickup with PickupOnly? You asked
                     // Kenny to implement it but you are not using it anywhere???
                     // robot.autoPickupTask.autoAssistPickup(pickupObject, true, null);

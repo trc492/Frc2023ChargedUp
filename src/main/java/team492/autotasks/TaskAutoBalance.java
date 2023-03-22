@@ -31,7 +31,7 @@ import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTimer;
 import team492.Robot;
 import team492.RobotParams;
-import team492.FrcAuto.BalanceStrafeDir;
+import team492.FrcAuto.BalanceInitSide;
 
 /**
  * This class implements auto-assist balancing on the charging station.
@@ -85,16 +85,16 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
      * @param strafeDir specifies the direction to strafe up the charging station.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void autoAssistBalance(BalanceStrafeDir strafeDir, TrcEvent completionEvent)
+    public void autoAssistBalance(BalanceInitSide side, TrcEvent completionEvent)
     {
         final String funcName = "autoAssistBalance";
 
         if (msgTracer != null)
         {
-            msgTracer.traceInfo( funcName, "%s: strafeDir=%s, event=%s", moduleName, strafeDir, completionEvent);
+            msgTracer.traceInfo( funcName, "%s: initSide=%s, event=%s", moduleName, side, completionEvent);
         }
 
-        startDir = strafeDir == BalanceStrafeDir.LEFT? -1.0: 1.0;
+        startDir = side == BalanceInitSide.OUTSIDE? -1.0: 1.0;
         startAutoTask(State.START, null, completionEvent);
     }   //autoAssistBalance
 
@@ -199,7 +199,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 // Strafe up the charging station slowly with a time limit of 5 seconds.
                 robot.robotDrive.enableTiltTrigger(tiltEvent);
                 robot.robotDrive.driveBase.holonomicDrive(
-                    currOwner, 0.0, startDir*0.2, robot.robotDrive.driveBase.getHeading());
+                    currOwner, 0.0, startDir*0.2, 0.0, robot.robotDrive.driveBase.getHeading());
                 sm.waitForSingleEvent(tiltEvent, State.CLIMB, 5.0);
                 break;
 
@@ -256,9 +256,9 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // Robot is still tipped. Drive the robot in the climb direction for a short distance.
                     robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
-                    robot.robotDrive.enableDistanceTrigger(4.0, event);
+                    robot.robotDrive.enableDistanceTrigger(2.0, event);
                     robot.robotDrive.driveBase.holonomicDrive(
-                        currOwner, 0.0, dir*0.1, robot.robotDrive.driveBase.getHeading());
+                        currOwner, 0.0, dir*0.05, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.waitForSingleEvent(tiltEvent, State.SETTLE);
                 }
                 break;

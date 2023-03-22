@@ -35,7 +35,7 @@ public class Grabber
     private static final String moduleName = "Grabber";
     private final FrcPneumatic coneGrabber;
     private final FrcPneumatic cubeGrabber;
-    private final FrcPWMTalonSRX vacuum;
+    private final FrcPneumatic cubePoker;
     
     /**
      * Constructor: Create an instance of the object.
@@ -52,15 +52,9 @@ public class Grabber
         cubeGrabber = new FrcPneumatic(
             moduleName + ".cube", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
             RobotParams.PNEUMATIC_CUBE_GRABBER_RETRACT, RobotParams.PNEUMATIC_CUBE_GRABBER_EXTEND);
-
-        if (RobotParams.Preferences.useVacuum)
-        {
-            vacuum = new FrcPWMTalonSRX("vacuum", RobotParams.PWM_VACUUM, null, null, null);
-        }
-        else
-        {
-            vacuum = null;
-        }
+        cubePoker = new FrcPneumatic(
+            moduleName + ".poker", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
+            RobotParams.PNEUMATIC_POKER_EXTEND, RobotParams.PNEUMATIC_POKER_RETRACT);
     }   //Grabber
 
     /**
@@ -70,21 +64,13 @@ public class Grabber
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: grabbedCube=%s, grabbedCone=%s", moduleName, grabbedCube(), grabbedCone());
+            Locale.US, "%s: grabbedCube=%s, grabbedCone=%s, poked=%s", moduleName, grabbedCube(), grabbedCone(), poked());
     }   //toString
 
     //This method is called to grab a cube, extends the left pneumatic for a partial grab
     public void grabCube()
     {   
-        if (vacuum == null)
-        {
-            cubeGrabber.extend();
-        }
-        else if (vacuum.getMotorVelocity() == 0)
-        {
-            //this probably works
-            cubeGrabber.extend();
-        }
+        cubeGrabber.extend();
     }   //grabCube
 
     public void grabCube(double delay)
@@ -107,18 +93,20 @@ public class Grabber
         cubeGrabber.retract(RobotParams.GRABBER_RELEASE_DURATION, event);
     }   //releaseCube
 
+    public void extendPoker()
+    {
+        cubePoker.extend();
+    }
+
+    public void retractPoker()
+    {
+        cubePoker.retract();
+    }
+
     //This method is called to grab a cone, extends both pneumatics for a complete grab
     public void grabCone()
     {
-        if (vacuum == null)
-        {
-            coneGrabber.extend();
-        }
-        else if (vacuum.getMotorVelocity() == 0)
-        {
-            //this probably works
-            coneGrabber.extend();
-        }
+        coneGrabber.extend();
     }   //grabCone
 
     public void grabCone(double delay)
@@ -163,22 +151,9 @@ public class Grabber
         return coneGrabber.isExtended();
     }   //grabbedCone
 
-    //This method is called to turn on the vacuum, used to grab a cube
-    public void vacuumOn()
+    public boolean poked()
     {
-        if (vacuum != null && !cubeGrabber.isExtended() &&  !coneGrabber.isExtended())
-        {
-            vacuum.set(1); //this is just a placeholder, unsure of vacuum strength
-        }
-    }   //vacuumOn
-
-    //This method is called to turn off the vacuum, dropping any grabbed cube
-    public void vacuumOff()
-    {
-        if (vacuum != null)
-        {
-            vacuum.stopMotor();
-        }
-    }   //vacuumOff
+        return cubePoker.isExtended();
+    }
 
 }   //class Grabber

@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
-import team492.FrcAuto.BalanceStrafeDir;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 
@@ -205,7 +204,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     robot.armPidActuator.setPosition(
                         null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
                         null, 0.0);
-                    robot.intake.retract(0.8);
+                    robot.intake.retract(0.9);
                     if (scorePreload && scoreLevel > 0)
                     {
                         nextState = State.SCORE_PRELOAD;

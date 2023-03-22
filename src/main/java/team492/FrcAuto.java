@@ -101,10 +101,10 @@ public class FrcAuto implements TrcRobot.RobotMode
         RIGHT   // Pole to the right of the aprilag.
     }   //enum SocreLocation
 
-    public static enum BalanceStrafeDir
+    public static enum BalanceInitSide
     {
-        LEFT,   // Robot will strafe left to balance
-        RIGHT   // Robot will strafe right to balance
+        INSIDE, // Robot is inside the community and will need a positive y power to balance
+        OUTSIDE // Robot is outisde the community and will need a negative y power to balance.
     }   //enum BalanceStrafeDir
 
     /**
