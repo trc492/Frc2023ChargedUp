@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
+import team492.FrcAuto.BalanceInitSide;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 
@@ -43,10 +44,9 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
         START,
         BACK_UP,
         UNTUCK_ARM,
-        SCORE_PRELOAD,
+        SCORE,
         GET_SECOND,
         DRIVE_TO_SCORE,
-        SCORE,
         DRIVE_TO_BALANCE,
         BALANCE,
         EXIT_COMMUNITY,
@@ -204,10 +204,10 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     robot.armPidActuator.setPosition(
                         null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
                         null, 0.0);
-                    robot.intake.retract(0.9);
+                    robot.intake.retract(0.8);
                     if (scorePreload && scoreLevel > 0)
                     {
-                        nextState = State.SCORE_PRELOAD;
+                        nextState = State.SCORE;
                     }
                     else
                     {
@@ -219,27 +219,69 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     sm.waitForSingleEvent(event, nextState);
                     break;
 
-                case SCORE_PRELOAD:
-                    // Call autoScore to score the object.
-                    robot.autoScoreTask.autoAssistScoreObject(
-                        ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, event);
-                    sm.waitForSingleEvent(event, (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE));
+                case SCORE:
+                    if (piecesScored == 0)
+                    {
+                        // Call autoScore to score the object.
+                        robot.autoScoreTask.autoAssistScoreObject(
+                            ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, event);
+                        sm.waitForSingleEvent(event, (scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE)));
+                    }
+                    else
+                    {
+                        // Call autoScore to score the object.
+                        robot.autoScoreTask.autoAssistScoreObject(
+                            ObjectType.CONE, scoreLevel, ScoreLocation.RIGHT, false, event);
+                        sm.waitForSingleEvent(event, State.DRIVE_TO_BALANCE);
+                    }
+                    piecesScored++;
                     break;
 
                 case GET_SECOND:
+                    robot.robotDrive.purePursuitDrive.start(
+                        null, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, 0.0, 180.0),
+                        new TrcPose2D(0.0, 144.0, 0.0));
+                    timer.set(3.5, event, new TrcEvent.Callback() {
+                        public void notify(Object context)
+                        {
+                            robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, doAutoBalance, event);
+                        }
+                    }, null);
+                    sm.waitForSingleEvent(event, State.DRIVE_TO_SCORE);
                     break;
                 
                 case DRIVE_TO_SCORE:
                     //TODO: Check match time
-                    break;
-                
-                case SCORE:
+                    robot.robotDrive.purePursuitDrive.start(
+                        null, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, 0.0, 180.0),
+                        new TrcPose2D(0.0, 144.0, 0.0));
+                    sm.waitForSingleEvent(event, State.SCORE);
                     break;
 
                 case DRIVE_TO_BALANCE:
+                    robot.robotDrive.purePursuitDrive.start(
+                        event, 1, robot.robotDrive.driveBase.getFieldPosition(), true, 
+                        new TrcPose2D(72, 0.0, 90),
+                        new TrcPose2D(0.0, 0.0, 180));
+                    sm.waitForSingleEvent(event, State.BALANCE);
                     break;
 
                 case BALANCE:
+                    // We're now next to the station inside of community, so we can do autobalance!
+                    robot.robotDrive.driveBase.stop();
+                    robot.robotDrive.disableDistanceTrigger();
+                    robot.robotDrive.disableTiltTrigger();
+                    if (doAutoBalance)
+                    {
+                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, event);
+                        sm.waitForSingleEvent(event, State.DONE);
+                    }
+                    else
+                    {
+                        sm.setState(State.DONE);
+                    }
                     break;
 
                 // case SCORE_GAME_PIECE:
