@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
@@ -60,20 +61,25 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         ObjectType objectType;
         boolean useVision;
-        boolean pickupOnly;
 
-        TaskParams(ObjectType objectType, boolean useVision, boolean pickupOnly)
+        TaskParams(ObjectType objectType, boolean useVision)
         {
             this.objectType = objectType;
             this.useVision = useVision;
-            this.pickupOnly = pickupOnly;
         }   //TaskParams
     }   //class TaskParams
 
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent elevatorEvent, armEvent, intakeEvent, visionEvent, event;
+    private final TrcTimer timer;
+    private final TrcEvent elevatorEvent;
+    private final TrcEvent armEvent;
+    private final TrcEvent intakeEvent;
+    private final TrcEvent visionEvent;
+    private final TrcEvent driveEvent;
+    private final TrcEvent grabberEvent;
+    private final TrcEvent timerEvent;
     private String currOwner = null;
     private String currDriveOwner = null;
     private boolean approachOnly = false;
@@ -91,11 +97,14 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
+        timer = new TrcTimer(moduleName);
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         armEvent = new TrcEvent(moduleName + ".armEvent");
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
-        event = new TrcEvent(moduleName);
+        driveEvent = new TrcEvent(moduleName + ".driveEvent");
+        grabberEvent = new TrcEvent(moduleName + ".grabberEvent");
+        timerEvent = new TrcEvent(moduleName + ".timerEvent");
     }   //TaskAutoPickup
 
     /**
@@ -119,7 +128,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 moduleName, objectType, useVision, pickupOnly, completionEvent);
         }
 
-        startAutoTask(startState, new TaskParams(objectType, useVision, pickupOnly), completionEvent);
+        startAutoTask(startState, new TaskParams(objectType, useVision), completionEvent);
     }   //autoAssistPickup
 
     /**
@@ -175,7 +184,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
             robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
             robot.intake.acquireExclusiveAccess(ownerName);
-
+        // Don't acquire drive base ownership globally. Acquire it only if we need to drive.
+        // For example, we don't need to drive in PickupOnly.
+        // In PickupOnly, the driver can still drive while in the middle of autoPickup.
         if (success)
         {
             currOwner = ownerName;
@@ -224,11 +235,13 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator),
                     ownershipMgr.getOwner(robot.intake));
             }
+
             if (currDriveOwner != null)
             {
                 robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
                 currDriveOwner = null;
             }
+
             robot.elevatorPidActuator.releaseExclusiveAccess(currOwner);
             robot.armPidActuator.releaseExclusiveAccess(currOwner);
             robot.intake.releaseExclusiveAccess(currOwner);
@@ -248,10 +261,12 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         {
             msgTracer.traceInfo(funcName, "%s: Stopping subsystems.", moduleName);
         }
+
         if (currDriveOwner != null)
         {
             robot.robotDrive.cancel(currDriveOwner);
         }
+
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);
         robot.intake.cancel(currOwner);
@@ -273,68 +288,68 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         TaskParams taskParams = (TaskParams) params;
         //  Preconditions:
-        //      All subsystems are in "turtle mode" for travelling: arm at TRAVEL_POS, elevator at 0.0,
-        //      whacker retracted.
+        //      All subsystems are in "turtle mode" for traveling: arm at TRAVEL_POS, elevator at SAFE_HEIGHT,
+        //      intake retracted.
         switch (state)
         {
             case START:
-                if(!taskParams.pickupOnly && (ownerName == null || robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName)))
+                // PickupOnly doesn't come to this state, meaning we will be driving towards the target thus requiring us to
+                // acquire ownership of the drive base.
+                if (acquireDriveBaseOwnership())
                 {
-                    currDriveOwner = ownerName;
-                }
-                else
-                {
-                    releaseSubsystemsOwnership();
-                }
-                // Set Intake down.
-                // If picking up cube, open both cube and cone grabber,
-                //      otherwise close cube grabber and open cone grabber.
-                // Raise elevator to 6-inch, signal event.
-                // Raise arm to 15-deg, signal event.
-                // If useVision, call vision to detect object with timeout, signal event.
-                // Wait for all events, then goto DRIVE_TO_OBJECT.
-                robot.intake.extend();
-                if (taskParams.objectType == ObjectType.CUBE)
-                {
-                    robot.grabber.releaseCube();
-                }
-                else
-                {
-                    robot.grabber.grabCube();
-                }
-                robot.grabber.releaseCone();
+                    // Set Intake down.
+                    // If picking up cube, open both cube and cone grabber,
+                    //      otherwise close cube grabber and open cone grabber.
+                    // Raise elevator to 6-inch, signal event.
+                    // Raise arm to 15-deg, signal event.
+                    // If useVision, call vision to detect object with timeout, signal event.
+                    // Wait for all events, then goto DRIVE_TO_OBJECT.
+                    robot.intake.extend();
+                    if (taskParams.objectType == ObjectType.CUBE)
+                    {
+                        robot.grabber.releaseCube();
+                    }
+                    else
+                    {
+                        robot.grabber.grabCube();
+                    }
+                    robot.grabber.releaseCone();
 
-                if (taskParams.useVision)
-                {
-                    robot.photonVision.setPipeline(
-                        taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
-                    robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
-                    sm.addEvent(visionEvent);
-                    // If using vision, we need to move the arm and elevator out of the way so LL can see the target
-                    // TODO (Code Review): Really? I thought the elevator should be at the lowest to unblock the camera.
-                    // Besides, if you raise the elevator to 13-inch, that would be different from the else case.
-                    // In the next state, you don't know if the elevator was 13 or SAFE_HEIGHT. What is SAFE_HEIGHT
-                    // anyway? Why 10-inch?
-                    // Also, Vision has a 0.5 sec timeout. Is that enough time to get the elevator and arm "out of view"?
-                    robot.elevatorPidActuator.setPosition(
-                        currOwner, 0.0, 13.0, true, 1.0, elevatorEvent, 0.5);
-                    robot.armPidActuator.setPosition(
-                        currOwner, 0.0, 65.7, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
+                    if (taskParams.useVision)
+                    {
+                        robot.photonVision.setPipeline(
+                            taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
+                        robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
+                        sm.addEvent(visionEvent);
+                        // If using vision, we need to move the arm and elevator out of the way so LL can see the target
+                        // TODO (Code Review): Really? I thought the elevator should be at the lowest to unblock the camera.
+                        // Besides, if you raise the elevator to 13-inch, that would be different from the else case.
+                        // In the next state, you don't know if the elevator was 13 or SAFE_HEIGHT. What is SAFE_HEIGHT
+                        // anyway? Why 10-inch?
+                        // Also, Vision has a 0.5 sec timeout. Is that enough time to get the elevator and arm "out of view"?
+                        robot.elevatorPidActuator.setPosition(
+                            currOwner, 0.0, 13.0, true, 1.0, elevatorEvent, 0.5);
+                        robot.armPidActuator.setPosition(
+                            currOwner, 0.0, 65.7, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
+                    }
+                    else
+                    {
+                        robot.elevatorPidActuator.setPosition(
+                            currOwner, 0.0, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
+                        robot.armPidActuator.setPosition(
+                            currOwner, 0.0, 45.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
+                    }
+                    sm.addEvent(elevatorEvent);
+                    sm.addEvent(armEvent);
+                    sm.waitForEvents(State.DRIVE_TO_OBJECT, true);
                 }
                 else
-
                 {
-                    robot.elevatorPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
-                    robot.armPidActuator.setPosition(
-                        currOwner, 0.0, 45.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
+                    // Failed to acquire drive base ownership, quit.
+                    sm.setState(State.DONE);
                 }
-                sm.addEvent(elevatorEvent);
-                sm.addEvent(armEvent);
-                sm.waitForEvents(State.DRIVE_TO_OBJECT, true);
-                // sm.waitForEvents(State.DONE, true);
                 break;
-            
+
             case DRIVE_TO_OBJECT:
                 // Turn on whacker with speed appropriate for cube or cone.
                 // Arm intake sensor, signal event when has object.
@@ -360,7 +375,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     robot.globalTracer.traceInfo(
                         moduleName, "Detected %s: targetDist=%s, targetAngle=%s", taskParams.objectType, targetDist, targetAngle);
                     robot.robotDrive.purePursuitDrive.start(
-                        currOwner, event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        currOwner, driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 6.0, targetAngle),
                         new TrcPose2D(0.0, targetDist + 48.0, 0.0));
                 }
@@ -368,39 +383,39 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 {
                     // No vision or no target, just drive forwards 5 feet
                     robot.robotDrive.purePursuitDrive.start(
-                        currOwner, event, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        currOwner, driveEvent, 2.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 60.0, 0.0));
                 }
-                sm.addEvent(event);
+                sm.addEvent(driveEvent);
                 //if its approach only we only grab it with weedwhacker, don't try to pick it up
-                sm.waitForEvents(approachOnly? State.DONE : State.PICKUP_OBJECT);
+                sm.waitForEvents(approachOnly? State.DONE: State.PICKUP_OBJECT);
                 break;
 
             case PREP_FOR_PICKUP_ONLY:
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
-                    robot.grabber.releaseCube(event);
-                    sm.addEvent(event);
+                    robot.grabber.releaseCube(grabberEvent);
+                    sm.addEvent(grabberEvent);
                 }
                 else
                 {
-                    robot.grabber.grabCube(); 
-                    robot.grabber.releaseCone(); 
+                    robot.grabber.grabCube();
+                    robot.grabber.releaseCone();
                     robot.elevatorPidActuator.setPosition(
                         moduleName, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.0);
                     sm.addEvent(elevatorEvent);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);  
-                    sm.addEvent(armEvent); 
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
+                    sm.addEvent(armEvent);
                 }
                 sm.waitForEvents(State.PICKUP_OBJECT_PICKUP_ONLY, true, 1.5);
                 break;
 
             case PICKUP_OBJECT_PICKUP_ONLY:
                 //close cone grabber
-                robot.grabber.grabCone(event); 
-                sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL);
-                break; 
+                robot.grabber.grabCone(grabberEvent);
+                sm.waitForSingleEvent(grabberEvent, State.PREP_FOR_TRAVEL);
+                break;
             
             case PICKUP_OBJECT:
                 // Cancel purePursuit drive.
@@ -420,7 +435,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 robot.armPidActuator.setMsgTracer(msgTracer, true);
                 if (robot.intake.hasObject())
                 {
-                    //arm isn't low enough to pickup the objects if its not at the lowest pos, may have to add something to keep it from stalling the motor
+                    // arm isn't low enough to pickup the objects if its not at the lowest pos, may have to add
+                    // something to keep it from stalling the motor
                     robot.elevatorPidActuator.setPosition(
                         currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 0.7, null, 0.0);
                     robot.armPidActuator.setPosition(
@@ -435,8 +451,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                         //Could make this a separate state after arm.setPosition() but arm.setPosition() might stall because its trying to go to the low pos
                         robot.grabber.grabCone(1.5);
                     }
+                    timer.set(1.75, timerEvent);
                     //go to the next state after 1.75 seconds(grabber fires after 1.5 seconds)
-                    sm.waitForSingleEvent(event, State.PREP_FOR_TRAVEL, 1.75);
+                    sm.waitForSingleEvent(timerEvent, State.PREP_FOR_TRAVEL);
                 }
                 else
                 {
@@ -464,5 +481,36 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 break;
         }
     }   //runTaskState
+
+    /**
+     * This method acquires drive base ownership if necessary.
+     *
+     * @return true if successful, false otherwise.
+     */
+    private boolean acquireDriveBaseOwnership()
+    {
+        final String funcName = "acquireDriveBaseOwnership";
+        boolean success = true;
+
+        if (ownerName != null)
+        {
+            // It's not pickup only, meaning we will be driving towards the target thus requiring us to
+            // acquire ownership of the drive base.
+            if (robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName))
+            {
+                currDriveOwner = ownerName;
+            }
+            else
+            {
+                if (msgTracer != null)
+                {
+                    msgTracer.traceInfo(funcName, "Failed to acquire drive base ownership.");
+                }
+                success = false;
+            }
+        }
+
+        return success;
+    }   //acquireDriveBaseOwnership
 
 }   //class TaskAutoPickup
