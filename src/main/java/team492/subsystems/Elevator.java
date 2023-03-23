@@ -56,8 +56,12 @@ public class Elevator
                 RobotParams.ELEVATOR_KP, RobotParams.ELEVATOR_KI, RobotParams.ELEVATOR_KD, RobotParams.ELEVATOR_KF,
                 RobotParams.ELEVATOR_IZONE, RobotParams.ELEVATOR_TOLERANCE)
             .setPosPresets(RobotParams.ELEVATOR_PRESET_TOLERANCE, RobotParams.elevatorPresets)
-            .resetPositionOnLowerLimit(false)
-            .setZeroCalibratePower(RobotParams.ELEVATOR_CAL_POWER);
+            .setZeroCalibratePower(RobotParams.ELEVATOR_CAL_POWER)
+            .resetPositionOnLowerLimit(true)
+            .setStallProtectionParams(
+                RobotParams.ELEVATOR_STALL_MIN_POWER, RobotParams.ELEVATOR_STALL_TOLERANCE,
+                RobotParams.ELEVATOR_STALL_TIMEOUT, RobotParams.ELEVATOR_RESET_TIMEOUT);
+
 
         this.msgTracer = msgTracer;
         actuatorMotor = new FrcCANSparkMax("ElevatorMotor", RobotParams.CANID_ELEVATOR, true);

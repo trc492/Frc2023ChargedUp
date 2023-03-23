@@ -436,6 +436,10 @@ public class RobotParams
     public static final double ELEVATOR_OFFSET                  = 0.0;
     public static final double ELEVATOR_MIN_POS                 = 0.0;
     public static final double ELEVATOR_MAX_POS                 = 29.0;
+    public static final double ELEVATOR_STALL_MIN_POWER         = 0.3;
+    public static final double ELEVATOR_STALL_TOLERANCE         = 0.0;
+    public static final double ELEVATOR_STALL_TIMEOUT           = 1.0;
+    public static final double ELEVATOR_RESET_TIMEOUT           = 0.5;
     public static final double ELEVATOR_KP                      = 0.5;
     public static final double ELEVATOR_KI                      = 0.0;
     public static final double ELEVATOR_KD                      = 0.0;
