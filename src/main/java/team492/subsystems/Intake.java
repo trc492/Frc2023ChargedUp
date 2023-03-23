@@ -82,7 +82,7 @@ public class Intake implements TrcExclusiveSubsystem
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Deployed=%s, hasObject=%s",
+            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Extended=%s, hasObject=%s",
             moduleName, getLeftMotorPower(), getRightMotorPower(), isExtended(), hasObject());
     }   //toString
 
@@ -110,15 +110,16 @@ public class Intake implements TrcExclusiveSubsystem
         return intakeRightMotor.getMotorPower();
     }   //getRightMotorPower
 
-    public void setPower(String owner, double delay, double leftPower, double rightPower, double duration, TrcEvent event)
+    public void setPower(
+        String owner, double delay, double leftPower, double rightPower, double duration, TrcEvent event)
     {
         final String funcName = "setPower";
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-            funcName, "[%.3f] owner=%s, delay=%.1f, leftPower=%.1f, rightPower=%.1f, duration=%.3f",
-            TrcTimer.getModeElapsedTime(), owner, delay, leftPower, rightPower, duration);
+            funcName, "[%.3f] owner=%s, delay=%.1f, leftPower=%.1f, rightPower=%.1f, duration=%.3f, event=%s",
+            TrcTimer.getModeElapsedTime(), owner, delay, leftPower, rightPower, duration, event);
         }
 
         if (validateOwnership(owner))
