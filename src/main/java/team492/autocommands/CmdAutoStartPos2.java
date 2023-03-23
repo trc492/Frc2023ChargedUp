@@ -60,7 +60,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private final TrcEvent autoAssistEvent;
     private final TrcEvent tiltEvent;
     private final TrcEvent distanceEvent;
-    private final TrcEvent intakeEvent;
     private final TrcStateMachine<State> sm;
 
     // TODO: Test all iterations to verify State shenanigans
@@ -82,7 +81,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         autoAssistEvent = new TrcEvent(moduleName + ".autoAssistEvent");
         tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
         distanceEvent = new TrcEvent(moduleName + ".distanceEvent");
-        intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
     }   //CmdAutoStartPos2
