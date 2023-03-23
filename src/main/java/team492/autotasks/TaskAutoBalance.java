@@ -25,6 +25,7 @@
 import TrcCommonLib.trclib.TrcAutoTask;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcEvent;
+import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcCommonLib.trclib.TrcTaskMgr;
@@ -107,7 +108,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
 
         if (msgTracer != null)
         {
-            msgTracer.traceInfo( funcName, "%s: canceled.", moduleName);
+            msgTracer.traceInfo( funcName, "%s: Canceling auto-assist balance.", moduleName);
         }
 
         stopAutoTask(false);
@@ -127,14 +128,23 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     @Override
     protected boolean acquireSubsystemsOwnership()
     {
+        final String funcName = "acquireSubsystemOwnership";
         boolean success = owner == null || robot.robotDrive.driveBase.acquireExclusiveAccess(owner);
 
         if (success)
         {
             currOwner = owner;
+            if (msgTracer != null)
+            {
+                msgTracer.traceInfo(funcName, "%s: Successfully acquired subsystem ownerships.", moduleName);
+            }
         }
         else
         {
+            if (msgTracer != null)
+            {
+                msgTracer.traceInfo(funcName, "%s: Failed to acquire subsystem ownership.", moduleName);
+            }
             releaseSubsystemsOwnership();
         }
 
@@ -148,8 +158,18 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     @Override
     protected void releaseSubsystemsOwnership()
     {
+        final String funcName = "releaseSubsystemsOwnership";
+
         if(owner != null)
         {
+            if (msgTracer != null)
+            {
+                TrcOwnershipMgr ownershipMgr = TrcOwnershipMgr.getInstance();
+                msgTracer.traceInfo(
+                    funcName,
+                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s).",
+                    moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase));
+            }
             robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }
@@ -161,6 +181,12 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     @Override
     protected void stopSubsystems()
     {
+        final String funcName = "stopSubsystems";
+
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(funcName, "%s: Stopping subsystems.", moduleName);
+        }
         robot.robotDrive.cancel(currOwner);
     }   //stopSubsystems
 

@@ -134,7 +134,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 
     //approach only pickup: sucks cone/cube into intake without grabbing it
     //need this to pick up objects for scoring low in auto 
-    public void autoAssistPickupApproachOnly(ObjectType objectType, boolean useVision, TrcEvent completionEvent){
+    public void autoAssistPickupApproachOnly(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
+    {
         approachOnly = true; 
         autoAssistPickup(objectType, useVision, false, completionEvent); 
     }
@@ -176,6 +177,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         if (success)
         {
             currOwner = ownerName;
+            if (msgTracer != null)
+            {
+                msgTracer.traceInfo(funcName, "%s: Successfully acquired subsystem ownerships.", moduleName);
+            }
         }
         else
         {
@@ -224,6 +229,12 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     @Override
     protected void stopSubsystems()
     {
+        final String funcName = "stopSubsystems";
+
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(funcName, "%s: Stopping subsystems.", moduleName);
+        }
         robot.robotDrive.cancel(currOwner);
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);

@@ -173,6 +173,10 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         if (success)
         {
             currOwner = ownerName;
+            if (msgTracer != null)
+            {
+                msgTracer.traceInfo(funcName, "%s: Successfully acquired subsystem ownerships.", moduleName);
+            }
         }
         else
         {
@@ -219,6 +223,12 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     @Override
     protected void stopSubsystems()
     {
+        final String funcName = "stopSubsystems";
+
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(funcName, "%s: Stopping subsystems.", moduleName);
+        }
         robot.robotDrive.cancel(currOwner);
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);
