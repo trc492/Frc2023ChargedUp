@@ -29,7 +29,6 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
@@ -78,7 +77,6 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private String currOwner = null;
     private String currDriveOwner = null;
     private boolean approachOnly = false;
-    private boolean pickupOnly = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -442,11 +440,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 }
                 else
                 {
-                    // try to pickup object for 2 seconds
-                    robot.intake.enableTrigger(intakeEvent);
-                    robot.intake.setPower(currOwner, 0, 1.0, 1.0, 0.0, null);
-                    sm.waitForSingleEvent(intakeEvent, State.PICKUP_OBJECT, 2);
-                    // sm.setState(State.PREP_FOR_TRAVEL);
+                    sm.setState(State.PREP_FOR_TRAVEL);
                 }
                 break;
             

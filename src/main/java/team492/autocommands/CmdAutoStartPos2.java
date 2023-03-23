@@ -41,7 +41,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
-        // BACK_UP,
+        BACK_UP,
         UNTUCK_ARM,
         SCORE_PRELOAD_HIGH,
         TURN,
@@ -60,9 +60,11 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private final TrcEvent autoAssistEvent;
     private final TrcEvent tiltEvent;
     private final TrcEvent distanceEvent;
+    private final TrcEvent intakeEvent;
     private final TrcStateMachine<State> sm;
 
     // TODO: Test all iterations to verify State shenanigans
+    private TrcPose2D startPos = RobotParams.STARTPOS_BLUE_2;
     private int scoreLevel = 2;
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
@@ -81,6 +83,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         autoAssistEvent = new TrcEvent(moduleName + ".autoAssistEvent");
         tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
         distanceEvent = new TrcEvent(moduleName + ".distanceEvent");
+        intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
     }   //CmdAutoStartPos2
@@ -145,38 +148,29 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             switch (state)
             {
                 case START:
-                    // TODO (Code Review): Be careful here. You are hard coding all the choices instead of using autoChoice but
-                    // we are still reading autoChoice to set the starting field position. If autoChoices had the wrong startPosition,
-                    // then the robot's odometry would be completely screwed up.
-                    // Read autoChoices.
+                    // TODO: Read autoChoices. Debug Shuffleboard
                     // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     // scorePreload = FrcAuto.autoChoices.getScorePreload();
                     // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
 
                     // Set robot's absolute field position according to the start position in autoChoices.
-                    robot.robotDrive.setFieldPosition(null, false);
+                    robot.robotDrive.setFieldPosition(startPos, false);
                     robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
 
                     if (scorePreload && scoreLevel == 0)
                     {
                         // Deploying & spinning intake to score the preloaded cube to ground level.
                         robot.intake.extend();
-                        robot.intake.setPower(0.2, -0.4, -0.4, 0.5);
+                        robot.intake.setPower(0.2, -0.4, -0.4, 0.5, intakeEvent);
+                        sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
                     }
-                    // if (scorePreload && scoreLevel == 0)
-                    // {
-                    //     // TODO (Code Review): Who is signaling the intake event??? Where is the code scoring the pre-load on ground level???
-                    //     // You need to deploy the intake while backing up and delay spinning the intake. I am commenting this code out.
-                    //     // The code from before that commented out the back up state was correct but this is not.
-                    //     sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
-                    // }
-                    // else
-                    // {
-                    //     sm.setState(State.BACK_UP);
-                    // }
-                    // break;
+                    else
+                    {
+                        sm.setState(State.BACK_UP);
+                    }
+                    break;
 
-                // case BACK_UP:
+                case BACK_UP:
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
                     robot.robotDrive.purePursuitDrive.start(

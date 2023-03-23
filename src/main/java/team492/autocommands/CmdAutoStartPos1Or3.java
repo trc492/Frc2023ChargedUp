@@ -28,7 +28,6 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.BalanceInitSide;
@@ -158,7 +157,6 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 case START:
                     // Read autoChoices.
                     // alliance = FrcAuto.autoChoices.getAlliance();
-                    // //TODO: should we make startpos 1, 2, or 3 to make it match with shuffleboard?
                     // startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
                     // scorePreload = FrcAuto.autoChoices.getScorePreload();
                     // scoreLevel = FrcAuto.autoChoices.getScoreLevel();

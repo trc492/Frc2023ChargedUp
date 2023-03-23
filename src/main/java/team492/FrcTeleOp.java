@@ -657,39 +657,32 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
-                // Ready for cones
+                // Ready position for cones
+                // Moves elevator up and moves arm to its lowest position
+                // We grab cones with the earmuffs straight above them so when grabbing,
+                // all we have to do is move the elevator down and close the earmuffs
                 if (robot.elevator != null && robot.arm != null && pressed)
                 {
-                    //this is the button we press after scoring so the robot is in position to drive around the field safely
-                    // robot.elevatorPidActuator.setMsgTracer(robot.globalTracer, true);
                     robot.elevatorPidActuator.setPosition(
                         moduleName, 0.0, 12.0, true, 1.0, null, 1.5);
-                    // TODO (Code Review): Why setting to ARM_MIN_POS??? The arm could never go to MIN_POS once it's untuck. This will cause the
-                    // setPosition never making target. Could be the cause of not releasing ownership. I really don't like the indiscriminant use
-                    // of timeout. This basically hides coding bugs.
-                    // Also, there are a lot of button preset functions but hardly any comment explaining what they are doing.
-                    // It makes it hard for me to code review because I can't tell why it is doing what it does and thus can't tell if there
-                    // is a bug in there. For each button sequence, you need to put detail comments on what it intend to do. By doing so, you
-                    // may even discover the bug yourself.
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS_INTAKE_DOWN, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     robot.intake.extend();
                 }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:
-                // Cube pickup (Bends polycarb)
+                // Cube pickup
+                // Opens both grabbers
+                // Moves arm down (elevator is already all the way down)
+                // Closes cube grabber after a short delay
                 if (robot.elevator != null && robot.arm != null && robot.grabber != null && pressed)
                 {
                     robot.grabber.releaseCube();
                     robot.grabber.releaseCone();
-                    robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.0);
-                    // TODO (Code Review): Again, you can't set arm position to MIN_POS!
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.3, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.0);
-                    //not sure if this works
-                    robot.grabber.grabCube(1.0);
+                        moduleName, 0.3, RobotParams.ARM_MIN_POS_INTAKE_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.8);
+                    robot.grabber.grabCube(0.8);
                 }
                 break;
 
