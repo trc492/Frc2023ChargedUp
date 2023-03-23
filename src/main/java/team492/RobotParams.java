@@ -496,7 +496,6 @@ public class RobotParams
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify
     public static final double ARM_TRAVEL_POSITION              = 30.0;     //TODO
     public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
-    // public static final double[] ARM_TRIGGERS                   = {85.0};
     // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =
     {
