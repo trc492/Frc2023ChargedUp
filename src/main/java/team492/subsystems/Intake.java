@@ -110,7 +110,7 @@ public class Intake implements TrcExclusiveSubsystem
         return intakeRightMotor.getMotorPower();
     }   //getRightMotorPower
 
-    public void setPower(String owner, double delay, double leftPower, double rightPower, double duration)
+    public void setPower(String owner, double delay, double leftPower, double rightPower, double duration, TrcEvent event)
     {
         final String funcName = "setPower";
 
@@ -123,24 +123,29 @@ public class Intake implements TrcExclusiveSubsystem
 
         if (validateOwnership(owner))
         {
-            intakeLeftMotor.set(delay, leftPower, duration);
-            intakeRightMotor.set(delay, rightPower, duration);
+            intakeLeftMotor.set(delay, leftPower, duration, event);
+            intakeRightMotor.set(delay, rightPower, duration, event);
         }
+    }   //setPower
+
+    public void setPower(double delay, double leftPower, double rightPower, double duration, TrcEvent event)
+    {
+        setPower(null, delay, leftPower, rightPower, duration, event);
     }   //setPower
 
     public void setPower(double delay, double leftPower, double rightPower, double duration)
     {
-        setPower(null, delay, leftPower, rightPower, duration);
+        setPower(null, delay, leftPower, rightPower, duration, null);
     }   //setPower
 
     public void setPower(double leftPower, double rightPower)
     {
-        setPower(null, 0.0, leftPower, rightPower, 0.0);
+        setPower(null, 0.0, leftPower, rightPower, 0.0, null);
     }   //setPower
 
     public void setPower(double power)
     {
-        setPower(null, 0.0, power, power, 0.0);
+        setPower(null, 0.0, power, power, 0.0, null);
     }   //setPower
 
     public void extend(double delay)

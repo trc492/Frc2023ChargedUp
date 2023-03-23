@@ -353,9 +353,9 @@ public class RobotParams
     public static final double Y_TIPPING_TOLERANCE              = 10.0;
     public static final double Y_TIPPING_SETTLING_TIME          = 0.2;
 
-    public static final double ROBOT_MAX_VELOCITY               = 180.0;    // TODO: Please tune
-    public static final double ROBOT_MAX_ACCELERATION           = 2100.0;   // TODO: Please tune
-    public static final double ROBOT_MAX_TURN_RATE              = 1000.0;   // TODO: Please tune
+    public static final double ROBOT_MAX_VELOCITY               = 172.9;
+    public static final double ROBOT_MAX_ACCELERATION           = 799.1;
+    public static final double ROBOT_MAX_TURN_RATE              = 562.5;
     public static final double ROBOT_VEL_KP                     = 0.0;
     public static final double ROBOT_VEL_KI                     = 0.0;
     public static final double ROBOT_VEL_KD                     = 0.0;
@@ -369,12 +369,12 @@ public class RobotParams
     public static final double DRIVE_FAST_SCALE                 = 1.0;
     public static final double TURN_FAST_SCALE                  = 1.0;
 
-    public static final double DRIVE_MAX_XPID_POWER             = 0.6;
-    public static final double DRIVE_MAX_YPID_POWER             = 0.6;
+    public static final double DRIVE_MAX_XPID_POWER             = 0.4;
+    public static final double DRIVE_MAX_YPID_POWER             = 0.4;
     public static final double DRIVE_MAX_TURNPID_POWER          = 0.8;
 
     public static final double DRIVE_MAX_XPID_RAMP_RATE         = 0.5;
-    public static final double DRIVE_MAX_YPID_RAMP_RATE         = 0.6;
+    public static final double DRIVE_MAX_YPID_RAMP_RATE         = 0.5;
     public static final double DRIVE_MAX_TURNPID_RAMP_RATE      = 1.0;
 
     public static final double DRIVE_RAMP_RATE                  = 0.2;
@@ -492,6 +492,7 @@ public class RobotParams
     public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify
     public static final double ARM_TRAVEL_POSITION              = 30.0;     //TODO
     public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
+    // public static final double[] ARM_TRIGGERS                   = {85.0};
     // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =
     {

@@ -61,11 +61,13 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         ObjectType objectType;
         boolean useVision;
+        boolean pickupOnly;
 
-        TaskParams(ObjectType objectType, boolean useVision)
+        TaskParams(ObjectType objectType, boolean useVision, boolean pickupOnly)
         {
             this.objectType = objectType;
             this.useVision = useVision;
+            this.pickupOnly = pickupOnly;
         }   //TaskParams
     }   //class TaskParams
 
@@ -74,7 +76,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent elevatorEvent, armEvent, intakeEvent, visionEvent, event;
     private String currOwner = null;
-    private boolean approachOnly = false; 
+    private String currDriveOwner = null;
+    private boolean approachOnly = false;
+    private boolean pickupOnly = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -117,7 +121,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 moduleName, objectType, useVision, pickupOnly, completionEvent);
         }
 
-        startAutoTask(startState, new TaskParams(objectType, useVision), completionEvent);
+        startAutoTask(startState, new TaskParams(objectType, useVision, pickupOnly), completionEvent);
     }   //autoAssistPickup
 
     /**
@@ -170,10 +174,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         final String funcName = "acquireSubsystemsOwnership";
         boolean success = ownerName == null ||
-                          robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
-                          robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
-                          robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
-                          robot.intake.acquireExclusiveAccess(ownerName);
+            robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
+            robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
+            robot.intake.acquireExclusiveAccess(ownerName);
+
         if (success)
         {
             currOwner = ownerName;
@@ -187,6 +191,13 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             if (msgTracer != null)
             {
                 msgTracer.traceInfo(funcName, "%s: Failed to acquire subsystem ownership.", moduleName);
+                TrcOwnershipMgr ownershipMgr = TrcOwnershipMgr.getInstance();
+                msgTracer.traceInfo(
+                    funcName,
+                    "%s: Failed to acquire subsystem ownership (currOwner=%s, robotDrive=%s, elevator=%s, arm=%s, intake=%s).",
+                    moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase),
+                    ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator),
+                    ownershipMgr.getOwner(robot.intake));
             }
             releaseSubsystemsOwnership();
         }
@@ -203,7 +214,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     {
         final String funcName = "releaseSubsystemsOwnership";
 
-        if(ownerName != null)
+        if(currOwner != null)
         {
             if (msgTracer != null)
             {
@@ -215,7 +226,11 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator),
                     ownershipMgr.getOwner(robot.intake));
             }
-            robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
+            if (currDriveOwner != null)
+            {
+                robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
+                currDriveOwner = null;
+            }
             robot.elevatorPidActuator.releaseExclusiveAccess(currOwner);
             robot.armPidActuator.releaseExclusiveAccess(currOwner);
             robot.intake.releaseExclusiveAccess(currOwner);
@@ -235,7 +250,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         {
             msgTracer.traceInfo(funcName, "%s: Stopping subsystems.", moduleName);
         }
-        robot.robotDrive.cancel(currOwner);
+        if (currDriveOwner != null)
+        {
+            robot.robotDrive.cancel(currDriveOwner);
+        }
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);
         robot.intake.cancel(currOwner);
@@ -262,6 +280,14 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         switch (state)
         {
             case START:
+                if(!taskParams.pickupOnly && (ownerName == null || robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName)))
+                {
+                    currDriveOwner = ownerName;
+                }
+                else
+                {
+                    releaseSubsystemsOwnership();
+                }
                 // Set Intake down.
                 // If picking up cube, open both cube and cone grabber,
                 //      otherwise close cube grabber and open cone grabber.
@@ -298,6 +324,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                         currOwner, 0.0, 65.7, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
                 }
                 else
+
                 {
                     robot.elevatorPidActuator.setPosition(
                         currOwner, 0.0, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
@@ -321,7 +348,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     RobotParams.INTAKE_CUBE_PICKUP_POWER: RobotParams.INTAKE_CONE_PICKUP_POWER;
 
                 robot.intake.enableTrigger(intakeEvent);
-                robot.intake.setPower(currOwner, 0.0, intakePower, intakePower, 0.0);
+                robot.intake.setPower(currOwner, 0.0, intakePower, intakePower, 0.0, null);
                 sm.addEvent(intakeEvent);
 
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.2);
@@ -354,24 +381,23 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             case PREP_FOR_PICKUP_ONLY:
                 if (taskParams.objectType == ObjectType.CUBE)
                 {
-                    robot.grabber.releaseCube();
-                    TrcTimer timer = new TrcTimer("pickupTimer");
-                    timer.set(1, event); 
-                    
+                    robot.grabber.releaseCube(event);
+                    sm.addEvent(event);
                 }
                 else
                 {
                     robot.grabber.grabCube(); 
                     robot.grabber.releaseCone(); 
                     robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 2.0);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 2.0);  
+                        moduleName, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.0);
                     sm.addEvent(elevatorEvent);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);  
                     sm.addEvent(armEvent); 
                 }
-                sm.waitForEvents(State.PICKUP_OBJECT_PICKUP_ONLY);
+                sm.waitForEvents(State.PICKUP_OBJECT_PICKUP_ONLY, true, 1.5);
                 break;
+
             case PICKUP_OBJECT_PICKUP_ONLY:
                 //close cone grabber
                 robot.grabber.grabCone(event); 
@@ -418,7 +444,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 {
                     // try to pickup object for 2 seconds
                     robot.intake.enableTrigger(intakeEvent);
-                    robot.intake.setPower(currOwner, 0, 1.0, 1.0, 0.0);
+                    robot.intake.setPower(currOwner, 0, 1.0, 1.0, 0.0, null);
                     sm.waitForSingleEvent(intakeEvent, State.PICKUP_OBJECT, 2);
                     // sm.setState(State.PREP_FOR_TRAVEL);
                 }
@@ -430,11 +456,11 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // Wait for event, then goto DONE.
                 robot.elevatorPidActuator.setMsgTracer(msgTracer, false);
                 robot.armPidActuator.setMsgTracer(msgTracer, false);
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 1.0, 5.0, true, 1.0, event, 2.0);
+                // robot.elevatorPidActuator.setPosition(
+                //     currOwner, 0.0, 5.0, true, 1.0, event, 2.0);
                 robot.armPidActuator.setPosition(
-                    currOwner, 1.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 2.0);
-                sm.waitForSingleEvent(event, State.DONE);
+                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
+                sm.waitForSingleEvent(armEvent, State.DONE);
                 break;
 
             default:

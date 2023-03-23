@@ -22,6 +22,8 @@
 
 package team492;
 
+import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTriggerThresholdZones;
@@ -44,6 +46,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private final TrcTriggerThresholdZones elevatorTrigger;
+    // private final TrcTriggerThresholdZones armTrigger;
     private boolean controlsEnabled = false;
 
     private boolean fastSpitOut = false; 
@@ -67,10 +70,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             elevatorTrigger = new TrcTriggerThresholdZones(
                 "elevatorTrigger", robot.elevator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
+            // armTrigger = new TrcTriggerThresholdZones(
+            //     "armTrigger", robot.armPidActuator::getPosition, RobotParams.ARM_TRIGGERS, false);
         }
         else
         {
             elevatorTrigger = null;
+            // armTrigger = null;
         }
     }   //FrcTeleOp
 
@@ -102,10 +108,20 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.robotDrive.turnSpeedScale = RobotParams.TURN_MEDIUM_SCALE;
         }
 
+        if (robot.elevator != null)
+        {
+            // robot.elevator.zeroCalibrate(moduleName);
+        }
+
         if (elevatorTrigger != null)
         {
             elevatorTrigger.enableTrigger(this::elevatorTriggerCallback);
         }
+
+        // if (armTrigger != null)
+        // {
+        //     armTrigger.enableTrigger(this::armTriggerCallback);
+        // }
     }   //startMode
 
     /**
@@ -129,6 +145,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             elevatorTrigger.disableTrigger();
         }
+        // if (armTrigger != null)
+        // {
+        //     armTrigger.disableTrigger();
+        // }
     }   //stopMode
 
     /**
@@ -145,7 +165,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             // Elevator is going up.
             robot.intake.retract();
         }
-    }   //elevatorTriggerCallback
+    }   //
+    
+    private void armTriggerCallback(Object context)
+    {
+        TrcTriggerThresholdZones.CallbackContext params = (TrcTriggerThresholdZones.CallbackContext) context;
+
+        if (robot.intake != null && params.prevZone == 0 && params.currZone == 1)
+        {
+            // Elevator is going up.
+            robot.intake.retract();
+        }
+    }
 
     /**
      * This method is called periodically on the main robot thread. Typically, you put TeleOp control code here that
@@ -640,13 +671,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
+                // Ready for cones
                 if (robot.elevator != null && robot.arm != null && pressed)
                 {
                     //this is the button we press after scoring so the robot is in position to drive around the field safely
+                    // robot.elevatorPidActuator.setMsgTracer(robot.globalTracer, true);
                     robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.0, 12.0, true, 1.0, null, 0.0);
+                        moduleName, 0.0, 12.0, true, 1.0, null, 1.5);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     robot.intake.extend();
                 }
                 break;
@@ -658,9 +691,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.grabber.releaseCube();
                     robot.grabber.releaseCone();
                     robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
+                        moduleName, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.0);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
+                        moduleName, 0.3, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.0);
                     //not sure if this works
                     robot.grabber.grabCube(1.0);
                 }
@@ -679,14 +712,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                      robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
 
                     //AutoPickup Manual Version
-                    robot.grabber.grabCube();
-                    robot.grabber.releaseCone();
-                    robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
-                    //not sure if this works
-                    robot.grabber.grabCone(1.5);
+                    // robot.grabber.grabCube();
+                    // robot.grabber.releaseCone();
+                    // robot.elevatorPidActuator.setPosition(
+                    //     moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
+                    // robot.armPidActuator.setPosition(
+                    //     moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
+                    // //not sure if this works
+                    // robot.grabber.grabCone(1.5);
                 }
                 break;
 
@@ -710,7 +743,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-                manualElevator = pressed;
+                // Ready for cube
+                if (robot.elevator != null && robot.arm != null && pressed)
+                {
+                    robot.elevatorPidActuator.setPosition(
+                        moduleName, 0.0, 0.0, true, 1.0, null, 1.5);
+                    robot.armPidActuator.setPosition(
+                        moduleName, 0.0, 60.0, true, RobotParams.ARM_MAX_POWER, null, 1.5);
+                    robot.intake.extend();
+                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
@@ -732,14 +773,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
-                // TODO (Code Review): This is identical to WHITE1???!!!
-                // if (pressed)
-                // {
-                //     robot.autoPickupTask.autoAssistCancel();
-                // }
-                // robot.armPidActuator.releaseExclusiveAccess(moduleName);
-                // robot.elevatorPidActuator.releaseExclusiveAccess(moduleName);
-                // robot.autoScoreTask.autoAssistCancel();
                 break;
         }
     }   //buttonPanelButtonEvent

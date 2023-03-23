@@ -56,8 +56,12 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
 
     private final Robot robot;
     private final TrcTimer timer;
-    private final TrcEvent event;
-    private final TrcStateMachine<State> sm;
+    private final TrcEvent driveEvent;
+    private final TrcEvent elevatorEvent;
+    private final TrcEvent autoAssistEvent;
+    private final TrcEvent tiltEvent;
+    private final TrcEvent distanceEvent;
+    private final TrcEvent intakeEvent;    private final TrcStateMachine<State> sm;
 
     private Alliance alliance = Alliance.Blue;
     /*
@@ -71,13 +75,14 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     private boolean useVision = false;
     private boolean scorePreload = true;
     private boolean doAutoBalance = false;
-    private boolean scoreSecondPiece = false;
+    private boolean scoreSecondPiece = true;
     //scoreSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
     //!scoreSecondPiece && doAutoBalance: after the start delay, we go out of the community, pickup a second piece, and then park
     //scoreSecondPiece && !doAutoBalance: after the start delay, we go for a second piece and score it
     //!scoreSecondPiece && !doAutoBalance: after the start delay, we stop
     private int piecesScored = 0;
     private boolean untuck = false;
+    private double xOffset = 0.0;
     // private ScoreLocation scoreLocation;
 
     /**
@@ -89,7 +94,12 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     {
         this.robot = robot;
         timer = new TrcTimer(moduleName);
-        event = new TrcEvent(moduleName);
+        driveEvent = new TrcEvent(moduleName + ".driveEvent");
+        elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
+        autoAssistEvent = new TrcEvent(moduleName + ".autoAssistEvent");
+        tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
+        distanceEvent = new TrcEvent(moduleName + ".distanceEvent");
+        intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
     }   //CmdAutoStartPos1Or3
@@ -158,20 +168,33 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
 
+                    if((alliance == Alliance.Blue && startPos == 0) || (alliance == Alliance.Red && startPos == 2))
+                    {
+                        xOffset = -RobotParams.EXIT_COMMUNITY_X_OFFSET_MAGNITUDE;
+                    }
+                    else if ((alliance == Alliance.Blue && startPos == 2) || (alliance == Alliance.Red && startPos == 0))
+                    {
+                        xOffset = RobotParams.EXIT_COMMUNITY_X_OFFSET_MAGNITUDE;
+                    }
+
                     if (scorePreload && scoreLevel == 0)
                     {
                         // Deploying & Spinning intake before backing up to reduce chance of cube bouncing out
                         robot.intake.extend();
-                        robot.intake.setPower(0.2, RobotParams.INTAKE_SPIT_POWER, RobotParams.INTAKE_SPIT_POWER, 0.5);
+                        robot.intake.setPower(0.2, -0.4, -0.4, 0.2, intakeEvent);
+                        sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
                     }
-                    sm.setState(State.BACK_UP);
+                    else
+                    {
+                        sm.setState(State.BACK_UP);
+                    }                    
                     break;
 
                 case BACK_UP:
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        driveEvent, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
 
                     if (!scorePreload || scoreLevel == 0)
@@ -185,7 +208,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         else
                         {
                             robot.intake.retract();
-                            nextState = doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE;
+                            nextState = scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
                         }
                     }
                     else
@@ -193,14 +216,14 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         // We are scoring on a higher level, requiring the arm to be untucked
                         nextState = State.UNTUCK_ARM;
                     }
-                    sm.waitForSingleEvent(event, nextState);
+                    sm.waitForSingleEvent(driveEvent, nextState);
                     break;
 
                 case UNTUCK_ARM:
                     robot.intake.extend();
                     robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
                     robot.elevatorPidActuator.setPosition(
-                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, event, 0.5);
+                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
                     robot.armPidActuator.setPosition(
                         null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
                         null, 0.0);
@@ -211,12 +234,9 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     }
                     else
                     {
-                        // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
-                        robot.elevatorPidActuator.setPosition(
-                            RobotParams.ELEVATOR_MIN_POS, true, 1.0, event, 0.5);
-                        nextState = doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE;
+                        nextState = scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
                     }
-                    sm.waitForSingleEvent(event, nextState);
+                    sm.waitForSingleEvent(elevatorEvent, nextState);
                     break;
 
                 case SCORE:
@@ -224,48 +244,52 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     {
                         // Call autoScore to score the object.
                         robot.autoScoreTask.autoAssistScoreObject(
-                            ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, event);
-                        sm.waitForSingleEvent(event, (scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE)));
+                            ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
+                        sm.waitForSingleEvent(autoAssistEvent, (scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE)));
                     }
                     else
                     {
                         // Call autoScore to score the object.
                         robot.autoScoreTask.autoAssistScoreObject(
-                            ObjectType.CONE, scoreLevel, ScoreLocation.RIGHT, false, event);
-                        sm.waitForSingleEvent(event, State.DRIVE_TO_BALANCE);
+                            ObjectType.CONE, scoreLevel, ScoreLocation.RIGHT, false, autoAssistEvent);
+                        sm.waitForSingleEvent(autoAssistEvent, State.DRIVE_TO_BALANCE);
                     }
                     piecesScored++;
                     break;
 
                 case GET_SECOND:
                     robot.robotDrive.purePursuitDrive.start(
-                        null, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, 0.0, 180.0),
-                        new TrcPose2D(0.0, 144.0, 0.0));
-                    timer.set(3.5, event, new TrcEvent.Callback() {
+                        null, 5.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(xOffset, 144.0, 180.0));
+                    timer.set(3.5, null, new TrcEvent.Callback() {
                         public void notify(Object context)
                         {
-                            robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, doAutoBalance, event);
+                            robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, doAutoBalance, autoAssistEvent);
                         }
                     }, null);
-                    sm.waitForSingleEvent(event, State.DRIVE_TO_SCORE);
+                    sm.waitForSingleEvent(autoAssistEvent, State.DONE);//DRIVE_TO_SCORE);
                     break;
                 
                 case DRIVE_TO_SCORE:
                     //TODO: Check match time
                     robot.robotDrive.purePursuitDrive.start(
-                        null, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, 0.0, 180.0),
-                        new TrcPose2D(0.0, 144.0, 0.0));
-                    sm.waitForSingleEvent(event, State.SCORE);
+                        driveEvent, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(-xOffset, 144.0, 0.0));
+                    sm.waitForSingleEvent(driveEvent, State.SCORE);
                     break;
 
                 case DRIVE_TO_BALANCE:
+                    if (robot.elevator.getPosition() >= RobotParams.ELEVATOR_SAFE_HEIGHT)
+                    {
+                        // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
+                        robot.elevatorPidActuator.setPosition(
+                            null, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.5);
+                    }
                     robot.robotDrive.purePursuitDrive.start(
-                        event, 1, robot.robotDrive.driveBase.getFieldPosition(), true, 
+                        driveEvent, 1, robot.robotDrive.driveBase.getFieldPosition(), true, 
                         new TrcPose2D(72, 0.0, 90),
                         new TrcPose2D(0.0, 0.0, 180));
-                    sm.waitForSingleEvent(event, State.BALANCE);
+                    sm.waitForSingleEvent(driveEvent, State.BALANCE);
                     break;
 
                 case BALANCE:
@@ -275,14 +299,16 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     robot.robotDrive.disableTiltTrigger();
                     if (doAutoBalance)
                     {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, event);
-                        sm.waitForSingleEvent(event, State.DONE);
+                        robot.autoBalanceTask.autoAssistBalance(
+                            piecesScored == 2? BalanceInitSide.INSIDE: BalanceInitSide.OUTSIDE, autoAssistEvent);
+                        sm.waitForSingleEvent(autoAssistEvent, State.DONE);
                     }
                     else
                     {
                         sm.setState(State.DONE);
                     }
                     break;
+                    
 
                 // case SCORE_GAME_PIECE:
                 //     //  Preconditions:
@@ -493,27 +519,12 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 //     //     new TrcPose2D(RobotParams.CHARGING_STATION_DEPTH + 15, 0, 0));
                 //     break;
 
-                // case AUTO_BALANCE:
-                //     // TODO: check which direction it strafes on
-                //     robot.autoBalanceTask.autoAssistBalance(BalanceStrafeDir.LEFT, event);
-                //     sm.waitForSingleEvent(event, State.DONE);
-                //     break;
-
                 case EXIT_COMMUNITY:
-                    double xOffset = 0.0;
-                    if((alliance == Alliance.Blue && startPos == 0) || (alliance == Alliance.Red && startPos == 2))
-                    {
-                        xOffset = -RobotParams.EXIT_COMMUNITY_X_OFFSET_MAGNITUDE;
-                    }
-                    else if ((alliance == Alliance.Blue && startPos == 2) || (alliance == Alliance.Red && startPos == 0))
-                    {
-                        xOffset = RobotParams.EXIT_COMMUNITY_X_OFFSET_MAGNITUDE;
-                    }
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
                     robot.robotDrive.purePursuitDrive.start(
-                            event, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                            driveEvent, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                             new TrcPose2D(xOffset, -156.0, 0.0));
-                    sm.waitForSingleEvent(event, State.DONE);
+                    sm.waitForSingleEvent(driveEvent, State.DONE);
                     break;
 
                 case DONE:

@@ -41,6 +41,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
+        BACK_UP,
         UNTUCK_ARM,
         SCORE_PRELOAD,
         TURN,
@@ -59,6 +60,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private final TrcEvent autoAssistEvent;
     private final TrcEvent tiltEvent;
     private final TrcEvent distanceEvent;
+    private final TrcEvent intakeEvent;
     private final TrcStateMachine<State> sm;
 
     // TODO: Test all iterations to verify State shenanigans
@@ -80,6 +82,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
         autoAssistEvent = new TrcEvent(moduleName + ".autoAssistEvent");
         tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
         distanceEvent = new TrcEvent(moduleName + ".distanceEvent");
+        intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
     }   //CmdAutoStartPos2
@@ -156,14 +159,16 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     if (scorePreload && scoreLevel == 0)
                     {
                         // Deploying & Spinning intake before backing up to reduce chance of cube bouncing out
-                        // TODO (Code Review): Do you realize your backing up is immediate and not after the intake spinning?
-                        robot.intake.extend();
-                        robot.intake.setPower(0.2, -0.4, -0.4, 0.5);
-                    }
-                //     sm.setState(State.BACK_UP);
-                //     break;
 
-                // case BACK_UP:
+                        sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
+                    }
+                    else
+                    {
+                        sm.setState(State.BACK_UP);
+                    }
+                    break;
+
+                case BACK_UP:
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
                     robot.robotDrive.purePursuitDrive.start(
@@ -177,8 +182,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                         if (untuck)
                         {
                             nextState = State.UNTUCK_ARM;
-                            // TODO (Code Review): Why wait for 1 second here??? And you are using the same event as ppDrive!!!
-                            // timer.set(1.0, event);
                         }
                         else
                         {
@@ -208,10 +211,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     }
                     else
                     {
-                        // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
-                        // TODO (Code Review): You are overriding and canceling the previous elevator.setPosition above??!!!
-                        robot.elevatorPidActuator.setPosition(
-                            null, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.5);
                         nextState = doAutoBalance? State.TURN: State.DONE;
                     }
                     sm.waitForSingleEvent(elevatorEvent, nextState);
@@ -225,6 +224,12 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     break;
                 
                 case TURN:
+                    if (robot.elevator.getPosition() >= RobotParams.ELEVATOR_SAFE_HEIGHT)
+                    {
+                        // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
+                        robot.elevatorPidActuator.setPosition(
+                            null, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.5);
+                    }
                     // Turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 0.7, robot.robotDrive.driveBase.getFieldPosition(), true,
