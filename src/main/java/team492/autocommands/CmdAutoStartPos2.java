@@ -41,9 +41,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
-        BACK_UP,
+        // BACK_UP,
         UNTUCK_ARM,
-        SCORE_PRELOAD,
+        SCORE_PRELOAD_HIGH,
         TURN,
         START_TO_CLIMB,
         CLIMB,
@@ -110,8 +110,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     {
         robot.autoScoreTask.autoAssistCancel();
         robot.autoBalanceTask.autoAssistCancel();
-        robot.robotDrive.purePursuitDrive.setMoveOutputLimit(RobotParams.PPD_MOVE_DEF_OUTPUT_LIMIT);
         robot.robotDrive.cancel();
+        robot.robotDrive.purePursuitDrive.setMoveOutputLimit(RobotParams.PPD_MOVE_DEF_OUTPUT_LIMIT);
         sm.stop();
     }   //cancel
 
@@ -147,6 +147,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             switch (state)
             {
                 case START:
+                    // TODO (Code Review): Be careful here. You are hard coding all the choices instead of using autoChoice but
+                    // we are still reading autoChoice to set the starting field position. If autoChoices had the wrong startPosition,
+                    // then the robot's odometry would be completely screwed up.
                     // Read autoChoices.
                     // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     // scorePreload = FrcAuto.autoChoices.getScorePreload();
@@ -158,17 +161,24 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                     if (scorePreload && scoreLevel == 0)
                     {
-                        // Deploying & Spinning intake before backing up to reduce chance of cube bouncing out
-
-                        sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
+                        // Deploying & spinning intake to score the preloaded cube to ground level.
+                        robot.intake.extend();
+                        robot.intake.setPower(0.2, -0.4, -0.4, 0.5);
                     }
-                    else
-                    {
-                        sm.setState(State.BACK_UP);
-                    }
-                    break;
+                    // if (scorePreload && scoreLevel == 0)
+                    // {
+                    //     // TODO (Code Review): Who is signaling the intake event??? Where is the code scoring the pre-load on ground level???
+                    //     // You need to deploy the intake while backing up and delay spinning the intake. I am commenting this code out.
+                    //     // The code from before that commented out the back up state was correct but this is not.
+                    //     sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
+                    // }
+                    // else
+                    // {
+                    //     sm.setState(State.BACK_UP);
+                    // }
+                    // break;
 
-                case BACK_UP:
+                // case BACK_UP:
                     // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
                     robot.robotDrive.purePursuitDrive.start(
@@ -207,7 +217,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.intake.retract(0.9);
                     if (scorePreload && scoreLevel > 0)
                     {
-                        nextState = State.SCORE_PRELOAD;
+                        nextState = State.SCORE_PRELOAD_HIGH;
                     }
                     else
                     {
@@ -216,7 +226,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     sm.waitForSingleEvent(elevatorEvent, nextState);
                     break;
 
-                case SCORE_PRELOAD:
+                case SCORE_PRELOAD_HIGH:
                     // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
                         ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
