@@ -22,8 +22,6 @@
 
 package team492;
 
-import TrcCommonLib.trclib.TrcDbgTrace;
-import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcTriggerThresholdZones;
@@ -46,7 +44,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     //
     protected final Robot robot;
     private final TrcTriggerThresholdZones elevatorTrigger;
-    // private final TrcTriggerThresholdZones armTrigger;
     private boolean controlsEnabled = false;
 
     private boolean fastSpitOut = false; 
@@ -70,13 +67,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             elevatorTrigger = new TrcTriggerThresholdZones(
                 "elevatorTrigger", robot.elevator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
-            // armTrigger = new TrcTriggerThresholdZones(
-            //     "armTrigger", robot.armPidActuator::getPosition, RobotParams.ARM_TRIGGERS, false);
         }
         else
         {
             elevatorTrigger = null;
-            // armTrigger = null;
         }
     }   //FrcTeleOp
 
@@ -110,6 +104,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         if (robot.elevator != null)
         {
+            // TODO (Code Review): Need to re-enable this
             // robot.elevator.zeroCalibrate(moduleName);
         }
 
@@ -117,11 +112,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             elevatorTrigger.enableTrigger(this::elevatorTriggerCallback);
         }
-
-        // if (armTrigger != null)
-        // {
-        //     armTrigger.enableTrigger(this::armTriggerCallback);
-        // }
     }   //startMode
 
     /**
@@ -145,10 +135,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         {
             elevatorTrigger.disableTrigger();
         }
-        // if (armTrigger != null)
-        // {
-        //     armTrigger.disableTrigger();
-        // }
     }   //stopMode
 
     /**
@@ -165,18 +151,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             // Elevator is going up.
             robot.intake.retract();
         }
-    }   //
-    
-    private void armTriggerCallback(Object context)
-    {
-        TrcTriggerThresholdZones.CallbackContext params = (TrcTriggerThresholdZones.CallbackContext) context;
-
-        if (robot.intake != null && params.prevZone == 0 && params.currZone == 1)
-        {
-            // Elevator is going up.
-            robot.intake.retract();
-        }
-    }
+    }   //elevatorTriggerCallback
 
     /**
      * This method is called periodically on the main robot thread. Typically, you put TeleOp control code here that
@@ -323,8 +298,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcXboxController.BUTTON_A:
-                // Reset robot heading.
-                if (pressed)
+                // Reset robot heading for field oriented driving.
+                if (robot.robotDrive != null && pressed)
                 {
                     TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
                     robotPose.angle = 0.0;
@@ -336,11 +311,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BUTTON_X:
-                // Ownership issues
-                // robot.robotDrive.setAntiDefenseEnabled(moduleName, pressed);
                 break;
 
             case FrcXboxController.BUTTON_Y:
+                // Toggle between Field or Robot oriented driving mode.
                 if (pressed)
                 {
                     if (robot.robotDrive.driveOrientation != RobotDrive.DriveOrientation.FIELD)
@@ -355,6 +329,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.LEFT_BUMPER:
+                // Press and hold for fast driving.
                 if (pressed)
                 {
                     robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_FAST_SCALE;
@@ -368,6 +343,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.RIGHT_BUMPER:
+                // Press and hold for slow driving.
                 if (pressed)
                 {
                     robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_SLOW_SCALE;
@@ -381,7 +357,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BACK:
-                if (pressed)
+                // Test auto balance from inside the community.
+                if (robot.robotDrive != null && pressed)
                 {
                     if (robot.autoBalanceTask.isActive())
                     {
@@ -395,7 +372,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.START:
-                if (pressed)
+                // Test auto balance from outside the community.
+                if (robot.robotDrive != null && pressed)
                 {
                     if (robot.autoBalanceTask.isActive())
                     {
@@ -505,9 +483,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
-                // gathers cones, cubes into the intake
-                // if pressed, extends intake if its not extended, spins intake
-                // otherwise stops
+                // Press to set up intake to gather cone or cube, release to cancel.
                 if (robot.intake != null)
                 {
                     if (pressed)
@@ -533,6 +509,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
+                // Toggle intake extend and retract.
                 if (robot.intake != null && pressed)
                 {
                     if (robot.intake.isExtended())
@@ -547,10 +524,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
+                // Press and hold to reverse spinning of intake.
                 intakeReversed = pressed; 
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON4:
+                // Toggle cube grabber (aka polycarb).
                 if (robot.grabber != null && pressed)
                 {
                     if (robot.grabber.grabbedCube())
@@ -565,6 +544,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON5:
+                // Toggle cone grabber (aka earmuffs).
                 if (robot.grabber != null && pressed)
                 {
                     if (robot.grabber.grabbedCone())
@@ -579,7 +559,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
-                //raises the arm and elevator one preset position
+                // Raises the arm one preset position up.
                 if (robot.arm != null && pressed)
                 {
                     robot.armPidActuator.presetPositionUp(moduleName, RobotParams.ARM_MAX_POWER);
@@ -587,7 +567,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
-                //lowers the arm and elevator one preset position
+                // Lowers the arm one preset position down.
                 if (robot.arm != null && pressed)
                 {
                     robot.armPidActuator.presetPositionDown(moduleName, RobotParams.ARM_MAX_POWER);
@@ -595,7 +575,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                //spits objects out
+                // Press to spit object out of intake, release to cancel.
                 if (robot.intake != null)
                 {
                     if (pressed)
@@ -610,6 +590,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
+                // Zero calibrate elevator.
                 if (robot.elevator != null && pressed)
                 {
                     robot.elevator.zeroCalibrate(moduleName);
@@ -617,6 +598,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
+                // Toggle cube poker.
                 if (robot.grabber != null && pressed)
                 {
                     if (robot.grabber.poked())
@@ -631,6 +613,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
+                // Raising the arm for scoring, retracting the intake too.
                 if (robot.arm != null && robot.intake != null && pressed)
                 {
                     robot.armPidActuator.setPosition(
@@ -640,6 +623,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON12:
+                // Lowering the arm for traveling.
                 if (robot.arm != null && pressed)
                 {
                     robot.armPidActuator.setPosition(
@@ -663,9 +647,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.PANEL_BUTTON_RED1:
+                // Press and hold to control the arm with operator joystick.
                 armControl = pressed;
                 if (robot.arm != null && !armControl)
                 {
+                    // On release, make sure we stop the arm.
                     robot.armPidActuator.setPidPower(0.0);
                 }
                 break;
@@ -678,6 +664,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     // robot.elevatorPidActuator.setMsgTracer(robot.globalTracer, true);
                     robot.elevatorPidActuator.setPosition(
                         moduleName, 0.0, 12.0, true, 1.0, null, 1.5);
+                    // TODO (Code Review): Why setting to ARM_MIN_POS??? The arm could never go to MIN_POS once it's untuck. This will cause the
+                    // setPosition never making target. Could be the cause of not releasing ownership. I really don't like the indiscriminant use
+                    // of timeout. This basically hides coding bugs.
+                    // Also, there are a lot of button preset functions but hardly any comment explaining what they are doing.
+                    // It makes it hard for me to code review because I can't tell why it is doing what it does and thus can't tell if there
+                    // is a bug in there. For each button sequence, you need to put detail comments on what it intend to do. By doing so, you
+                    // may even discover the bug yourself.
                     robot.armPidActuator.setPosition(
                         moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     robot.intake.extend();
@@ -692,6 +685,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.grabber.releaseCone();
                     robot.elevatorPidActuator.setPosition(
                         moduleName, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.0);
+                    // TODO (Code Review): Again, you can't set arm position to MIN_POS!
                     robot.armPidActuator.setPosition(
                         moduleName, 0.3, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.0);
                     //not sure if this works
