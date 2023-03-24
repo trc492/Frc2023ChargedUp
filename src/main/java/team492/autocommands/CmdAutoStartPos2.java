@@ -27,6 +27,7 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
@@ -65,12 +66,12 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private final TrcStateMachine<State> sm;
 
     // TODO: Test all iterations to verify State shenanigans
-    private TrcPose2D startPos = RobotParams.STARTPOS_BLUE_2;
+    private Alliance alliance = Alliance.Blue;
     private int scoreLevel = 2;
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
-    private boolean doExitAndAutoBalance = false;  
     private boolean untuck = true;
+    private TrcPose2D startPos;
 
     /**
      * Constructor: Create an instance of the object.
@@ -151,10 +152,11 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             {
                 case START:
                     // TODO: Read autoChoices. Debug Shuffleboard
+                    alliance = FrcAuto.autoChoices.getAlliance();
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
-
+                    startPos = alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_2: RobotParams.STARTPOS_RED_2;
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(startPos, false);
                     robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);

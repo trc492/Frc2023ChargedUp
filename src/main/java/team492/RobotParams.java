@@ -439,7 +439,6 @@ public class RobotParams
     public static final double ELEVATOR_STALL_MIN_POWER         = 0.3;
     public static final double ELEVATOR_STALL_TOLERANCE         = 0.0;
     public static final double ELEVATOR_STALL_TIMEOUT           = 1.0;
-
     public static final double ELEVATOR_RESET_TIMEOUT           = 0.5;
     public static final double ELEVATOR_KP                      = 0.5;
     public static final double ELEVATOR_KI                      = 0.0;
@@ -480,7 +479,7 @@ public class RobotParams
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
-    public static final double ARM_MIN_POS_INTAKE_DOWN          = 10;
+    public static final double ARM_MIN_POS_INTAKE_DOWN          = 10.0;
     public static final double ARM_MIN_POS_INTAKE_UP            = 20.0;
     public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;

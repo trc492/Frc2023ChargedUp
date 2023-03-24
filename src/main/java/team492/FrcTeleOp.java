@@ -598,20 +598,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                // Toggle cube poker.
-                // if (robot.grabber != null && pressed)
-                // {
-                //     if (robot.grabber.poked())
-                //     {
-                //         robot.grabber.retractPoker();
-                //     }
-                //     else
-                //     {
-                //         robot.grabber.extendPoker();
-                //     }
-                // }
-                //sometimes i forget to retract after extendingPoker() so this is the version that extends and retracts (poking the cube)
-                if(robot.grabber != null && pressed){
+                // Poke the cube to release it.
+                if (robot.grabber != null && pressed)
+                {
                     robot.grabber.extendPoker();
                     robot.grabber.retractPoker(0.5);
                 }
@@ -751,14 +740,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // TURTLE MODE: TODO: Add label on button panel
                 //use this for defense/before balance
                 //assumes that when the intake goes up it will not hit the arm (do arm up beforehand)
-                
+
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
                 //nose out cone pickup
                 if (robot.elevator != null && robot.arm != null && robot.intake != null && pressed)
                 {
                     robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
                     robot.armPidActuator.setPosition(
-                        moduleName, 1.0, RobotParams.ARM_MIN_POS_INTAKE_UP, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                        moduleName, 1.0, RobotParams.ARM_MIN_POS_INTAKE_UP, true, RobotParams.ARM_MAX_POWER, null,
+                        0.0);
                     robot.intake.retract();
                 }
                 break;
