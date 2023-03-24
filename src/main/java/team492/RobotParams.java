@@ -458,12 +458,12 @@ public class RobotParams
     //TODO: tune these values
     public static final double[] elevatorConeScoringPresets     =
     {
-        0, 12.5, 28.0
+        0.0, 12.5, 28.0
     };
     //TODO: tune these values
     public static final double[] elevatorCubeScoringPresets     =
     {
-       0, 0, 22
+       0.0, 0.0, 22.0
     };
 
     // Arm subsystem.

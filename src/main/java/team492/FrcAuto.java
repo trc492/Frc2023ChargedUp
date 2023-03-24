@@ -198,7 +198,7 @@ public class FrcAuto implements TrcRobot.RobotMode
             userChoices.addBoolean(DBKEY_AUTO_USE_VISION, true);
             userChoices.addBoolean(DBKEY_AUTO_SCORE_PRELOAD, true);
             userChoices.addBoolean(DBKEY_AUTO_DO_AUTO_BALANCE, true);
-            userChoices.addBoolean(DBKEY_AUTO_SCORE_SECOND_PIECE, true);
+            userChoices.addBoolean(DBKEY_AUTO_SCORE_SECOND_PIECE, false);
             userChoices.addString(DBKEY_AUTO_PATHFILE, "DrivePath.csv");
             userChoices.addNumber(DBKEY_AUTO_X_DRIVE_DISTANCE, 6.0);    // in feet
             userChoices.addNumber(DBKEY_AUTO_Y_DRIVE_DISTANCE, 6.0);    // in feet
