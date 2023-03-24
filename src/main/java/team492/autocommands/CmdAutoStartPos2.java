@@ -195,7 +195,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     }
                     else
                     {
-                        // We are scoring on a higher level, requiring the arm to be untucked
+                        // We are scoring on a higher level, requiring the arm to be untucked.
                         nextState = State.UNTUCK_ARM;
                     }
                     sm.waitForSingleEvent(driveEvent, nextState);
