@@ -28,8 +28,10 @@ import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import TrcCommonLib.trclib.TrcTaskMgr;
 import TrcCommonLib.trclib.TrcTimer;
+import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.BalanceInitSide;
@@ -60,6 +62,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final TrcEvent event, tiltEvent;
     private String currOwner = null;
     private double startDir;
+    private Alliance alliance;
     private boolean balanced = false;
     private double triggerDistance = RobotParams.Preferences.homeField? 19.0: 24.0;
 
@@ -96,6 +99,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         }
 
         startDir = side == BalanceInitSide.OUTSIDE? -1.0: 1.0;
+        alliance = FrcAuto.autoChoices.getAlliance();
+        if (alliance == Alliance.Red) startDir *= -1.0;
         startAutoTask(State.START, null, completionEvent);
     }   //autoAssistBalance
 
@@ -205,7 +210,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         Object params, State state, TaskType taskType, RunMode runMode, boolean slowPeriodicLoop)
     {
         double tiltAngle = robot.robotDrive.getGyroRoll();
-        double dir = -Math.signum(tiltAngle);
+        double dir = alliance == Alliance.Blue? -Math.signum(tiltAngle): Math.signum(tiltAngle);
         boolean inBalance = robot.robotDrive.inBalanceZone();
         boolean leveling = robot.robotDrive.startingToLevel();
         boolean tiltTriggered = tiltEvent.isSignaled();
