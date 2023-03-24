@@ -26,8 +26,8 @@ import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
-import TrcCommonLib.trclib.TrcTimer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.BalanceInitSide;
@@ -44,46 +44,29 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
         BACK_UP,
         UNTUCK_ARM,
         SCORE,
-        GET_SECOND,
-        DRIVE_TO_SCORE,
+        EXIT_COMMUNITY,
+        // GET_SECOND,
+        // DRIVE_TO_SCORE,
         DRIVE_TO_BALANCE,
         BALANCE,
-        EXIT_COMMUNITY,
         DONE
     }   //enum State
 
 
     private final Robot robot;
-    private final TrcTimer timer;
     private final TrcEvent driveEvent;
     private final TrcEvent elevatorEvent;
     private final TrcEvent autoAssistEvent;
-    private final TrcEvent tiltEvent;
-    private final TrcEvent distanceEvent;
     private final TrcEvent intakeEvent;
     private final TrcStateMachine<State> sm;
 
     private Alliance alliance = Alliance.Blue;
-    /*
-     * 0: Blue right, red left
-     * 2: blue left, red right
-     */
     private int startPos = 2;
-    // private ObjectType loadedObjType;
-    private int scoreLevel = 0;
-    private ScoreLocation scoreLocation = ScoreLocation.MIDDLE;
-    private boolean useVision = false;
     private boolean scorePreload = true;
+    private int scoreLevel = 0;
     private boolean doAutoBalance = false;
-    private boolean scoreSecondPiece = true;
-    //scoreSecondPiece && doAutoBalance: after the start delay, we go for a second piece, score it, then park
-    //!scoreSecondPiece && doAutoBalance: after the start delay, we go out of the community, pickup a second piece, and then park
-    //scoreSecondPiece && !doAutoBalance: after the start delay, we go for a second piece and score it
-    //!scoreSecondPiece && !doAutoBalance: after the start delay, we stop
-    private int piecesScored = 0;
-    private boolean untuck = false;
-    private double xOffset = 0.0;
-    // private ScoreLocation scoreLocation;
+    // private boolean scoreSecondPiece = true;
+    // private int piecesScored = 0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -93,12 +76,9 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     public CmdAutoStartPos1Or3(Robot robot)
     {
         this.robot = robot;
-        timer = new TrcTimer(moduleName);
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         autoAssistEvent = new TrcEvent(moduleName + ".autoAssistEvent");
-        tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
-        distanceEvent = new TrcEvent(moduleName + ".distanceEvent");
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
@@ -150,20 +130,17 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
         }
         else
         {
-            State nextState;
-
             robot.dashboard.displayPrintf(8, "State: %s", state);
             switch (state)
             {
                 case START:
                     // Read autoChoices.
-                    // alliance = FrcAuto.autoChoices.getAlliance();
-                    // startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
-                    // scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
-                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    alliance = FrcAuto.autoChoices.getAlliance();
+                    startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
+                    scorePreload = FrcAuto.autoChoices.getScorePreload();
+                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     // scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
-
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
                     robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
@@ -174,7 +151,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         robot.intake.extend();
                         robot.intake.setPower(0.2, -0.4, -0.4, 0.5, intakeEvent);
                         sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
-                        piecesScored++;
+                        // piecesScored++;
                     }
                     else
                     {
@@ -189,28 +166,6 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
                     sm.waitForSingleEvent(driveEvent, State.UNTUCK_ARM);
-                    // if (!scorePreload || scoreLevel == 0)
-                    // {
-                    //     // TODO (Code Review): Why don't we always untuck? Is there a scenario that we don't want to?
-                    //     // If we don't need to score or have already scored, check if we want to untuck before
-                    //     // checking if we want to balance or not.
-                    //     if (untuck)
-                    //     {
-                    //         nextState = State.UNTUCK_ARM;
-                    //     }
-                    //     else
-                    //     {
-                    //         robot.intake.retract(0.5);
-                    //         // TODO (Code Review): If your arm is still tucked in, how are you getting the second piece???
-                    //         nextState = scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
-                    //     }
-                    // }
-                    // else
-                    // {
-                    //     // We are scoring on a higher level, requiring the arm to be untucked.
-                    //     nextState = State.UNTUCK_ARM;
-                    // }
-                    // sm.waitForSingleEvent(driveEvent, nextState);
                     break;
 
                 case UNTUCK_ARM:
@@ -221,45 +176,19 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
                         null, 0.0);
                     robot.intake.retract(0.9);
-                    if (scorePreload && scoreLevel > 0)
-                    {
-                        nextState = State.SCORE;
-                    }
-                    else
-                    {
-                        nextState = State.EXIT_COMMUNITY;
-                        // nextState = scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
-                    }
-                    sm.waitForSingleEvent(elevatorEvent, nextState);
+                    sm.waitForSingleEvent(
+                        elevatorEvent, scorePreload && scoreLevel > 0? State.SCORE: State.EXIT_COMMUNITY);
                     break;
 
                 case SCORE:
                     robot.autoScoreTask.autoAssistScoreObject(
                         ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
                     sm.waitForSingleEvent(autoAssistEvent, State.EXIT_COMMUNITY);
-                    // sm.waitForSingleEvent(autoAssistEvent, (doAutoBalance? State.TURN: State.DONE));
-                    // if (piecesScored == 0)
-                    // {
-                    //     // AutoScore the preloaded object high.
-                    //     robot.autoScoreTask.autoAssistScoreObject(
-                    //         ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
-                    //     sm.waitForSingleEvent(
-                    //         autoAssistEvent,
-                    //         (scoreSecondPiece? State.GET_SECOND: (doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE)));
-                    // }
-                    // else
-                    // {
-                    //     // AutoScore the second piece.
-                    //     // TODO (Code Review): where do you want to score the second piece? What level? The space could
-                    //     // have been occupied by the preload!
-                    //     robot.autoScoreTask.autoAssistScoreObject(
-                    //         ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
-                    //     sm.waitForSingleEvent(autoAssistEvent, doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
-                    // }
-                    piecesScored++;
+                    // piecesScored++;
                     break;
 
                 case EXIT_COMMUNITY:
+                    double xOffset = 0.0;
                     if((alliance == Alliance.Blue && startPos == 0) || (alliance == Alliance.Red && startPos == 2))
                     {
                         xOffset = -RobotParams.EXIT_COMMUNITY_X_OFFSET_MAGNITUDE;
@@ -271,8 +200,8 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
 
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
                     robot.robotDrive.purePursuitDrive.start(
-                            driveEvent, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                            new TrcPose2D(xOffset, -156.0, 0.0));
+                        driveEvent, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(xOffset, -156.0, 0.0));
                     sm.waitForSingleEvent(driveEvent, doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
                     break;
 

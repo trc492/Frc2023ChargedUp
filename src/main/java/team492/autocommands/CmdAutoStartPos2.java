@@ -70,7 +70,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private int scoreLevel = 2;
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
-    private boolean untuck = true;
     private TrcPose2D startPos;
 
     /**
@@ -140,7 +139,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             TiltDir enterBalance = robot.robotDrive.enteringBalanceZone();
             TiltDir exitBalance = robot.robotDrive.exitingBalanceZone();
             boolean tiltTriggered = tiltEvent.isSignaled();
-            State nextState;
 
             robot.dashboard.displayPrintf(8, "State: %s", state);
             robot.globalTracer.traceInfo(
@@ -180,27 +178,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
-
-                    if (!scorePreload || scoreLevel == 0)
-                    {
-                        // If we don't need to score or have already scored, check if we want to untuck before
-                        // checking if we want to balance or not.
-                        if (untuck)
-                        {
-                            nextState = State.UNTUCK_ARM;
-                        }
-                        else
-                        {
-                            robot.intake.retract(0.5);
-                            nextState = doAutoBalance? State.TURN: State.DONE;
-                        }
-                    }
-                    else
-                    {
-                        // We are scoring on a higher level, requiring the arm to be untucked.
-                        nextState = State.UNTUCK_ARM;
-                    }
-                    sm.waitForSingleEvent(driveEvent, nextState);
+                    sm.waitForSingleEvent(driveEvent, State.UNTUCK_ARM);
                     break;
 
                 case UNTUCK_ARM:
@@ -211,15 +189,10 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                         null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
                         null, 0.0);
                     robot.intake.retract(0.9);
-                    if (scorePreload && scoreLevel > 0)
-                    {
-                        nextState = State.SCORE_PRELOAD_HIGH;
-                    }
-                    else
-                    {
-                        nextState = doAutoBalance? State.TURN: State.DONE;
-                    }
-                    sm.waitForSingleEvent(elevatorEvent, nextState);
+                    sm.waitForSingleEvent(
+                        elevatorEvent,
+                        scorePreload && scoreLevel > 0? State.SCORE_PRELOAD_HIGH:
+                        doAutoBalance? State.TURN: State.DONE);
                     break;
 
                 case SCORE_PRELOAD_HIGH:
