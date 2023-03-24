@@ -156,6 +156,10 @@ public class Grabber
     {
         cubePoker.retract();
     }   //retractPoker
+    public void retractPoker(double delay)
+    {
+        cubePoker.retract(delay);
+    }   //releaseCone
 
     //This method is called to open the grabber, retracting the pneumatics
     public void releaseAll()

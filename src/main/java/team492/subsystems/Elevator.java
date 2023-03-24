@@ -57,7 +57,7 @@ public class Elevator
                 RobotParams.ELEVATOR_IZONE, RobotParams.ELEVATOR_TOLERANCE)
             .setPosPresets(RobotParams.ELEVATOR_PRESET_TOLERANCE, RobotParams.elevatorPresets)
             .setZeroCalibratePower(RobotParams.ELEVATOR_CAL_POWER)
-            .resetPositionOnLowerLimit(true)
+            .resetPositionOnLowerLimit(false)
             .setStallProtectionParams(
                 RobotParams.ELEVATOR_STALL_MIN_POWER, RobotParams.ELEVATOR_STALL_TOLERANCE,
                 RobotParams.ELEVATOR_STALL_TIMEOUT, RobotParams.ELEVATOR_RESET_TIMEOUT);

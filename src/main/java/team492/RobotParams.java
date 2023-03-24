@@ -439,6 +439,7 @@ public class RobotParams
     public static final double ELEVATOR_STALL_MIN_POWER         = 0.3;
     public static final double ELEVATOR_STALL_TOLERANCE         = 0.0;
     public static final double ELEVATOR_STALL_TIMEOUT           = 1.0;
+
     public static final double ELEVATOR_RESET_TIMEOUT           = 0.5;
     public static final double ELEVATOR_KP                      = 0.5;
     public static final double ELEVATOR_KI                      = 0.0;
@@ -446,7 +447,7 @@ public class RobotParams
     public static final double ELEVATOR_KF                      = 0.0;
     public static final double ELEVATOR_IZONE                   = 0.0;
     public static final double ELEVATOR_TOLERANCE               = 1.0;
-    public static final double ELEVATOR_CAL_POWER               = -0.5;
+    public static final double ELEVATOR_CAL_POWER               = -0.3;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
     public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
     public static final double[] ELEVATOR_TRIGGERS              = {22.0};
@@ -479,7 +480,7 @@ public class RobotParams
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
-    public static final double ARM_MIN_POS_INTAKE_DOWN          = ARM_LOW_POS;
+    public static final double ARM_MIN_POS_INTAKE_DOWN          = 10;
     public static final double ARM_MIN_POS_INTAKE_UP            = 20.0;
     public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
@@ -493,7 +494,7 @@ public class RobotParams
     public static final double ARM_MAX_POWER                    = 0.5;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
-    public static final double ARM_PICKUP_POSITION              = 40.0;     // 40 deg TODO: Verify
+    public static final double ARM_PICKUP_POSITION              = 12.7;     //arm position right before grabbing cone/cube
     public static final double ARM_TRAVEL_POSITION              = 30.0;     //TODO
     public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
     // Important: presets must be sorted in increasing order.

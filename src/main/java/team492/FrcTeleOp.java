@@ -599,16 +599,21 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON10:
                 // Toggle cube poker.
-                if (robot.grabber != null && pressed)
-                {
-                    if (robot.grabber.poked())
-                    {
-                        robot.grabber.retractPoker();
-                    }
-                    else
-                    {
-                        robot.grabber.extendPoker();
-                    }
+                // if (robot.grabber != null && pressed)
+                // {
+                //     if (robot.grabber.poked())
+                //     {
+                //         robot.grabber.retractPoker();
+                //     }
+                //     else
+                //     {
+                //         robot.grabber.extendPoker();
+                //     }
+                // }
+                //sometimes i forget to retract after extendingPoker() so this is the version that extends and retracts (poking the cube)
+                if(robot.grabber != null && pressed){
+                    robot.grabber.extendPoker();
+                    robot.grabber.retractPoker(0.5);
                 }
                 break;
 
@@ -664,7 +669,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (robot.elevator != null && robot.arm != null && pressed)
                 {
                     robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.0, 12.0, true, 1.0, null, 1.5);
+                        moduleName, 0.0, 10.0, true, 1.0, null, 1.5);
                     robot.armPidActuator.setPosition(
                         moduleName, 0.0, RobotParams.ARM_MIN_POS_INTAKE_DOWN, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     robot.intake.extend();
@@ -745,16 +750,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
                 // TURTLE MODE: TODO: Add label on button panel
                 //use this for defense/before balance
-                //assumes that when the intake goes up it will not hit the arm
-                //need to have just finished scoring before using this or
+                //assumes that when the intake goes up it will not hit the arm (do arm up beforehand)
+                
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
                 //nose out cone pickup
-                // TODO (Code Review): What is this??? Driving backward 10 feet blindly??? That's dangerous!!!
                 if (robot.elevator != null && robot.arm != null && robot.intake != null && pressed)
                 {
                     robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
                     robot.armPidActuator.setPosition(
-                        moduleName, 1.0, RobotParams.ARM_MIN_POS + 3, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                        moduleName, 1.0, RobotParams.ARM_MIN_POS_INTAKE_UP, true, RobotParams.ARM_MAX_POWER, null, 0.0);
                     robot.intake.retract();
                 }
                 break;

@@ -27,6 +27,7 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcStateMachine;
 import TrcCommonLib.trclib.TrcTimer;
+import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.BalanceInitSide;
@@ -68,6 +69,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private int scoreLevel = 2;
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
+    private boolean doExitAndAutoBalance = false;  
     private boolean untuck = true;
 
     /**
@@ -149,9 +151,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             {
                 case START:
                     // TODO: Read autoChoices. Debug Shuffleboard
-                    // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
-                    // scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    scorePreload = FrcAuto.autoChoices.getScorePreload();
+                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
 
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(startPos, false);

@@ -405,7 +405,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                         moduleName, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.0);
                     sm.addEvent(elevatorEvent);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
+                        moduleName, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
                     sm.addEvent(armEvent);
                 }
                 sm.waitForEvents(State.PICKUP_OBJECT_PICKUP_ONLY, true, 1.5);
@@ -440,7 +440,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     robot.elevatorPidActuator.setPosition(
                         currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 0.7, null, 0.0);
                     robot.armPidActuator.setPosition(
-                        currOwner, 0.75, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
+                        currOwner, 0.75, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, null, 1.5);
                     if (taskParams.objectType == ObjectType.CUBE)
                     {
                         robot.grabber.grabCube(1.5);
