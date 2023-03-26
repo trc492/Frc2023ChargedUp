@@ -71,7 +71,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
     private TrcPose2D startPos;
-    private double delay = 1.0;
 
     /**
      * Constructor: Create an instance of the object.

@@ -140,8 +140,8 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     // TODO: add autoBalance functionality
-                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     // TODO: add option to score another element
+                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     // scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
@@ -205,10 +205,12 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(xOffset, -156.0, 0.0));
+                    // doAutoBalance is hard coded to false, so we will not do balance. When we are ready to balance,
+                    // just remove the hard code.
+                    sm.waitForSingleEvent(driveEvent, doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
                     // robot.robotDrive.enableDistanceTrigger(Math.sqrt(169.0 + xOffset*xOffset), driveEvent);
                     // robot.robotDrive.driveBase.holonomicDrive(
                     //     null, xOffset/120.0, alliance == Alliance.Blue? 0.3: -0.3, 0.0, robot.robotDrive.driveBase.getHeading());
-                    sm.waitForSingleEvent(driveEvent, State.DONE);
                     break;
 
                 // case GET_SECOND:
