@@ -43,7 +43,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
         START,
         BACK_UP,
         UNTUCK_ARM,
-        SCORE,
+        SCORE_PRELOAD_HIGH,
         EXIT_COMMUNITY,
         // GET_SECOND,
         // DRIVE_TO_SCORE,
@@ -139,7 +139,9 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
-                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // TODO: add autoBalance functionality
+                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // TODO: add option to score another element
                     // scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
@@ -177,10 +179,11 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         null, 0.0);
                     robot.intake.retract(0.9);
                     sm.waitForSingleEvent(
-                        elevatorEvent, scorePreload && scoreLevel > 0? State.SCORE: State.EXIT_COMMUNITY);
+                        elevatorEvent, scorePreload && scoreLevel > 0? State.SCORE_PRELOAD_HIGH: State.EXIT_COMMUNITY);
                     break;
 
-                case SCORE:
+                case SCORE_PRELOAD_HIGH:
+                    // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
                         ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
                     sm.waitForSingleEvent(autoAssistEvent, State.EXIT_COMMUNITY);
@@ -202,7 +205,10 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 4.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(xOffset, -156.0, 0.0));
-                    sm.waitForSingleEvent(driveEvent, doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
+                    // robot.robotDrive.enableDistanceTrigger(Math.sqrt(169.0 + xOffset*xOffset), driveEvent);
+                    // robot.robotDrive.driveBase.holonomicDrive(
+                    //     null, xOffset/120.0, alliance == Alliance.Blue? 0.3: -0.3, 0.0, robot.robotDrive.driveBase.getHeading());
+                    sm.waitForSingleEvent(driveEvent, State.DONE);
                     break;
 
                 // case GET_SECOND:

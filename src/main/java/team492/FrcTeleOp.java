@@ -104,8 +104,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         if (robot.elevator != null)
         {
-            // TODO (Code Review): Need to re-enable this
-            // robot.elevator.zeroCalibrate(moduleName);
+            robot.elevator.zeroCalibrate(moduleName);
         }
 
         if (elevatorTrigger != null)
@@ -333,7 +332,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
                     robot.robotDrive.driveSpeedScale = RobotParams.DRIVE_FAST_SCALE;
-                    robot.robotDrive.turnSpeedScale = RobotParams.TURN_FAST_SCALE;
+                    // robot.robotDrive.turnSpeedScale = RobotParams.TURN_FAST_SCALE;
                 }
                 else
                 {

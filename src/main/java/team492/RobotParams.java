@@ -53,7 +53,7 @@ public class RobotParams
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Auto Options
-        public static final boolean homeField                   = true;
+        public static final boolean homeField                   = false;
         public static final boolean doBalanceCorrection         = true;
         // Robot
         public static final boolean noRobot                     = false;

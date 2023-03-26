@@ -71,6 +71,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private boolean scorePreload = true;
     private boolean doAutoBalance = true;
     private TrcPose2D startPos;
+    private double delay = 1.0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -149,7 +150,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             switch (state)
             {
                 case START:
-                    // TODO: Read autoChoices. Debug Shuffleboard
+                    // Read autoChoices.
                     alliance = FrcAuto.autoChoices.getAlliance();
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
@@ -252,7 +253,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // the robot a little longer to make sure it clears the charging station.
                     if (enterBalance != null && enterBalance == TiltDir.TILT_RIGHT)
                     {
-                        robot.robotDrive.enableDistanceTrigger(2.0, distanceEvent);
+                        robot.robotDrive.enableDistanceTrigger(6.0, distanceEvent);
                         sm.waitForSingleEvent(distanceEvent, State.BALANCE);
                     }
                     else

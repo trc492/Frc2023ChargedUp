@@ -73,6 +73,7 @@ public class SwerveDrive extends RobotDrive
     public final FrcEncoder lfSteerEncoder, rfSteerEncoder, lbSteerEncoder, rbSteerEncoder;
     public final FrcEncoder[] steerEncoders;
     public final FrcCANFalcon lfSteerMotor, rfSteerMotor, lbSteerMotor, rbSteerMotor;
+    public final FrcCANFalcon[] steerMotors;
     public final TrcSwerveModule lfWheel, lbWheel, rfWheel, rbWheel;
     private final TrcTriggerThresholdZones tiltTrigger;
     private final TrcTriggerThresholdZones distanceTrigger;
@@ -127,6 +128,8 @@ public class SwerveDrive extends RobotDrive
         rfSteerMotor = createSteerMotor("rfSteer", RobotParams.CANID_RIGHTFRONT_STEER, false);
         lbSteerMotor = createSteerMotor("lbSteer", RobotParams.CANID_LEFTBACK_STEER, false);
         rbSteerMotor = createSteerMotor("rbSteer", RobotParams.CANID_RIGHTBACK_STEER, false);
+
+        steerMotors = new FrcCANFalcon[] {lfSteerMotor, rfSteerMotor, lbSteerMotor, rbSteerMotor};
 
         lfWheel = createSwerveModule("lfWheel", lfDriveMotor, lfSteerMotor, lfSteerEncoder);
         rfWheel = createSwerveModule("rfWheel", rfDriveMotor, rfSteerMotor, rfSteerEncoder);
@@ -417,6 +420,31 @@ public class SwerveDrive extends RobotDrive
 
         return module;
     }   //createSwerveModule
+
+    public boolean verifySwerveSteering(FrcCANFalcon steerMotor, FrcEncoder steerEncoder)
+    {
+        final String funcName = "verifySwerveSteering";
+        boolean success = true;
+        // getPosition returns a value in the range of 0 to 1.0 of one revolutoin.
+        double absEncPos = steerEncoder.getPosition();
+        double motorEncPos = steerMotor.getMotorPosition();
+        double motorEncPosNorm = (motorEncPos % RobotParams.STEER_MOTOR_CPR) / RobotParams.STEER_MOTOR_CPR;
+        double angle = Math.abs(absEncPos - motorEncPos)*360;
+
+        if (angle > 10.0)
+        {
+            success = false;
+            TrcDbgTrace.globalTraceWarn(
+                funcName, "%s: motor encoders not in sync (absEnc=%.3f, motorEncNorm=%.3f, motorEnc=%.3f, angle=%.3f)", steerMotor, absEncPos, motorEncPosNorm, motorEncPos, angle);
+        }
+
+        return success;
+    }
+
+    public boolean verifySwerveSteering(int index)
+    {
+        return verifySwerveSteering(steerMotors[index], steerEncoders[index]);
+    }
 
     /**
      * This method is called to set all swerve wheels to zero degrees.

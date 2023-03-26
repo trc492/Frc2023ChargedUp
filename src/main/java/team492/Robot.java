@@ -599,6 +599,11 @@ public class Robot extends FrcRobotBase
                     dashboard.displayPrintf(lineNum, "Vision[%s]: robotPose=%s", pipelineType, robotPose);
                     lineNum++;
                 }
+
+                // robotDrive.verifySwerveSteering(0);
+                // robotDrive.verifySwerveSteering(1);
+                // robotDrive.verifySwerveSteering(2);
+                // robotDrive.verifySwerveSteering(3);
             }
             else if (RobotParams.Preferences.debugSwerveSteering)
             {

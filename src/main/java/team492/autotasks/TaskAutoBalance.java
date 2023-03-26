@@ -64,7 +64,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private double startDir;
     private Alliance alliance;
     private boolean balanced = false;
-    private double triggerDistance = RobotParams.Preferences.homeField? 19.0: 24.0;
+    private double triggerDistance = RobotParams.Preferences.homeField? 19.0: 23.0;
 
     /**
      * Constructor: Create an instance of the object.
