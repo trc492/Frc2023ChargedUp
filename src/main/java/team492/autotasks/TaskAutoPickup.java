@@ -470,7 +470,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // robot.elevatorPidActuator.setPosition(
                 //     currOwner, 0.0, 5.0, true, 1.0, event, 2.0);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
+                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION + 5, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
                 sm.waitForSingleEvent(armEvent, State.DONE);
                 break;
 
