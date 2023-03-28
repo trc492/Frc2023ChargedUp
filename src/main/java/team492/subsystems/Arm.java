@@ -32,10 +32,10 @@ import java.util.Scanner;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcMotorLimitSwitch;
 import TrcCommonLib.trclib.TrcTriggerDigitalInput;
 import TrcCommonLib.trclib.TrcPidActuator;
 import TrcFrcLib.frclib.FrcCANTalon;
-import TrcFrcLib.frclib.FrcCANTalonLimitSwitch;
 import TrcFrcLib.frclib.FrcMotorActuator;
 import team492.RobotParams;
 
@@ -79,10 +79,8 @@ public class Arm
         int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
         actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
 
-        FrcCANTalonLimitSwitch lowerLimitSw = new FrcCANTalonLimitSwitch(
-            "ArmLowerLimitSw", actuatorMotor, false);
-        FrcCANTalonLimitSwitch upperLimitSw = new FrcCANTalonLimitSwitch(
-            "ArmUpperLimitSw", actuatorMotor, true);
+        TrcMotorLimitSwitch lowerLimitSw = new TrcMotorLimitSwitch("ArmLowerLimitSw", actuatorMotor, false);
+        TrcMotorLimitSwitch upperLimitSw = new TrcMotorLimitSwitch("ArmUpperLimitSw", actuatorMotor, true);
         lowerLimitSw.setInverted(RobotParams.ARM_LOWER_LIMIT_INVERTED);
         upperLimitSw.setInverted(RobotParams.ARM_UPPER_LIMIT_INVERTED);
 
@@ -159,9 +157,10 @@ public class Arm
     private void zeroCalCompletion(Object context)
     {
         final String funcName = "zeroCalCompletion";
-        int zeroPos = actuatorMotor.motor.getSensorCollection().getPulseWidthPosition();
 
+        pidActuator.setPower(0.0);
         zeroTrigger.disableTrigger();
+        int zeroPos = actuatorMotor.motor.getSensorCollection().getPulseWidthPosition();
         saveZeroPosition(zeroPos);
         if (msgTracer != null)
         {
@@ -229,6 +228,6 @@ public class Arm
     public double getCurrent()
     {
         return actuatorMotor.getMotorCurrent();
-    }
+    }   //getCurrent
 
 }   //class Arm

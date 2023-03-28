@@ -716,17 +716,17 @@ public class FrcTest extends FrcTeleOp
             lineNum++;
         }
 
-        if (robot.intake != null)
+        if (robot.wrist != null)
         {
             // line 6
-            robot.dashboard.displayPrintf(lineNum, robot.intake.toString());
+            robot.dashboard.displayPrintf(lineNum, robot.wrist.toString());
             lineNum++;
         }
 
-        if (robot.wrist != null)
+        if (robot.intake != null)
         {
             // line 7
-            robot.dashboard.displayPrintf(lineNum, robot.wrist.toString());
+            robot.dashboard.displayPrintf(lineNum, robot.intake.toString());
             lineNum++;
         }
 

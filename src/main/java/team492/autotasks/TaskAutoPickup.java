@@ -241,7 +241,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);
-        robot.intake.cancel(currOwner);
+        robot.intake.autoAssistCancel(currOwner);
     }   //stopSubsystems
 
     /**
@@ -306,8 +306,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // Call purePursuit to go to object position, signal event.
                 // Wait for either events, then goto PICKUP_OBJECT.
 
-                robot.intake.enableTrigger(intakeEvent);
-                robot.intake.setPower(currOwner, 0.0, RobotParams.INTAKE_PICKUP_POWER, 0.0);
+                robot.intake.autoAssistIntake(currOwner, 0.0, RobotParams.INTAKE_PICKUP_POWER, intakeEvent, 0.0);
                 sm.addEvent(intakeEvent);
 
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.2);
@@ -351,8 +350,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
             default:
             case DONE:
                 robot.robotDrive.purePursuitDrive.cancel();
-                robot.intake.cancel(currOwner);
-                robot.intake.disableTrigger();
+                robot.intake.autoAssistCancel(currOwner);
                 // Stop task.
                 stopAutoTask(true);
                 break;

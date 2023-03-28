@@ -28,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcIntake;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
 import TrcCommonLib.trclib.TrcPidActuator;
 import TrcCommonLib.trclib.TrcPose2D;
@@ -125,9 +126,9 @@ public class Robot extends FrcRobotBase
     public TrcPidActuator elevatorPidActuator;
     public Arm arm;
     public TrcPidActuator armPidActuator;
-    public Intake intake;
     public Wrist wrist;
     public TrcPidActuator wristPidActuator;
+    public TrcIntake intake;
     
     public TaskAutoScore autoScoreTask;
     public TaskAutoPickup autoPickupTask;
@@ -259,15 +260,19 @@ public class Robot extends FrcRobotBase
                     armPidActuator = arm.getPidActuator();
                 }
 
-                if (RobotParams.Preferences.useIntake)
-                {
-                    intake = new Intake(this, globalTracer);
-                }
-
                 if (RobotParams.Preferences.useWrist)
                 {
                     wrist = new Wrist(globalTracer);
                     wristPidActuator = wrist.getPidActuator();
+                }
+
+                if (RobotParams.Preferences.useIntake)
+                {
+                    TrcIntake.Parameters intakeParams = new TrcIntake.Parameters()
+                        .setMotorInverted(RobotParams.INTAKE_MOTOR_INVERTED)
+                        .setTriggerInverted(RobotParams.INTAKE_TRIGGER_INVERTED)
+                        .setMsgTracer(globalTracer);
+                    intake = new Intake(this, globalTracer, intakeParams).getTrcIntake();
                 }
 
                 autoScoreTask = new TaskAutoScore("TaskAutoScore", this, globalTracer);
@@ -567,15 +572,15 @@ public class Robot extends FrcRobotBase
                     lineNum++;
                 }
 
-                if (intake != null)
-                {
-                    dashboard.displayPrintf(lineNum, intake.toString());
-                    lineNum++;
-                }
-
                 if (wrist != null)
                 {
                     dashboard.displayPrintf(lineNum, wrist.toString());
+                    lineNum++;
+                }
+
+                if (intake != null)
+                {
+                    dashboard.displayPrintf(lineNum, intake.toString());
                     lineNum++;
                 }
 

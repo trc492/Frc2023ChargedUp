@@ -464,6 +464,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Press to set up intake to gather cone or cube, release to cancel.
                 if (robot.intake != null)
                 {
+                    // TODO (Code Review): should just call autoAssistIntake.
                     if (pressed)
                     {
                         double intakePower = intakeReversed? RobotParams.INTAKE_SPIT_POWER: RobotParams.INTAKE_PICKUP_POWER;
@@ -471,7 +472,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else
                     {
-                        robot.intake.cancel();
+                        robot.intake.setPower(0.0);
                     }
                 }
                 break;
@@ -526,6 +527,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON8:
                 // Press to spit object out of intake, release to cancel.
+                // TODO (Code Review): What's the difference between this and press and hold button 3 and press trigger?
                 if (robot.intake != null)
                 {
                     if (pressed)
@@ -534,7 +536,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else
                     {
-                        robot.intake.cancel();
+                        robot.intake.setPower(0.0);
                     }
                 }
                 break;

@@ -25,9 +25,9 @@ package team492.subsystems;
 import java.util.Locale;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcMotorLimitSwitch;
 import TrcCommonLib.trclib.TrcPidActuator;
 import TrcFrcLib.frclib.FrcCANSparkMax;
-import TrcFrcLib.frclib.FrcCANSparkMaxLimitSwitch;
 import TrcFrcLib.frclib.FrcMotorActuator;
 import team492.RobotParams;
 
@@ -73,10 +73,8 @@ public class Elevator
         // int zeroOffset = getZeroPosition(RobotParams.ELEVATOR_ZERO);
         // actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.NEO_CPR - 1, false, zeroOffset);
 
-        FrcCANSparkMaxLimitSwitch lowerLimitSw = new FrcCANSparkMaxLimitSwitch(
-            "ElevatorLowerLimitSw", actuatorMotor, false);
-        FrcCANSparkMaxLimitSwitch upperLimitSw = new FrcCANSparkMaxLimitSwitch(
-            "ElevatorUpperLimitSw", actuatorMotor, true);
+        TrcMotorLimitSwitch lowerLimitSw = new TrcMotorLimitSwitch("ElevatorLowerLimitSw", actuatorMotor, false);
+        TrcMotorLimitSwitch upperLimitSw = new TrcMotorLimitSwitch("ElevatorUpperLimitSw", actuatorMotor, true);
         lowerLimitSw.setInverted(RobotParams.ELEVATOR_LOWER_LIMIT_INVERTED);
         upperLimitSw.setInverted(RobotParams.ELEVATOR_UPPER_LIMIT_INVERTED);
 
