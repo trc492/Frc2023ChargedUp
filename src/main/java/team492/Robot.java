@@ -595,6 +595,14 @@ public class Robot extends FrcRobotBase
                         robotDrive.driveBase.getHeading(), robotDrive.getGyroPitch(), robotDrive.getGyroRoll());
                     lineNum++;
                     dashboard.putNumber("Graphs/GyroRoll", robotDrive.getGyroRoll());
+                    dashboard.putNumber("Graphs/lfSteerAbsPos", robotDrive.lfSteerEncoder.getPosition()*360.0);
+                    dashboard.putNumber("Graphs/rfSteerAbsPos", robotDrive.rfSteerEncoder.getPosition()*360.0);
+                    dashboard.putNumber("Graphs/lbSteerAbsPos", robotDrive.lbSteerEncoder.getPosition()*360.0);
+                    dashboard.putNumber("Graphs/rbSteerAbsPos", robotDrive.rbSteerEncoder.getPosition()*360.0);
+                    dashboard.putNumber("Graphs/lfSteerPos", robotDrive.lfWheel.getSteerAngle());
+                    dashboard.putNumber("Graphs/rfSteerPos", robotDrive.rfWheel.getSteerAngle());
+                    dashboard.putNumber("Graphs/lbSteerPos", robotDrive.lbWheel.getSteerAngle());
+                    dashboard.putNumber("Graphs/rbSteerPos", robotDrive.rbWheel.getSteerAngle());
                 }
 
                 if (photonVision != null)

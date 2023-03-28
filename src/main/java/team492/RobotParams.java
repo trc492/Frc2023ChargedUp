@@ -70,8 +70,8 @@ public class RobotParams
         public static final boolean useSubsystems               = true;     // Master switch for all subsystems.
         public static final boolean useElevator                 = true;
         public static final boolean useArm                      = true;
-        public static final boolean useWrist                    = true;
-        public static final boolean useIntake                   = true;
+        public static final boolean useWrist                    = false;
+        public static final boolean useIntake                   = false;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
