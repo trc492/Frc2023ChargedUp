@@ -1,0 +1,165 @@
+globalTracer.robotStartMode_Info: Sun Mar 26 10:10:09 PDT 2023: [0.028] ***** Start AUTO_MODE *****
+globalTracer.FrcAuto_Info: <Info name="MatchInfo" date="Sun Mar 26 10:10:09 PDT 2023" event="WASAM" type="Qualification" match=58 replay=1 alliance="Red" location=2 gameMsg="" />
+globalTracer.FrcAuto_Info: <Info name="AutoChoices" alliance="Red" strategy="AUTO_STARTPOS_2" startPos="1" preloadedObj="CUBE" scoreLevel="2" scoreLocation="MIDDLE" useVision="true" scorePreload="true" doAutoBalance="true" scoreSecondPiece="false" startDelay=0 sec pathFile="DrivePath.csv" xDistance=6.0 ft yDistance=6.0 ft turnDegrees=90 deg driveTime=4 sec drivePower=4.0 />
+globalTracer.startCompetition_Warn: AUTO_MODE.prePeriodicTasks took too long (0.079s/0.040s)
+globalTracer.CmdAutoStartPos2_Info: [0.217] START: xDist=0.0, tilt=-0.450, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.setAutoStartOffset_Info: offset=2.500
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="0.245" tag=">>>>>" CmdAutoStartPos2.state="START" />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.055s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (1522395.364/0.020)
+globalTracer.CmdAutoStartPos2_Info: [0.299] BACK_UP: xDist=-108.2, tilt=-0.450, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.start_Info: Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=-108.2,y=578.8,angle=0.0),vel=0.00), TrcWaypoint(pose=(x=-108.2,y=554.8,angle=0.0),vel=0.00)])
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="0.366" tag=">>>>>" CmdAutoStartPos2.state="BACK_UP" RobotPose=(x=-108.2,y=578.8,angle=0.0) TargetPose=(x=-108.2,y=554.8,angle=0.0) vel=(x=0.0,y=0.0,angle=0.0) Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=0.0,y=0.0,angle=0.0),vel=0.00), TrcWaypoint(pose=(x=0.0,y=-24.0,angle=0.0),vel=0.00)]) />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.093s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.054s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.165/0.020)
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.084s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.096/0.020)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Done [index=1/2]: stalled=false, timeout=true, posOnTarget=false, headingOnTarget=true
+globalTracer.printPidInfo_Info: [1.165336] purePursuitDrive.xPosPid: Target=-108.2, Input=-108.4, dT=0.019066, CurrErr=   0.2, ErrRate=  -0.3, Output= 0.003(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [1.176329] purePursuitDrive.yPosPid: Target= 555.1, Input= 562.8, dT=0.019066, CurrErr=  -7.7, ErrRate=   7.6, Output=-0.092(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [1.185667] purePursuitDrive.turnPid: Target=   0.0, Input=   0.1, dT=0.019006, CurrErr=  -0.1, ErrRate=   2.1, Output= 0.001(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [1.198556] purePursuitDrive.velPid: Target=   0.0, Input=   0.0, dT=0.000000, CurrErr=   0.0, ErrRate=   0.0, Output= 0.000(-1.000/ 1.000)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Signal completion event (CmdAutoStartPos2.driveEvent=CLEARED).
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.058s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.070/0.020)
+globalTracer.CmdAutoStartPos2_Info: [1.229] UNTUCK_ARM: xDist=-108.5, tilt=-0.360, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="1.277" tag=">>>>>" CmdAutoStartPos2.state="UNTUCK_ARM" />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.090s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.099/0.020)
+globalTracer.grabberTriggerCallback_Info: [1.507] active=true
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=true, onTarget=false, event=(CmdAutoStartPos2.elevatorEvent=CLEARED)
+globalTracer.printPidInfo_Info: [1.752720] Elevator.pidActuator.pidCtrl: Target=  10.0, Input=   6.9, dT=0.020775, CurrErr=   3.1, ErrRate= -14.3, Output= 1.000(-1.000/ 1.000)
+globalTracer.CmdAutoStartPos2_Info: [1.770] SCORE_PRELOAD_HIGH: xDist=-108.5, tilt=-0.380, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.autoAssistScoreObject_Info: TaskAutoScore: objectType=CUBE, scoreLevel=2, scoreLocation=MIDDLE, useVision=false, event=(CmdAutoStartPos2.autoAssistEvent=CLEARED)
+globalTracer.acquireSubsystemsOwnership_Info: TaskAutoScore: Successfully acquired subsystem ownerships.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="1.795" tag=">>>>>" CmdAutoStartPos2.state="SCORE_PRELOAD_HIGH" />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.048s/0.040s)
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="1.830" tag=">>>>>" TaskAutoScore.state="START" />
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.079/0.020)
+globalTracer.grabberTriggerCallback_Info: [2.101] active=false
+globalTracer.grabberTriggerCallback_Info: [2.420] active=true
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.041s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.055/0.020)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=true, onTarget=false, event=(TaskAutoScore.elevatorEvent=CLEARED)
+globalTracer.printPidInfo_Info: [2.856681] Elevator.pidActuator.pidCtrl: Target=  22.0, Input=  21.8, dT=0.020613, CurrErr=   0.2, ErrRate=   0.0, Output= 0.111(-1.000/ 1.000)
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.055s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.068/0.020)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.046/0.020)
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.044s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.059/0.020)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(TaskAutoScore.armEvent=CLEARED)
+globalTracer.printPidInfo_Info: [3.736308] Arm.pidActuator.pidCtrl: Target=  93.0, Input=  92.6, dT=0.019709, CurrErr=   0.4, ErrRate=   0.0, Output= 0.054(-1.000/ 1.000)
+globalTracer.start_Info: Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=-108.5,y=561.6,angle=0.2),vel=0.00), TrcWaypoint(pose=(x=-108.4,y=577.6,angle=0.2),vel=0.00)])
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="3.766" tag=">>>>>" TaskAutoScore.state="DRIVE_TO_SCORING_POS" />
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Done [index=1/2]: stalled=false, timeout=true, posOnTarget=false, headingOnTarget=true
+globalTracer.printPidInfo_Info: [4.567098] purePursuitDrive.xPosPid: Target=-108.5, Input=-108.2, dT=0.032433, CurrErr=  -0.3, ErrRate=   0.4, Output=-0.003(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [4.579742] purePursuitDrive.yPosPid: Target= 577.7, Input= 572.1, dT=0.032432, CurrErr=   5.6, ErrRate=  10.9, Output= 0.134(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [4.588990] purePursuitDrive.turnPid: Target=   0.2, Input=   0.8, dT=0.032432, CurrErr=  -0.5, ErrRate=  -0.3, Output=-0.005(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [4.595999] purePursuitDrive.velPid: Target=   0.0, Input=   0.0, dT=0.000000, CurrErr=  -0.0, ErrRate=   0.0, Output= 0.000(-1.000/ 1.000)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Signal completion event (TaskAutoScore.driveEvent=CLEARED).
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="4.611" tag=">>>>>" TaskAutoScore.state="SCORE_OBJECT" />
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.057s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.081/0.020)
+globalTracer.grabberTriggerCallback_Info: [4.772] active=false
+globalTracer.start_Info: Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=-108.0,y=573.7,angle=0.5),vel=0.00), TrcWaypoint(pose=(x=-108.2,y=549.7,angle=0.5),vel=0.00)])
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="4.897" tag=">>>>>" TaskAutoScore.state="RESET" />
+globalTracer.AutoScore Done_Info: Robot thinks it is at:(x=-108.9,y=551.7,angle=-0.1)
+globalTracer.stopSubsystems_Info: TaskAutoScore: Stopping subsystems.
+globalTracer.releaseSubsystemsOwnership_Info: TaskAutoScore: Releasing subsystem ownership (currOwner=TaskAutoScore, robotDrive=TaskAutoScore, elevator=TaskAutoScore, arm=TaskAutoScore).
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="6.940" tag=">>>>>" TaskAutoScore.state="DONE" />
+globalTracer.CmdAutoStartPos2_Info: [6.949] TURN: xDist=-108.9, tilt=-0.500, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.start_Info: Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=-108.9,y=551.6,angle=-0.1),vel=0.00), TrcWaypoint(pose=(x=-108.9,y=551.6,angle=89.9),vel=0.00)])
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="6.969" tag=">>>>>" CmdAutoStartPos2.state="TURN" RobotPose=(x=-108.9,y=551.6,angle=-0.1) TargetPose=(x=-108.9,y=551.6,angle=89.9) vel=(x=0.0,y=-1.0,angle=0.0) Path=TrcPath(degrees=true, [TrcWaypoint(pose=(x=0.0,y=0.0,angle=0.0),vel=0.00), TrcWaypoint(pose=(x=0.0,y=0.0,angle=90.0),vel=0.00)]) />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.047s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.059/0.020)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Done [index=1/2]: stalled=false, timeout=true, posOnTarget=true, headingOnTarget=false
+globalTracer.printPidInfo_Info: [7.671995] purePursuitDrive.xPosPid: Target=-109.9, Input=-109.7, dT=0.024091, CurrErr=  -0.3, ErrRate=  -0.5, Output=-0.007(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [7.675321] purePursuitDrive.yPosPid: Target= 552.1, Input= 551.3, dT=0.024087, CurrErr=   0.8, ErrRate=   0.4, Output= 0.014(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [7.679887] purePursuitDrive.turnPid: Target=  89.9, Input=  84.9, dT=0.024086, CurrErr=   5.0, ErrRate= -10.0, Output= 0.037(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [7.683959] purePursuitDrive.velPid: Target=   0.0, Input=   1.0, dT=0.000000, CurrErr=  -1.0, ErrRate=   0.0, Output= 0.000(-1.000/ 1.000)
+globalTracer.TrcPurePursuitDrive.driveTask_Info: Signal completion event (CmdAutoStartPos2.driveEvent=CLEARED).
+globalTracer.CmdAutoStartPos2_Info: [7.695] START_TO_CLIMB: xDist=-109.7, tilt=0.220, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="7.697" tag=">>>>>" CmdAutoStartPos2.state="START_TO_CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [8.188] CLIMB: xDist=-118.4, tilt=-5.090, enteringBalance=null, exitingBalance=TILT_LEFT, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="8.199" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [8.342] CLIMB: xDist=-123.1, tilt=-17.140, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="8.354" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.045/0.020)
+globalTracer.CmdAutoStartPos2_Info: [8.945] CLIMB: xDist=-138.8, tilt=-14.430, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="8.957" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [9.128] CLIMB: xDist=-142.9, tilt=-15.240, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.139" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [9.170] CLIMB: xDist=-144.0, tilt=-14.500, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.175" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [9.189] CLIMB: xDist=-144.6, tilt=-15.280, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.195" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [9.247] CLIMB: xDist=-146.4, tilt=-14.520, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.250" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [9.845] CLIMB: xDist=-162.2, tilt=-3.900, enteringBalance=TILT_LEFT, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.850" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [9.965] LEVEL: xDist=-165.7, tilt=5.920, enteringBalance=null, exitingBalance=TILT_RIGHT, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.975" tag=">>>>>" CmdAutoStartPos2.state="LEVEL" />
+globalTracer.CmdAutoStartPos2_Info: [10.046] DESCEND: xDist=-168.1, tilt=15.380, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.059" tag=">>>>>" CmdAutoStartPos2.state="DESCEND" />
+globalTracer.CmdAutoStartPos2_Info: [10.128] DESCEND: xDist=-170.9, tilt=14.790, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.130" tag=">>>>>" CmdAutoStartPos2.state="DESCEND" />
+globalTracer.CmdAutoStartPos2_Info: [10.307] DESCEND: xDist=-177.9, tilt=4.860, enteringBalance=TILT_RIGHT, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.319" tag=">>>>>" CmdAutoStartPos2.state="DESCEND" />
+globalTracer.CmdAutoStartPos2_Info: [10.445] BALANCE: xDist=-183.0, tilt=1.380, enteringBalance=TILT_RIGHT, exitingBalance=null, tiltTriggered=true
+globalTracer.autoAssistBalance_Info: TaskAutoBalance: initSide=OUTSIDE, event=(CmdAutoStartPos2.autoAssistEvent=SIGNALED)
+globalTracer.acquireSubsystemOwnership_Info: TaskAutoBalance: Successfully acquired subsystem ownerships.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.457" tag=">>>>>" CmdAutoStartPos2.state="BALANCE" />
+globalTracer.TaskAutoBalance_Info: [10.459] START: xDist=-183.0, tilt=2.630, inBalance=true, leveling=false, tiltTriggered=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.464" tag=">>>>>" TaskAutoBalance.state="START" />
+globalTracer.TaskAutoBalance_Info: [11.366] CLIMB: xDist=-188.4, tilt=5.260, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="11.369" tag=">>>>>" TaskAutoBalance.state="CLIMB" />
+globalTracer.TaskAutoBalance_Info: [11.634] CLIMB: xDist=-188.7, tilt=15.880, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="11.643" tag=">>>>>" TaskAutoBalance.state="CLIMB" />
+globalTracer.TaskAutoBalance_Info: [12.306] CLIMB: xDist=-189.7, tilt=14.370, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="12.317" tag=">>>>>" TaskAutoBalance.state="CLIMB" />
+globalTracer.TaskAutoBalance_Info: [13.098] SETTLE: xDist=-191.4, tilt=12.770, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="13.107" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [13.354] CHECK: xDist=-191.6, tilt=4.250, inBalance=true, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="13.369" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [13.534] CHECK: xDist=-191.6, tilt=-5.460, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="13.551" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [14.546] SETTLE: xDist=-191.6, tilt=-3.960, inBalance=true, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="14.561" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [14.889] CHECK: xDist=-191.6, tilt=5.030, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="14.901" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [15.017] SETTLE: xDist=-191.6, tilt=4.950, inBalance=true, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="15.032" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.startCompetition_Info: *** Transitioning from AUTO_MODE to DISABLED_MODE ***
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoBalance: Canceling auto-assist balance.
+globalTracer.stopSubsystems_Info: TaskAutoBalance: Stopping subsystems.
+globalTracer.releaseSubsystemsOwnership_Info: TaskAutoBalance: Releasing subsystem ownership (currOwner=TaskAutoBalance, robotDrive=TaskAutoBalance).
+globalTracer.robotStopMode_Info: [15.431] ***** Stop AUTO_MODE *****
+globalTracer.FrcRobotBase_Info: ***** Performance Metrics *****
+globalTracer.FrcRobotBase_Info: (AUTO_MODE->DISABLED_MODE) Performance Metrics: LoopCount=714
+globalTracer.FrcRobotBase_Info: RobotInit=5.052462, PrevModeStopTask=0.000624, PrevStopMode=0.020298, PrevRobotStopMode=0.003673, RobotStartMode=0.061321, startMode=0.069585, startTask=0.000049
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.001368/0.079030
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.003325/0.093292
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.001401/0.058394
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003779/0.011788
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.000664/0.988750
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000018/0.020292
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000049/0.000066
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.000406/7.707821
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.000351/7.707860
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000031/7.707549
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000021/7.707535
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000020/7.707530
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.001191/0.021360
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.000508/7.707526
+globalTracer.TaskPerformance_Info: purePursuitDrive.driveTask: POST_PERIODIC_TASK=0.003054/0.034978
+globalTracer.TaskPerformance_Info: tiltTrigger.triggerTask: PRE_PERIODIC_TASK=0.000054/0.020083
+globalTracer.TaskPerformance_Info: distanceTrigger.triggerTask: PRE_PERIODIC_TASK=0.000038/0.045339
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.pidMotorTask: OUTPUT_TASK=0.000553/0.023640
+globalTracer.TaskPerformance_Info: Arm.pidActuator.pidMotorTask: OUTPUT_TASK=0.000420/0.025100
+globalTracer.TaskPerformance_Info: Intake.trigger.triggerTask: PRE_PERIODIC_TASK=0.000023/0.020149
+globalTracer.TaskPerformance_Info: Grabber.cube.pneumaticTask: OUTPUT_TASK=0.000323/0.019292
+globalTracer.TaskPerformance_Info: Grabber.trigger.triggerTask: PRE_PERIODIC_TASK=0.000006/0.020149
+globalTracer.TaskPerformance_Info: TaskAutoScore: POST_PERIODIC_TASK=0.000440/0.021217
+globalTracer.TaskPerformance_Info: TaskAutoBalance: POST_PERIODIC_TASK=0.000745/0.019866

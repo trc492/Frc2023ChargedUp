@@ -1,0 +1,181 @@
+globalTracer.robotStartMode_Info: Sat Mar 25 16:56:39 PDT 2023: [0.007] ***** Start TELEOP_MODE *****
+globalTracer.registerWatchdog_Warn: Watchdog TrcMotor.odometryTask was already registered.
+globalTracer.printThreadStack_Info: thread stack: 
+java.base/java.lang.Thread.getStackTrace(Unknown Source)
+TrcCommonLib.trclib.TrcDbgTrace.printThreadStack(TrcDbgTrace.java:197)
+TrcCommonLib.trclib.TrcDbgTrace.printThreadStack(TrcDbgTrace.java:210)
+TrcCommonLib.trclib.TrcWatchdogMgr.registerWatchdog(TrcWatchdogMgr.java:274)
+TrcCommonLib.trclib.TrcWatchdogMgr.registerWatchdog(TrcWatchdogMgr.java:290)
+TrcCommonLib.trclib.TrcPeriodicThread.run(TrcPeriodicThread.java:385)
+java.base/java.lang.Thread.run(Unknown Source)
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.141/0.020)
+globalTracer.setPower_Info: [1.695] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.autoAssistPickup_Info: TaskAutoPickup: objectType=CONE, useVision=false, pickupOnly=true, event=null
+globalTracer.acquireSubsystemsOwnership_Info: TaskAutoPickup: Successfully acquired subsystem ownerships.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="5.469" tag=">>>>>" TaskAutoPickup.state="PREP_FOR_PICKUP_ONLY" />
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.050/0.020)
+globalTracer.intakeTriggerCallback_Info: [5.917] active=true
+globalTracer.grabberTriggerCallback_Info: [5.957] active=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="6.980" tag=">>>>>" TaskAutoPickup.state="PICKUP_OBJECT_PICKUP_ONLY" />
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(TaskAutoPickup.armEvent=CLEARED)
+globalTracer.printPidInfo_Info: [6.985804] Arm.pidActuator.pidCtrl: Target=  12.7, Input=  15.6, dT=0.020533, CurrErr=  -2.9, ErrRate=   0.0, Output=-0.051(-1.000/ 1.000)
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="7.261" tag=">>>>>" TaskAutoPickup.state="PREP_FOR_TRAVEL" />
+globalTracer.intakeTriggerCallback_Info: [7.475] active=false
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.stopSubsystems_Info: TaskAutoPickup: Stopping subsystems.
+globalTracer.releaseSubsystemsOwnership_Info: TaskAutoPickup: Releasing subsystem ownership (currOwner=TaskAutoPickup, robotDrive=null, elevator=TaskAutoPickup, arm=TaskAutoPickup, intake=TaskAutoPickup).
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.grabberTriggerCallback_Info: [10.652] active=false
+globalTracer.grabberTriggerCallback_Info: [10.672] active=true
+globalTracer.grabberTriggerCallback_Info: [10.752] active=false
+globalTracer.setPower_Info: [11.640] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.setPower_Info: [13.172] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.grabberTriggerCallback_Info: [13.803] active=true
+globalTracer.grabberTriggerCallback_Info: [13.823] active=false
+globalTracer.setPower_Info: [14.708] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.grabberTriggerCallback_Info: [15.105] active=true
+globalTracer.grabberTriggerCallback_Info: [15.167] active=false
+globalTracer.setPower_Info: [16.131] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [17.180] active=true
+globalTracer.intakeTriggerCallback_Info: [17.730] active=false
+globalTracer.intakeTriggerCallback_Info: [18.064] active=true
+globalTracer.setPower_Info: [18.673] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [19.638] active=false
+globalTracer.intakeTriggerCallback_Info: [19.873] active=true
+globalTracer.autoAssistPickup_Info: TaskAutoPickup: objectType=CONE, useVision=false, pickupOnly=true, event=null
+globalTracer.acquireSubsystemsOwnership_Info: TaskAutoPickup: Successfully acquired subsystem ownerships.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="20.528" tag=">>>>>" TaskAutoPickup.state="PREP_FOR_PICKUP_ONLY" />
+globalTracer.grabberTriggerCallback_Info: [20.929] active=true
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(TaskAutoPickup.armEvent=CLEARED)
+globalTracer.printPidInfo_Info: [21.954829] Arm.pidActuator.pidCtrl: Target=  12.7, Input=  15.4, dT=0.020525, CurrErr=  -2.7, ErrRate=   0.0, Output=-0.047(-1.000/ 1.000)
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="22.036" tag=">>>>>" TaskAutoPickup.state="PICKUP_OBJECT_PICKUP_ONLY" />
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="22.287" tag=">>>>>" TaskAutoPickup.state="PREP_FOR_TRAVEL" />
+globalTracer.intakeTriggerCallback_Info: [22.464] active=false
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.stopSubsystems_Info: TaskAutoPickup: Stopping subsystems.
+globalTracer.releaseSubsystemsOwnership_Info: TaskAutoPickup: Releasing subsystem ownership (currOwner=TaskAutoPickup, robotDrive=null, elevator=TaskAutoPickup, arm=TaskAutoPickup, intake=TaskAutoPickup).
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.isMotorStalled_Info: TrcPidMotor.Elevator.pidActuator: stalled
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.grabberTriggerCallback_Info: [32.539] active=false
+globalTracer.grabberTriggerCallback_Info: [32.990] active=true
+globalTracer.grabberTriggerCallback_Info: [33.108] active=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=true, onTarget=false, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [35.462850] Elevator.pidActuator.pidCtrl: Target=  10.0, Input=  10.0, dT=0.020598, CurrErr=   0.0, ErrRate=   0.0, Output= 0.000(-1.000/ 1.000)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=true, onTarget=false, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [35.468316] Arm.pidActuator.pidCtrl: Target=  10.0, Input=  10.5, dT=0.026267, CurrErr=  -0.5, ErrRate= -13.4, Output=-0.006(-1.000/ 1.000)
+globalTracer.setPower_Info: [39.262] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.autoAssistPickup_Info: TaskAutoPickup: objectType=CONE, useVision=false, pickupOnly=true, event=null
+globalTracer.acquireSubsystemsOwnership_Info: TaskAutoPickup: Successfully acquired subsystem ownerships.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="42.484" tag=">>>>>" TaskAutoPickup.state="PREP_FOR_PICKUP_ONLY" />
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.042/0.020)
+globalTracer.intakeTriggerCallback_Info: [42.840] active=true
+globalTracer.grabberTriggerCallback_Info: [42.859] active=true
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(TaskAutoPickup.armEvent=CLEARED)
+globalTracer.printPidInfo_Info: [43.491974] Arm.pidActuator.pidCtrl: Target=  12.7, Input=  14.2, dT=0.020719, CurrErr=  -1.5, ErrRate=   0.0, Output=-0.023(-1.000/ 1.000)
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="44.005" tag=">>>>>" TaskAutoPickup.state="PICKUP_OBJECT_PICKUP_ONLY" />
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="44.275" tag=">>>>>" TaskAutoPickup.state="PREP_FOR_TRAVEL" />
+globalTracer.intakeTriggerCallback_Info: [44.471] active=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=true, onTarget=false, event=(TaskAutoPickup.armEvent=CLEARED)
+globalTracer.printPidInfo_Info: [45.282739] Arm.pidActuator.pidCtrl: Target=  30.0, Input=  27.2, dT=0.020555, CurrErr=   2.8, ErrRate=   0.0, Output= 0.072(-1.000/ 1.000)
+globalTracer.stopSubsystems_Info: TaskAutoPickup: Stopping subsystems.
+globalTracer.releaseSubsystemsOwnership_Info: TaskAutoPickup: Releasing subsystem ownership (currOwner=TaskAutoPickup, robotDrive=null, elevator=TaskAutoPickup, arm=TaskAutoPickup, intake=TaskAutoPickup).
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="45.311" tag=">>>>>" TaskAutoPickup.state="DONE" />
+globalTracer.isMotorStalled_Info: TrcPidMotor.Elevator.pidActuator: stalled
+globalTracer.grabberTriggerCallback_Info: [56.178] active=false
+globalTracer.setPower_Info: [57.695] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [58.491912] Arm.pidActuator.pidCtrl: Target=  10.0, Input=  11.6, dT=0.020486, CurrErr=  -1.6, ErrRate= -34.3, Output=-0.027(-1.000/ 1.000)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=true, onTarget=false, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [58.555337] Elevator.pidActuator.pidCtrl: Target=  10.0, Input=  10.0, dT=0.020420, CurrErr=  -0.0, ErrRate=   0.0, Output=-0.002(-1.000/ 1.000)
+globalTracer.setPower_Info: [59.049] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [59.641] active=true
+globalTracer.intakeTriggerCallback_Info: [59.837] active=false
+globalTracer.intakeTriggerCallback_Info: [59.955] active=true
+globalTracer.intakeTriggerCallback_Info: [60.627] active=false
+globalTracer.intakeTriggerCallback_Info: [60.666] active=true
+globalTracer.setPower_Info: [60.942] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [61.138] active=false
+globalTracer.setPower_Info: [66.670] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [72.701] active=true
+globalTracer.intakeTriggerCallback_Info: [73.863] active=false
+globalTracer.intakeTriggerCallback_Info: [73.901] active=true
+globalTracer.intakeTriggerCallback_Info: [74.058] active=false
+globalTracer.intakeTriggerCallback_Info: [74.117] active=true
+globalTracer.intakeTriggerCallback_Info: [74.298] active=false
+globalTracer.intakeTriggerCallback_Info: [74.318] active=true
+globalTracer.intakeTriggerCallback_Info: [78.689] active=false
+globalTracer.intakeTriggerCallback_Info: [78.728] active=true
+globalTracer.intakeTriggerCallback_Info: [79.283] active=false
+globalTracer.intakeTriggerCallback_Info: [79.303] active=true
+globalTracer.intakeTriggerCallback_Info: [80.108] active=false
+globalTracer.intakeTriggerCallback_Info: [80.228] active=true
+globalTracer.setPower_Info: [80.324] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [80.580] active=false
+globalTracer.grabberTriggerCallback_Info: [80.836] active=true
+globalTracer.grabberTriggerCallback_Info: [80.894] active=false
+globalTracer.setPower_Info: [86.232] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [92.325] active=true
+globalTracer.intakeTriggerCallback_Info: [92.423] active=false
+globalTracer.intakeTriggerCallback_Info: [92.482] active=true
+globalTracer.intakeTriggerCallback_Info: [93.980] active=false
+globalTracer.intakeTriggerCallback_Info: [94.039] active=true
+globalTracer.intakeTriggerCallback_Info: [95.122] active=false
+globalTracer.intakeTriggerCallback_Info: [95.141] active=true
+globalTracer.intakeTriggerCallback_Info: [97.308] active=false
+globalTracer.intakeTriggerCallback_Info: [97.327] active=true
+globalTracer.intakeTriggerCallback_Info: [98.848] active=false
+globalTracer.intakeTriggerCallback_Info: [99.127] active=true
+globalTracer.intakeTriggerCallback_Info: [102.116] active=false
+globalTracer.intakeTriggerCallback_Info: [102.138] active=true
+globalTracer.setPower_Info: [106.246] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [106.405] active=false
+globalTracer.setPower_Info: [112.493] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [113.220] active=true
+globalTracer.intakeTriggerCallback_Info: [116.818] active=false
+globalTracer.intakeTriggerCallback_Info: [116.839] active=true
+globalTracer.intakeTriggerCallback_Info: [116.858] active=false
+globalTracer.intakeTriggerCallback_Info: [116.957] active=true
+globalTracer.intakeTriggerCallback_Info: [117.015] active=false
+globalTracer.intakeTriggerCallback_Info: [117.331] active=true
+globalTracer.intakeTriggerCallback_Info: [118.490] active=false
+globalTracer.setPower_Info: [118.509] owner=null, delay=0.0, leftPower=-0.5, rightPower=-0.5, duration=0.000, event=null
+globalTracer.intakeTriggerCallback_Info: [118.552] active=true
+globalTracer.intakeTriggerCallback_Info: [118.611] active=false
+globalTracer.setPower_Info: [124.584] owner=null, delay=0.0, leftPower=0.8, rightPower=0.8, duration=0.000, event=null
+globalTracer.startCompetition_Info: *** Transitioning from TELEOP_MODE to DISABLED_MODE ***
+globalTracer.robotStopMode_Info: [135.324] ***** Stop TELEOP_MODE *****
+globalTracer.FrcRobotBase_Info: ***** Performance Metrics *****
+globalTracer.FrcRobotBase_Info: (TELEOP_MODE->DISABLED_MODE) Performance Metrics: LoopCount=6864
+globalTracer.FrcRobotBase_Info: RobotInit=4.929316, PrevModeStopTask=0.004099, PrevStopMode=0.000196, PrevRobotStopMode=0.012595, RobotStartMode=0.023637, startMode=0.075029, startTask=0.000071
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.000754/0.026867
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.001232/0.024149
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.000105/0.013201
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003227/0.006530
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.000219/0.998232
+globalTracer.TaskPerformance_Info: DriverController.buttonEvent: PRE_PERIODIC_TASK=0.000010/0.019697
+globalTracer.TaskPerformance_Info: operatorStick.buttonEvent: PRE_PERIODIC_TASK=0.000021/0.019697
+globalTracer.TaskPerformance_Info: buttonPanel.buttonEvent: PRE_PERIODIC_TASK=0.000017/0.019697
+globalTracer.TaskPerformance_Info: switchPanel.buttonEvent: PRE_PERIODIC_TASK=0.000004/0.019697
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000020/0.020321
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000056/0.000072
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.000070/38.369599
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.000208/38.369587
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000025/38.369426
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000064/38.369420
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000024/38.369417
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.000509/0.020179
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.000312/38.369416
+globalTracer.TaskPerformance_Info: purePursuitDrive.driveTask: POST_PERIODIC_TASK=0.002815/0.028054
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.pidMotorTask: OUTPUT_TASK=0.000241/0.024614
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.stopMotorTask: STOP_TASK=0.000405/0.000000
+globalTracer.TaskPerformance_Info: Arm.pidActuator.pidMotorTask: OUTPUT_TASK=0.000176/0.022896
+globalTracer.TaskPerformance_Info: Arm.pidActuator.stopMotorTask: STOP_TASK=0.000096/0.000000
+globalTracer.TaskPerformance_Info: Intake.trigger.triggerTask: PRE_PERIODIC_TASK=0.000020/0.019818
+globalTracer.TaskPerformance_Info: Grabber.cone.pneumaticTask: OUTPUT_TASK=0.000130/0.932003
+globalTracer.TaskPerformance_Info: Grabber.cube.pneumaticTask: OUTPUT_TASK=0.000190/0.019020
+globalTracer.TaskPerformance_Info: Grabber.trigger.triggerTask: PRE_PERIODIC_TASK=0.000007/0.019818
+globalTracer.TaskPerformance_Info: TaskAutoScore: POST_PERIODIC_TASK=0.000502/0.020456
+globalTracer.TaskPerformance_Info: TaskAutoPickup: POST_PERIODIC_TASK=0.000154/0.098356
+globalTracer.TaskPerformance_Info: elevatorTrigger.triggerTask: PRE_PERIODIC_TASK=0.000084/0.019697
