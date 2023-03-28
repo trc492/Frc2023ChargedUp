@@ -180,8 +180,10 @@ public class RobotParams
 
     public static final int CANID_ELEVATOR                      = 7;
     public static final int CANID_ARM                           = 8;
-    public static final int CANID_INTAKE_LEFT                   = 17;
-    public static final int CANID_INTAKE_RIGHT                  = 18;
+    //public static final int CANID_INTAKE_LEFT                   = 17;
+    //public static final int CANID_INTAKE_RIGHT                  = 18;
+
+    public static final int CANID_INTAKE                       = 17;
     // Applicable only for Swerve Drive.
     public static final int CANID_LEFTFRONT_STEER               = 13;
     public static final int CANID_RIGHTFRONT_STEER              = 14;
