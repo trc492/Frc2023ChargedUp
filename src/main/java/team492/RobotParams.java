@@ -71,6 +71,7 @@ public class RobotParams
         public static final boolean useElevator                 = true;
         public static final boolean useArm                      = true;
         public static final boolean useGrabber                  = true;
+        public static final boolean useWrist                    = false;
         public static final boolean useIntake                   = true;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
@@ -180,10 +181,10 @@ public class RobotParams
 
     public static final int CANID_ELEVATOR                      = 7;
     public static final int CANID_ARM                           = 8;
-    //public static final int CANID_INTAKE_LEFT                   = 17;
-    //public static final int CANID_INTAKE_RIGHT                  = 18;
+    public static final int CANID_WRIST                         = 17;
+    public static final int CANID_WRIST_ENCODER                 = 18;
+    public static final int CANID_INTAKE                        = 19;
 
-    public static final int CANID_INTAKE                       = 17;
     // Applicable only for Swerve Drive.
     public static final int CANID_LEFTFRONT_STEER               = 13;
     public static final int CANID_RIGHTFRONT_STEER              = 14;
@@ -450,7 +451,7 @@ public class RobotParams
     public static final double ELEVATOR_TOLERANCE               = 1.0;
     public static final double ELEVATOR_CAL_POWER               = -0.3;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
-    public static final double ELEVATOR_SAFE_HEIGHT             = 10.0; //TODO: Determine
+    public static final double ELEVATOR_TRAVEL_POSITION         = 5.0; // TODO
     public static final double[] ELEVATOR_TRIGGERS              = {22.0};
     // Important: presets must be sorted in increasing order.
     public static final double[] elevatorPresets                =
@@ -515,13 +516,47 @@ public class RobotParams
         20, ARM_MAX_POS, ARM_MAX_POS
     };
 
+    // Wrist subsystem.
+    // TODO: Determine all of these values
+    public static final int WRIST_ENCODER_CPR                     = 0;
+    public static final int WRIST_ZERO                            = 0;
+    public static final double WRIST_DEGS_PER_COUNT               = 0.0;
+    public static final double WRIST_OFFSET                       = 0.0;
+
+    public static final boolean WRIST_MOTOR_INVERTED              = false;
+    public static final boolean WRIST_ENCODER_INVERTED            = false;
+    public static final boolean WRIST_LOWER_LIMIT_INVERTED        = false;
+    public static final boolean WRIST_UPPER_LIMIT_INVERTED        = false;
+
+
+    public static final double WRIST_LOW_POS                      = 0.0;
+    public static final double WRIST_MIN_POS                      = 0.0;
+    public static final double WRIST_MAX_POS                      = 0.0;
+    public static final double WRIST_SAFE_RANGE                   = 0.0;
+
+    public static final double WRIST_KP                           = 0.0;
+    public static final double WRIST_KI                           = 0.0;
+    public static final double WRIST_KD                           = 0.0;
+    public static final double WRIST_KF                           = 0.0;
+    public static final double WRIST_IZONE                        = 0.0;
+    public static final double WRIST_TOLERANCE                    = 0.0;
+    public static final double WRIST_CAL_POWER                    = 0.0;
+    public static final double WRIST_MAX_POWER                    = 0.0;
+    public static final double WRIST_PRESET_TOLERANCE             = 0.0;
+
+    public static final double WRIST_TRAVEL_POSITION              = 0.0;
+    public static final double WRIST_SAFE_POSITION                = 0.0;
+    public static final double WRIST_CONE_PICKUP_POSITION         = 45.765144;
+    public static final double WRIST_CUBE_PICKUP_POSITION         = 90.0;
+    public static final double WRIST_CONE_SCORE_POSITION          = -20.0;
+    public static final double WRIST_CUBE_SCORE_POSITION          = 20.0;
+
+
     // Intake subsystem.
-    public static final double INTAKE_CUBE_PICKUP_POWER         = 0.8;
-    public static final double INTAKE_CONE_PICKUP_POWER         = 0.9;
+    public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_SPIT_POWER                = -0.5;
 
     // Grabber subsystem.
     public static final double GRABBER_GRAB_DURATION            = 0.2;
     public static final double GRABBER_RELEASE_DURATION         = 0.2;
-
 }   //class RobotParams

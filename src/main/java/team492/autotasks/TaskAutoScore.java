@@ -79,7 +79,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcEvent armEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
-    private final TrcEvent grabberEvent;
+    private final TrcEvent wristEvent;
     private Alliance alliance;
     private String currOwner = null;
 
@@ -106,7 +106,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         armEvent = new TrcEvent(moduleName + ".armEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
-        grabberEvent = new TrcEvent(moduleName + ".grabberEvent");
+        wristEvent = new TrcEvent(moduleName + ".wristEvent");
     }   //TaskAutoScore
 
     /**
@@ -249,37 +249,43 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         TaskParams taskParams = (TaskParams) params;
         //  Preconditions:
         //      Robot is at position that it can see AprilTag (if using vision) and far enough to deploy elevator and
-        //      arm without hitting field elements. Arm should be untucked.
+        //      arm without hitting field elements.
         switch (state)
         {
             case START:
                 // Raise elevator to scoring height, signal elevator event.
                 // Raise arm to scoring angle, signal arm event.
-                // Retract whacker.
+                // Move wrist to scoring angle, signal wrist event.
                 // If useVision, call vision to detect target with a timeout, signal vision event.
                 // Wait for all events and goto DRIVE_TO_SCORING_POS.
-                double elevatorPos, armPos;
+
+                double elevatorPos, armPos, wristPos;
                 // Determine arm, elevator scoring positions based on scoringLevel and objectType.
                 alliance = FrcAuto.autoChoices.getAlliance();
                 if (taskParams.objectType == ObjectType.CONE)
                 {
                     elevatorPos = RobotParams.elevatorConeScoringPresets[taskParams.scoreLevel];
                     armPos = RobotParams.armConeScorePresets[taskParams.scoreLevel];
+                    wristPos = RobotParams.WRIST_CONE_SCORE_POSITION;
                 }
                 else
                 {
                     elevatorPos = RobotParams.elevatorCubeScoringPresets[taskParams.scoreLevel];
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
+                    wristPos = RobotParams.WRIST_CUBE_PICKUP_POSITION;
                 }
 
                 if (taskParams.scoreLevel > 0)
                 {
                     robot.elevatorPidActuator.setPosition(
-                        currOwner, 0.3, elevatorPos, true, 1.0, elevatorEvent, 0.7);
+                        currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
                     sm.addEvent(elevatorEvent);
                     robot.armPidActuator.setPosition(
                         currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
                     sm.addEvent(armEvent);
+                    robot.wristPidActuator.setPosition(
+                        currOwner, 0.0, wristPos, true, 1.0, wristEvent, 0.7);
+                    sm.addEvent(wristEvent);
                 }
 
                 if (taskParams.useVision)
@@ -293,8 +299,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 break;
 
             case DRIVE_TO_SCORING_POS:
-                // Intake should have been retracted already but just in case.
-                robot.intake.retract();
                 // If useVision, set robot's field position using detected target info.
                 // Determine scoring position either by vision or drive base odometry.
                 // Drive to the scoring position slowly, then goto SCORE_OBJECT.
@@ -327,7 +331,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 }
                 else
                 {
-                    // For now, assume its auto preload if no vision.
+                    // TODO: For now, assume its auto preload if no vision.
                     robot.robotDrive.purePursuitDrive.start(
                         currOwner, driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, 16.0, 0));
@@ -339,19 +343,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, false, false);
                 // If object is a CUBE, release cube grabber, goto RESET.
                 // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
-                // if (taskParams.scoreLevel == 0)
-                // {
-                //     // TODO (Code Review): I don't know what you are trying to do here???
-                //     // robot.intake.extend();
-                //     // robot.intake.setPower(0.2, -0.4, -0.4, 0.5);
-                //     // timer.set(0.5, new TrcEvent.Callback() {
-                //     //     private void notify(Object context)
-                //     //     {
-                            
-                //     //     }
-                //     // });
-                //     // sm.waitForSingleEvent(intakeEvent, State.DONE);
-                // }
 
                 // If we are scoring ground, the precondition is assuming the elevator and the arm are in down
                 // position so we can just drop it in front of us onto the ground.
@@ -362,16 +353,14 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     // For scoring cone on the ground, treat it the same as cube.
                     robot.armPidActuator.setPosition(
                         currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
-                    robot.grabber.releaseCube();
-                    robot.grabber.releaseCone(0.2);
-                    sm.waitForSingleEvent(armEvent, State.DONE);
+                    robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
+                    // TODO: Not waiting for anything here
+                    sm.waitForSingleEvent(armEvent, State.RESET);
                 }
                 else
                 {
-                    robot.grabber.releaseCube(grabberEvent);
-                    robot.grabber.extendPoker();
-                    robot.grabber.releaseCone();
-                    sm.waitForSingleEvent(grabberEvent, State.RESET);
+                    robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
+                    sm.setState(State.RESET);
                 }
                 break;
 
@@ -380,9 +369,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 // Lower elevator to 0 height after a delay to make sure we don't hit anything.
                 // Lower arm to TRAVEL_POS after a delay to make sure we don't hit anything.
                 // goto DONE.
-                robot.grabber.releaseAll();
-                robot.grabber.retractPoker();
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
+                // TODO: Tune delays & timeout
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     new TrcPose2D(0.0, -24.0, 0.0));
@@ -390,6 +378,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     currOwner, 0.4, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(
                     currOwner, 0.9, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                robot.wristPidActuator.setPosition(currOwner, 0.4, RobotParams.WRIST_TRAVEL_POSITION , true, 1.0, null, 0.0);
                 sm.waitForSingleEvent(driveEvent, State.DONE, 2.0);
                 break; 
 

@@ -46,7 +46,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private final TrcTriggerThresholdZones elevatorTrigger;
     private boolean controlsEnabled = false;
 
-    private boolean fastSpitOut = false; 
     private boolean intakeReversed = false;
     private boolean armControl = false;
     private boolean armPosControl = false;
@@ -107,10 +106,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.elevator.zeroCalibrate(moduleName);
         }
 
-        if (elevatorTrigger != null)
-        {
-            elevatorTrigger.enableTrigger(this::elevatorTriggerCallback);
-        }
     }   //startMode
 
     /**
@@ -135,22 +130,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             elevatorTrigger.disableTrigger();
         }
     }   //stopMode
-
-    /**
-     * This method is called when the elevator position crosses a certain threshold.
-     *
-     * @param context specifies the callback parameters.
-     */
-    private void elevatorTriggerCallback(Object context)
-    {
-        TrcTriggerThresholdZones.CallbackContext params = (TrcTriggerThresholdZones.CallbackContext) context;
-
-        if (robot.intake != null && params.prevZone == 0 && params.currZone == 1)
-        {
-            // Elevator is going up.
-            robot.intake.retract();
-        }
-    }   //elevatorTriggerCallback
 
     /**
      * This method is called periodically on the main robot thread. Typically, you put TeleOp control code here that
@@ -487,17 +466,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     if (pressed)
                     {
-                        double intakePower;
-
-                        robot.intake.extend();
-                        if (intakeReversed)
-                        {
-                            intakePower = fastSpitOut? -1.0: RobotParams.INTAKE_SPIT_POWER;
-                        }
-                        else
-                        {
-                            intakePower = RobotParams.INTAKE_CUBE_PICKUP_POWER;
-                        }
+                        double intakePower = intakeReversed? RobotParams.INTAKE_SPIT_POWER: RobotParams.INTAKE_PICKUP_POWER;
                         robot.intake.setPower(intakePower);
                     }
                     else
@@ -508,18 +477,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
-                // Toggle intake extend and retract.
-                if (robot.intake != null && pressed)
-                {
-                    if (robot.intake.isExtended())
-                    {
-                        robot.intake.retract();
-                    }
-                    else
-                    {
-                        robot.intake.extend();
-                    }
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
@@ -528,32 +485,26 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON4:
-                // Toggle cube grabber (aka polycarb).
-                if (robot.grabber != null && pressed)
+                // Ready position for cubes
+                // Moves elevator down, arm to its lowest position, and wrist to 90 degrees
+                if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
                 {
-                    if (robot.grabber.grabbedCube())
-                    {
-                        robot.grabber.releaseCube();
-                    }
-                    else
-                    {
-                        robot.grabber.grabCube();
-                    }
+                    robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MIN_POS, true);
+                    robot.armPidActuator.setPosition(RobotParams.ARM_LOW_POS, true);
+                    robot.wristPidActuator.setPosition(RobotParams.WRIST_CUBE_PICKUP_POSITION, true);
+
                 }
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON5:
-                // Toggle cone grabber (aka earmuffs).
-                if (robot.grabber != null && pressed)
+                // Ready position for cones
+                // Moves elevator down,  arm to its lowest position, and wrist to around 45 degrees
+                if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
                 {
-                    if (robot.grabber.grabbedCone())
-                    {
-                        robot.grabber.releaseCone();
-                    }
-                    else
-                    {
-                        robot.grabber.grabCone();
-                    }
+                    robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MIN_POS, true);
+                    robot.armPidActuator.setPosition(RobotParams.ARM_LOW_POS, true);
+                    robot.wristPidActuator.setPosition(RobotParams.WRIST_CONE_PICKUP_POSITION, true);
+
                 }
                 break;
 
@@ -597,12 +548,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
-                // Poke the cube to release it.
-                if (robot.grabber != null && pressed)
-                {
-                    robot.grabber.extendPoker();
-                    robot.grabber.retractPoker(0.5);
-                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
@@ -611,7 +556,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     robot.armPidActuator.setPosition(
                         moduleName, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                    robot.intake.retract(1.0);
                 }
                 break;
 
@@ -650,57 +594,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
-                // Ready position for cones
-                // Moves elevator up and moves arm to its lowest position
-                // We grab cones with the earmuffs straight above them so when grabbing,
-                // all we have to do is move the elevator down and close the earmuffs
-                if (robot.elevator != null && robot.arm != null && pressed)
-                {
-                    robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.0, 12.0, true, 1.0, null, 1.5);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS_INTAKE_DOWN, true, RobotParams.ARM_MAX_POWER, null, 1.0);
-                    robot.intake.extend();
-                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:
-                // Cube pickup
-                // Opens both grabbers
-                // Moves arm down (elevator is already all the way down)
-                // Closes cube grabber after a short delay
-                if (robot.elevator != null && robot.arm != null && robot.grabber != null && pressed)
-                {
-                    robot.grabber.releaseCube();
-                    robot.grabber.releaseCone();
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0.3, RobotParams.ARM_MIN_POS_INTAKE_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.8);
-                    robot.grabber.grabCube(0.8);
-                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
-                // Cone pickup
-                if (robot.elevator != null && robot.arm != null && robot.grabber != null && pressed)
-                {
-                    //AutoPickup Vision Version
-                    // pickupObject = ObjectType.CONE;
-                    // robot.photonVision.setPipeline(PipelineType.CONE);
-                    //robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
-
-                    //AutoPickup PickupOnly
-                     robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, false, true, null);
-
-                    //AutoPickup Manual Version
-                    // robot.grabber.grabCube();
-                    // robot.grabber.releaseCone();
-                    // robot.elevatorPidActuator.setPosition(
-                    //     moduleName, 0.2, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 1.5);
-                    // robot.armPidActuator.setPosition(
-                    //     moduleName, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 1.5);
-                    // //not sure if this works
-                    // robot.grabber.grabCone(1.5);
-                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE1:
@@ -723,33 +622,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-                // Ready for cube
-                if (robot.elevator != null && robot.arm != null && pressed)
-                {
-                    robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.0, 0.0, true, 1.0, null, 1.5);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0.0, 60.0, true, RobotParams.ARM_MAX_POWER, null, 1.5);
-                    robot.intake.extend();
-                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE2:
                 break;
-                // TURTLE MODE: TODO: Add label on button panel
-                //use this for defense/before balance
-                //assumes that when the intake goes up it will not hit the arm (do arm up beforehand)
 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                //nose out cone pickup
-                if (robot.elevator != null && robot.arm != null && robot.intake != null && pressed)
-                {
-                    robot.elevatorPidActuator.setPosition(moduleName, 0.0, true, 1.0, null, 0.0);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 1.0, RobotParams.ARM_MIN_POS_INTAKE_UP, true, RobotParams.ARM_MAX_POWER, null,
-                        0.0);
-                    robot.intake.retract();
-                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_WHITE2:

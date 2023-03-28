@@ -67,8 +67,10 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
     // TODO: Test all iterations to verify State shenanigans
     private Alliance alliance = Alliance.Blue;
-    private int scoreLevel = 2;
     private boolean scorePreload = true;
+    private ObjectType preloadType = ObjectType.CONE;
+    private int scoreLevel = 2;
+    private ScoreLocation scoreLocation = ScoreLocation.MIDDLE;
     private boolean doAutoBalance = true;
     private TrcPose2D startPos;
 
@@ -154,16 +156,23 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    preloadType = FrcAuto.autoChoices.getPreloadedObjType();
+                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    scoreLocation = FrcAuto.autoChoices.getScoreLocation();
                     startPos = alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_2: RobotParams.STARTPOS_RED_2;
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(startPos, false);
-                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
 
                     if (scorePreload && scoreLevel == 0)
                     {
-                        // Deploying & spinning intake to score the preloaded cube to ground level.
-                        robot.intake.extend();
-                        robot.intake.setPower(0.2, -0.4, -0.4, 0.5, intakeEvent);
+                        robot.armPidActuator.setPosition(
+                            moduleName, 0.0, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                        // Deploying & spinning intake to score the preloaded object to ground level.
+                        if (preloadType == ObjectType.CONE)
+                        {
+                            robot.wristPidActuator.setPosition(moduleName, 0.0, 20.0, true, 1.0, null, 0.0);
+                        }
+                        robot.intake.setPower(moduleName, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.5, intakeEvent);
                         sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
                     }
                     else
@@ -178,37 +187,17 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
-                    sm.waitForSingleEvent(driveEvent, State.UNTUCK_ARM);
-                    break;
-
-                case UNTUCK_ARM:
-                    robot.intake.extend();
-                    robot.elevatorPidActuator.setPosition(
-                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
-                    robot.armPidActuator.setPosition(
-                        null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
-                        null, 0.0);
-                    robot.intake.retract(0.9);
-                    sm.waitForSingleEvent(
-                        elevatorEvent,
-                        scorePreload && scoreLevel > 0? State.SCORE_PRELOAD_HIGH:
-                        doAutoBalance? State.TURN: State.DONE);
+                    sm.waitForSingleEvent(driveEvent, State.SCORE_PRELOAD_HIGH);
                     break;
 
                 case SCORE_PRELOAD_HIGH:
                     // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
-                        ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
+                        preloadType, scoreLevel, scoreLocation, false, autoAssistEvent);
                     sm.waitForSingleEvent(autoAssistEvent, (doAutoBalance? State.TURN: State.DONE));
                     break;
                 
                 case TURN:
-                    if (robot.elevator.getPosition() >= RobotParams.ELEVATOR_SAFE_HEIGHT)
-                    {
-                        // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
-                        robot.elevatorPidActuator.setPosition(
-                            null, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.5);
-                    }
                     // Turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 0.7, robot.robotDrive.driveBase.getFieldPosition(), true,

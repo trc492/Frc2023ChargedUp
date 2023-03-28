@@ -47,8 +47,8 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
         EXIT_COMMUNITY,
         // GET_SECOND,
         // DRIVE_TO_SCORE,
-        DRIVE_TO_BALANCE,
-        BALANCE,
+        // DRIVE_TO_BALANCE,
+        // BALANCE,
         DONE
     }   //enum State
 
@@ -63,7 +63,9 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     private Alliance alliance = Alliance.Blue;
     private int startPos = 2;
     private boolean scorePreload = true;
+    private ObjectType preloadType = ObjectType.CONE;
     private int scoreLevel = 0;
+    private ScoreLocation scoreLocation = ScoreLocation.MIDDLE;
     private boolean doAutoBalance = false;
     // private boolean scoreSecondPiece = true;
     // private int piecesScored = 0;
@@ -138,20 +140,27 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     alliance = FrcAuto.autoChoices.getAlliance();
                     startPos = FrcAuto.autoChoices.getStartPos();   // 0, 1, or 2.
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
+                    preloadType = FrcAuto.autoChoices.getPreloadedObjType();
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    scoreLocation = FrcAuto.autoChoices.getScoreLocation();
                     // TODO: add autoBalance functionality
                     // TODO: add option to score another element
                     // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     // scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
+
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
-                    robot.elevator.setAutoStartOffset(RobotParams.ELEVATOR_AUTOSTART_OFFSET);
 
                     if (scorePreload && scoreLevel == 0)
                     {
-                        // Deploying & spinning intake to score the preloaded cube to ground level.
-                        robot.intake.extend();
-                        robot.intake.setPower(0.2, -0.4, -0.4, 0.5, intakeEvent);
+                        robot.armPidActuator.setPosition(
+                            moduleName, 0.0, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                        // Deploying & spinning intake to score the preloaded object to ground level.
+                        if (preloadType == ObjectType.CONE)
+                        {
+                            robot.wristPidActuator.setPosition(moduleName, 0.0, 20.0, true, 1.0, null, 0.0);
+                        }
+                        robot.intake.setPower(moduleName, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.5, intakeEvent);
                         sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
                         // piecesScored++;
                     }
@@ -167,25 +176,13 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
-                    sm.waitForSingleEvent(driveEvent, State.UNTUCK_ARM);
-                    break;
-
-                case UNTUCK_ARM:
-                    robot.intake.extend();
-                    robot.elevatorPidActuator.setPosition(
-                        RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
-                    robot.armPidActuator.setPosition(
-                        null, 0.7, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER,
-                        null, 0.0);
-                    robot.intake.retract(0.9);
-                    sm.waitForSingleEvent(
-                        elevatorEvent, scorePreload && scoreLevel > 0? State.SCORE_PRELOAD_HIGH: State.EXIT_COMMUNITY);
+                    sm.waitForSingleEvent(driveEvent, (scorePreload && scoreLevel > 0)? State.SCORE_PRELOAD_HIGH: State.EXIT_COMMUNITY);
                     break;
 
                 case SCORE_PRELOAD_HIGH:
                     // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
-                        ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, false, autoAssistEvent);
+                        preloadType, scoreLevel, scoreLocation, false, autoAssistEvent);
                     sm.waitForSingleEvent(autoAssistEvent, State.EXIT_COMMUNITY);
                     // piecesScored++;
                     break;
@@ -207,7 +204,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         new TrcPose2D(xOffset, -156.0, 0.0));
                     // doAutoBalance is hard coded to false, so we will not do balance. When we are ready to balance,
                     // just remove the hard code.
-                    sm.waitForSingleEvent(driveEvent, doAutoBalance? State.DRIVE_TO_BALANCE: State.DONE);
+                    sm.waitForSingleEvent(driveEvent, State.DONE);
                     // robot.robotDrive.enableDistanceTrigger(Math.sqrt(169.0 + xOffset*xOffset), driveEvent);
                     // robot.robotDrive.driveBase.holonomicDrive(
                     //     null, xOffset/120.0, alliance == Alliance.Blue? 0.3: -0.3, 0.0, robot.robotDrive.driveBase.getHeading());
@@ -236,37 +233,31 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 //     sm.waitForSingleEvent(driveEvent, State.SCORE);
                 //     break;
 
-                case DRIVE_TO_BALANCE:
-                    if (robot.elevator.getPosition() >= RobotParams.ELEVATOR_SAFE_HEIGHT)
-                    {
-                        // Lower elevator before moving (AutoScore usually does this but we aren't scoring here)
-                        robot.elevatorPidActuator.setPosition(
-                            null, 1.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.5);
-                    }
+                // case DRIVE_TO_BALANCE:
 
-                    TrcPose2D balancePose;
-                    if (alliance == Alliance.Blue)
-                    {
-                        balancePose = new TrcPose2D(
-                            RobotParams.STARTPOS_2_X, RobotParams.STARTPOS_BLUE_Y + 144.0, -90.0);
-                    }
-                    else
-                    {
-                        balancePose = new TrcPose2D(
-                            RobotParams.STARTPOS_2_X, RobotParams.STARTPOS_RED_Y - 144.0, 90.0);
-                    }
+                //     TrcPose2D balancePose;
+                //     if (alliance == Alliance.Blue)
+                //     {
+                //         balancePose = new TrcPose2D(
+                //             RobotParams.STARTPOS_2_X, RobotParams.STARTPOS_BLUE_Y + 144.0, -90.0);
+                //     }
+                //     else
+                //     {
+                //         balancePose = new TrcPose2D(
+                //             RobotParams.STARTPOS_2_X, RobotParams.STARTPOS_RED_Y - 144.0, 90.0);
+                //     }
 
-                    robot.robotDrive.purePursuitDrive.start(
-                        driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                        balancePose);
-                    sm.waitForSingleEvent(driveEvent, State.BALANCE);
-                    break;
+                //     robot.robotDrive.purePursuitDrive.start(
+                //         driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                //         balancePose);
+                //     sm.waitForSingleEvent(driveEvent, State.BALANCE);
+                //     break;
 
-                case BALANCE:
-                    // We're now next to the station outside of community, so we can do autobalance!
-                    robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, autoAssistEvent);
-                    sm.waitForSingleEvent(autoAssistEvent, State.DONE);
-                    break;
+                // case BALANCE:
+                //     // We're now next to the station outside of community, so we can do autobalance!
+                //     robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, autoAssistEvent);
+                //     sm.waitForSingleEvent(autoAssistEvent, State.DONE);
+                    // break;
 
                 case DONE:
                 default:

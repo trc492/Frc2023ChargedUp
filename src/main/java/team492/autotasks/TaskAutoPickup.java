@@ -29,7 +29,6 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
@@ -72,17 +71,14 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcTimer timer;
     private final TrcEvent elevatorEvent;
     private final TrcEvent armEvent;
     private final TrcEvent intakeEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
-    private final TrcEvent grabberEvent;
-    private final TrcEvent timerEvent;
+    private final TrcEvent wristEvent;
     private String currOwner = null;
     private String currDriveOwner = null;
-    private boolean approachOnly = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -97,14 +93,12 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        timer = new TrcTimer(moduleName);
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         armEvent = new TrcEvent(moduleName + ".armEvent");
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
-        grabberEvent = new TrcEvent(moduleName + ".grabberEvent");
-        timerEvent = new TrcEvent(moduleName + ".timerEvent");
+        wristEvent = new TrcEvent(moduleName + ".wristEvent");
     }   //TaskAutoPickup
 
     /**
@@ -112,44 +106,22 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
      *
      * @param objectType specifies the object type to pickup (cone or cube).
      * @param useVision specifies true to use vision assist, false otherwise.
-     * @param pickupOnly specifies true to only do pickup and not use vision nor to approach the object.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
     public void autoAssistPickup(
-        ObjectType objectType, boolean useVision, boolean pickupOnly, TrcEvent completionEvent)
+        ObjectType objectType, boolean useVision, TrcEvent completionEvent)
     {
         final String funcName = "autoAssistPickup";
-        State startState = pickupOnly? State.PREP_FOR_PICKUP_ONLY: State.START;
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, useVision=%s, pickupOnly=%s, event=%s",
-                moduleName, objectType, useVision, pickupOnly, completionEvent);
+                funcName, "%s: objectType=%s, useVision=%s, event=%s",
+                moduleName, objectType, useVision, completionEvent);
         }
 
-        startAutoTask(startState, new TaskParams(objectType, useVision), completionEvent);
+        startAutoTask(State.START, new TaskParams(objectType, useVision), completionEvent);
     }   //autoAssistPickup
-
-    /**
-     * This method starts the auto-assist operation to pickup an object.
-     *
-     * @param objectType specifies the object type to pickup (cone or cube).
-     * @param useVision specifies true to use vision assist, false otherwise.
-     * @param completionEvent specifies the event to signal when done, can be null if none provided.
-     */
-    public void autoAssistPickup(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
-    {
-        autoAssistPickup(objectType, useVision, false, completionEvent);
-    }   //autoAssistPickup
-
-    //approach only pickup: sucks cone/cube into intake without grabbing it
-    //need this to pick up objects for scoring low in auto 
-    public void autoAssistPickupApproachOnly(ObjectType objectType, boolean useVision, TrcEvent completionEvent)
-    {
-        approachOnly = true; 
-        autoAssistPickup(objectType, useVision, false, completionEvent); 
-    }
 
     /**
      * This method cancels an in progress auto-assist operation if any.
@@ -297,23 +269,15 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 // acquire ownership of the drive base.
                 if (acquireDriveBaseOwnership())
                 {
-                    // Set Intake down.
-                    // If picking up cube, open both cube and cone grabber,
-                    //      otherwise close cube grabber and open cone grabber.
-                    // Raise elevator to 6-inch, signal event.
-                    // Raise arm to 15-deg, signal event.
+                    // Assume pickup position depending on the object
                     // If useVision, call vision to detect object with timeout, signal event.
                     // Wait for all events, then goto DRIVE_TO_OBJECT.
-                    robot.intake.extend();
-                    if (taskParams.objectType == ObjectType.CUBE)
-                    {
-                        robot.grabber.releaseCube();
-                    }
-                    else
-                    {
-                        robot.grabber.grabCube();
-                    }
-                    robot.grabber.releaseCone();
+
+                    robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent);
+                    robot.armPidActuator.setPosition(RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, armEvent);
+                    robot.wristPidActuator.setPosition(
+                        taskParams.objectType == ObjectType.CUBE? RobotParams.WRIST_CUBE_PICKUP_POSITION:
+                        RobotParams.WRIST_CONE_PICKUP_POSITION, true);
 
                     if (taskParams.useVision)
                     {
@@ -321,24 +285,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                             taskParams.objectType == ObjectType.CUBE? PipelineType.CUBE: PipelineType.CONE);
                         robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                         sm.addEvent(visionEvent);
-                        // If using vision, we need to move the arm and elevator out of the way so LL can see the target
-                        // TODO (Code Review): Really? I thought the elevator should be at the lowest to unblock the camera.
-                        // Besides, if you raise the elevator to 13-inch, that would be different from the else case.
-                        // In the next state, you don't know if the elevator was 13 or SAFE_HEIGHT. What is SAFE_HEIGHT
-                        // anyway? Why 10-inch?
-                        // Also, Vision has a 0.5 sec timeout. Is that enough time to get the elevator and arm "out of view"?
-                        robot.elevatorPidActuator.setPosition(
-                            currOwner, 0.0, 13.0, true, 1.0, elevatorEvent, 0.5);
-                        robot.armPidActuator.setPosition(
-                            currOwner, 0.0, 65.7, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
                     }
-                    else
-                    {
-                        robot.elevatorPidActuator.setPosition(
-                            currOwner, 0.0, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, elevatorEvent, 0.5);
-                        robot.armPidActuator.setPosition(
-                            currOwner, 0.0, 45.0, true, RobotParams.ARM_MAX_POWER, armEvent, 0.5);
-                    }
+
                     sm.addEvent(elevatorEvent);
                     sm.addEvent(armEvent);
                     sm.waitForEvents(State.DRIVE_TO_OBJECT, true);
@@ -351,17 +299,15 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                 break;
 
             case DRIVE_TO_OBJECT:
-                // Turn on whacker with speed appropriate for cube or cone.
+                // Turn on intake
                 // Arm intake sensor, signal event when has object.
                 // If useVision and vision detected object use detected object position,
                 //      otherwise set position to 60-inch forward.
                 // Call purePursuit to go to object position, signal event.
                 // Wait for either events, then goto PICKUP_OBJECT.
-                double intakePower = taskParams.objectType == ObjectType.CUBE?
-                    RobotParams.INTAKE_CUBE_PICKUP_POWER: RobotParams.INTAKE_CONE_PICKUP_POWER;
 
                 robot.intake.enableTrigger(intakeEvent);
-                robot.intake.setPower(currOwner, 0.0, intakePower, intakePower, 0.0, null);
+                robot.intake.setPower(currOwner, 0.0, RobotParams.INTAKE_PICKUP_POWER, 0.0);
                 sm.addEvent(intakeEvent);
 
                 robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.2);
@@ -387,95 +333,26 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                         new TrcPose2D(0.0, 60.0, 0.0));
                 }
                 sm.addEvent(driveEvent);
-                //if its approach only we only grab it with weedwhacker, don't try to pick it up
-                sm.waitForEvents(approachOnly? State.DONE: State.PICKUP_OBJECT);
-                break;
-
-            case PREP_FOR_PICKUP_ONLY:
-                if (taskParams.objectType == ObjectType.CUBE)
-                {
-                    robot.grabber.releaseCube(grabberEvent);
-                    sm.addEvent(grabberEvent);
-                }
-                else
-                {
-                    robot.grabber.grabCube();
-                    robot.grabber.releaseCone();
-                    robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 1.0, elevatorEvent, 0.0);
-                    sm.addEvent(elevatorEvent);
-                    robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
-                    sm.addEvent(armEvent);
-                }
-                sm.waitForEvents(State.PICKUP_OBJECT_PICKUP_ONLY, true, 1.5);
-                break;
-
-            case PICKUP_OBJECT_PICKUP_ONLY:
-                //close cone grabber
-                robot.grabber.grabCone(grabberEvent);
-                sm.waitForSingleEvent(grabberEvent, State.PREP_FOR_TRAVEL);
-                break;
-            
-            case PICKUP_OBJECT:
-                // Cancel purePursuit drive.
-                // Stop intake.
-                // Unarm intake sensor.
-                // If intake does not have object, goto DONE, otherwise continue the following.
-                // Lower elevator to 3-inch.
-                // Lower arm to 5-deg.
-                // If picking up cone, close cone grabber with a delay, otherwise close cube grabber with a delay.
-                // Set a delay timer and signal event.
-                // Wait for timer event then goto PREP_FOR_TRAVEL.
-                robot.robotDrive.purePursuitDrive.cancel();
-                robot.intake.cancel(currOwner);
-                robot.intake.disableTrigger();
-
-                robot.elevatorPidActuator.setMsgTracer(msgTracer, true);
-                robot.armPidActuator.setMsgTracer(msgTracer, true);
-                if (robot.intake.hasObject())
-                {
-                    // arm isn't low enough to pickup the objects if its not at the lowest pos, may have to add
-                    // something to keep it from stalling the motor
-                    robot.elevatorPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ELEVATOR_MIN_POS, true, 0.7, null, 0.0);
-                    robot.armPidActuator.setPosition(
-                        currOwner, 0.75, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, null, 1.5);
-                    if (taskParams.objectType == ObjectType.CUBE)
-                    {
-                        robot.grabber.grabCube(1.5);
-                    }
-                    else
-                    {
-                        //TODO: Tune this value, needs to be after the arm goes down. 
-                        //Could make this a separate state after arm.setPosition() but arm.setPosition() might stall because its trying to go to the low pos
-                        robot.grabber.grabCone(1.5);
-                    }
-                    timer.set(1.75, timerEvent);
-                    //go to the next state after 1.75 seconds(grabber fires after 1.5 seconds)
-                    sm.waitForSingleEvent(timerEvent, State.PREP_FOR_TRAVEL);
-                }
-                else
-                {
-                    sm.setState(State.PREP_FOR_TRAVEL);
-                }
+                // We either have the object, or we missed.
+                sm.waitForEvents(State.PREP_FOR_TRAVEL);
                 break;
             
             case PREP_FOR_TRAVEL:
-                // Raise elevator to 5-inch, signal event.
-                // Set arm at 5-deg.
-                // Wait for event, then goto DONE.
-                robot.elevatorPidActuator.setMsgTracer(msgTracer, false);
-                robot.armPidActuator.setMsgTracer(msgTracer, false);
+                // Assume travel position
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, 7.0, true, 1.0, null, 2.0);
+                    currOwner, 0.0, RobotParams.ELEVATOR_TRAVEL_POSITION, true, 1.0, null, 0.0);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ARM_TRAVEL_POSITION + 5, true, RobotParams.ARM_MAX_POWER, armEvent, 1.0);
+                    currOwner, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
+                robot.wristPidActuator.setPosition(
+                    currOwner, 0.0, RobotParams.WRIST_TRAVEL_POSITION, true, 1.0, wristEvent, 0.0);
                 sm.waitForSingleEvent(armEvent, State.DONE);
                 break;
 
             default:
             case DONE:
+                robot.robotDrive.purePursuitDrive.cancel();
+                robot.intake.cancel(currOwner);
+                robot.intake.disableTrigger();
                 // Stop task.
                 stopAutoTask(true);
                 break;

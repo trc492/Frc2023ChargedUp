@@ -30,6 +30,7 @@ import TrcCommonLib.trclib.TrcTriggerDigitalInput;
 import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcExclusiveSubsystem;
 import TrcCommonLib.trclib.TrcTimer;
+import TrcFrcLib.frclib.FrcCANFalcon;
 import TrcFrcLib.frclib.FrcCANTalon;
 import TrcFrcLib.frclib.FrcDigitalInput;
 import TrcFrcLib.frclib.FrcPneumatic;
@@ -37,43 +38,28 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import team492.Robot;
 import team492.RobotParams;
 
-public class Intake implements TrcExclusiveSubsystem
-{ 
+public class Intake implements TrcExclusiveSubsystem {
     private static final String moduleName = "Intake";
 
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final FrcCANTalon intakeLeftMotor;
-    private final FrcCANTalon intakeRightMotor;
-    private final FrcPneumatic intakePneumatic;
+
+    private final FrcCANFalcon intakeMotor;
     private final FrcDigitalInput intakeSensor;
     private final TrcTriggerDigitalInput intakeTrigger;
-    private TrcEvent triggerEvent = null;
     private boolean sensorActive = false;
+    private TrcEvent triggerEvent = null;
 
-    public Intake(Robot robot, TrcDbgTrace msgTracer)
-    {
+    public Intake(Robot robot, TrcDbgTrace msgTracer) {
         this.robot = robot;
         this.msgTracer = msgTracer;
 
-        intakeLeftMotor = new FrcCANTalon(moduleName + ".leftMotor", RobotParams.CANID_INTAKE_LEFT);
-        intakeLeftMotor.resetFactoryDefault();
-        intakeLeftMotor.setMotorInverted(false);
-
-        intakeRightMotor = new FrcCANTalon(moduleName + ".rightMotor", RobotParams.CANID_INTAKE_RIGHT);
-        intakeRightMotor.resetFactoryDefault();
-        intakeRightMotor.setMotorInverted(false);
-
-        intakePneumatic = new FrcPneumatic(
-            moduleName + ".pneumatic", RobotParams.CANID_PCM, PneumaticsModuleType.REVPH,
-            RobotParams.PNEUMATIC_INTAKE_RETRACT, RobotParams.PNEUMATIC_INTAKE_EXTEND);
-        intakePneumatic.retract();
+        intakeMotor = new FrcCANFalcon("intakeMotor", RobotParams.CANID_INTAKE);
 
         intakeSensor = new FrcDigitalInput(moduleName + ".sensor", RobotParams.DIO_INTAKE_SENSOR);
         intakeSensor.setInverted(true);
-        intakeTrigger = new TrcTriggerDigitalInput(moduleName + ".trigger", intakeSensor);
-        enableTrigger(null);
-    }   //Intake
+        intakeTrigger = new TrcTriggerDigitalInput("intakeTrigger", intakeSensor);
+    }
 
     /**
      * This method returns the state of the Arm in a string.
@@ -82,168 +68,98 @@ public class Intake implements TrcExclusiveSubsystem
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: leftPwr=%.1f, rightPwr=%.1f, Extended=%s, hasObject=%s",
-            moduleName, getLeftMotorPower(), getRightMotorPower(), isExtended(), hasObject());
+            Locale.US, "%s: pwr=%.1f, hasObject=%s", moduleName, getMotorPower(), hasObject());
     }   //toString
+
+    public double getMotorPower() {
+        return intakeMotor.getMotorPower();
+    }
 
     public void cancel(String owner)
     {
         if (validateOwnership(owner))
         {
-            intakeLeftMotor.stopMotor();
-            intakeRightMotor.stopMotor();
+            intakeMotor.stopMotor();
         }
     }   //cancel
 
     public void cancel()
     {
         cancel(null);
-    }   //cancel
-
-    public double getLeftMotorPower()
-    {
-        return intakeLeftMotor.getMotorPower();
-    }   //getLeftMotorPower
-
-    public double getRightMotorPower()
-    {
-        return intakeRightMotor.getMotorPower();
-    }   //getRightMotorPower
-
-    public void setPower(
-        String owner, double delay, double leftPower, double rightPower, double duration, TrcEvent event)
-    {
+    }
+    
+    public void setPower(String owner, double delay, double power, double duration, TrcEvent event) {
         final String funcName = "setPower";
 
-        if (msgTracer != null)
-        {
+        if (msgTracer != null) {
             msgTracer.traceInfo(
-            funcName, "[%.3f] owner=%s, delay=%.1f, leftPower=%.1f, rightPower=%.1f, duration=%.3f, event=%s",
-            TrcTimer.getModeElapsedTime(), owner, delay, leftPower, rightPower, duration, event);
+                    funcName, "[%.3f] owner=%s, delay=%.1f, Power=%.1f, duration=%.3f",
+                    TrcTimer.getModeElapsedTime(), owner, delay, power, duration);
         }
 
-        if (validateOwnership(owner))
-        {
-            intakeLeftMotor.set(delay, leftPower, duration, event);
-            intakeRightMotor.set(delay, rightPower, duration, event);
+        if (validateOwnership(owner)) {
+            intakeMotor.set(delay, power, duration, event);
         }
-    }   //setPower
+    }
 
-    public void setPower(double delay, double leftPower, double rightPower, double duration, TrcEvent event)
-    {
-        setPower(null, delay, leftPower, rightPower, duration, event);
-    }   //setPower
+    public void setPower(String owner, double delay, double power, double duration) {
+        setPower(null, delay, power, duration, null);
+    } // setPower
 
-    public void setPower(double delay, double leftPower, double rightPower, double duration)
-    {
-        setPower(null, delay, leftPower, rightPower, duration, null);
-    }   //setPower
+    public void setPower(double delay, double power, double duration) {
+        setPower(null, delay, power, duration, null);
+    } // setPower
 
-    public void setPower(double leftPower, double rightPower)
-    {
-        setPower(null, 0.0, leftPower, rightPower, 0.0, null);
-    }   //setPower
+    public void setPower(double power) {
+        setPower(null, 0.0, power, 0.0, null);
+    }
 
-    public void setPower(double power)
-    {
-        setPower(null, 0.0, power, power, 0.0, null);
-    }   //setPower
-
-    public void extend(double delay)
-    {
-        intakePneumatic.extend(delay);
-        if (robot.armPidActuator != null)
-        {
-            robot.armPidActuator.setPositionRange(RobotParams.ARM_MIN_POS_INTAKE_DOWN, RobotParams.ARM_MAX_POS);
-        }
-    }   //extend
-
-    public void extend()
-    {
-        extend(0.0);
-    }   //extend
-
-    public void retract(double delay)
-    {
-        intakePneumatic.retract(delay);
-        if (robot.armPidActuator != null)
-        {
-            robot.armPidActuator.setPositionRange(RobotParams.ARM_MIN_POS_INTAKE_UP, RobotParams.ARM_MAX_POS);
-        }
-    }   //retract
-
-    public void retract()
-    {
-        retract(0.0);
-    }   //retract
-
-    public boolean isExtended()
-    {
-        return intakePneumatic.isExtended();
-    }   //isExtended
-
-    /**
-     * This method checks if the intake sensor is active.
-     *
-     * @return true if intake sensor is active, false otherwise.
-     */
-    public boolean hasObject()
-    {
+    public boolean hasObject() {
         return sensorActive;
-    }   //hasObject
+    } // hasObject
 
-    /**
-     * This method enables the sensor trigger.
-     *
-     * @param event specifies the event to signal if the sensor is triggered.
-     */
-    public void enableTrigger(TrcEvent event)
-    {
+    public void enableTrigger(TrcEvent event) {
         triggerEvent = event;
-        if (triggerEvent != null)
-        {
+        if (triggerEvent != null) {
             triggerEvent.clear();
         }
         intakeTrigger.enableTrigger(this::intakeTriggerCallback);
-    }   //enableTrigger
+    } // enableTrigger
 
     /**
      * This method disables the sensor trigger.
      */
-    public void disableTrigger()
-    {
-        if (triggerEvent != null)
-        {
+    public void disableTrigger() {
+        if (triggerEvent != null) {
             triggerEvent.cancel();
             triggerEvent = null;
         }
         intakeTrigger.disableTrigger();
-    }   //disableTrigger
+    } // disableTrigger
 
     /**
      * This method is called when the intake sensor is triggered.
      *
      * @param context specifies true if an object is captured, false otherwise.
      */
-    private void intakeTriggerCallback(Object context)
-    {
+    private void intakeTriggerCallback(Object context) {
         final String funcName = "intakeTriggerCallback";
         sensorActive = ((AtomicBoolean) context).get();
 
-        if (triggerEvent != null)
-        {
+        if (sensorActive) {
+            intakeMotor.stopMotor();
+        }
+
+        if (triggerEvent != null) {
             triggerEvent.signal();
         }
 
-        if (robot.ledIndicator != null)
-        {
+        if (robot.ledIndicator != null) {
             robot.ledIndicator.setHasObject(sensorActive);
         }
 
-        if (msgTracer != null)
-        {
+        if (msgTracer != null) {
             msgTracer.traceInfo(funcName, "[%.3f] active=%s", TrcTimer.getModeElapsedTime(), sensorActive);
         }
-    }   //intakeTriggerCallback
-
-}   //class Intake
+    } // intakeTriggerCallback
+}

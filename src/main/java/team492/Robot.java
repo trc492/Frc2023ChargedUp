@@ -58,9 +58,9 @@ import team492.autotasks.TaskAutoScore;
 import team492.drivebases.SwerveDrive;
 import team492.subsystems.Arm;
 import team492.subsystems.Elevator;
-import team492.subsystems.Grabber;
 import team492.subsystems.Intake;
 import team492.subsystems.LEDIndicator;
+import team492.subsystems.Wrist;
 import team492.vision.LimeLightVision;
 import team492.vision.OpenCvVision;
 import team492.vision.PhotonVision;
@@ -125,9 +125,10 @@ public class Robot extends FrcRobotBase
     public TrcPidActuator elevatorPidActuator;
     public Arm arm;
     public TrcPidActuator armPidActuator;
-    public Intake intake; 
-    public Grabber grabber;
-
+    public Intake intake;
+    public Wrist wrist;
+    public TrcPidActuator wristPidActuator;
+    
     public TaskAutoScore autoScoreTask;
     public TaskAutoPickup autoPickupTask;
     public TaskAutoBalance autoBalanceTask;
@@ -263,10 +264,10 @@ public class Robot extends FrcRobotBase
                     intake = new Intake(this, globalTracer);
                 }
 
-                if (RobotParams.Preferences.useGrabber)
+                if (RobotParams.Preferences.useWrist)
                 {
-                    grabber = new Grabber(this, globalTracer);
-                    // grabber.releaseAll();
+                    wrist = new Wrist(globalTracer);
+                    wristPidActuator = wrist.getPidActuator();
                 }
 
                 autoScoreTask = new TaskAutoScore("TaskAutoScore", this, globalTracer);
@@ -572,9 +573,9 @@ public class Robot extends FrcRobotBase
                     lineNum++;
                 }
 
-                if (grabber != null)
+                if (wrist != null)
                 {
-                    dashboard.displayPrintf(lineNum, grabber.toString());
+                    dashboard.displayPrintf(lineNum, wrist.toString());
                     lineNum++;
                 }
 
@@ -712,22 +713,23 @@ public class Robot extends FrcRobotBase
      */
     public void turtleMode(String owner)
     {
-        double delay = 0.0;
-        // Do we need to move the arm to let the intake retract?
-        if (armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&
-            elevator.getPosition() <= RobotParams.ELEVATOR_SAFE_HEIGHT)
-        {
-            delay = 0.2;
-            // Move elevator & arm out of the way
-            elevatorPidActuator.setPosition(owner, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
-            armPidActuator.setPosition(
-                owner, RobotParams.ARM_SAFE_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        }
-        intake.retract(delay);
-        // Move elevator & arm to turtle position
-        elevatorPidActuator.setPosition(owner, delay, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-        armPidActuator.setPosition(
-            owner, delay, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        // TODO: Update this
+        // double delay = 0.0;
+        // // Do we need to move the arm to let the intake retract?
+        // if (armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&
+        //     elevator.getPosition() <= RobotParams.ELEVATOR_SAFE_HEIGHT)
+        // {
+        //     delay = 0.2;
+        //     // Move elevator & arm out of the way
+        //     elevatorPidActuator.setPosition(owner, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
+        //     armPidActuator.setPosition(
+        //         owner, RobotParams.ARM_SAFE_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        // }
+        // intake.retract(delay);
+        // // Move elevator & arm to turtle position
+        // elevatorPidActuator.setPosition(owner, delay, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
+        // armPidActuator.setPosition(
+        //     owner, delay, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
     }   //turtleMode
 
 }   //class Robot
