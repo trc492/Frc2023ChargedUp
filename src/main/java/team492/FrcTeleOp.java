@@ -657,9 +657,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (robot.elevator != null && robot.arm != null && pressed)
                 {
                     robot.elevatorPidActuator.setPosition(
-                        moduleName, 0.0, 10.0, true, 1.0, null, 1.5);
+                        moduleName, 0.0, 12.0, true, 1.0, null, 1.5);
                     robot.armPidActuator.setPosition(
-                        moduleName, 0.0, RobotParams.ARM_MIN_POS_INTAKE_DOWN, true, RobotParams.ARM_MAX_POWER, null, 1.5);
+                        moduleName, 0.0, RobotParams.ARM_MIN_POS_INTAKE_DOWN, true, RobotParams.ARM_MAX_POWER, null, 1.0);
                     robot.intake.extend();
                 }
                 break;
