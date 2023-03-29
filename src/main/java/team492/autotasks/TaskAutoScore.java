@@ -77,16 +77,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcDbgTrace msgTracer;
     private final TrcEvent elevatorEvent;
     private final TrcEvent armEvent;
+    private final TrcEvent wristEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
-    private final TrcEvent wristEvent;
     private Alliance alliance;
     private String currOwner = null;
-
-    //Cube High: Arm-Max, Elevator-19.6
-    //Cube Mid: Arm-Max, Elevator-Min
-    //Cone High: Arm-, Elevator-
-    //Cone Mid: Arm-, Elevator-
 
     /**
      * Constructor: Create an instance of the object.
@@ -104,9 +99,9 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
         elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         armEvent = new TrcEvent(moduleName + ".armEvent");
+        wristEvent = new TrcEvent(moduleName + ".wristEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
-        wristEvent = new TrcEvent(moduleName + ".wristEvent");
     }   //TaskAutoScore
 
     /**
@@ -167,7 +162,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         boolean success = ownerName == null ||
                           robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
                           robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
-                          robot.armPidActuator.acquireExclusiveAccess(ownerName);
+                          robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
+                          robot.wristPidActuator.acquireExclusiveAccess(ownerName);
         if (success)
         {
             currOwner = ownerName;
@@ -211,6 +207,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
             robot.elevatorPidActuator.releaseExclusiveAccess(currOwner);
             robot.armPidActuator.releaseExclusiveAccess(currOwner);
+            robot.wristPidActuator.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }
     }   //releaseSubsystemsOwnership
@@ -230,6 +227,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         robot.robotDrive.cancel(currOwner);
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);
+        robot.wristPidActuator.cancel(currOwner);
     }   //stopSubsystems
 
     /**
@@ -264,15 +262,15 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 alliance = FrcAuto.autoChoices.getAlliance();
                 if (taskParams.objectType == ObjectType.CONE)
                 {
-                    elevatorPos = RobotParams.elevatorConeScoringPresets[taskParams.scoreLevel];
+                    elevatorPos = RobotParams.elevatorConeScorePresets[taskParams.scoreLevel];
                     armPos = RobotParams.armConeScorePresets[taskParams.scoreLevel];
-                    wristPos = RobotParams.WRIST_CONE_SCORE_POSITION;
+                    wristPos = RobotParams.wristConeScorePresets[taskParams.scoreLevel];
                 }
                 else
                 {
-                    elevatorPos = RobotParams.elevatorCubeScoringPresets[taskParams.scoreLevel];
+                    elevatorPos = RobotParams.elevatorCubeScorePresets[taskParams.scoreLevel];
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
-                    wristPos = RobotParams.WRIST_CUBE_PICKUP_POSITION;
+                    wristPos = RobotParams.wristCubeScorePresets[taskParams.scoreLevel];
                 }
 
                 if (taskParams.scoreLevel > 0)
@@ -346,6 +344,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
                 // If we are scoring ground, the precondition is assuming the elevator and the arm are in down
                 // position so we can just drop it in front of us onto the ground.
+                // TODO (Code Review): This code needs to be changed for the new intake.
                 if (taskParams.objectType == ObjectType.CONE && taskParams.scoreLevel > 0)
                 {
                     // Move the arm down to cap the pole, then release the cone with a slight delay.

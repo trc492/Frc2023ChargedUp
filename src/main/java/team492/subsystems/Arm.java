@@ -76,9 +76,6 @@ public class Arm
         actuatorMotor.setCurrentLimit(20.0, 40.0, 0.5);
         // configMotionMagic(actuatorMotor.motor);
 
-        int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
-        actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
-
         TrcMotorLimitSwitch lowerLimitSw = new TrcMotorLimitSwitch("ArmLowerLimitSw", actuatorMotor, false);
         TrcMotorLimitSwitch upperLimitSw = new TrcMotorLimitSwitch("ArmUpperLimitSw", actuatorMotor, true);
         lowerLimitSw.setInverted(RobotParams.ARM_LOWER_LIMIT_INVERTED);
@@ -88,6 +85,8 @@ public class Arm
             "Arm", actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer, false);
 
+        int zeroOffset = getZeroPosition(RobotParams.ARM_ZERO);
+        actuatorMotor.setAbsoluteZeroOffset(0, RobotParams.ARM_ENCODER_CPR - 1, false, zeroOffset);
         zeroTrigger = new TrcTriggerDigitalInput(moduleName, lowerLimitSw);
     }   //Arm
 
@@ -105,31 +104,6 @@ public class Arm
             pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
     }   //toString
 
-    // private void configMotionMagic(TalonSRX motor)
-    // {
-    //     // Set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %).
-    //     motor.configNeutralDeadband(0.001, 30);
-    //     // Set relevant frame periods to be at least as fast as periodic rate.
-    //     motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 30);
-    //     motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 30);
-    //     // Set the peak and nominal outputs.
-    //     motor.configNominalOutputForward(0.0, 30);
-    //     motor.configNominalOutputReverse(0.0, 30);
-    //     motor.configPeakOutputForward(1.0, 30);
-    //     motor.configPeakOutputReverse(-1.0, 30);
-    //     // Set Motion Magic gains in slot0 - see documentation.
-    //     motor.selectProfileSlot(0, 0);
-    //     motor.config_kP(0, 1.0, 30);
-    //     motor.config_kI(0, 0.0, 30);
-    //     motor.config_kD(0, 0.0, 30);
-    //     motor.config_kF(0, 0.05, 30);
-    //     motor.config_IntegralZone(0, 100.0, 30);
-    //     motor.configAllowableClosedloopError(0, 10.0, 30);
-    //     // Set acceleration and vcruise velocity - see documentation.
-    //     motor.configMotionCruiseVelocity(1000.0, 30);
-    //     motor.configMotionAcceleration(1000.0, 30);
-    // }   //configMotionMagic
-
     /**
      * This method returns the PidActuator object created.
      *
@@ -139,6 +113,27 @@ public class Arm
     {
         return pidActuator;
     }   //getPidActuator
+
+    /**
+     * This method returns the current drawn by the arm motor.
+     *
+     * @return arm motor current drawn.
+     */
+    public double getCurrent()
+    {
+        return actuatorMotor.getMotorCurrent();
+    }   //getCurrent
+
+    /**
+     * This method calculates the power required to hold the arm against gravity.
+     *
+     * @param currPower specifies the current arm power (not used).
+     * @return power value to hold arm against gravity.
+     */
+    public double getGravityCompensation(double currPower)
+    {
+        return RobotParams.ARM_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()));
+    }   //getGravityCompensation
 
     /**
      * This method is called to zero calibrate the arm and save the absolute zero encoder position into a file.
@@ -209,25 +204,29 @@ public class Arm
         }
     }   //saveZeroPosition
 
-    /**
-     * This method calculates the power required to hold the arm against gravity.
-     *
-     * @param currPower specifies the current arm power (not used).
-     * @return power value to hold arm against gravity.
-     */
-    public double getGravityCompensation(double currPower)
-    {
-        return RobotParams.ARM_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()));
-    }   //getGravityCompensation
-
-    /**
-     * This method returns the current drawn by the arm motor.
-     *
-     * @return arm motor current drawn.
-     */
-    public double getCurrent()
-    {
-        return actuatorMotor.getMotorCurrent();
-    }   //getCurrent
+    // private void configMotionMagic(TalonSRX motor)
+    // {
+    //     // Set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %).
+    //     motor.configNeutralDeadband(0.001, 30);
+    //     // Set relevant frame periods to be at least as fast as periodic rate.
+    //     motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 30);
+    //     motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 30);
+    //     // Set the peak and nominal outputs.
+    //     motor.configNominalOutputForward(0.0, 30);
+    //     motor.configNominalOutputReverse(0.0, 30);
+    //     motor.configPeakOutputForward(1.0, 30);
+    //     motor.configPeakOutputReverse(-1.0, 30);
+    //     // Set Motion Magic gains in slot0 - see documentation.
+    //     motor.selectProfileSlot(0, 0);
+    //     motor.config_kP(0, 1.0, 30);
+    //     motor.config_kI(0, 0.0, 30);
+    //     motor.config_kD(0, 0.0, 30);
+    //     motor.config_kF(0, 0.05, 30);
+    //     motor.config_IntegralZone(0, 100.0, 30);
+    //     motor.configAllowableClosedloopError(0, 10.0, 30);
+    //     // Set acceleration and vcruise velocity - see documentation.
+    //     motor.configMotionCruiseVelocity(1000.0, 30);
+    //     motor.configMotionAcceleration(1000.0, 30);
+    // }   //configMotionMagic
 
 }   //class Arm

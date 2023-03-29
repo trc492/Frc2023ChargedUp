@@ -60,11 +60,11 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
     private final TrcEvent event, tiltEvent;
-    private String currOwner = null;
-    private double startDir;
+
     private Alliance alliance;
+    private double startDir;
+    private String currOwner = null;
     private boolean balanced = false;
-    private double triggerDistance = RobotParams.Preferences.homeField? 19.0: 23.0;
 
     /**
      * Constructor: Create an instance of the object.
@@ -98,8 +98,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             msgTracer.traceInfo( funcName, "%s: initSide=%s, event=%s", moduleName, side, completionEvent);
         }
 
-        startDir = side == BalanceInitSide.OUTSIDE? -1.0: 1.0;
         alliance = FrcAuto.autoChoices.getAlliance();
+        startDir = side == BalanceInitSide.OUTSIDE? -1.0: 1.0;
         if (alliance == Alliance.Red) startDir *= -1.0;
         startAutoTask(State.START, null, completionEvent);
     }   //autoAssistBalance
@@ -240,7 +240,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     if (leveling)
                     {
                         // We are starting to level off, drive a tuned distance to the center of the charging station.
-                        robot.robotDrive.enableDistanceTrigger(triggerDistance, event);
+                        robot.robotDrive.enableDistanceTrigger(RobotParams.Preferences.homeField? 19.0: 23.0, event);
                         sm.waitForSingleEvent(event, State.SETTLE);
                     }
                     else
@@ -289,7 +289,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
                     robot.robotDrive.enableDistanceTrigger(2.0, event);
                     robot.robotDrive.driveBase.holonomicDrive(
-                        currOwner, 0.0, dir*0.05, 0.0, robot.robotDrive.driveBase.getHeading());
+                        currOwner, 0.0, dir*0.1, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.waitForSingleEvent(tiltEvent, State.SETTLE);
                 }
                 break;

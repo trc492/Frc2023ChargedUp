@@ -65,7 +65,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         if (robot.elevator != null)
         {
             elevatorTrigger = new TrcTriggerThresholdZones(
-                "elevatorTrigger", robot.elevator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
+                "elevatorTrigger", robot.elevatorPidActuator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
         }
         else
         {
@@ -103,7 +103,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         if (robot.elevator != null)
         {
-            robot.elevator.zeroCalibrate(moduleName);
+            robot.elevatorPidActuator.zeroCalibrate(moduleName);
         }
 
     }   //startMode
@@ -545,7 +545,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Zero calibrate elevator.
                 if (robot.elevator != null && pressed)
                 {
-                    robot.elevator.zeroCalibrate(moduleName);
+                    robot.elevatorPidActuator.zeroCalibrate(moduleName);
                 }
                 break;
 

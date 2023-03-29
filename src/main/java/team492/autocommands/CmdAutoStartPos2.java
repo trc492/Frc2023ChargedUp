@@ -148,17 +148,17 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
                 enterBalance, exitBalance, tiltTriggered);
 
+            // TODO (Code Review): This needs to be rewritten for the new intake.
             switch (state)
             {
                 case START:
                     // Read autoChoices.
                     alliance = FrcAuto.autoChoices.getAlliance();
-                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     preloadType = FrcAuto.autoChoices.getPreloadedObjType();
                     scoreLevel = FrcAuto.autoChoices.getScoreLevel();
                     scoreLocation = FrcAuto.autoChoices.getScoreLocation();
+                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     startPos = alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_2: RobotParams.STARTPOS_RED_2;
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(startPos, false);

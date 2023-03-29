@@ -458,12 +458,12 @@ public class RobotParams
         0.0, 6.0, 12.0, 18.0, 24.0, 28.0
     };
     //TODO: tune these values
-    public static final double[] elevatorConeScoringPresets     =
+    public static final double[] elevatorConeScorePresets       =
     {
         0.0, 12.5, 28.0
     };
     //TODO: tune these values
-    public static final double[] elevatorCubeScoringPresets     =
+    public static final double[] elevatorCubeScorePresets       =
     {
        0.0, 0.0, 22.0
     };
@@ -549,7 +549,14 @@ public class RobotParams
     public static final double WRIST_CUBE_PICKUP_POSITION       = 90.0;
     public static final double WRIST_CONE_SCORE_POSITION        = -20.0;
     public static final double WRIST_CUBE_SCORE_POSITION        = 20.0;
-
+    public static final double[] wristConeScorePresets          =
+    {
+        0.0, 0.0, 0.0
+    };
+    public static final double[] wristCubeScorePresets          =
+    {
+        0.0, 0.0, 0.0
+    };
 
     // Intake subsystem.
     public static final boolean INTAKE_MOTOR_INVERTED           = false;
