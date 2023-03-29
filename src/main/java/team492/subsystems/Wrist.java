@@ -74,10 +74,10 @@ public class Wrist
         actuatorMotor = new FrcCANFalcon(moduleName + ".motor", RobotParams.CANID_WRIST);
         actuatorMotor.resetFactoryDefault();
         actuatorMotor.setMotorInverted(RobotParams.WRIST_MOTOR_INVERTED);
-        actuatorMotor.setPositionSensorInverted(RobotParams.WRIST_ENCODER_INVERTED);
-        actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
         actuatorMotor.setBrakeModeEnabled(true);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
+        actuatorMotor.setPositionSensorInverted(RobotParams.WRIST_ENCODER_INVERTED);
+        actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
         actuatorMotor.setCurrentLimit(20.0, 40.0, 0.5);
 
         encoder = new FrcCANCoder(moduleName + ".encoder", RobotParams.CANID_WRIST_ENCODER);

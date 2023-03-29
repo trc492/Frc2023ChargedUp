@@ -599,10 +599,10 @@ public class Robot extends FrcRobotBase
                     dashboard.putNumber("Graphs/rfSteerAbsPos", robotDrive.rfSteerEncoder.getPosition()*360.0);
                     dashboard.putNumber("Graphs/lbSteerAbsPos", robotDrive.lbSteerEncoder.getPosition()*360.0);
                     dashboard.putNumber("Graphs/rbSteerAbsPos", robotDrive.rbSteerEncoder.getPosition()*360.0);
-                    dashboard.putNumber("Graphs/lfSteerPos", robotDrive.lfWheel.getSteerAngle());
-                    dashboard.putNumber("Graphs/rfSteerPos", robotDrive.rfWheel.getSteerAngle());
-                    dashboard.putNumber("Graphs/lbSteerPos", robotDrive.lbWheel.getSteerAngle());
-                    dashboard.putNumber("Graphs/rbSteerPos", robotDrive.rbWheel.getSteerAngle());
+                    dashboard.putNumber("Graphs/lfSteerPos", (robotDrive.lfSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
+                    dashboard.putNumber("Graphs/rfSteerPos", (robotDrive.lfSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
+                    dashboard.putNumber("Graphs/lbSteerPos", (robotDrive.lbSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
+                    dashboard.putNumber("Graphs/rbSteerPos", (robotDrive.rbSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
                 }
 
                 if (photonVision != null)

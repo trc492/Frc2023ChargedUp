@@ -64,9 +64,9 @@ public class FrcAuto implements TrcRobot.RobotMode
 
     public static enum AutoStartPos
     {
-        POS_1(0),
-        POS_2(1),
-        POS_3(2);
+        FIELDRAIL(0),
+        MIDDLE(1),
+        BARRIER(2);
         // The value can be used as index into arrays if necessary.
         int value;
         AutoStartPos(int value)
@@ -171,9 +171,9 @@ public class FrcAuto implements TrcRobot.RobotMode
             autoStrategyMenu.addChoice("Timed Drive", AutoStrategy.TIMED_DRIVE);
             autoStrategyMenu.addChoice("Do Nothing", AutoStrategy.DO_NOTHING, false, true);
 
-            autoStartPosMenu.addChoice("Start Position 1", AutoStartPos.POS_1);
-            autoStartPosMenu.addChoice("Start Position 2", AutoStartPos.POS_2, true, false);
-            autoStartPosMenu.addChoice("Start Position 3", AutoStartPos.POS_3, false, true);
+            autoStartPosMenu.addChoice("Field Guard Rail", AutoStartPos.FIELDRAIL);
+            autoStartPosMenu.addChoice("Middle", AutoStartPos.MIDDLE, true, false);
+            autoStartPosMenu.addChoice("Barrier", AutoStartPos.BARRIER, false, true);
 
             autoPreloadedObjMenu.addChoice("Cube", ObjectType.CUBE, true, false);
             autoPreloadedObjMenu.addChoice("Cone", ObjectType.CONE, false, true);
