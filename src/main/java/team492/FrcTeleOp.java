@@ -163,6 +163,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     {
                         robot.robotDrive.driveBase.arcadeDrive(inputs[1], inputs[2]);
                     }
+                    robot.robotDrive.displaySteerEncoders(1);
                 }
                 //
                 // Analog control of subsystem is done here if necessary.

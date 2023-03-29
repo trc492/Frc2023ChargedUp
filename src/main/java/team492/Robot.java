@@ -594,14 +594,6 @@ public class Robot extends FrcRobotBase
                         robotDrive.driveBase.getHeading(), robotDrive.getGyroPitch(), robotDrive.getGyroRoll());
                     lineNum++;
                     dashboard.putNumber("Graphs/GyroRoll", robotDrive.getGyroRoll());
-                    dashboard.putNumber("Graphs/lfSteerAbsPos", robotDrive.lfSteerEncoder.getPosition()*360.0);
-                    dashboard.putNumber("Graphs/rfSteerAbsPos", robotDrive.rfSteerEncoder.getPosition()*360.0);
-                    dashboard.putNumber("Graphs/lbSteerAbsPos", robotDrive.lbSteerEncoder.getPosition()*360.0);
-                    dashboard.putNumber("Graphs/rbSteerAbsPos", robotDrive.rbSteerEncoder.getPosition()*360.0);
-                    dashboard.putNumber("Graphs/lfSteerPos", (robotDrive.lfSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
-                    dashboard.putNumber("Graphs/rfSteerPos", (robotDrive.lfSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
-                    dashboard.putNumber("Graphs/lbSteerPos", (robotDrive.lbSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
-                    dashboard.putNumber("Graphs/rbSteerPos", (robotDrive.rbSteerMotor.getMotorPosition()%RobotParams.STEER_MOTOR_CPR)/RobotParams.STEER_MOTOR_CPR*360.0);
                 }
 
                 if (photonVision != null)
@@ -612,11 +604,6 @@ public class Robot extends FrcRobotBase
                     dashboard.displayPrintf(lineNum, "Vision[%s]: robotPose=%s", pipelineType, robotPose);
                     lineNum++;
                 }
-
-                // robotDrive.verifySwerveSteering(0);
-                // robotDrive.verifySwerveSteering(1);
-                // robotDrive.verifySwerveSteering(2);
-                // robotDrive.verifySwerveSteering(3);
             }
             else if (RobotParams.Preferences.debugSwerveSteering)
             {
