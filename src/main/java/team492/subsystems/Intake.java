@@ -29,7 +29,7 @@ import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcTriggerDigitalInput;
 import TrcCommonLib.trclib.TrcIntake;
 import TrcCommonLib.trclib.TrcTimer;
-import TrcFrcLib.frclib.FrcCANFalcon;
+import TrcFrcLib.frclib.FrcCANSparkMax;
 import TrcFrcLib.frclib.FrcDigitalInput;
 import team492.Robot;
 import team492.RobotParams;
@@ -41,7 +41,7 @@ public class Intake
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
 
-    private final FrcCANFalcon intakeMotor;
+    private final FrcCANSparkMax intakeMotor;
     private final FrcDigitalInput intakeSensor;
     private final TrcTriggerDigitalInput intakeTrigger;
     private final TrcIntake intake;
@@ -51,7 +51,7 @@ public class Intake
         this.robot = robot;
         this.msgTracer = msgTracer;
 
-        intakeMotor = new FrcCANFalcon(moduleName + ".motor", RobotParams.CANID_INTAKE);
+        intakeMotor = new FrcCANSparkMax(moduleName + ".motor", RobotParams.CANID_INTAKE, true);
         intakeMotor.resetFactoryDefault();
         intakeMotor.setMotorInverted(RobotParams.INTAKE_MOTOR_INVERTED);
         intakeMotor.setBrakeModeEnabled(true);
