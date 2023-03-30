@@ -64,7 +64,6 @@ public class Elevator
         actuatorMotor = new FrcCANSparkMax("ElevatorMotor", RobotParams.CANID_ELEVATOR, true);
         actuatorMotor.resetFactoryDefault();
         actuatorMotor.setMotorInverted(RobotParams.ELEVATOR_MOTOR_INVERTED);
-        actuatorMotor.setBrakeModeEnabled(false);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
 
         TrcMotorLimitSwitch lowerLimitSw = new TrcMotorLimitSwitch("ElevatorLowerLimitSw", actuatorMotor, false);

@@ -72,7 +72,6 @@ public class Wrist
         actuatorMotor = new FrcCANFalcon(moduleName + ".motor", RobotParams.CANID_WRIST);
         actuatorMotor.resetFactoryDefault();
         actuatorMotor.setMotorInverted(RobotParams.WRIST_MOTOR_INVERTED);
-        actuatorMotor.setBrakeModeEnabled(false);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
         actuatorMotor.setPositionSensorInverted(RobotParams.WRIST_ENCODER_INVERTED);
         actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
@@ -87,41 +86,8 @@ public class Wrist
             moduleName, actuatorMotor, lowerLimitSw, upperLimitSw, actuatorParams).getPidActuator();
         pidActuator.setMsgTracer(msgTracer, false);
 
-        encoder = new FrcCANCoder(moduleName + ".encoder", RobotParams.CANID_WRIST_ENCODER);
-        ErrorCode errCode;
-        // Reset encoder back to factory default to clear potential previous mis-configurations.
-        errCode = encoder.configFactoryDefault(10);
-        if (errCode != ErrorCode.OK)
-        {
-            TrcDbgTrace.globalTraceWarn(
-                moduleName, "CANcoder.configFactoryDefault failed (code=%s).", errCode);
-        }
-        errCode = encoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 10);
-        if (errCode != ErrorCode.OK)
-        {
-            TrcDbgTrace.globalTraceWarn(
-                moduleName, "CANcoder.configFeedbackCoefficient failed (code=%s).", errCode);
-        }
-        // Configure the encoder to initialize to absolute position value at boot.
-        errCode = encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 10);
-        if (errCode != ErrorCode.OK)
-        {
-            TrcDbgTrace.globalTraceWarn(
-                moduleName, "CANcoder.configSensorInitializationStrategy failed (code=%s).", errCode);
-        }
-        // Slow down the status frame rate to reduce CAN traffic.
-        errCode = encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 10);
-        if (errCode != ErrorCode.OK)
-        {
-            TrcDbgTrace.globalTraceWarn(
-                moduleName, "CANcoder.setStatusFramePeriod failed (code=%s).", errCode);
-        }
-        // Configure the sensor direction to match the steering motor direction.
-        encoder.setInverted(RobotParams.WRIST_ENCODER_INVERTED);
-
         double zeroOffset = getZeroPosition(RobotParams.WRIST_ZERO);
-        // Normalize encoder to the range of 0 to 1.0 for a revolution (revolution per count).
-        encoder.setScaleAndOffset(1.0 / RobotParams.CANCODER_CPR, zeroOffset);
+        encoder = createCANCoder(moduleName + ".encoder", RobotParams.CANID_WRIST_ENCODER, RobotParams.WRIST_ENCODER_INVERTED, zeroOffset);
         actuatorMotor.motor.setSelectedSensorPosition(encoder.getPosition() * RobotParams.WRIST_MOTOR_CPR);
 
         zeroTrigger = new TrcTriggerDigitalInput(moduleName + ".digitalTrigger", lowerLimitSw);
@@ -134,12 +100,65 @@ public class Wrist
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, absPos=%.1f Enc=%.0f, LimitSw=%s/%s",
+            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, AbsEnc=%.0f, LimitSw=%s/%s",
             moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
             pidActuator.getPidController().getTarget(), actuatorMotor.motor.getSelectedSensorPosition(),
-            encoder.getPosition(),
-            pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
+            encoder.getPosition(), pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
     }   //toString
+
+    /**
+     * This method creates an encoder for the wrist motor.
+     *
+     * @param name specifies the instance name of the wrist encoder.
+     * @param encoderId specifies the CAN ID of the CANcoder.
+     * @param inverted specifies true if the sensor direction should be inverted, false otherwise.
+     * @param zeroOffset specifies the zero offset.
+     * @return the created wrist encoder.
+     */
+    private FrcCANCoder createCANCoder(String name, int encoderId, boolean inverted, double zeroOffset)
+    {
+        final String funcName = "createCANcoder";
+        FrcCANCoder canCoder = new FrcCANCoder(name, encoderId);
+        ErrorCode errCode;
+
+        // Reset encoder back to factory default to clear potential previous mis-configurations.
+        errCode = canCoder.configFactoryDefault(10);
+        if (errCode != ErrorCode.OK)
+        {
+            TrcDbgTrace.globalTraceWarn(
+                funcName, "%s: CANcoder.configFactoryDefault failed (code=%s).", name, errCode);
+        }
+
+        errCode = canCoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 10);
+        if (errCode != ErrorCode.OK)
+        {
+            TrcDbgTrace.globalTraceWarn(
+                funcName, "%s: CANcoder.configFeedbackCoefficient failed (code=%s).", name, errCode);
+        }
+
+        // Configure the encoder to initialize to absolute position value at boot.
+        errCode = canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 10);
+        if (errCode != ErrorCode.OK)
+        {
+            TrcDbgTrace.globalTraceWarn(
+                funcName, "%s: CANcoder.configSensorInitializationStrategy failed (code=%s).", name, errCode);
+        }
+
+        // Slow down the status frame rate to reduce CAN traffic.
+        errCode = canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 10);
+        if (errCode != ErrorCode.OK)
+        {
+            TrcDbgTrace.globalTraceWarn(
+                funcName, "%s: CANcoder.setStatusFramePeriod failed (code=%s).", name, errCode);
+        }
+
+        // Configure the sensor direction to match the steering motor direction.
+        canCoder.setInverted(inverted);
+        // Normalize encoder to the range of 0 to 1.0 for a revolution (revolution per count).
+        canCoder.setScaleAndOffset(1.0 / RobotParams.CANCODER_CPR, zeroOffset);
+
+        return canCoder;
+    }   //createCANCoder
 
     /**
      * This method returns the PidActuator object created.

@@ -180,9 +180,12 @@ public class RobotParams
 
     public static final int CANID_ELEVATOR                      = 7;
     public static final int CANID_ARM                           = 8;
-    public static final int CANID_INTAKE                        = 9;
-    public static final int CANID_WRIST_ENCODER                 = 37;
+    // public static final int CANID_WRIST                         = 9;
+    // public static final int CANID_WRIST_ENCODER                 = 19;
+    // public static final int CANID_INTAKE                        = 17;
     public static final int CANID_WRIST                         = 17;
+    public static final int CANID_WRIST_ENCODER                 = 37;
+    public static final int CANID_INTAKE                        = 9;
 
     // Applicable only for Swerve Drive.
     public static final int CANID_LEFTFRONT_STEER               = 13;
@@ -517,31 +520,28 @@ public class RobotParams
 
     // Wrist subsystem.
     public static final int WRIST_ZERO                          = 3589;
-    public static final double WRIST_GEAR_RATIO                 = (30.0 * 54.0) / 16.0;
+    public static final double WRIST_GEAR_RATIO                 = 30.0 * 54.0 / 16.0;
     public static final double WRIST_MOTOR_CPR                  = FALCON_CPR * WRIST_GEAR_RATIO;
     public static final double WRIST_DEGS_PER_COUNT             = 360.0 / WRIST_MOTOR_CPR;
-    public static final double WRIST_OFFSET                     = 0;
-
+    public static final double WRIST_OFFSET                     = 0.0;
     public static final boolean WRIST_MOTOR_INVERTED            = true;
     public static final boolean WRIST_ENCODER_INVERTED          = false;
     public static final boolean WRIST_LOWER_LIMIT_INVERTED      = true;
     public static final boolean WRIST_UPPER_LIMIT_INVERTED      = true;
-
-
-    public static final double WRIST_MIN_POS                    = 0.0;
-    public static final double WRIST_MAX_POS                    = 208.5;
+    public static final double WRIST_MIN_POS                    = WRIST_OFFSET;
+    public static final double WRIST_MAX_POS                    = 208.0;
     public static final double WRIST_SAFE_RANGE                 = WRIST_MAX_POS - WRIST_MIN_POS;
 
     // TODO: Tune Wrist PID
-    public static final double WRIST_KP                         = 0.0;
+    public static final double WRIST_KP                         = 0.02;
     public static final double WRIST_KI                         = 0.0;
     public static final double WRIST_KD                         = 0.0;
     public static final double WRIST_KF                         = 0.0;
-    public static final double WRIST_IZONE                      = 0.0;
+    public static final double WRIST_IZONE                      = 10.0;
     public static final double WRIST_TOLERANCE                  = 1.0;
     public static final double WRIST_CAL_POWER                  = -0.1;
     public static final double WRIST_MAX_POWER                  = 0.2;
-    public static final double WRIST_PRESET_TOLERANCE           = 0.0;
+    public static final double WRIST_PRESET_TOLERANCE           = 5.0;
 
     public static final double WRIST_TRAVEL_POSITION            = 0.0;
     public static final double WRIST_SAFE_POSITION              = 0.0;
@@ -565,7 +565,4 @@ public class RobotParams
     public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_SPIT_POWER                = -0.8;
 
-    // Grabber subsystem.
-    public static final double GRABBER_GRAB_DURATION            = 0.2;
-    public static final double GRABBER_RELEASE_DURATION         = 0.2;
 }   //class RobotParams
