@@ -59,9 +59,8 @@ public class RobotParams
         public static final boolean noRobot                     = false;
         // Drive Base
         public static final boolean useExternalOdometry         = false;
-        public static final boolean useCANCoder                 = false;
-        public static final boolean useAnalogEncoder            = true;
-        public static final boolean avgAnalogEncoder            = false;
+        public static final boolean useSteeringCANCoder         = false;
+        public static final boolean useSteeringAnalogEncoder    = true;
         public static final boolean useVelocityControl          = false;
         public static final boolean useGyroAssist               = false;
         public static final boolean useAntiTipping              = false;
@@ -72,6 +71,7 @@ public class RobotParams
         public static final boolean useArm                      = true;
         public static final boolean useWrist                    = true;
         public static final boolean useIntake                   = true;
+        public static final boolean useWeedWhacker              = true;
         // Miscellaneous
         public static final boolean useTraceLog                 = true;
         public static final boolean doStatusUpdate              = true;
@@ -183,6 +183,8 @@ public class RobotParams
     // public static final int CANID_WRIST                         = 9;
     // public static final int CANID_WRIST_ENCODER                 = 19;
     // public static final int CANID_INTAKE                        = 17;
+    public static final int CANID_WEEDWHACKER_LEFT_MOTOR        = 18;
+    public static final int CANID_WEEDWHACKER_RIGHT_MOTOR       = 19;
     public static final int CANID_WRIST                         = 17;
     public static final int CANID_WRIST_ENCODER                 = 37;
     public static final int CANID_INTAKE                        = 9;
@@ -215,8 +217,8 @@ public class RobotParams
 
     public static final int PDP_CHANNEL_ELEVATOR                = 2;    // Purple: 40A
     public static final int PDP_CHANNEL_ARM                     = 1;    // Gray: 20A
-    public static final int PDP_CHANNEL_INTAKE_LEFT             = 15;   // Purple: 30A
-    public static final int PDP_CHANNEL_INTAKE_RIGHT            = 14;   // Gray: 30A
+    public static final int PDP_CHANNEL_WEEDWHACKER_LEFT        = 15;   // Purple: 30A
+    public static final int PDP_CHANNEL_WEEDWHACKER_RIGHT       = 14;   // Gray: 30A
 
     public static final int PDP_CHANNEL_ROBORIO                 = 20;   // 10A
     public static final int PDP_CHANNEL_VRM                     = 18;   // 10A
@@ -241,7 +243,8 @@ public class RobotParams
     // Digital Input/Output ports.
     //
     public static final int DIO_INTAKE_SENSOR                   = 0;    // Black
-    public static final int DIO_GRABBER_SENSOR                  = 1;    // Brown
+    public static final int DIO_WEEDWHACKER_SENSOR              = 1;    // Brown
+    // public static final int DIO_GRABBER_SENSOR                  = 1;    // Brown
     //
     // PWM channels.
     //
@@ -255,14 +258,14 @@ public class RobotParams
     //
     // Pneumatic channels.
     //
-    public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 6;
-    public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
-    public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
-    public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 5;
-    public static final int PNEUMATIC_POKER_EXTEND              = 7;
-    public static final int PNEUMATIC_POKER_RETRACT             = 0;
-    public static final int PNEUMATIC_INTAKE_RETRACT            = 4;
-    public static final int PNEUMATIC_INTAKE_EXTEND             = 3;
+    public static final int PNEUMATIC_WEEDWHACKER_RETRACT       = 4;
+    public static final int PNEUMATIC_WEEDWHACKER_EXTEND        = 3;
+    // public static final int PNEUMATIC_CONE_GRABBER_RETRACT      = 6;
+    // public static final int PNEUMATIC_CONE_GRABBER_EXTEND       = 1;
+    // public static final int PNEUMATIC_CUBE_GRABBER_RETRACT      = 2;
+    // public static final int PNEUMATIC_CUBE_GRABBER_EXTEND       = 5;
+    // public static final int PNEUMATIC_POKER_EXTEND              = 7;
+    // public static final int PNEUMATIC_POKER_RETRACT             = 0;
     //
     // Ultrasonic sensors.
     //
@@ -484,8 +487,8 @@ public class RobotParams
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_LOW_POS;
-    public static final double ARM_MIN_POS_INTAKE_DOWN          = 10.0;
-    public static final double ARM_MIN_POS_INTAKE_UP            = 20.0;
+    public static final double ARM_MIN_POS_WEEDWHACKER_DOWN     = 10.0;
+    public static final double ARM_MIN_POS_WEEDWHACKER_UP       = 20.0;
     public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_KP                           = 0.02;
@@ -564,5 +567,10 @@ public class RobotParams
     public static final boolean INTAKE_TRIGGER_INVERTED         = true;
     public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_SPIT_POWER                = -0.8;
+
+    // WeedWhacker subsystem.
+    public static final double WEEDWHACKER_CUBE_PICKUP_POWER     = 0.8;
+    public static final double WEEDWHACKER_CONE_PICKUP_POWER     = 0.9;
+    public static final double WEEDWHACER_SPIT_POWER             = -0.5;
 
 }   //class RobotParams

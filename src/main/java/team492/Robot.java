@@ -61,6 +61,7 @@ import team492.subsystems.Arm;
 import team492.subsystems.Elevator;
 import team492.subsystems.Intake;
 import team492.subsystems.LEDIndicator;
+import team492.subsystems.WeedWhacker;
 import team492.subsystems.Wrist;
 import team492.vision.LimeLightVision;
 import team492.vision.OpenCvVision;
@@ -129,6 +130,7 @@ public class Robot extends FrcRobotBase
     public Wrist wrist;
     public TrcPidActuator wristPidActuator;
     public TrcIntake intake;
+    public WeedWhacker weedWhacker;
     
     public TaskAutoScore autoScoreTask;
     public TaskAutoPickup autoPickupTask;
@@ -272,6 +274,11 @@ public class Robot extends FrcRobotBase
                         .setTriggerInverted(RobotParams.INTAKE_TRIGGER_INVERTED)
                         .setMsgTracer(globalTracer);
                     intake = new Intake(this, globalTracer, intakeParams).getTrcIntake();
+                }
+
+                if (RobotParams.Preferences.useWeedWhacker)
+                {
+                    weedWhacker = new WeedWhacker(this, globalTracer);
                 }
 
                 autoScoreTask = new TaskAutoScore("TaskAutoScore", this, globalTracer);

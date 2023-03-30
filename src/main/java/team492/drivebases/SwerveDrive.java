@@ -99,7 +99,7 @@ public class SwerveDrive extends RobotDrive
         rbDriveMotor = createDriveMotor("rbDrive", RobotParams.CANID_RIGHTBACK_DRIVE, false);
 
         double[] zeros = getSteerZeroPositions();
-        if (RobotParams.Preferences.useCANCoder)
+        if (RobotParams.Preferences.useSteeringCANCoder)
         {
             lfSteerEncoder = createCANCoder(
                 "lfSteerEncoder", RobotParams.CANID_LEFTFRONT_STEER_ENCODER, true, zeros[0]);
@@ -110,7 +110,7 @@ public class SwerveDrive extends RobotDrive
             rbSteerEncoder = createCANCoder(
                 "rbSteerEncoder", RobotParams.CANID_RIGHTBACK_STEER_ENCODER, true, zeros[3]);
         }
-        else if (RobotParams.Preferences.useAnalogEncoder)
+        else if (RobotParams.Preferences.useSteeringAnalogEncoder)
         {
             lfSteerEncoder = createAnalogEncoder(
                 "lfSteerEncoder", RobotParams.AIN_LEFTFRONT_STEER_ENCODER, true, zeros[0]);
@@ -385,22 +385,6 @@ public class SwerveDrive extends RobotDrive
         final String funcName = "createSwerveModule";
         // getPosition returns a value in the range of 0 to 1.0 of one revolution.
         double encoderPos = steerEncoder.getPosition();
-
-        if (RobotParams.Preferences.avgAnalogEncoder)
-        {
-            final int maxLoops = 100;
-            double startTime = TrcTimer.getCurrentTime();
-            double firstReading = encoderPos;
-            for(int i = 1; i < maxLoops; i++)
-            {
-                double reading = steerEncoder.getPosition();
-                encoderPos += reading;
-            }
-            robot.globalTracer.traceInfo(
-                funcName, "[%.3f] %s: firstReading=%f, averageReading=%f",
-                TrcTimer.getCurrentTime() - startTime, name, firstReading, encoderPos/maxLoops);
-            encoderPos /= maxLoops;
-        }
 
         encoderPos *= RobotParams.STEER_MOTOR_CPR;
         ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);

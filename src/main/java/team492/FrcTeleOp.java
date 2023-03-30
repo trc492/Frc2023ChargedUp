@@ -106,6 +106,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             robot.elevatorPidActuator.zeroCalibrate(moduleName);
         }
 
+        if (elevatorTrigger != null)
+        {
+            elevatorTrigger.enableTrigger(this::elevatorTriggerCallback);
+        }
+
     }   //startMode
 
     /**
@@ -130,6 +135,22 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             elevatorTrigger.disableTrigger();
         }
     }   //stopMode
+
+    /**
+     * This method is called when the elevator position crosses a certain threshold.
+     *
+     * @param context specifies the callback parameters.
+     */
+    private void elevatorTriggerCallback(Object context)
+    {
+        TrcTriggerThresholdZones.CallbackContext params = (TrcTriggerThresholdZones.CallbackContext) context;
+
+        if (robot.weedWhacker != null && params.prevZone == 0 && params.currZone == 1)
+        {
+            // Elevator is going up.
+            robot.weedWhacker.retract();
+        }
+    }   //elevatorTriggerCallback
 
     /**
      * This method is called periodically on the main robot thread. Typically, you put TeleOp control code here that
@@ -484,9 +505,35 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         robot.intake.setPower(0.0);
                     }
                 }
+                // if (robot.weedWhacker != null)
+                // {
+                //     double weedWhackerPower;
+
+                //     robot.weedWhacker.extend();
+                //     if (weedWhackerReversed)
+                //     {
+                //         weedWhackerPower = fastSpitOut? -1.0: RobotParams.WEEDWHACKER_SPIT_POWER;
+                //     }
+                //     else
+                //     {
+                //         weedWhackerPower = RobotParams.WEEDWHACKER_CUBE_PICKUP_POWER;
+                //     }
+                // }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
+                // Toggle intake extend and retract.
+                if (robot.weedWhacker != null && pressed)
+                {
+                    if (robot.weedWhacker.isExtended())
+                    {
+                        robot.weedWhacker.retract();
+                    }
+                    else
+                    {
+                        robot.weedWhacker.extend();
+                    }
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
@@ -562,11 +609,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
-                // Raising the arm for scoring, retracting the intake too.
+                // Raising the arm for scoring, retracting the weedwhacker too.
                 if (robot.arm != null && robot.intake != null && pressed)
                 {
                     robot.armPidActuator.setPosition(
                         moduleName, RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+                    if (robot.weedWhacker != null)
+                    {
+                        robot.weedWhacker.retract(1.0);
+                    }
                 }
                 break;
 
