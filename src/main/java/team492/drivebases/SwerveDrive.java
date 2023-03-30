@@ -815,6 +815,8 @@ public class SwerveDrive extends RobotDrive
     public void disableDistanceTrigger()
     {
         distanceTrigger.disableTrigger();
+        startXPosition = null;
+        startYPosition = null;
     }   //disableDistanceTrigger
 
 }   //class SwerveDrive

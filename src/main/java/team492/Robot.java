@@ -350,7 +350,6 @@ public class Robot extends FrcRobotBase
     public void robotStartMode(RunMode runMode, RunMode prevMode)
     {
         final String funcName = "robotStartMode";
-
         //
         // Read FMS Match info.
         //
@@ -411,9 +410,9 @@ public class Robot extends FrcRobotBase
             robotDrive.stopMode(runMode, nextMode);
         }
 
-        if (RobotParams.Preferences.useSubsystems)
-        {
-        }
+        // if (RobotParams.Preferences.useSubsystems)
+        // {
+        // }
         ledIndicator.reset();
         //
         // Performance status report.

@@ -44,8 +44,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     {
         START,
         BACK_UP,
-        UNTUCK_ARM,
-        SCORE_PRELOAD_HIGH,
         TURN,
         START_TO_CLIMB,
         CLIMB,
@@ -58,11 +56,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
     private final Robot robot;
     private final TrcEvent driveEvent;
-    private final TrcEvent elevatorEvent;
     private final TrcEvent autoAssistEvent;
     private final TrcEvent tiltEvent;
     private final TrcEvent distanceEvent;
-    private final TrcEvent intakeEvent;
     private final TrcStateMachine<State> sm;
 
     // TODO: Test all iterations to verify State shenanigans
@@ -83,11 +79,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     {
         this.robot = robot;
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
-        elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
         autoAssistEvent = new TrcEvent(moduleName + ".autoAssistEvent");
         tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
         distanceEvent = new TrcEvent(moduleName + ".distanceEvent");
-        intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         sm = new TrcStateMachine<>(moduleName);
         sm.start(State.START);
     }   //CmdAutoStartPos2
@@ -148,7 +142,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
                 enterBalance, exitBalance, tiltTriggered);
 
-            // TODO (Code Review): This needs to be rewritten for the new intake.
             switch (state)
             {
                 case START:
@@ -163,17 +156,10 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(startPos, false);
 
-                    if (scorePreload && scoreLevel == 0)
+                    if (scorePreload)
                     {
-                        robot.armPidActuator.setPosition(
-                            moduleName, 0.0, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                        // Deploying & spinning intake to score the preloaded object to ground level.
-                        if (preloadType == ObjectType.CONE)
-                        {
-                            robot.wristPidActuator.setPosition(moduleName, 0.0, 20.0, true, 1.0, null, 0.0);
-                        }
-                        robot.intake.setPower(moduleName, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.5, intakeEvent);
-                        sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
+                        robot.autoScoreTask.autoAssistScoreObject(preloadType, scoreLevel, scoreLocation, false, autoAssistEvent);
+                        sm.waitForSingleEvent(autoAssistEvent, State.BACK_UP);
                     }
                     else
                     {
@@ -187,16 +173,9 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
-                    sm.waitForSingleEvent(driveEvent, State.SCORE_PRELOAD_HIGH);
+                    sm.waitForSingleEvent(driveEvent, doAutoBalance? State.TURN: State.DONE);
                     break;
 
-                case SCORE_PRELOAD_HIGH:
-                    // Call autoScore to score the object.
-                    robot.autoScoreTask.autoAssistScoreObject(
-                        preloadType, scoreLevel, scoreLocation, false, autoAssistEvent);
-                    sm.waitForSingleEvent(autoAssistEvent, (doAutoBalance? State.TURN: State.DONE));
-                    break;
-                
                 case TURN:
                     // Turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(

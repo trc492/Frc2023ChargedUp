@@ -38,7 +38,7 @@ import team492.RobotParams;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 import team492.vision.PhotonVision.PipelineType;
- 
+
 /**
  * This class implements auto-assist task to score a cone or cube.
  */
@@ -80,8 +80,10 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcEvent wristEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
+    private final TrcEvent event;
     private Alliance alliance;
     private String currOwner = null;
+    private String driveOwner = null;
 
     /**
      * Constructor: Create an instance of the object.
@@ -102,6 +104,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         wristEvent = new TrcEvent(moduleName + ".wristEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
+        event = new TrcEvent(moduleName);
     }   //TaskAutoScore
 
     /**
@@ -129,6 +132,36 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         startAutoTask(
             State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision), completionEvent);
     }   //autoAssistScoreObject
+
+    /**
+     * This method starts the auto-assist operation to score an object.
+     *
+     * @param scoreLevel specifies the level to score a cone.
+     * @param useVision specifies true to use vision assist, false otherwise.
+     * @param completionEvent specifies the event to signal when done, can be null if none provided.
+     */
+    public void autoAssistScoreCube(int scoreLevel, boolean useVision,TrcEvent completionEvent)
+    {
+        autoAssistScoreObject(ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, useVision, completionEvent);
+    }   //autoAssistScoreCube
+
+    /**
+     * This method starts the auto-assist operation to score an object.
+     *
+     * @param scoreLevel specifies the level to score a cone.
+     * @param scoreLocation specifies the score location (Left Pole, Shelf, Right Pole).
+     * @param useVision specifies true to use vision assist, false otherwise.
+     * @param completionEvent specifies the event to signal when done, can be null if none provided.
+     */
+    public void autoAssistScoreCone(int scoreLevel, ScoreLocation scoreLocation, boolean useVision,TrcEvent completionEvent)
+    {
+        if (scoreLocation == ScoreLocation.MIDDLE)
+        {
+            throw new IllegalArgumentException("Cone cannot be scored in the middle.");
+        }
+
+        autoAssistScoreObject(ObjectType.CONE, scoreLevel, scoreLocation, useVision, completionEvent);
+    }   //autoAssistScoreCone
 
     /**
      * This method cancels an in progress auto-assist operation if any.
@@ -160,10 +193,12 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     {
         final String funcName = "acquireSubsystemsOwnership";
         boolean success = ownerName == null ||
-                          robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName) &&
                           robot.elevatorPidActuator.acquireExclusiveAccess(ownerName) &&
                           robot.armPidActuator.acquireExclusiveAccess(ownerName) &&
-                          robot.wristPidActuator.acquireExclusiveAccess(ownerName);
+                          robot.wristPidActuator.acquireExclusiveAccess(ownerName) &&
+                          robot.intake.acquireExclusiveAccess(ownerName);
+        // Don't acquire drive base ownership globally. Acquire it only if we need to drive.
+        // For example, we only need to drive if we are using vision to approach the score location.
         if (success)
         {
             currOwner = ownerName;
@@ -176,7 +211,13 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         {
             if (msgTracer != null)
             {
-                msgTracer.traceInfo(funcName, "%s: Failed to acquire subsystem ownership.", moduleName);
+                TrcOwnershipMgr ownershipMgr = TrcOwnershipMgr.getInstance();
+                msgTracer.traceInfo(
+                    funcName,
+                    "%s: Failed to acquire subsystem ownership (currOwner=%s, robotDrive=%s, elevator=%s, arm=%s, wrist=%s, intake=%s).",
+                    moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase),
+                    ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator),
+                    ownershipMgr.getOwner(robot.wristPidActuator), ownershipMgr.getOwner(robot.intake));
             }
             releaseSubsystemsOwnership();
         }
@@ -200,14 +241,22 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 TrcOwnershipMgr ownershipMgr = TrcOwnershipMgr.getInstance();
                 msgTracer.traceInfo(
                     funcName,
-                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, elevator=%s, arm=%s).",
+                    "%s: Releasing subsystem ownership (currOwner=%s, robotDrive=%s, elevator=%s, arm=%s, wrist=%s, intake=%s).",
                     moduleName, currOwner, ownershipMgr.getOwner(robot.robotDrive.driveBase),
-                    ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator));
+                    ownershipMgr.getOwner(robot.elevatorPidActuator), ownershipMgr.getOwner(robot.armPidActuator),
+                    ownershipMgr.getOwner(robot.wristPidActuator), ownershipMgr.getOwner(robot.intake));
             }
-            robot.robotDrive.driveBase.releaseExclusiveAccess(currOwner);
+
+            if (driveOwner != null)
+            {
+                robot.robotDrive.driveBase.releaseExclusiveAccess(driveOwner);
+                driveOwner = null;
+            }
+
             robot.elevatorPidActuator.releaseExclusiveAccess(currOwner);
             robot.armPidActuator.releaseExclusiveAccess(currOwner);
             robot.wristPidActuator.releaseExclusiveAccess(currOwner);
+            robot.intake.releaseExclusiveAccess(currOwner);
             currOwner = null;
         }
     }   //releaseSubsystemsOwnership
@@ -224,10 +273,16 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         {
             msgTracer.traceInfo(funcName, "%s: Stopping subsystems.", moduleName);
         }
-        robot.robotDrive.cancel(currOwner);
+
+        if (driveOwner != null)
+        {
+            robot.robotDrive.cancel(driveOwner);
+        }
+
         robot.elevatorPidActuator.cancel(currOwner);
         robot.armPidActuator.cancel(currOwner);
         robot.wristPidActuator.cancel(currOwner);
+        robot.intake.autoAssistCancel(currOwner);
     }   //stopSubsystems
 
     /**
@@ -251,14 +306,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         switch (state)
         {
             case START:
-                // Raise elevator to scoring height, signal elevator event.
-                // Raise arm to scoring angle, signal arm event.
-                // Move wrist to scoring angle, signal wrist event.
-                // If useVision, call vision to detect target with a timeout, signal vision event.
-                // Wait for all events and goto DRIVE_TO_SCORING_POS.
-
                 double elevatorPos, armPos, wristPos;
-                // Determine arm, elevator scoring positions based on scoringLevel and objectType.
+                // Determine arm, elevator, wrist positions based on scoringLevel and objectType.
                 alliance = FrcAuto.autoChoices.getAlliance();
                 if (taskParams.objectType == ObjectType.CONE)
                 {
@@ -282,8 +331,17 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                         currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
                     sm.addEvent(armEvent);
                     robot.wristPidActuator.setPosition(
-                        currOwner, 0.0, wristPos, true, 1.0, wristEvent, 0.7);
+                        currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
                     sm.addEvent(wristEvent);
+
+                    if (robot.weedWhacker != null)
+                    {
+                        robot.weedWhacker.retract();
+                    }
+                }
+                else if (robot.weedWhacker != null)
+                {
+                    robot.weedWhacker.extend();
                 }
 
                 if (taskParams.useVision)
@@ -293,73 +351,46 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     sm.addEvent(visionEvent);
                 }
 
-                sm.waitForEvents(State.DRIVE_TO_SCORING_POS, true);
+                sm.waitForEvents(taskParams.useVision? State.DRIVE_TO_SCORING_POS: State.SCORE_OBJECT, true);
                 break;
 
             case DRIVE_TO_SCORING_POS:
                 // If useVision, set robot's field position using detected target info.
                 // Determine scoring position either by vision or drive base odometry.
                 // Drive to the scoring position slowly, then goto SCORE_OBJECT.
-                TrcPose2D targetPose = null;
-                DetectedObject detectedTarget = null; 
-                if (taskParams.useVision)
+                if (acquireDriveBaseOwnership())
                 {
-                    detectedTarget = robot.photonVision.getLastDetectedBestObject();
+                    DetectedObject detectedTarget = robot.photonVision.getLastDetectedBestObject();
                     if (detectedTarget != null)
                     {
                         TrcPose2D robotPose = robot.photonVision.getRobotFieldPosition(detectedTarget);
                         robot.robotDrive.driveBase.setFieldPosition(robotPose);
                         robot.globalTracer.traceInfo(
                             moduleName, "Detected %s: robotPose=%s", robot.photonVision.getPipeline(), robotPose);
-                        // getScoringPos will return the scoring position either from vision detected target or from drive
-                        // base odometry if not using vision or vision did not detect target.
-                        targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
-                        robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
-                        robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
-                        robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, true, true);
-                        robot.robotDrive.purePursuitDrive.start(
-                            currOwner, driveEvent, 4.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
-                        sm.waitForSingleEvent(driveEvent, State.SCORE_OBJECT);
                     }
-                    else
-                    {
-                        // We are using vision but vision doesn't see the target, don't use odometry, not tested.
-                        sm.setState(State.DONE); 
-                    }
-                }
-                else
-                {
-                    // TODO: For now, assume its auto preload if no vision.
+                    // getScoringPos will return the scoring position either from vision detected target or from drive
+                    // base odometry if not using vision or vision did not detect target.
+                    TrcPose2D targetPose = getScoringPos(detectedTarget, taskParams.objectType, taskParams.scoreLocation);
+                    robot.globalTracer.traceInfo(moduleName, "TargetPose=%s", targetPose);
+
+                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
+                    robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, true, true);
                     robot.robotDrive.purePursuitDrive.start(
-                        currOwner, driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, 16.0, 0));
+                        currOwner, driveEvent, 4.0, robot.robotDrive.driveBase.getFieldPosition(), false, targetPose);
                     sm.waitForSingleEvent(driveEvent, State.SCORE_OBJECT);
                 }
                 break;
 
             case SCORE_OBJECT:
                 robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, false, false);
-                // If object is a CUBE, release cube grabber, goto RESET.
-                // If object is CONE, lower arm and release cone with a slight delay, goto RESET.
-
-                // If we are scoring ground, the precondition is assuming the elevator and the arm are in down
-                // position so we can just drop it in front of us onto the ground.
-                // TODO (Code Review): This code needs to be changed for the new intake.
-                if (taskParams.objectType == ObjectType.CONE && taskParams.scoreLevel > 0)
+                if (taskParams.objectType == ObjectType.CUBE && taskParams.scoreLevel == 0 && robot.weedWhacker != null)
                 {
-                    // Move the arm down to cap the pole, then release the cone with a slight delay.
-                    // This logic is only applicable for scoring cone on a pole.
-                    // For scoring cone on the ground, treat it the same as cube.
-                    robot.armPidActuator.setPosition(
-                        currOwner, 0.0, RobotParams.ARM_PICKUP_POSITION, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
-                    robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
-                    // TODO: Not waiting for anything here
-                    sm.waitForSingleEvent(armEvent, State.RESET);
+                    // Scoring cube at ground level, use the weedwhacker.
+                    robot.weedWhacker.setPower(currOwner, 0.0, RobotParams.WEEDWHACKER_SPIT_POWER, 0.5, event);
                 }
                 else
                 {
-                    robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
-                    sm.setState(State.RESET);
+                    robot.intake.autoAssistIntake(currOwner, 0.0, RobotParams.INTAKE_SPIT_POWER, 0.0, event, 0.0);
                 }
                 break;
 
@@ -373,11 +404,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 robot.robotDrive.purePursuitDrive.start(
                     currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                     new TrcPose2D(0.0, -24.0, 0.0));
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.4, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-                robot.armPidActuator.setPosition(
-                    currOwner, 0.9, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-                robot.wristPidActuator.setPosition(currOwner, 0.4, RobotParams.WRIST_TRAVEL_POSITION , true, 1.0, null, 0.0);
+                robot.turtleMode(currOwner);
                 sm.waitForSingleEvent(driveEvent, State.DONE, 2.0);
                 break; 
 
@@ -393,7 +420,38 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         }
     }   //runTaskState
 
-    /**
+     /**
+     * This method acquires drive base ownership if necessary.
+     *
+     * @return true if successful, false otherwise.
+     */
+    private boolean acquireDriveBaseOwnership()
+    {
+        final String funcName = "acquireDriveBaseOwnership";
+        boolean success = true;
+
+        if (ownerName != null)
+        {
+            // It's not pickup only, meaning we will be driving towards the target thus requiring us to
+            // acquire ownership of the drive base.
+            if (robot.robotDrive.driveBase.acquireExclusiveAccess(ownerName))
+            {
+                driveOwner = ownerName;
+            }
+            else
+            {
+                if (msgTracer != null)
+                {
+                    msgTracer.traceInfo(funcName, "Failed to acquire drive base ownership.");
+                }
+                success = false;
+            }
+        }
+
+        return success;
+    }   //acquireDriveBaseOwnership
+
+   /**
      * This method returns the absolute field location for the robot to be at to score the game element.
      *
      * @param aprilTagObj specifies the nearest detected AprilTag object, can be null if vision not found anything.
@@ -445,8 +503,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
             }
         }
 
-        // TODO (Code Review): What is this??? STARTPOS_Y_OFFSET was 24.0 which is wrong. I changed it to 0 and adjusted
-        // the numbers below. Please re-test.
         if (robot.getCurrentRunMode() == RunMode.TELEOP_MODE)
         {
             return new TrcPose2D(

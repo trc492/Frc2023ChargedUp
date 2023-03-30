@@ -129,6 +129,11 @@
          }
      }   //setPower
  
+     public void setPower(String owner, double delay, double power, double duration, TrcEvent event)
+     {
+        setPower(owner, delay, power, power, duration, event);
+     }  //setPower
+
      public void setPower(double delay, double leftPower, double rightPower, double duration, TrcEvent event)
      {
          setPower(null, delay, leftPower, rightPower, duration, event);
