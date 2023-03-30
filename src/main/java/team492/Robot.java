@@ -590,7 +590,6 @@ public class Robot extends FrcRobotBase
                 if (arm != null)
                 {
                     dashboard.displayPrintf(lineNum, arm.toString());
-                    dashboard.putNumber("armCurrent", arm.getCurrent());
                     lineNum++;
                 }
 
@@ -606,17 +605,9 @@ public class Robot extends FrcRobotBase
                     lineNum++;
                 }
 
-                if (robotDrive != null)
+                if (weedWhacker != null)
                 {
-                    double[] drivePwr = robotDrive.getDriveInputs();
-                    dashboard.displayPrintf(
-                        lineNum, "Drive: Pwr:%.3f,%.3f,%.3f", drivePwr[0],drivePwr[1],drivePwr[2]);
-                    lineNum++;
-                    dashboard.displayPrintf(
-                        lineNum, "Gyro: Yaw=%.3f, Pitch=%.3f, Roll=%.3f",
-                        robotDrive.driveBase.getHeading(), robotDrive.getGyroPitch(), robotDrive.getGyroRoll());
-                    lineNum++;
-                    dashboard.putNumber("Graphs/GyroRoll", robotDrive.getGyroRoll());
+                    dashboard.displayPrintf(lineNum, weedWhacker.toString());
                 }
 
                 if (photonVision != null)
@@ -627,6 +618,19 @@ public class Robot extends FrcRobotBase
                     dashboard.displayPrintf(lineNum, "Vision[%s]: robotPose=%s", pipelineType, robotPose);
                     lineNum++;
                 }
+
+                // if (robotDrive != null)
+                // {
+                //     double[] drivePwr = robotDrive.getDriveInputs();
+                //     dashboard.displayPrintf(
+                //         lineNum, "Drive: Pwr:%.3f,%.3f,%.3f", drivePwr[0],drivePwr[1],drivePwr[2]);
+                //     lineNum++;
+                //     dashboard.displayPrintf(
+                //         lineNum, "Gyro: Yaw=%.3f, Pitch=%.3f, Roll=%.3f",
+                //         robotDrive.driveBase.getHeading(), robotDrive.getGyroPitch(), robotDrive.getGyroRoll());
+                //     lineNum++;
+                //     dashboard.putNumber("Graphs/GyroRoll", robotDrive.getGyroRoll());
+                // }
             }
             else if (RobotParams.Preferences.debugSwerveSteering)
             {
