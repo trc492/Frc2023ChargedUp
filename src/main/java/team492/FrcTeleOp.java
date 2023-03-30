@@ -50,6 +50,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean armControl = false;
     private boolean armPosControl = false;
     private boolean manualElevator = false;
+    private boolean wristControl = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -170,35 +171,45 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //
                 if (RobotParams.Preferences.useSubsystems)
                 {
-                    if (robot.elevator != null && !armControl)
+                    double operatorY = robot.operatorStick.getYWithDeadband(true);
+                    if (robot.arm != null && armControl)
                     {
-                        double elevatorPower = robot.operatorStick.getYWithDeadband(true);
-                        if (manualElevator)
-                        {
-                            robot.elevatorPidActuator.setPower(elevatorPower);
-                        }
-                        else
-                        {
-                            robot.elevatorPidActuator.setPidPower(elevatorPower, true);
-                        }
+                        robot.armPidActuator.setPidPower(RobotParams.ARM_MAX_POWER * operatorY, true);
                     }
+                    else if (robot.wrist != null && wristControl)
+                    {
+                        robot.wristPidActuator.setPower(RobotParams.WRIST_MAX_POWER * operatorY);
+                    }
+                    else if (robot.elevator != null)
+                    {
+                        robot.elevatorPidActuator.setPidPower(operatorY, true);
+                    }
+                    // if (robot.elevator != null && !armControl && !wristControl)
+                    // {
+                    //     double elevatorPower = robot.operatorStick.getYWithDeadband(true);
+                    //     if (manualElevator)
+                    //     {
+                    //         robot.elevatorPidActuator.setPower(elevatorPower);
+                    //     }
+                    //     else
+                    //     {
+                    //         robot.elevatorPidActuator.setPidPower(elevatorPower, true);
+                    //     }
+                    // }
 
-                    if (robot.arm != null)
-                    {
-                        if (armControl)
-                        {
-                            double armPower = RobotParams.ARM_MAX_POWER * robot.operatorStick.getYWithDeadband(true);
-                            robot.armPidActuator.setPidPower(armPower, true);
-                        }
-                        else if (armPosControl)
-                        {
-                            double armPos =
-                                (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
-                                RobotParams.ARM_LOW_POS;
-                            robot.armPidActuator.setPosition(armPos, true, RobotParams.ARM_MAX_POWER);
-                            robot.dashboard.displayPrintf(1, "Arm: pos=%.2f", armPos);
-                        }
-                    }
+                    // if (robot.arm != null)
+                    // {
+                    //     if (armControl)
+                    //     {
+                    //         double armPower = RobotParams.ARM_MAX_POWER * robot.operatorStick.getYWithDeadband(true);
+                    //         robot.armPidActuator.setPidPower(armPower, true);
+                    //     }
+                    //     else if (wristControl)
+                    //     {
+                    //         double wristPower = RobotParams.WRIST_MAX_POWER * robot.operatorStick.getYWithDeadband(true);
+                    //         robot.wristPidActuator.setPidPower(wristPower, true);
+                    //     }
+                    // }
                 }
             }
             //
@@ -589,14 +600,37 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.PANEL_BUTTON_RED1:
                 // Press and hold to control the arm with operator joystick.
                 armControl = pressed;
-                if (robot.arm != null && !armControl)
+                if (armControl)
                 {
-                    // On release, make sure we stop the arm.
+                    wristControl = false;
+                }
+                else
+                {
                     robot.armPidActuator.setPidPower(0.0);
                 }
+                // if (robot.arm != null && !armControl)
+                // {
+                    // On release, make sure we stop the arm.
+                    // robot.armPidActuator.setPidPower(0.0);
+                // }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_GREEN1:
+                // Press and hold to control the wrist with operator joystick.
+                wristControl = pressed;
+                if (wristControl)
+                {
+                    armControl = false;
+                }
+                else
+                {
+                    robot.wristPidActuator.setPower(0.0);
+                }
+                // if (robot.wrist != null && !wristControl)
+                // {
+                    // On release, make sure we stop the wrist.
+                    // robot.wristPidActuator.setPidPower(0.0);
+                // }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:

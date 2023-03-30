@@ -69,7 +69,7 @@ public class Arm
         actuatorMotor = new FrcCANTalon("ArmMotor", RobotParams.CANID_ARM);
         actuatorMotor.resetFactoryDefault();
         actuatorMotor.setMotorInverted(RobotParams.ARM_MOTOR_INVERTED);
-        actuatorMotor.setBrakeModeEnabled(true);
+        actuatorMotor.setBrakeModeEnabled(false);
         actuatorMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
         actuatorMotor.setPositionSensorInverted(RobotParams.ARM_ENCODER_INVERTED);
         actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);

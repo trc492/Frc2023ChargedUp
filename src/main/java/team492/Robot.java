@@ -365,6 +365,18 @@ public class Robot extends FrcRobotBase
         {
             robotDrive.startMode(runMode, prevMode);
         }
+        if (elevator != null)
+        {
+            elevatorPidActuator.getMotor().setBrakeModeEnabled(runMode != RunMode.DISABLED_MODE);
+        }
+        if (arm != null)
+        {
+            armPidActuator.getMotor().setBrakeModeEnabled(runMode != RunMode.DISABLED_MODE);
+        }
+        if (wrist != null)
+        {
+            wristPidActuator.getMotor().setBrakeModeEnabled(runMode != RunMode.DISABLED_MODE);
+        }
         ledIndicator.reset();
     }   //robotStartMode
 
