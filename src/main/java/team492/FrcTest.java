@@ -67,6 +67,7 @@ public class FrcTest extends FrcTeleOp
         SUBSYSTEMS_TEST,
         VISION_TEST,
         SWERVE_CALIBRATION,
+        DEBUG_SWERVE_STEERING,
         DRIVE_SPEED_TEST,
         DRIVE_MOTORS_TEST,
         TUNE_ARM_PID,
@@ -122,6 +123,7 @@ public class FrcTest extends FrcTeleOp
             testMenu.addChoice("Subsystems Test", Test.SUBSYSTEMS_TEST);
             testMenu.addChoice("Vision Test", Test.VISION_TEST);
             testMenu.addChoice("Swerve Calibration", Test.SWERVE_CALIBRATION);
+            testMenu.addChoice("Debug Swerve Steering", Test.DEBUG_SWERVE_STEERING);
             testMenu.addChoice("Drive Speed Test", Test.DRIVE_SPEED_TEST);
             testMenu.addChoice("Drive Motors Test", Test.DRIVE_MOTORS_TEST);
             testMenu.addChoice("X Timed Drive", Test.X_TIMED_DRIVE);
@@ -221,6 +223,9 @@ public class FrcTest extends FrcTeleOp
     private double[] steerZeros = new double[4];
     private long steerZeroSumCount = 0;
     private boolean swerveCalibrating = false;
+    private boolean testSwerveSteering = false;
+    private double swerveSteerAngle = 0.0;
+    private double nextSteerAngleTime = 0.0;
 
     private TrcPidController tunePidCtrl = null;
     private TrcPidController.PidCoefficients savedPidCoeffs = null;
@@ -503,6 +508,34 @@ public class FrcTest extends FrcTeleOp
                     }
                     break;
 
+                case DEBUG_SWERVE_STEERING:
+                    if (robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                    {
+                        double currTime = TrcTimer.getCurrentTime();
+                        if (testSwerveSteering && currTime > nextSteerAngleTime)
+                        {
+                            robot.globalTracer.traceInfo(
+                                "DebugSwerveSteering", "Angle=%3.0f, lfVolt=%.3f, rfVolt=%.3f, lbVolt=%.3f, rbVolt=%.3f",
+                                swerveSteerAngle,
+                                ((FrcAnalogEncoder) robot.robotDrive.lfSteerEncoder).getRawVoltage(),
+                                ((FrcAnalogEncoder) robot.robotDrive.rfSteerEncoder).getRawVoltage(),
+                                ((FrcAnalogEncoder) robot.robotDrive.lbSteerEncoder).getRawVoltage(),
+                                ((FrcAnalogEncoder) robot.robotDrive.rbSteerEncoder).getRawVoltage());
+                            robot.robotDrive.lfWheel.setSteerAngle(swerveSteerAngle, false);
+                            robot.robotDrive.rfWheel.setSteerAngle(swerveSteerAngle, false);
+                            robot.robotDrive.lbWheel.setSteerAngle(swerveSteerAngle, false);
+                            robot.robotDrive.rbWheel.setSteerAngle(swerveSteerAngle, false);
+                            swerveSteerAngle++;
+                            if (swerveSteerAngle >= 360.0)
+                            {
+                                testSwerveSteering = false;
+                            }
+                            nextSteerAngleTime = currTime + 0.1;
+                        }
+                        robot.robotDrive.displaySteerEncoders(1);
+                    }
+                    break;
+
                 case X_TIMED_DRIVE:
                 case Y_TIMED_DRIVE:
                     double lfEnc = robot.robotDrive.lfDriveMotor.getPosition();
@@ -618,6 +651,35 @@ public class FrcTest extends FrcTeleOp
                         {
                             swerveCalibrating = false;
                             endSwerveCalibration();
+                        }
+                        processed = true;
+                    }
+                    break;
+
+                case FrcXboxController.BUTTON_X:
+                    if (testChoices.getTest() == Test.DEBUG_SWERVE_STEERING &&
+                        robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                    {
+                        if (pressed)
+                        {
+                            robot.robotDrive.syncSteerEncoders(true);
+                        }
+                        processed = true;
+                    }
+                    break;
+
+                case FrcXboxController.BUTTON_Y:
+                    if (testChoices.getTest() == Test.DEBUG_SWERVE_STEERING &&
+                        robot.robotDrive != null && robot.robotDrive instanceof SwerveDrive)
+                    {
+                        if (pressed)
+                        {
+                            testSwerveSteering = !testSwerveSteering;
+                            if (testSwerveSteering)
+                            {
+                                swerveSteerAngle = 0.0;
+                                nextSteerAngleTime = TrcTimer.getCurrentTime();
+                            }
                         }
                         processed = true;
                     }
