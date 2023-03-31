@@ -38,6 +38,7 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import TrcCommonLib.trclib.TrcDbgTrace;
 import TrcCommonLib.trclib.TrcMotorLimitSwitch;
 import TrcCommonLib.trclib.TrcPidActuator;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcTriggerDigitalInput;
 import TrcFrcLib.frclib.FrcCANCoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
@@ -54,6 +55,7 @@ public class Wrist
     private final TrcPidActuator pidActuator;
     private final FrcCANCoder encoder;
     private final TrcTriggerDigitalInput zeroTrigger;
+    private boolean encoderSynced = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -179,6 +181,34 @@ public class Wrist
     {
         return actuatorMotor.getMotorCurrent();
     }   //getCurrent
+
+    /**
+     * This method checks if the motor internal encoder is in sync with the absolute encoder. If not, it will
+     * do a re-sync of the motor encoder to the absolute enocder posiition. This method can be called multiple
+     * times but it will only perform the re-sync the first time it's called unless forceSync is set to true.
+     *
+     * @param forceSync specifies true to force performing the encoder resync, false otherwise.
+     */
+    public void syncEncoder(boolean forceSync)
+    {
+        final String funcName = "syncEncoder";
+        final double encErrThreshold = 20.0;
+
+        if (!encoderSynced || forceSync)
+        {
+            double absPos = encoder.getPosition() * RobotParams.WRIST_MOTOR_CPR;
+            double motorPos = actuatorMotor.getMotorPosition();
+
+            if (Math.abs(absPos - motorPos) > encErrThreshold)
+            {
+                actuatorMotor.motor.setSelectedSensorPosition(absPos, 0, 0);
+                TrcDbgTrace.globalTraceInfo(
+                    funcName, "[%.3f] syncEncoder(Before/After)=%.0f/%.0f",
+                    TrcTimer.getModeElapsedTime(), motorPos, absPos);
+            }
+            encoderSynced = true;
+        }
+    }   //syncEncoder
 
     /**
      * This method is called to zero calibrate the wrist and save the absolute zero encoder position into a file.
