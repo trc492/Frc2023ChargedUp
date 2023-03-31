@@ -536,8 +536,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON3:
                 break;
             
+            //READY CUBE GROUND PICKUP
             case FrcJoystick.LOGITECH_BUTTON4:
-                // Ready position for cubes
+                // Ready position for cube ground pickup
                 // Moves elevator down, arm to its lowest position, and wrist to 90 degrees
                 if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
                 {
@@ -549,8 +550,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
             
+            //READY CONE GROUND PICKUP (NOSE IN)
             case FrcJoystick.LOGITECH_BUTTON5:
-                // Ready position for cones
+                // Ready position for cones ground pickup 
                 // Moves elevator down, arm to its lowest position, and wrist to around 45 degrees
                 if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
                 {
@@ -669,7 +671,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             //Prepare for Single Substation Pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
-                robot.prepareForSingleSubstationPickup(moduleName);
+                if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
+                {
+                    robot.elevatorPidActuator.setPosition(5.6, true);
+                    robot.armPidActuator.setPosition(RobotParams.ARM_MIN_POS, true);
+                    robot.wristPidActuator.setPosition(RobotParams.WRIST_MAX_POS, true);
+                }
                 break;
             
             //CANCEL BUTTON
@@ -683,7 +690,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
             
-            //Ready for Cone High 
+            //Ready for Scoring Cone High 
             case FrcJoystick.PANEL_BUTTON_RED2:
                 // manualOverride = pressed;
                 if (robot.autoScoreTask != null && pressed)
@@ -692,21 +699,32 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
             
-            //Ready for Cube High 
+            //Ready for Scoring Cube High 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
             if (robot.autoScoreTask != null && pressed)
             {
                 robot.autoScoreTask.autoAssistScoreCubePositionOnly(2);
             }            
                 break;
-            
+            //Ready For Scoring Cone Mid
             case FrcJoystick.PANEL_BUTTON_BLUE2:
-                break;
+                if(robot.autoScoreTask != null && pressed){
+                    robot.autoScoreTask.autoAssistScoreConePositionOnly(1);
+                }
 
+                break;
+            //Ready for Scoring Cube Mid 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                break;
+                if(robot.autoScoreTask != null && pressed){
+                    robot.autoScoreTask.autoAssistScoreCubePositionOnly(1);
+                }
 
+                break;
+            //Ready for Scoring low 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
+                if(robot.autoScoreTask != null && pressed){
+                    robot.autoScoreTask.autoAssistScoreCubePositionOnly(0);
+                }
                 break;
         }
     }   //buttonPanelButtonEvent

@@ -759,9 +759,9 @@ public class Robot extends FrcRobotBase
 
     // prepares robot for single substation pickup
     public void prepareForSingleSubstationPickup(String owner){
-        wrist.getPidActuator().setPosition(owner, 0.0, 150, true, 1.0, null, 0.0);
-        arm.getPidActuator().setPosition(owner, 0.5, RobotParams.ARM_MIN_POS_WEEDWHACKER_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        elevator.getPidActuator().setPosition(owner, 0.5, 5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        // wrist.getPidActuator().setPosition(owner, 0.0, 150, true, 1.0, null, 0.0);
+        // arm.getPidActuator().setPosition(owner, 0.5, RobotParams.ARM_MIN_POS_WEEDWHACKER_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        // elevator.getPidActuator().setPosition(owner, 0.5, 5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
     }
 
     //prepares robot for nose in ground pickup 

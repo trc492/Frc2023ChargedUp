@@ -143,21 +143,21 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         //can't use this yet: 
         //preset is meant to raise everything to position but stopAutoTask will cause all power to be cut
         // autoAssistScoreObject(ObjectType.CONE, scoreLevel, ScoreLocation.LEFT, false, null, true);
-
-        //for now (assumes level is not 0): 
-        double elevatorPos = RobotParams.elevatorConeScorePresets[scoreLevel];
-        double armPos = RobotParams.armConeScorePresets[scoreLevel];
-        double wristPos = RobotParams.wristConeScorePresets[scoreLevel];
-        robot.elevatorPidActuator.setPosition(
-            currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
-        robot.armPidActuator.setPosition(
-            currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
-        robot.wristPidActuator.setPosition(
-            currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
-
-        if (robot.weedWhacker != null)
+        if(scoreLevel != 0 ){
+            double elevatorPos = RobotParams.elevatorConeScorePresets[scoreLevel];
+            double armPos = RobotParams.armConeScorePresets[scoreLevel];
+            double wristPos = RobotParams.wristConeScorePresets[scoreLevel];
+            robot.elevatorPidActuator.setPosition(
+                currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
+            robot.armPidActuator.setPosition(
+                currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
+            robot.wristPidActuator.setPosition(
+                currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
+        }
+        else if (robot.weedWhacker != null)
         {
-            robot.weedWhacker.retract();
+            robot.weedWhacker.extend();
+            robot.weedWhacker.setPower(currOwner, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.3, null);
         }
 
 
@@ -166,19 +166,21 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         //same logic as above 
         // autoAssistScoreObject(ObjectType.CONE, scoreLevel, ScoreLocation.LEFT, false, null, true);
         //for now assumes level is not 0 
-        double elevatorPos = RobotParams.elevatorCubeScorePresets[scoreLevel];
-        double armPos = RobotParams.armCubeScorePresets[scoreLevel];
-        double wristPos = RobotParams.wristCubeScorePresets[scoreLevel];
-        robot.elevatorPidActuator.setPosition(
-            currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
-        robot.armPidActuator.setPosition(
-            currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
-        robot.wristPidActuator.setPosition(
-            currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
-
-        if (robot.weedWhacker != null)
+        if(scoreLevel != 0){
+            double elevatorPos = RobotParams.elevatorCubeScorePresets[scoreLevel];
+            double armPos = RobotParams.armCubeScorePresets[scoreLevel];
+            double wristPos = RobotParams.wristCubeScorePresets[scoreLevel];
+            robot.elevatorPidActuator.setPosition(
+                currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
+            robot.armPidActuator.setPosition(
+                currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
+            robot.wristPidActuator.setPosition(
+                currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
+        }
+        else if (robot.weedWhacker != null)
         {
-            robot.weedWhacker.retract();
+            robot.weedWhacker.extend();
+            robot.weedWhacker.setPower(currOwner, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.3, null);
         }
     }
     /**
@@ -353,6 +355,13 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         //      arm without hitting field elements.
         switch (state)
         {
+            //TODO: Test manually if we can extend everything with bumpers touching grid, 
+            //if we can, new sequence of states to be: 
+            //START: retract everything (Turtle Mode), use vision to detect apriltag
+            //DRIVE_TO_SCORE: drive so bumpers touch the correct grid 
+            //POSITION_TO_SCORE: basically what we have in START state 
+            //SCORE
+
             case START:
                 double elevatorPos, armPos, wristPos;
                 // Determine arm, elevator, wrist positions based on scoringLevel and objectType.
