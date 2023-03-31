@@ -275,14 +275,14 @@ public class SwerveDrive extends RobotDrive
         CANCoder canCoder = (CANCoder) encoder;
         ErrorCode errCode;
         // Reset encoder back to factory default to clear potential previous mis-configurations.
-        errCode = canCoder.configFactoryDefault(10);
+        errCode = canCoder.configFactoryDefault(30);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
                 funcName, "%s: CANcoder.configFactoryDefault failed (code=%s).",
                 name, errCode);
         }
-        errCode = canCoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 10);
+        errCode = canCoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 30);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
@@ -290,7 +290,7 @@ public class SwerveDrive extends RobotDrive
                 name, errCode);
         }
         // Configure the encoder to initialize to absolute position value at boot.
-        errCode = canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 10);
+        errCode = canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 30);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
@@ -298,7 +298,7 @@ public class SwerveDrive extends RobotDrive
                 name, errCode);
         }
         // Slow down the status frame rate to reduce CAN traffic.
-        errCode = canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 10);
+        errCode = canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 30);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(
@@ -387,7 +387,7 @@ public class SwerveDrive extends RobotDrive
         double encoderPos = steerEncoder.getPosition();
 
         encoderPos *= RobotParams.STEER_MOTOR_CPR;
-        ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 10);
+        ErrorCode errCode = steerMotor.motor.setSelectedSensorPosition(encoderPos, 0, 30);
         if (errCode != ErrorCode.OK)
         {
             robot.globalTracer.traceWarn(

@@ -91,6 +91,10 @@ public class Wrist
         double zeroOffset = getZeroPosition(RobotParams.WRIST_ZERO);
         encoder = createCANCoder(moduleName + ".encoder", RobotParams.CANID_WRIST_ENCODER, RobotParams.WRIST_ENCODER_INVERTED, zeroOffset);
         actuatorMotor.motor.setSelectedSensorPosition(encoder.getPosition() * RobotParams.WRIST_MOTOR_CPR);
+        if (msgTracer != null)
+        {
+            msgTracer.traceInfo(moduleName, "Init: encoderPos = %f, encoderRawPos = %f", encoder.getPosition(), encoder.getRawPosition());
+        }
 
         zeroTrigger = new TrcTriggerDigitalInput(moduleName + ".digitalTrigger", lowerLimitSw);
     }   //Wrist
@@ -102,10 +106,10 @@ public class Wrist
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, AbsEnc=%.0f, LimitSw=%s/%s",
+            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, AbsEnc=%.3f, LimitSw=%s/%s",
             moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
             pidActuator.getPidController().getTarget(), actuatorMotor.motor.getSelectedSensorPosition(),
-            encoder.getPosition(), pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
+            encoder.getRawPosition(), pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
     }   //toString
 
     /**
@@ -124,14 +128,14 @@ public class Wrist
         ErrorCode errCode;
 
         // Reset encoder back to factory default to clear potential previous mis-configurations.
-        errCode = canCoder.configFactoryDefault(10);
+        errCode = canCoder.configFactoryDefault(30);
         if (errCode != ErrorCode.OK)
         {
             TrcDbgTrace.globalTraceWarn(
                 funcName, "%s: CANcoder.configFactoryDefault failed (code=%s).", name, errCode);
         }
 
-        errCode = canCoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 10);
+        errCode = canCoder.configFeedbackCoefficient(1.0, "cpr", SensorTimeBase.PerSecond, 30);
         if (errCode != ErrorCode.OK)
         {
             TrcDbgTrace.globalTraceWarn(
@@ -139,7 +143,7 @@ public class Wrist
         }
 
         // Configure the encoder to initialize to absolute position value at boot.
-        errCode = canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 10);
+        errCode = canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 30);
         if (errCode != ErrorCode.OK)
         {
             TrcDbgTrace.globalTraceWarn(
@@ -147,7 +151,7 @@ public class Wrist
         }
 
         // Slow down the status frame rate to reduce CAN traffic.
-        errCode = canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 10);
+        errCode = canCoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 30);
         if (errCode != ErrorCode.OK)
         {
             TrcDbgTrace.globalTraceWarn(
@@ -250,7 +254,12 @@ public class Wrist
 
         try (Scanner in = new Scanner(new FileReader(RobotParams.TEAM_FOLDER + "/" + ZERO_CAL_FILE)))
         {
-            return in.nextDouble();
+            double zeroPos = in.nextDouble();
+            if (msgTracer != null)
+            {
+                msgTracer.traceInfo(funcName, ": zeroPos = %f", zeroPos);
+            }
+            return zeroPos;
         }
         catch (Exception e)
         {

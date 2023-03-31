@@ -73,6 +73,7 @@ public class Arm
         actuatorMotor.setPositionSensorInverted(RobotParams.ARM_ENCODER_INVERTED);
         actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
         actuatorMotor.setCurrentLimit(20.0, 40.0, 0.5);
+        actuatorMotor.setCloseLoopOutputLimits(-RobotParams.ARM_MAX_POWER, RobotParams.ARM_MAX_POWER);
         // configMotionMagic(actuatorMotor.motor);
 
         TrcMotorLimitSwitch lowerLimitSw = new TrcMotorLimitSwitch("ArmLowerLimitSw", actuatorMotor, false);

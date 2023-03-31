@@ -50,6 +50,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean manualOverride = false;
     private boolean armControl = false;
     private boolean wristControl = false;
+    private ObjectType objType = ObjectType.CONE;
 
     /**
      * Constructor: Create an instance of the object.
@@ -103,7 +104,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         if (robot.elevator != null)
         {
-            robot.elevatorPidActuator.zeroCalibrate(moduleName);
+            // TODO: Add back
+            // robot.elevatorPidActuator.zeroCalibrate(moduleName);
         }
 
         if (elevatorTrigger != null)
@@ -208,14 +210,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else if (robot.wrist != null && wristControl)
                     {
-                        // if (manualOverride)
-                        // {
+                        if (manualOverride)
+                        {
                             robot.wristPidActuator.setPower(power * RobotParams.WRIST_MAX_POWER);
-                        // }
-                        // else
-                        // {
-                        //     robot.wristPidActuator.setPidPower(power * RobotParams.WRIST_MAX_POWER, true);
-                        // }
+                        }
+                        else
+                        {
+                            robot.wristPidActuator.setPidPower(power * RobotParams.WRIST_MAX_POWER, true);
+                        }
                     }
                     else if (robot.elevator != null)
                     {
@@ -395,6 +397,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.LEFT_STICK_BUTTON:
+                // Force wrist sync
+                if (robot.wrist != null && pressed)
+                {
+                    robot.wrist.syncEncoder(true);
+                }
                 break;
 
             case FrcXboxController.RIGHT_STICK_BUTTON:
@@ -494,9 +501,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Press to set up intake to gather cone or cube, release to cancel.
                 if (robot.intake != null)
                 {
-                    // TODO (Code Review): should just call autoAssistIntake.
                     if (pressed)
                     {
+                        // TODO: Debug Auto Assist Intake
+                        // robot.intake.autoAssistIntake(
+                        //     (objType == ObjectType.CUBE? 1.0: -1.0) * RobotParams.INTAKE_PICKUP_POWER,
+                        //     objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0);
                         double intakePower = intakeReversed? RobotParams.INTAKE_SPIT_POWER: RobotParams.INTAKE_PICKUP_POWER;
                         robot.intake.setPower(intakePower);
                     }
@@ -547,21 +557,21 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
                 {
                     robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MIN_POS, true);
-                    robot.armPidActuator.setPosition(RobotParams.ARM_LOW_POS, true);
+                    robot.armPidActuator.setPosition(-4.0, true);
                     robot.wristPidActuator.setPosition(RobotParams.WRIST_CUBE_PICKUP_POSITION, true);
-
+                    objType = ObjectType.CUBE;
                 }
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON5:
                 // Ready position for cones
-                // Moves elevator down,  arm to its lowest position, and wrist to around 45 degrees
+                // Moves elevator down, arm to its lowest position, and wrist to around 45 degrees
                 if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
                 {
                     robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MIN_POS, true);
-                    robot.armPidActuator.setPosition(RobotParams.ARM_LOW_POS, true);
+                    robot.armPidActuator.setPosition(-4.0, true);
                     robot.wristPidActuator.setPosition(RobotParams.WRIST_CONE_PICKUP_POSITION, true);
-
+                    objType = ObjectType.CONE;
                 }
                 break;
 
@@ -676,6 +686,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.PANEL_BUTTON_BLUE1:
+                // Pickup from single substation
+                if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
+                {
+                    robot.elevatorPidActuator.setPosition(5.6, true);
+                    robot.armPidActuator.setPosition(RobotParams.ARM_MIN_POS, true);
+                    robot.wristPidActuator.setPosition(RobotParams.WRIST_MAX_POS, true);
+                }
                 break;
 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
