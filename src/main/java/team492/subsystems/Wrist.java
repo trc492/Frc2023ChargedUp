@@ -89,11 +89,14 @@ public class Wrist
         pidActuator.setMsgTracer(msgTracer, false);
 
         double zeroOffset = getZeroPosition(RobotParams.WRIST_ZERO);
-        encoder = createCANCoder(moduleName + ".encoder", RobotParams.CANID_WRIST_ENCODER, RobotParams.WRIST_ENCODER_INVERTED, zeroOffset);
+        encoder = createCANCoder(
+            moduleName + ".encoder", RobotParams.CANID_WRIST_ENCODER, RobotParams.WRIST_ENCODER_INVERTED, zeroOffset);
         actuatorMotor.motor.setSelectedSensorPosition(encoder.getPosition() * RobotParams.WRIST_MOTOR_CPR);
         if (msgTracer != null)
         {
-            msgTracer.traceInfo(moduleName, "Init: encoderPos = %f, encoderRawPos = %f", encoder.getPosition(), encoder.getRawPosition());
+            msgTracer.traceInfo(
+                moduleName, "Init: rawEncPos=%.0f, normalizedAbsPos=%.3f",
+                encoder.getRawPosition(), encoder.getPosition());
         }
 
         zeroTrigger = new TrcTriggerDigitalInput(moduleName + ".digitalTrigger", lowerLimitSw);
@@ -106,7 +109,7 @@ public class Wrist
     public String toString()
     {
         return String.format(
-            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, AbsEnc=%.3f, LimitSw=%s/%s",
+            Locale.US, "%s: pwr=%.3f, current=%.3f, pos=%.1f/%.1f, Enc=%.0f, AbsEnc=%.0f, LimitSw=%s/%s",
             moduleName, pidActuator.getPower(), actuatorMotor.getMotorCurrent(), pidActuator.getPosition(),
             pidActuator.getPidController().getTarget(), actuatorMotor.motor.getSelectedSensorPosition(),
             encoder.getRawPosition(), pidActuator.isLowerLimitSwitchActive(), pidActuator.isUpperLimitSwitchActive());
@@ -257,7 +260,7 @@ public class Wrist
             double zeroPos = in.nextDouble();
             if (msgTracer != null)
             {
-                msgTracer.traceInfo(funcName, ": zeroPos = %f", zeroPos);
+                msgTracer.traceInfo(funcName, "zeroPos=%f", zeroPos);
             }
             return zeroPos;
         }

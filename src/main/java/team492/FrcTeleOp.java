@@ -29,8 +29,6 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.BalanceInitSide;
-import team492.FrcAuto.ObjectType;
-import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -46,11 +44,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private final TrcTriggerThresholdZones elevatorTrigger;
     private boolean controlsEnabled = false;
 
-    private boolean intakeReversed = false;
     private boolean manualOverride = false;
     private boolean armControl = false;
     private boolean wristControl = false;
-    private ObjectType objType = ObjectType.CONE;
+    // Default to CONE pickup.
+    private double intakePickupPower = RobotParams.INTAKE_PICKUP_POWER;
+    private double intakeRetainPower = RobotParams.INTAKE_CONE_RETAIN_POWER;
 
     /**
      * Constructor: Create an instance of the object.
@@ -503,14 +502,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     if (pressed)
                     {
-                        // TODO: Debug Auto Assist Intake
-                        // robot.intake.autoAssistIntake(
-                        //     (objType == ObjectType.CUBE? 1.0: -1.0) * RobotParams.INTAKE_PICKUP_POWER,
-                        //     objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0);
-                        double intakePower = intakeReversed? RobotParams.INTAKE_SPIT_POWER: RobotParams.INTAKE_PICKUP_POWER;
-                        //can't do retain power for cubes, need a way to differentiate cube and cone
-                        robot.intake.autoAssistIntake(intakePower, 0.0);
-                        // robot.intake.setPower(intakePower);
+                        robot.intake.autoAssistIntake(intakePickupPower, intakeRetainPower);
+                        // double intakePower = intakeReversed? RobotParams.INTAKE_SPIT_POWER: RobotParams.INTAKE_PICKUP_POWER;
+                        // //can't do retain power for cubes, need a way to differentiate cube and cone
+                        // robot.intake.autoAssistIntake(intakePower, 0.0);
+                        // // robot.intake.setPower(intakePower);
                     }
                     else
                     {
@@ -550,7 +546,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcJoystick.LOGITECH_BUTTON3:
                 // Press and hold to reverse spinning of intake.
-                intakeReversed = pressed; 
+                // intakeReversed = pressed;
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON4:
@@ -561,7 +557,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MIN_POS, true);
                     robot.armPidActuator.setPosition(-4.0, true);
                     robot.wristPidActuator.setPosition(RobotParams.WRIST_CUBE_PICKUP_POSITION, true);
-                    objType = ObjectType.CUBE;
+                    intakePickupPower = -RobotParams.INTAKE_PICKUP_POWER;
+                    intakeRetainPower = 0.0;
                 }
                 break;
             
@@ -573,7 +570,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MIN_POS, true);
                     robot.armPidActuator.setPosition(-4.0, true);
                     robot.wristPidActuator.setPosition(RobotParams.WRIST_CONE_PICKUP_POSITION, true);
-                    objType = ObjectType.CONE;
+                    intakePickupPower = RobotParams.INTAKE_PICKUP_POWER;
+                    intakeRetainPower = RobotParams.INTAKE_CONE_RETAIN_POWER;
                 }
                 break;
 

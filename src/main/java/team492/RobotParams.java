@@ -484,11 +484,11 @@ public class RobotParams
     public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
-    public static final double ARM_MIN_POS                      = -35.0;
-    public static final double ARM_MIN_POS_WEEDWHACKER_DOWN     = 10.0;
-    public static final double ARM_MIN_POS_WEEDWHACKER_UP       = 20.0;
+    public static final double ARM_MIN_POS                      = ARM_OFFSET + 2.0;
     public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
+    public static final double ARM_MIN_POS_WEEDWHACKER_DOWN     = 10.0;
+    public static final double ARM_MIN_POS_WEEDWHACKER_UP       = 20.0;
     public static final double ARM_KP                           = 0.017;
     public static final double ARM_KI                           = 0.0;
     public static final double ARM_KD                           = 0.0;
@@ -500,7 +500,7 @@ public class RobotParams
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
     public static final double ARM_PICKUP_POSITION              = 12.7;     //arm position right before grabbing cone/cube
-    public static final double ARM_TRAVEL_POSITION              = 30.0;     //TODO
+    public static final double ARM_TRAVEL_POSITION              = 30.0;     //TODO (Code Review): Cannot travel with arm that high!
     public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
     // Important: presets must be sorted in increasing order.
     public static final double[] armPresets                     =
@@ -520,7 +520,9 @@ public class RobotParams
     };
 
     // Wrist subsystem.
-    public static final double WRIST_ZERO                       = 340.0; // Technically not zero, putting this position out a little bit so we avoid hitting the lower limit switch because there is play inbetween when the switch is clicked and how far the wrist can go
+    // Technically not zero, putting this position out a little bit so we avoid hitting the lower limit switch
+    // because there is play inbetween when the switch is clicked and how far the wrist can go.
+    public static final double WRIST_ZERO                       = 340.0;
     public static final double WRIST_GEAR_RATIO                 = 30.0 * 54.0 / 16.0;
     public static final double WRIST_MOTOR_CPR                  = FALCON_CPR * WRIST_GEAR_RATIO;
     public static final double WRIST_DEGS_PER_COUNT             = 360.0 / WRIST_MOTOR_CPR;
