@@ -522,13 +522,13 @@ public class RobotParams
     // Wrist subsystem.
     // Technically not zero, putting this position out a little bit so we avoid hitting the lower limit switch
     // because there is play inbetween when the switch is clicked and how far the wrist can go.
-    public static final double WRIST_ZERO                       = 340.0;
+    public static final double WRIST_ZERO                       = 1050.0;
     public static final double WRIST_GEAR_RATIO                 = 30.0 * 54.0 / 16.0;
     public static final double WRIST_MOTOR_CPR                  = FALCON_CPR * WRIST_GEAR_RATIO;
     public static final double WRIST_DEGS_PER_COUNT             = 360.0 / WRIST_MOTOR_CPR;
     public static final double WRIST_OFFSET                     = 0.0;
-    public static final boolean WRIST_MOTOR_INVERTED            = true;
-    public static final boolean WRIST_ENCODER_INVERTED          = true;
+    public static final boolean WRIST_MOTOR_INVERTED            = false;
+    public static final boolean WRIST_ENCODER_INVERTED          = false;
     public static final boolean WRIST_LOWER_LIMIT_INVERTED      = true;
     public static final boolean WRIST_UPPER_LIMIT_INVERTED      = true;
     public static final double WRIST_MIN_POS                    = WRIST_OFFSET;
@@ -563,10 +563,10 @@ public class RobotParams
     };
 
     // Intake subsystem.
-    public static final boolean INTAKE_MOTOR_INVERTED           = false;
+    public static final boolean INTAKE_MOTOR_INVERTED           = true;
     public static final boolean INTAKE_TRIGGER_INVERTED         = true;
     public static final double INTAKE_PICKUP_POWER              = 0.8;
-    public static final double INTAKE_CONE_RETAIN_POWER         = 0.1;
+    public static final double INTAKE_CONE_RETAIN_POWER         = 0.05;
     public static final double INTAKE_SPIT_POWER                = -0.8;
 
     // WeedWhacker subsystem.

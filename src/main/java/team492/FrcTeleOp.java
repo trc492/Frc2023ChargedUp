@@ -497,36 +497,25 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         switch (button)
         {
             case FrcJoystick.LOGITECH_TRIGGER:
-                // Press to set up intake to gather cone or cube, release to cancel.
+                // Press to toggle between different modes of autoAssistIntake.
                 if (robot.intake != null)
                 {
                     if (pressed)
                     {
-                        robot.intake.autoAssistIntake(intakePickupPower, intakeRetainPower);
-                        // double intakePower = intakeReversed? RobotParams.INTAKE_SPIT_POWER: RobotParams.INTAKE_PICKUP_POWER;
-                        // //can't do retain power for cubes, need a way to differentiate cube and cone
-                        // robot.intake.autoAssistIntake(intakePower, 0.0);
-                        // // robot.intake.setPower(intakePower);
-                    }
-                    else
-                    {
-                        robot.intake.setPower(0.0);
+                        if (robot.intake.isAutoAssistActive())
+                        {
+                            robot.intake.autoAssistCancel();
+                        }
+                        else if (robot.intake.hasObject())
+                        {
+                            robot.intake.autoAssistIntake(RobotParams.INTAKE_SPIT_POWER, 0.0);
+                        }
+                        else
+                        {
+                            robot.intake.autoAssistIntake(intakePickupPower, intakeRetainPower);
+                        }
                     }
                 }
-                // if (robot.weedWhacker != null)
-                // {
-                //     double weedWhackerPower;
-
-                //     robot.weedWhacker.extend();
-                //     if (weedWhackerReversed)
-                //     {
-                //         weedWhackerPower = fastSpitOut? -1.0: RobotParams.WEEDWHACKER_SPIT_POWER;
-                //     }
-                //     else
-                //     {
-                //         weedWhackerPower = RobotParams.WEEDWHACKER_CUBE_PICKUP_POWER;
-                //     }
-                // }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON2:
@@ -545,8 +534,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
-                // Press and hold to reverse spinning of intake.
-                // intakeReversed = pressed;
                 break;
             
             case FrcJoystick.LOGITECH_BUTTON4:
