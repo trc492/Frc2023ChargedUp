@@ -45,8 +45,11 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
         UNTUCK_ARM,
         SCORE_PRELOAD_HIGH,
         EXIT_COMMUNITY,
-        // GET_SECOND,
-        // DRIVE_TO_SCORE,
+        //drives to a point where it can use autopickup to pickup the object 
+        DRIVE_TO_LOOK_POS,
+        GET_SECOND,
+        DRIVE_TO_SCORE,
+        SCORE_SECOND_OBJ,
         // DRIVE_TO_BALANCE,
         // BALANCE,
         DONE
@@ -65,9 +68,14 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     private boolean scorePreload = true;
     private ObjectType preloadType = ObjectType.CONE;
     private int scoreLevel = 0;
-    private ScoreLocation scoreLocation = ScoreLocation.MIDDLE;
+    private ScoreLocation scoreLocation = ScoreLocation.RIGHT;
     private boolean doAutoBalance = false;
-    // private boolean scoreSecondPiece = true;
+    private boolean scoreSecondPiece = true;
+    //hardcoded for now 
+    private int secondPieceLevel = 2; 
+    private ScoreLocation secondObjScoreLoc = ScoreLocation.MIDDLE; 
+    private ObjectType secondObjType = ObjectType.CUBE; 
+    private double timeToScore = 3.0; 
     // private int piecesScored = 0;
 
     /**
@@ -145,8 +153,8 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     scoreLocation = FrcAuto.autoChoices.getScoreLocation();
                     // TODO: add autoBalance functionality
                     // TODO: add option to score another element
-                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
-                    // scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
+                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
 
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
@@ -182,8 +190,9 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 case SCORE_PRELOAD_HIGH:
                     // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
-                        preloadType, scoreLevel, scoreLocation, false, autoAssistEvent);
-                    sm.waitForSingleEvent(autoAssistEvent, State.EXIT_COMMUNITY);
+                        preloadType, scoreLevel, scoreLocation, false, autoAssistEvent, false);
+                    State nextState = scoreSecondPiece? State.GET_SECOND: State.EXIT_COMMUNITY; 
+                    sm.waitForSingleEvent(autoAssistEvent, nextState);
                     // piecesScored++;
                     break;
 
@@ -208,7 +217,40 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     // robot.robotDrive.enableDistanceTrigger(Math.sqrt(169.0 + xOffset*xOffset), driveEvent);
                     // robot.robotDrive.driveBase.holonomicDrive(
                     //     null, xOffset/120.0, alliance == Alliance.Blue? 0.3: -0.3, 0.0, robot.robotDrive.driveBase.getHeading());
+                    
                     break;
+                
+                //drives to a position behind the game object so in the next state we can use vision to go pickup 
+                case DRIVE_TO_LOOK_POS:
+                    if (startPos == 0 && alliance == Alliance.Blue || startPos == 2 && alliance == Alliance.Red)
+                    {
+                        // We are going for the game piece on the guardrail side. (BLUE RIGHT)
+                        robot.robotDrive.purePursuitDrive.start(
+                            driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                            robot.robotDrive.adjustPosByAlliance(
+                                alliance,
+                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X,
+                                            RobotParams.CHARGING_STATION_CENTER_BLUE_Y, 180.0)),
+                            robot.robotDrive.adjustPosByAlliance(
+                                alliance,
+                                new TrcPose2D(RobotParams.GAME_PIECE_1_X, RobotParams.GAME_PIECE_BLUE_Y - 36.0, 0.0)));
+                    }
+                    else
+                    {
+                        // We are going for the game piece on the substation side. (BLUE LEFT)
+                        robot.robotDrive.purePursuitDrive.start(
+                            driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                            robot.robotDrive.adjustPosByAlliance(
+                                alliance,
+                                new TrcPose2D(-185,
+                                            RobotParams.CHARGING_STATION_CENTER_BLUE_Y, 180.0)),
+                            robot.robotDrive.adjustPosByAlliance(
+                                alliance,
+                                new TrcPose2D(RobotParams.GAME_PIECE_4_X, RobotParams.GAME_PIECE_BLUE_Y - 36, 0.0)))
+                            ;
+                            
+                    }
+                    break; 
 
                 // case GET_SECOND:
                 //     robot.robotDrive.purePursuitDrive.setMsgTracer(robot.globalTracer, true, true);
@@ -219,19 +261,46 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 //     // timer.set(3.5, null, new TrcEvent.Callback() {
                 //     //     public void notify(Object context)
                 //     //     {
-                //     //         robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, doAutoBalance, autoAssistEvent);
+                //              robot.autoPickupTask.autoAssistPickup(ObjectType.CONE, true, doAutoBalance, autoAssistEvent);
                 //     //     }
                 //     // }, null);
                 //     // sm.waitForSingleEvent(autoAssistEvent, State.DONE);//DRIVE_TO_SCORE);
                 //     break;
+                //picks up second object 
+
+                //use autoassist pickup to drive to and pickup the object 
+                case GET_SECOND:
+                    robot.autoPickupTask.autoAssistPickup(secondObjType, true, autoAssistEvent);
+                    sm.waitForSingleEvent(autoAssistEvent, State.DRIVE_TO_SCORE);
+                    
+            
+                    break; 
                 
-                // case DRIVE_TO_SCORE:
-                //     //TODO: Check match time
-                //     robot.robotDrive.purePursuitDrive.start(
-                //         driveEvent, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                //         new TrcPose2D(-xOffset, 144.0, 0.0));
-                //     sm.waitForSingleEvent(driveEvent, State.SCORE);
-                //     break;
+                case DRIVE_TO_SCORE:
+                    //drive to a place where we can see the apriltag
+                    // if(robot.intake.hasObject()){
+                    //     robot.robotDrive.purePursuitDrive.start(
+                    //         driveEvent, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                    //         new TrcPose2D(-xOffset, 144.0, 0.0));
+                    //     sm.waitForSingleEvent(driveEvent, State.SCORE_SECOND_OBJ);
+                    // }
+                    // else{
+                    //     sm.setState(State.DONE);
+                    // }
+                    
+                    break;
+                case SCORE_SECOND_OBJ: 
+                    //check match time 
+                    if(15 - elapsedTime > timeToScore ){
+                        robot.autoScoreTask.autoAssistScoreObject(secondObjType, secondPieceLevel, ScoreLocation.MIDDLE, true, autoAssistEvent, false);
+                        sm.waitForSingleEvent(autoAssistEvent, State.DONE);
+                    }
+                    else{
+                        sm.setState(State.DONE); 
+                    }
+
+                    
+                    break; 
 
                 // case DRIVE_TO_BALANCE:
 

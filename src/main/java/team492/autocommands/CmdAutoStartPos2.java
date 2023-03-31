@@ -158,7 +158,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                     if (scorePreload)
                     {
-                        robot.autoScoreTask.autoAssistScoreObject(preloadType, scoreLevel, scoreLocation, false, autoAssistEvent);
+                        robot.autoScoreTask.autoAssistScoreObject(preloadType, scoreLevel, scoreLocation, false, autoAssistEvent, false);
                         sm.waitForSingleEvent(autoAssistEvent, State.BACK_UP);
                     }
                     else

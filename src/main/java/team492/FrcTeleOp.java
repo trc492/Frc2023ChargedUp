@@ -508,7 +508,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         //     (objType == ObjectType.CUBE? 1.0: -1.0) * RobotParams.INTAKE_PICKUP_POWER,
                         //     objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0);
                         double intakePower = intakeReversed? RobotParams.INTAKE_SPIT_POWER: RobotParams.INTAKE_PICKUP_POWER;
-                        robot.intake.setPower(intakePower);
+                        //can't do retain power for cubes, need a way to differentiate cube and cone
+                        robot.intake.autoAssistIntake(intakePower, 0.0);
+                        // robot.intake.setPower(intakePower);
                     }
                     else
                     {
@@ -592,19 +594,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON8:
-                // Press to spit object out of intake, release to cancel.
-                // TODO (Code Review): What's the difference between this and press and hold button 3 and press trigger?
-                if (robot.intake != null)
-                {
-                    if (pressed)
-                    {
-                        robot.intake.setPower(RobotParams.INTAKE_SPIT_POWER);
-                    }
-                    else
-                    {
-                        robot.intake.setPower(0.0);
-                    }
-                }
+
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON9:
@@ -655,6 +645,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
         switch (button)
         {
+            //ARM CONTROL
             case FrcJoystick.PANEL_BUTTON_RED1:
                 // Press and hold to control the arm with operator joystick.
                 armControl = pressed;
@@ -670,6 +661,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
 
+            //WRIST CONTROL
             case FrcJoystick.PANEL_BUTTON_GREEN1:
                 // Press and hold to control the wrist with operator joystick.
                 wristControl = pressed;
@@ -685,19 +677,17 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
 
+            //TURTLE MODE (Everything retracted)
             case FrcJoystick.PANEL_BUTTON_BLUE1:
-                // Pickup from single substation
-                if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
-                {
-                    robot.elevatorPidActuator.setPosition(5.6, true);
-                    robot.armPidActuator.setPosition(RobotParams.ARM_MIN_POS, true);
-                    robot.wristPidActuator.setPosition(RobotParams.WRIST_MAX_POS, true);
-                }
+                robot.turtleMode(moduleName);
                 break;
 
+            //Prepare for Single Substation Pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
+                robot.prepareForSingleSubstationPickup(moduleName);
                 break;
-
+            
+            //CANCEL BUTTON
             case FrcJoystick.PANEL_BUTTON_WHITE1:
                 if (pressed)
                 {
@@ -707,19 +697,24 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     if (robot.elevator != null) robot.elevatorPidActuator.releaseExclusiveAccess(moduleName);
                 }
                 break;
-
+            
+            //Ready for Cone High 
             case FrcJoystick.PANEL_BUTTON_RED2:
                 // manualOverride = pressed;
-                // auto score testing
                 if (robot.autoScoreTask != null && pressed)
                 {
-                    robot.autoScoreTask.autoAssistScoreObject(ObjectType.CONE, 2, ScoreLocation.LEFT, true, null);
+                    robot.autoScoreTask.autoAssistScoreConePositionOnly(2);
                 }
                 break;
-
+            
+            //Ready for Cube High 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
+            if (robot.autoScoreTask != null && pressed)
+            {
+                robot.autoScoreTask.autoAssistScoreCubePositionOnly(2);
+            }            
                 break;
-
+            
             case FrcJoystick.PANEL_BUTTON_BLUE2:
                 break;
 
