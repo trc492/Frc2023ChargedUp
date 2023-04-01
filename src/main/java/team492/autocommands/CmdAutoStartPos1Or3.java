@@ -190,7 +190,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 case SCORE_PRELOAD_HIGH:
                     // Call autoScore to score the object.
                     robot.autoScoreTask.autoAssistScoreObject(
-                        preloadType, scoreLevel, scoreLocation, false, autoAssistEvent, false);
+                        preloadType, scoreLevel, scoreLocation, false, false, autoAssistEvent);
                     State nextState = scoreSecondPiece? State.GET_SECOND: State.EXIT_COMMUNITY; 
                     sm.waitForSingleEvent(autoAssistEvent, nextState);
                     // piecesScored++;
@@ -292,7 +292,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 case SCORE_SECOND_OBJ: 
                     //check match time 
                     if(15 - elapsedTime > timeToScore ){
-                        robot.autoScoreTask.autoAssistScoreObject(secondObjType, secondPieceLevel, ScoreLocation.MIDDLE, true, autoAssistEvent, false);
+                        robot.autoScoreTask.autoAssistScoreObject(secondObjType, secondPieceLevel, ScoreLocation.MIDDLE, true, false, autoAssistEvent);
                         sm.waitForSingleEvent(autoAssistEvent, State.DONE);
                     }
                     else{

@@ -64,7 +64,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     // TODO: Test all iterations to verify State shenanigans
     private Alliance alliance = Alliance.Blue;
     private boolean scorePreload = true;
-    private ObjectType preloadType = ObjectType.CONE;
+    private ObjectType preloadType = ObjectType.CUBE;
     private int scoreLevel = 2;
     private ScoreLocation scoreLocation = ScoreLocation.MIDDLE;
     private boolean doAutoBalance = true;
@@ -158,7 +158,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                     if (scorePreload)
                     {
-                        robot.autoScoreTask.autoAssistScoreObject(preloadType, scoreLevel, scoreLocation, false, autoAssistEvent, false);
+                        robot.autoScoreTask.autoAssistScoreObject(
+                            preloadType, scoreLevel, scoreLocation, false, false, autoAssistEvent);
                         sm.waitForSingleEvent(autoAssistEvent, State.BACK_UP);
                     }
                     else

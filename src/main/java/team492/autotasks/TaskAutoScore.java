@@ -50,7 +50,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     {
         START,
         DRIVE_TO_SCORING_POS,
-        POSITION_FOR_SCORE,
         SCORE_OBJECT,
         RESET,
         DONE
@@ -62,16 +61,16 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         int scoreLevel;
         ScoreLocation scoreLocation;
         boolean useVision;
-        boolean positionOnly; 
+        boolean prepOnly;
 
         TaskParams(
-            ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision, boolean positionOnly)
+            ObjectType objectType, int scoreLevel,  ScoreLocation scoreLocation, boolean useVision, boolean prepOnly)
         {
             this.objectType = objectType;
             this.scoreLevel = scoreLevel;
             this.scoreLocation = scoreLocation;
             this.useVision = useVision;
-            this.positionOnly = positionOnly; 
+            this.prepOnly = prepOnly;
         }   //TaskParams
     }   //class TaskParams
 
@@ -84,6 +83,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
     private final TrcEvent event;
+    private TrcEvent scoringCommitEvent;
     private Alliance alliance;
     private String currOwner = null;
     private String driveOwner = null;
@@ -117,82 +117,43 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      * @param scoreLevel specifies the level to score a cone.
      * @param scoreLocation specifies the score location (Left Pole, Shelf, Right Pole).
      * @param useVision specifies true to use vision assist, false otherwise.
+     * @param prepOnly specifies true to only prep subsystems but not scoring, false to also score.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
     public void autoAssistScoreObject(
-        ObjectType objectType, int scoreLevel, ScoreLocation scoreLocation, boolean useVision,
-        TrcEvent completionEvent, boolean positionOnly)
+        ObjectType objectType, int scoreLevel, ScoreLocation scoreLocation, boolean useVision, boolean prepOnly,
+        TrcEvent completionEvent)
     {
         final String funcName = "autoAssistScoreObject";
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                funcName, "%s: objectType=%s, scoreLevel=%d, scoreLocation=%s, useVision=%s, event=%s",
-                moduleName, objectType, scoreLevel, scoreLocation, useVision, completionEvent);
+                funcName, "%s: objectType=%s, scoreLevel=%d, scoreLocation=%s, useVision=%s, prepOnly=%s, event=%s",
+                moduleName, objectType, scoreLevel, scoreLocation, useVision, prepOnly, completionEvent);
+        }
+
+        if (prepOnly)
+        {
+            scoringCommitEvent = new TrcEvent(moduleName + "scoringCommitEvent");
         }
 
         startAutoTask(
-            State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision, positionOnly), completionEvent);
+            State.START, new TaskParams(objectType, scoreLevel, scoreLocation, useVision, prepOnly), completionEvent);
     }   //autoAssistScoreObject
 
-    //only positions, arm, elevator, grabber for scoring at the right level, no vision
-    //ScoreLocation will not be used
-    public void autoAssistScoreConePositionOnly(int scoreLevel){
-
-        //can't use this yet: 
-        //preset is meant to raise everything to position but stopAutoTask will cause all power to be cut
-        // autoAssistScoreObject(ObjectType.CONE, scoreLevel, ScoreLocation.LEFT, false, null, true);
-        if(scoreLevel != 0 ){
-            double elevatorPos = RobotParams.elevatorConeScorePresets[scoreLevel];
-            double armPos = RobotParams.armConeScorePresets[scoreLevel];
-            double wristPos = RobotParams.wristConeScorePresets[scoreLevel];
-            robot.elevatorPidActuator.setPosition(
-                currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
-            robot.armPidActuator.setPosition(
-                currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
-            robot.wristPidActuator.setPosition(
-                currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
-        }
-        else if (robot.weedWhacker != null)
-        {
-            robot.weedWhacker.extend();
-            robot.weedWhacker.setPower(currOwner, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.3, null);
-        }
-
-
-    }
-    public void autoAssistScoreCubePositionOnly(int scoreLevel){
-        //same logic as above 
-        // autoAssistScoreObject(ObjectType.CONE, scoreLevel, ScoreLocation.LEFT, false, null, true);
-        //for now assumes level is not 0 
-        if(scoreLevel != 0){
-            double elevatorPos = RobotParams.elevatorCubeScorePresets[scoreLevel];
-            double armPos = RobotParams.armCubeScorePresets[scoreLevel];
-            double wristPos = RobotParams.wristCubeScorePresets[scoreLevel];
-            robot.elevatorPidActuator.setPosition(
-                currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
-            robot.armPidActuator.setPosition(
-                currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
-            robot.wristPidActuator.setPosition(
-                currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
-        }
-        else if (robot.weedWhacker != null)
-        {
-            robot.weedWhacker.extend();
-            robot.weedWhacker.setPower(currOwner, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.3, null);
-        }
-    }
     /**
      * This method starts the auto-assist operation to score an object.
      *
      * @param scoreLevel specifies the level to score a cone.
      * @param useVision specifies true to use vision assist, false otherwise.
+     * @param prepOnly specifies true to only prep subsystems but not scoring, false to also score.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void autoAssistScoreCube(int scoreLevel, boolean useVision,TrcEvent completionEvent)
+    public void autoAssistScoreCube(int scoreLevel, boolean useVision, boolean prepOnly, TrcEvent completionEvent)
     {
-        autoAssistScoreObject(ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, useVision, completionEvent, false);
+        autoAssistScoreObject(
+            ObjectType.CUBE, scoreLevel, ScoreLocation.MIDDLE, useVision, prepOnly, completionEvent);
     }   //autoAssistScoreCube
 
     /**
@@ -201,17 +162,35 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
      * @param scoreLevel specifies the level to score a cone.
      * @param scoreLocation specifies the score location (Left Pole, Shelf, Right Pole).
      * @param useVision specifies true to use vision assist, false otherwise.
+     * @param prepOnly specifies true to only prep subsystems but not scoring, false to also score.
      * @param completionEvent specifies the event to signal when done, can be null if none provided.
      */
-    public void autoAssistScoreCone(int scoreLevel, ScoreLocation scoreLocation, boolean useVision,TrcEvent completionEvent)
+    public void autoAssistScoreCone(
+        int scoreLevel, ScoreLocation scoreLocation, boolean useVision, boolean prepOnly, TrcEvent completionEvent)
     {
         if (scoreLocation == ScoreLocation.MIDDLE)
         {
             throw new IllegalArgumentException("Cone cannot be scored in the middle.");
         }
 
-        autoAssistScoreObject(ObjectType.CONE, scoreLevel, scoreLocation, useVision, completionEvent, false);
+        autoAssistScoreObject(ObjectType.CONE, scoreLevel, scoreLocation, useVision, prepOnly, completionEvent);
     }   //autoAssistScoreCone
+
+    /**
+     * This method is called to continue the previous prep-only autoAssist scoring operation to finish the scoring.
+     */
+    public void scoringCommit()
+    {
+        if (scoringCommitEvent != null)
+        {
+            scoringCommitEvent.signal();
+            if (!isActive())
+            {
+                // Task is not active, remove the commit event.
+                scoringCommitEvent = null;
+            }
+        }
+    }   //scoringCommit
 
     /**
      * This method cancels an in progress auto-assist operation if any.
@@ -333,6 +312,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         robot.armPidActuator.cancel(currOwner);
         robot.wristPidActuator.cancel(currOwner);
         robot.intake.autoAssistCancel(currOwner);
+        scoringCommitEvent = null;
     }   //stopSubsystems
 
     /**
@@ -355,13 +335,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         //      arm without hitting field elements.
         switch (state)
         {
-            //TODO: Test manually if we can extend everything with bumpers touching grid, 
-            //if we can, new sequence of states to be: 
-            //START: retract everything (Turtle Mode), use vision to detect apriltag
-            //DRIVE_TO_SCORE: drive so bumpers touch the correct grid 
-            //POSITION_TO_SCORE: basically what we have in START state 
-            //SCORE
-
             case START:
                 double elevatorPos, armPos, wristPos;
                 // Determine arm, elevator, wrist positions based on scoringLevel and objectType.
@@ -379,27 +352,15 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     wristPos = RobotParams.wristCubeScorePresets[taskParams.scoreLevel];
                 }
 
-                if (taskParams.scoreLevel > 0)
-                {
-                    robot.elevatorPidActuator.setPosition(
-                        currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
-                    sm.addEvent(elevatorEvent);
-                    robot.armPidActuator.setPosition(
-                        currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
-                    sm.addEvent(armEvent);
-                    robot.wristPidActuator.setPosition(
-                        currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
-                    sm.addEvent(wristEvent);
-
-                    if (robot.weedWhacker != null)
-                    {
-                        robot.weedWhacker.retract();
-                    }
-                }
-                else if (robot.weedWhacker != null)
-                {
-                    robot.weedWhacker.extend();
-                }
+                robot.elevatorPidActuator.setPosition(
+                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
+                sm.addEvent(elevatorEvent);
+                robot.armPidActuator.setPosition(
+                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
+                sm.addEvent(armEvent);
+                robot.wristPidActuator.setPosition(
+                    currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
+                sm.addEvent(wristEvent);
 
                 if (taskParams.useVision)
                 {
@@ -407,12 +368,13 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
                     sm.addEvent(visionEvent);
                 }
-                if(!taskParams.positionOnly){
-                    sm.waitForEvents(taskParams.useVision? State.DRIVE_TO_SCORING_POS: State.SCORE_OBJECT, true);
+
+                if (taskParams.prepOnly && scoringCommitEvent != null)
+                {
+                    sm.addEvent(scoringCommitEvent);
                 }
-                else{
-                    sm.waitForEvents(State.DONE); 
-                }
+
+                sm.waitForEvents(taskParams.useVision? State.DRIVE_TO_SCORING_POS: State.SCORE_OBJECT, true);
                 break;
 
             case DRIVE_TO_SCORING_POS:
@@ -441,7 +403,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     sm.waitForSingleEvent(driveEvent, State.SCORE_OBJECT);
                 }
                 break;
-
 
             case SCORE_OBJECT:
                 robot.robotDrive.purePursuitDrive.setMsgTracer(msgTracer, false, false);

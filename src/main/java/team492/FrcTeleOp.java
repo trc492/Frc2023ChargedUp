@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.BalanceInitSide;
+import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -695,35 +696,38 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // manualOverride = pressed;
                 if (robot.autoScoreTask != null && pressed)
                 {
-                    robot.autoScoreTask.autoAssistScoreConePositionOnly(2);
+                    robot.autoScoreTask.autoAssistScoreCone(2, ScoreLocation.LEFT, false, false, null);
                 }
                 break;
             
             //Ready for Scoring Cube High 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-            if (robot.autoScoreTask != null && pressed)
-            {
-                robot.autoScoreTask.autoAssistScoreCubePositionOnly(2);
-            }            
+                if (robot.autoScoreTask != null && pressed)
+                {
+                    robot.autoScoreTask.autoAssistScoreCube(2, false, false, null);
+                }
                 break;
             //Ready For Scoring Cone Mid
             case FrcJoystick.PANEL_BUTTON_BLUE2:
-                if(robot.autoScoreTask != null && pressed){
-                    robot.autoScoreTask.autoAssistScoreConePositionOnly(1);
+                if (robot.autoScoreTask != null && pressed)
+                {
+                    robot.autoScoreTask.autoAssistScoreCone(1, ScoreLocation.LEFT, false, false, null);
                 }
 
                 break;
             //Ready for Scoring Cube Mid 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                if(robot.autoScoreTask != null && pressed){
-                    robot.autoScoreTask.autoAssistScoreCubePositionOnly(1);
+                if (robot.autoScoreTask != null && pressed)
+                {
+                    robot.autoScoreTask.autoAssistScoreCube(1, false, false, null);
                 }
 
                 break;
             //Ready for Scoring low 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
-                if(robot.autoScoreTask != null && pressed){
-                    robot.autoScoreTask.autoAssistScoreCubePositionOnly(0);
+                if (robot.autoScoreTask != null && pressed)
+                {
+                    robot.autoScoreTask.autoAssistScoreCube(0, false, false, null);
                 }
                 break;
         }
