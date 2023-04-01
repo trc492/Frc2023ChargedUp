@@ -484,7 +484,7 @@ public class RobotParams
     public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
-    public static final double ARM_MIN_POS                      = ARM_OFFSET + 2.0;
+    public static final double ARM_MIN_POS                      = ARM_OFFSET + 4.0;
     public static final double ARM_MAX_POS                      = 93.0;
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_MIN_POS_WEEDWHACKER_DOWN     = 10.0;
@@ -536,10 +536,10 @@ public class RobotParams
     public static final double WRIST_SAFE_RANGE                 = WRIST_MAX_POS - WRIST_MIN_POS;
 
     // TODO: Tune Wrist PID
-    public static final double WRIST_KP                         = 0.0085;
-    public static final double WRIST_KI                         = 0.0;
+    public static final double WRIST_KP                         = 0.006;
+    public static final double WRIST_KI                         = 0.008;
     public static final double WRIST_KD                         = 0.0;
-    public static final double WRIST_KF                         = 0.00045;
+    public static final double WRIST_KF                         = 0.0002;
     public static final double WRIST_IZONE                      = 3.0;
     public static final double WRIST_TOLERANCE                  = 1.0;
     public static final double WRIST_CAL_POWER                  = -0.1;
@@ -548,18 +548,16 @@ public class RobotParams
 
     public static final double WRIST_TRAVEL_POSITION            = 0.0;
     public static final double WRIST_SAFE_POSITION              = 0.0;
-    public static final double WRIST_CONE_PICKUP_POSITION       = 125.2;
-    public static final double WRIST_CUBE_PICKUP_POSITION       = 140.0;
-    public static final double WRIST_CONE_SCORE_POSITION        = -20.0;
-    public static final double WRIST_CUBE_SCORE_POSITION        = 20.0;
+    public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
+    public static final double WRIST_CUBE_PICKUP_POSITION       = 62.5;
     // TODO: Determine Wrist preset positions
     public static final double[] wristConeScorePresets          =
     {
-        0.0, 0.0, 40.0
+        0.0, 0.0, 195.0
     };
     public static final double[] wristCubeScorePresets          =
     {
-        0.0, 0.0, 0.0
+        0.0, 0.0, 120.0
     };
 
     // Intake subsystem.
@@ -567,7 +565,7 @@ public class RobotParams
     public static final boolean INTAKE_TRIGGER_INVERTED         = true;
     public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_CONE_RETAIN_POWER         = 0.05;
-    public static final double INTAKE_SPIT_POWER                = -0.8;
+    public static final double INTAKE_SPIT_POWER                = -0.4;
 
     // WeedWhacker subsystem.
     public static final double WEEDWHACKER_CUBE_PICKUP_POWER     = 0.8;

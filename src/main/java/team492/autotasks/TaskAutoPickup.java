@@ -310,7 +310,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     // If we are not using vision, the driver has control of driving. So, turn on intake.
                     robot.intake.autoAssistIntake(
                         currOwner, 0.0, RobotParams.INTAKE_PICKUP_POWER,
-                        taskParams.objectType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0, intakeEvent, 0.0);
+                        taskParams.objectType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0, 0.5, intakeEvent, 0.0);
                     sm.addEvent(intakeEvent);
                     nextState = State.PREP_FOR_TRAVEL;
                 }
@@ -349,7 +349,7 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     sm.addEvent(driveEvent);
                     robot.intake.autoAssistIntake(
                         currOwner, 0.0, RobotParams.INTAKE_PICKUP_POWER,
-                        taskParams.objectType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0, intakeEvent, 0.0);
+                        taskParams.objectType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0, 0.5, intakeEvent, 0.0);
                     sm.addEvent(intakeEvent);
                     sm.waitForEvents(State.PREP_FOR_TRAVEL, false);
                 }

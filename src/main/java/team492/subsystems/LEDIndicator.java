@@ -23,9 +23,11 @@
 package team492.subsystems;
 
 import TrcCommonLib.trclib.TrcAddressableLED;
+import TrcCommonLib.trclib.TrcColor;
 import TrcFrcLib.frclib.FrcAddressableLED;
 import TrcFrcLib.frclib.FrcColor;
 import team492.RobotParams;
+import team492.FrcAuto.ObjectType;
 import team492.drivebases.RobotDrive;
 import team492.vision.PhotonVision.PipelineType;
 
@@ -44,6 +46,11 @@ public class LEDIndicator
     private static final TrcAddressableLED.Pattern hasObjectPattern =           // Red
         new TrcAddressableLED.Pattern("hasObject", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
 
+    private static final TrcAddressableLED.Pattern pickCubePattern =            // Full bright Magenta
+        new TrcAddressableLED.Pattern("pickCube", new FrcColor(255, 0, 255), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern pickConePattern =
+        new TrcAddressableLED.Pattern("pickCone", new FrcColor(255, 255, 0), RobotParams.NUM_LEDS);
+
     private static final TrcAddressableLED.Pattern detectedConePattern =        // Yellow
         new TrcAddressableLED.Pattern("detectedCone", new FrcColor(63, 63, 0), RobotParams.NUM_LEDS);
     private static final TrcAddressableLED.Pattern detectedCubePattern =        // Magenta
@@ -59,6 +66,8 @@ public class LEDIndicator
             detectedCubePattern,
             detectedConePattern,
             hasObjectPattern,
+            pickCubePattern, // TODO: Determine correct priority for pickCube and pickCone patterns
+            pickConePattern,
             fieldOrientedPattern,
             robotOrientedPattern,
             inverseOrientedPattern,
@@ -153,5 +162,17 @@ public class LEDIndicator
     {
         led.setPatternState(hasObjectPattern, hasObject);
     }   //setHasObject
+
+    public void setPickObject(ObjectType objType)
+    {
+        if (objType == ObjectType.CUBE)
+        {
+            led.setPatternState(pickCubePattern, true);
+        }
+        else
+        {
+            led.setPatternState(pickConePattern, true);
+        }
+    }
 
 }   //class LEDIndicator

@@ -758,19 +758,17 @@ public class Robot extends FrcRobotBase
     }   //turtleMode
 
     // prepares robot for single substation pickup
-    public void prepareForSingleSubstationPickup(String owner)
-    {
-        wristPidActuator.setPosition(owner, 0.0, 150.0, true, RobotParams.WRIST_MAX_POWER, null, 0.0);
-        armPidActuator.setPosition(owner, 0.5, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        elevatorPidActuator.setPosition(owner, 0.5, 5.0, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-    }   //prepareForSingleSubstationPickup
+    public void prepareForSingleSubstationPickup(String owner){
+        wrist.getPidActuator().setPosition(owner, 0.0, RobotParams.WRIST_MIN_POS, true, 1.0, null, 0.0);
+        arm.getPidActuator().setPosition(owner, 0.5, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        elevator.getPidActuator().setPosition(owner, 0.5, 5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+    }
 
     //prepares robot for nose in ground pickup 
-    public void prepareForNosePickup(String owner)
-    {
-        wristPidActuator.setPosition(owner, 0.0, 10.0, true, RobotParams.WRIST_MAX_POWER, null, 0.0);
-        armPidActuator.setPosition(owner, 0.5, RobotParams.ARM_LOW_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        elevatorPidActuator.setPosition(owner, 0.5, 0.0, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-    }   //prepareForNosePickup
+    public void prepareForNosePickup(String owner){
+        wrist.getPidActuator().setPosition(owner, 0.0, 10, true, 1.0, null, 0.0);
+        arm.getPidActuator().setPosition(owner, 0.5, RobotParams.ARM_MIN_POS_WEEDWHACKER_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        elevator.getPidActuator().setPosition(owner, 0.5, 0, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+    }
 
 }   //class Robot

@@ -56,6 +56,7 @@ public class Intake
         intakeMotor.setMotorInverted(RobotParams.INTAKE_MOTOR_INVERTED);
         intakeMotor.setBrakeModeEnabled(true);
         intakeMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
+        // intakeMotor.setCurrentLimit(20.0, 40.0, 0.5);
 
         intakeSensor = new FrcDigitalInput(moduleName + ".sensor", RobotParams.DIO_INTAKE_SENSOR);
         intakeTrigger = new TrcTriggerDigitalInput(moduleName + ".trigger", intakeSensor);
