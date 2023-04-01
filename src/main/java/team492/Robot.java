@@ -736,18 +736,35 @@ public class Robot extends FrcRobotBase
      * This method prep the subsystems for a certain operation.
      *
      * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     * @param elevatorDelay specifies the delay in seconds before moving elevator.
+     * @param elevatorPos specifies the elevator position.
+     * @param armDelay specifies the delay in seconds before moving arm.
+     * @param armPos specifies the arm position.
+     * @param wristDelay specifies the delay in seconds before moving wrist.
+     * @param wristPos specifies the wrist position.
+     */
+    public void prepSubsystems(
+        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay, double wristPos)
+    {
+        if (elevator != null && arm != null && wrist != null)
+        {
+            elevatorPidActuator.setPosition(owner, elevatorDelay, elevatorPos, true, 1.0, null, 0.0);
+            armPidActuator.setPosition(owner, armDelay, armPos, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+            wristPidActuator.setPosition(owner, wristDelay, wristPos, true, RobotParams.WRIST_MAX_POWER, null, 0.0);
+        }
+    }   //prepSubsystems
+
+    /**
+     * This method prep the subsystems for a certain operation.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
      * @param elevatorPos specifies the elevator position.
      * @param armPos specifies the arm position.
      * @param wristPos specifies the wrist position.
      */
     public void prepSubsystems(String owner, double elevatorPos, double armPos, double wristPos)
     {
-        if (elevator != null && arm != null && wrist != null)
-        {
-            elevatorPidActuator.setPosition(owner, elevatorPos, true, 1.0, null, 0.0);
-            armPidActuator.setPosition(owner, armPos, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-            wristPidActuator.setPosition(owner, wristPos, true, RobotParams.WRIST_MAX_POWER, null, 0.0);
-        }
+        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos);
     }   //prepSubsystems
 
     /**

@@ -687,34 +687,40 @@ public class FrcTest extends FrcTeleOp
                     break;
 
                 case FrcXboxController.BACK:
-                // Test auto balance from inside the community.
-                if (testChoices.getTest() == Test.SUBSYSTEMS_TEST &&
-                    robot.robotDrive != null && pressed)
-                {
-                    if (robot.autoBalanceTask.isActive())
+                    // Test auto balance from inside the community.
+                    if (testChoices.getTest() == Test.SUBSYSTEMS_TEST && robot.robotDrive != null)
                     {
-                        robot.autoBalanceTask.autoAssistCancel();
+                        if (pressed)
+                        {
+                            if (robot.autoBalanceTask.isActive())
+                            {
+                                robot.autoBalanceTask.autoAssistCancel();
+                            }
+                            else
+                            {
+                                robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, null);
+                            }
+                        }
+                        processed = true;
                     }
-                    else
-                    {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, null);
-                    }
-                }
-                break;
+                    break;
     
                 case FrcXboxController.START:
                     // Test auto balance from outside the community.
-                    if (testChoices.getTest() == Test.SUBSYSTEMS_TEST &&
-                        robot.robotDrive != null && pressed)
+                    if (testChoices.getTest() == Test.SUBSYSTEMS_TEST && robot.robotDrive != null)
                     {
-                        if (robot.autoBalanceTask.isActive())
+                        if (pressed)
                         {
-                            robot.autoBalanceTask.autoAssistCancel();
+                            if (robot.autoBalanceTask.isActive())
+                            {
+                                robot.autoBalanceTask.autoAssistCancel();
+                            }
+                            else
+                            {
+                                robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, null);
+                            }
                         }
-                        else
-                        {
-                            robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, null);
-                        }
+                        processed = true;
                     }
                     break;
             }
