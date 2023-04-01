@@ -317,27 +317,27 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BUTTON_B:
-                // TODO (Code Review): I hope this is test code! This is in the driver's controller, not the operator.
-                // Plus the fact that since it doesn't take ownership, it would interfere with analog control.
+                // Evan's turtle mode, need to test ownership 
                 if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
                 {
-                    robot.elevatorPidActuator.setPosition(0.0, true);
-                    robot.armPidActuator.setPosition(RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER);
-                    robot.wristPidActuator.setPosition(5.0, true);
+                    robot.turtleMode(moduleName);
+                    // robot.elevatorPidActuator.setPosition(0.0, true);
+                    // robot.armPidActuator.setPosition(RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER);
+                    // robot.wristPidActuator.setPosition(5.0, true);
                 }
                 break;
 
             case FrcXboxController.BUTTON_X:
                 // TODO (Code Review): I hope this is test code! This is in the driver's controller, not the operator.
                 // Plus the fact that since it doesn't take ownership, it would interfere with analog control.
-                if (pressed)
-                {
-                    robot.wristPidActuator.setPosition(90.0, true);
-                }
-                else
-                {
-                    robot.wristPidActuator.setPosition(0.0, true);
-                }
+                // if (pressed)
+                // {
+                //     robot.wristPidActuator.setPosition(90.0, true);
+                // }
+                // else
+                // {
+                //     robot.wristPidActuator.setPosition(0.0, true);
+                // }
                 break;
 
             case FrcXboxController.BUTTON_Y:
@@ -387,43 +387,43 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Test auto balance from inside the community.
                 // TODO (Code Review): This is test code and should not live here.
                 // If you want to keep it, move it to FrcTest.
-                if (robot.robotDrive != null && pressed)
-                {
-                    if (robot.autoBalanceTask.isActive())
-                    {
-                        robot.autoBalanceTask.autoAssistCancel();
-                    }
-                    else
-                    {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, null);
-                    }
-                }
+                // if (robot.robotDrive != null && pressed)
+                // {
+                //     if (robot.autoBalanceTask.isActive())
+                //     {
+                //         robot.autoBalanceTask.autoAssistCancel();
+                //     }
+                //     else
+                //     {
+                //         robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, null);
+                //     }
+                // }
                 break;
 
             case FrcXboxController.START:
                 // Test auto balance from outside the community.
                 // TODO (Code Review): This is test code and should not live here.
                 // If you want to keep it, move it to FrcTest.
-                if (robot.robotDrive != null && pressed)
-                {
-                    if (robot.autoBalanceTask.isActive())
-                    {
-                        robot.autoBalanceTask.autoAssistCancel();
-                    }
-                    else
-                    {
-                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, null);
-                    }
-                }
+                // if (robot.robotDrive != null && pressed)
+                // {
+                //     if (robot.autoBalanceTask.isActive())
+                //     {
+                //         robot.autoBalanceTask.autoAssistCancel();
+                //     }
+                //     else
+                //     {
+                //         robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, null);
+                //     }
+                // }
                 break;
 
             case FrcXboxController.LEFT_STICK_BUTTON:
                 // Force wrist sync
                 // TODO (Code Review): Is this test code? If it's not, move it out of the driver's controller.
-                if (robot.wrist != null && pressed)
-                {
-                    robot.wrist.syncEncoder(true);
-                }
+                // if (robot.wrist != null && pressed)
+                // {
+                //     robot.wrist.syncEncoder(true);
+                // }
                 break;
 
             case FrcXboxController.RIGHT_STICK_BUTTON:
@@ -550,8 +550,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             //HIGH SCORING Cube or COne
             case FrcJoystick.LOGITECH_BUTTON2:
                 // Press to set up for scoring.
-                // TODO (Code Review): You need to claim ownership doing all these or it may interfere with analog control.
-                // I have fixed it and placed it in the prepSubsystems method.
                 if (pressed)
                 {
                     if (objType == ObjectType.CONE)
@@ -682,7 +680,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             //TURTLE MODE (Everything retracted)
             case FrcJoystick.PANEL_BUTTON_BLUE1:
-                //TODO (Code Review): Give this one to Evans.
+                //evan also has turtle mode on Button B 
                 robot.turtleMode(moduleName);
                 break;
 
