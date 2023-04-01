@@ -738,7 +738,9 @@ public class Robot extends FrcRobotBase
      */
     public void turtleMode(String owner)
     {
-        // TODO: Update this
+        elevatorPidActuator.setPosition(owner, 0.0, true, 1.0, null, 0);
+        armPidActuator.setPosition(owner, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0);
+        wristPidActuator.setPosition(owner, 5.0, true, 0, null, 0);
         // double delay = 0.0;
         // // Do we need to move the arm to let the intake retract?
         // if (armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&

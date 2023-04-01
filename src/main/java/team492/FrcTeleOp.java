@@ -536,7 +536,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
                 break;
-
+            //HIGH SCORING Cube or COne
             case FrcJoystick.LOGITECH_BUTTON2:
                 if (pressed)
                 {
@@ -697,18 +697,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
             
-            //Ready for Scoring Cone High 
+            //Complete autoscore testing 
             case FrcJoystick.PANEL_BUTTON_RED2:
                 // manualOverride = pressed;
                 if (robot.autoScoreTask != null && pressed)
                 {
-                    // robot.autoScoreTask.autoAssistScoreConePositionOnly(2);
-                    if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
-                    {
-                        robot.elevatorPidActuator.setPosition(RobotParams.ELEVATOR_MAX_POS, true);
-                        robot.armPidActuator.setPosition(RobotParams.ARM_MAX_POS, true, RobotParams.ARM_MAX_POWER);
-                        robot.wristPidActuator.setPosition(RobotParams.wristConeScorePresets[2], true);
-                    }
+                    robot.autoScoreTask.autoAssistScoreCone(2, ScoreLocation.LEFT, true, false, null);
+
                 }
                 break;
             
@@ -725,12 +720,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     // robot.autoScoreTask.autoAssistScoreCube(2, false, false, null);
                 }
                 break;
-            //Ready For Scoring Cone Mid
+
+            //Turtle Mode - testing purposes or in case Evan forgets to press it after cube pickup
             case FrcJoystick.PANEL_BUTTON_BLUE2:
-                if (robot.autoScoreTask != null && pressed)
-                {
-                    robot.autoScoreTask.autoAssistScoreCone(1, ScoreLocation.LEFT, false, false, null);
-                }
+                robot.elevatorPidActuator.setPosition(0.0, true);
+                robot.armPidActuator.setPosition(RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER);
+                robot.wristPidActuator.setPosition(5.0, true);
 
                 break;
             //Ready for Scoring Cube Mid 

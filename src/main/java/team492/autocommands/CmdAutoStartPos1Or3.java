@@ -250,6 +250,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                             ;
                             
                     }
+                    sm.waitForSingleEvent(driveEvent, State.GET_SECOND);
                     break; 
 
                 // case GET_SECOND:
@@ -272,25 +273,51 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 case GET_SECOND:
                     robot.autoPickupTask.autoAssistPickup(secondObjType, true, autoAssistEvent);
                     sm.waitForSingleEvent(autoAssistEvent, State.DRIVE_TO_SCORE);
-                    
-            
                     break; 
                 
                 case DRIVE_TO_SCORE:
-                    //drive to a place where we can see the apriltag
-                    // if(robot.intake.hasObject()){
-                    //     robot.robotDrive.purePursuitDrive.start(
-                    //         driveEvent, 1.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    //         new TrcPose2D(-xOffset, 144.0, 0.0));
-                    //     sm.waitForSingleEvent(driveEvent, State.SCORE_SECOND_OBJ);
-                    // }
-                    // else{
-                    //     sm.setState(State.DONE);
-                    // }
+                    //do turtle mode so vision can see the target
+                    if(robot.intake.hasObject()){
+                        robot.turtleMode(moduleName);
+                        //drive to a place where we can see the apriltag
+                        if (startPos == 0 && alliance == Alliance.Blue || startPos == 2 && alliance == Alliance.Red)
+                        {
+                            // We are scoring on the far right cube node - BLUE RIGHT
+                            robot.robotDrive.purePursuitDrive.start(
+                                driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                robot.robotDrive.adjustPosByAlliance(
+                                    alliance,
+                                    new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X,
+                                                220, 180)),
+                                robot.robotDrive.adjustPosByAlliance(
+                                    alliance,
+                                    new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 85, 180.0)));
+                        }
+                        else
+                        {
+                            // We are going for the game piece on the substation side. (BLUE LEFT)
+                            robot.robotDrive.purePursuitDrive.start(
+                                driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
+                                robot.robotDrive.adjustPosByAlliance(
+                                    alliance,
+                                    new TrcPose2D(-181,
+                                                220, 180.0)),
+                                robot.robotDrive.adjustPosByAlliance(
+                                    alliance,
+                                    new TrcPose2D(-181, 85, 180.0)))
+                                ;
+                                
+                        }
+                        sm.waitForSingleEvent(driveEvent, State.SCORE_SECOND_OBJ);
+                    }
+                    else{
+                        sm.setState(State.DONE);
+                    }
+                    
                     
                     break;
                 case SCORE_SECOND_OBJ: 
-                    //check match time 
+                    //check match time to decide if we can score
                     if(15 - elapsedTime > timeToScore ){
                         robot.autoScoreTask.autoAssistScoreObject(secondObjType, secondPieceLevel, ScoreLocation.MIDDLE, true, false, autoAssistEvent);
                         sm.waitForSingleEvent(autoAssistEvent, State.DONE);
