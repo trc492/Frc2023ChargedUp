@@ -29,6 +29,7 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
+import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
@@ -74,6 +75,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final TrcEvent intakeEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
+    private final TrcEvent timerEvent;
+    private final TrcTimer timer;
     private String currOwner = null;
     private String driveOwner = null;
 
@@ -96,6 +99,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
+        timerEvent = new TrcEvent(moduleName + ".timerEvent");
+        timer = new TrcTimer(moduleName + ".timer");
     }   //TaskAutoPickup
 
     /**
@@ -370,13 +375,9 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 
             case PREP_FOR_TRAVEL:
                 // Assume travel position.
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ELEVATOR_TRAVEL_POSITION, true, 1.0, null, 0.0);
-                robot.armPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, armEvent, 0.0);
-                robot.wristPidActuator.setPosition(
-                    currOwner, 0.0, RobotParams.WRIST_TRAVEL_POSITION, true, 1.0, wristEvent, 0.0);
-                sm.waitForSingleEvent(armEvent, State.DONE);
+                robot.turtleMode(currOwner);
+                timer.set(1.0, timerEvent);
+                sm.waitForSingleEvent(timerEvent, State.DONE);
                 break;
 
             default:

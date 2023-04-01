@@ -62,7 +62,6 @@ public class Arm
             .setPidParams(
                 RobotParams.ARM_KP, RobotParams.ARM_KI, RobotParams.ARM_KD, RobotParams.ARM_KF,
                 RobotParams.ARM_IZONE, RobotParams.ARM_TOLERANCE)
-            .setPosPresets(RobotParams.ARM_PRESET_TOLERANCE, RobotParams.armPresets)
             .setPowerCompensation(this::getGravityCompensation);
 
         this.msgTracer = msgTracer;

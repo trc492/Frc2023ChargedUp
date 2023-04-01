@@ -733,35 +733,6 @@ public class Robot extends FrcRobotBase
     }   //getPressure
 
     /**
-     * This method configures the subsystems to Turtle Mode which means to retract everything so that the robot can
-     * safely travel without damaging the subsystems.
-     *
-     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
-     */
-    public void turtleMode(String owner)
-    {
-        elevatorPidActuator.setPosition(owner, 0.0, true, 1.0, null, 0);
-        armPidActuator.setPosition(owner, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0);
-        wristPidActuator.setPosition(owner, 5.0, true, 0, null, 0);
-        // double delay = 0.0;
-        // // Do we need to move the arm to let the intake retract?
-        // if (armPidActuator.getPosition() <= RobotParams.ARM_SAFE_POSITION &&
-        //     elevator.getPosition() <= RobotParams.ELEVATOR_SAFE_HEIGHT)
-        // {
-        //     delay = 0.2;
-        //     // Move elevator & arm out of the way
-        //     elevatorPidActuator.setPosition(owner, RobotParams.ELEVATOR_SAFE_HEIGHT, true, 1.0, null, 0.0);
-        //     armPidActuator.setPosition(
-        //         owner, RobotParams.ARM_SAFE_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        // }
-        // intake.retract(delay);
-        // // Move elevator & arm to turtle position
-        // elevatorPidActuator.setPosition(owner, delay, RobotParams.ELEVATOR_MIN_POS, true, 1.0, null, 0.0);
-        // armPidActuator.setPosition(
-        //     owner, delay, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-    }   //turtleMode
-
-    /**
      * This method prep the subsystems for a certain operation.
      *
      * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
@@ -779,28 +750,15 @@ public class Robot extends FrcRobotBase
         }
     }   //prepSubsystems
 
-    // prepares robot for single substation pickup
-    public void prepForSingleSubstationPickup(String owner)
+    /**
+     * This method configures the subsystems to Turtle Mode which means to retract everything so that the robot can
+     * safely travel without damaging the subsystems.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     */
+    public void turtleMode(String owner)
     {
-        if (elevator != null && arm != null && wrist != null)
-        {
-            wristPidActuator.setPosition(owner, 0.0, RobotParams.WRIST_MIN_POS, true, 1.0, null, 0.0);
-            armPidActuator.setPosition(
-                owner, 0.5, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-            elevatorPidActuator.setPosition(owner, 0.5, 5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        }
-    }   //prepForSingleSubstationPickup
-
-    //prepares robot for nose in ground pickup 
-    public void prepForNosePickup(String owner)
-    {
-        if (elevator != null && arm != null && wrist != null)
-        {
-            wristPidActuator.setPosition(owner, 0.0, 10, true, 1.0, null, 0.0);
-            armPidActuator.setPosition(
-                owner, 0.5, RobotParams.ARM_MIN_POS_WEEDWHACKER_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-            elevatorPidActuator.setPosition(owner, 0.5, 0, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        }
-    }   //prepForNosePickup
+        prepSubsystems(owner, RobotParams.ELEVATOR_MIN_POS, RobotParams.ARM_MIN_POS, 5.0);
+    }   //turtleMode
 
 }   //class Robot

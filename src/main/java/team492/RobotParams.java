@@ -428,17 +428,17 @@ public class RobotParams
 
     // Elevator subsystem.
     public static final int ELEVATOR_ZERO                       = 1628;
-    public static final double ELEVATOR_AUTOSTART_OFFSET        = 2.5;
     public static final int NEO_CPR                             = 42;
     public static final double NEO_NOLOAD_RPM                   = 5676.0;
-    public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
-    public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = true;
-    public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = true;
     public static final double ELEVATOR_CHAIN_PITCH             = 0.25;     // in inches
     public static final double ELEVATOR_SPROCKET_TEETH          = 16.0;
     public static final double ELEVATOR_GEAR_RATIO              = 25.0;
     public static final double ELEVATOR_INCHES_PER_COUNT        =
        (ELEVATOR_CHAIN_PITCH * ELEVATOR_SPROCKET_TEETH) / ELEVATOR_GEAR_RATIO;
+    public static final boolean ELEVATOR_MOTOR_INVERTED         = true;
+    public static final boolean ELEVATOR_LOWER_LIMIT_INVERTED   = true;
+    public static final boolean ELEVATOR_UPPER_LIMIT_INVERTED   = true;
+    public static final double ELEVATOR_AUTOSTART_OFFSET        = 2.5;
     public static final double ELEVATOR_OFFSET                  = 0.0;
     public static final double ELEVATOR_MIN_POS                 = 0.0;
     public static final double ELEVATOR_MAX_POS                 = 29.0;
@@ -446,6 +446,7 @@ public class RobotParams
     public static final double ELEVATOR_STALL_TOLERANCE         = 0.0;
     public static final double ELEVATOR_STALL_TIMEOUT           = 1.0;
     public static final double ELEVATOR_RESET_TIMEOUT           = 0.5;
+
     public static final double ELEVATOR_KP                      = 0.5;
     public static final double ELEVATOR_KI                      = 0.0;
     public static final double ELEVATOR_KD                      = 0.0;
@@ -454,34 +455,29 @@ public class RobotParams
     public static final double ELEVATOR_TOLERANCE               = 1.0;
     public static final double ELEVATOR_CAL_POWER               = -0.3;
     public static final double ELEVATOR_PRESET_TOLERANCE        = 2.0;      // in inches
-    public static final double ELEVATOR_TRAVEL_POSITION         = 5.0; // TODO
-    public static final double[] ELEVATOR_TRIGGERS              = {22.0};
-    // Important: presets must be sorted in increasing order.
-    public static final double[] elevatorPresets                =
-    {
-        0.0, 6.0, 12.0, 18.0, 24.0, 28.0
-    };
+
+    public static final double ELEVATOR_CUBE_PICKUP_POSITION    = ELEVATOR_MIN_POS;
+    public static final double ELEVATOR_CONE_PICKUP_POSITION    = ELEVATOR_MIN_POS;
     //TODO: tune these values
     public static final double[] elevatorConeScorePresets       =
     {
-        0.0, 12.5, 22.1
+        0.0, 12.5, ELEVATOR_MAX_POS
     };
     //TODO: tune these values
     public static final double[] elevatorCubeScorePresets       =
     {
-       0.0, 0.0, 22.0
+       0.0, 0.0, 11.4
     };
 
     // Arm subsystem.
     // public static final double ARM_MAX_VEL                      = (FALCON_MAX_RPM*0.81/STEER_GEAR_RATIO/60.0)*360.0;
     public static final int ARM_ENCODER_CPR                     = 4096;
     public static final int ARM_ZERO                            = 1683;
-
+    public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
     public static final boolean ARM_MOTOR_INVERTED              = true;
     public static final boolean ARM_ENCODER_INVERTED            = true;
     public static final boolean ARM_LOWER_LIMIT_INVERTED        = true;
     public static final boolean ARM_UPPER_LIMIT_INVERTED        = true;
-    public static final double ARM_DEGS_PER_COUNT               = 360.0 / ARM_ENCODER_CPR;
     public static final double ARM_OFFSET                       = -37.0;    // in degrees
     public static final double ARM_LOW_POS                      = 8.0;
     public static final double ARM_MIN_POS                      = ARM_OFFSET + 4.0;
@@ -489,6 +485,7 @@ public class RobotParams
     public static final double ARM_SAFE_RANGE                   = ARM_MAX_POS - ARM_LOW_POS;
     public static final double ARM_MIN_POS_WEEDWHACKER_DOWN     = 10.0;
     public static final double ARM_MIN_POS_WEEDWHACKER_UP       = 20.0;
+
     public static final double ARM_KP                           = 0.017;
     public static final double ARM_KI                           = 0.0;
     public static final double ARM_KD                           = 0.0;
@@ -499,15 +496,9 @@ public class RobotParams
     public static final double ARM_MAX_POWER                    = 0.4;
     public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
-    public static final double ARM_PICKUP_POSITION              = 12.7;     //arm position right before grabbing cone/cube
-    public static final double ARM_TRAVEL_POSITION              = 30.0;     //TODO (Code Review): Cannot travel with arm that high!
-    public static final double ARM_SAFE_POSITION                = 10.0;     //TODO
-    // Important: presets must be sorted in increasing order.
-    public static final double[] armPresets                     =
-    {
-        ARM_LOW_POS, ARM_TRAVEL_POSITION, ARM_PICKUP_POSITION, ARM_MAX_POS
-    };
 
+    public static final double ARM_CUBE_PICKUP_POSITION         = -12.6;
+    public static final double ARM_CONE_PICKUP_POSITION         = -5.0;
     //TODO: tune these values, random numbers
     public static final double[] armConeScorePresets            =
     {
@@ -526,16 +517,15 @@ public class RobotParams
     public static final double WRIST_GEAR_RATIO                 = 30.0 * 54.0 / 16.0;
     public static final double WRIST_MOTOR_CPR                  = FALCON_CPR * WRIST_GEAR_RATIO;
     public static final double WRIST_DEGS_PER_COUNT             = 360.0 / WRIST_MOTOR_CPR;
-    public static final double WRIST_OFFSET                     = 0.0;
     public static final boolean WRIST_MOTOR_INVERTED            = false;
     public static final boolean WRIST_ENCODER_INVERTED          = false;
     public static final boolean WRIST_LOWER_LIMIT_INVERTED      = true;
     public static final boolean WRIST_UPPER_LIMIT_INVERTED      = true;
+    public static final double WRIST_OFFSET                     = 0.0;
     public static final double WRIST_MIN_POS                    = WRIST_OFFSET;
     public static final double WRIST_MAX_POS                    = 240.0;
     public static final double WRIST_SAFE_RANGE                 = WRIST_MAX_POS - WRIST_MIN_POS;
 
-    // TODO: Tune Wrist PID
     public static final double WRIST_KP                         = 0.006;
     public static final double WRIST_KI                         = 0.008;
     public static final double WRIST_KD                         = 0.0;
@@ -546,8 +536,6 @@ public class RobotParams
     public static final double WRIST_MAX_POWER                  = 0.2;
     public static final double WRIST_PRESET_TOLERANCE           = 5.0;
 
-    public static final double WRIST_TRAVEL_POSITION            = 0.0;
-    public static final double WRIST_SAFE_POSITION              = 0.0;
     public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
     public static final double WRIST_CUBE_PICKUP_POSITION       = 62.5;
     // TODO: Determine Wrist preset positions

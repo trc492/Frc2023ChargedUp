@@ -29,6 +29,7 @@ import TrcCommonLib.command.CmdPidDrive;
 import TrcCommonLib.command.CmdTimedDrive;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import team492.FrcAuto.BalanceInitSide;
 import team492.drivebases.SwerveDrive;
 import team492.vision.OpenCvVision.ObjectType;
 import team492.vision.PhotonVision.PipelineType;
@@ -627,7 +628,7 @@ public class FrcTest extends FrcTeleOp
             // FrcTeleOp button actions.
             //
             robot.dashboard.displayPrintf(
-                8, "OperatorStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
+                8, "DriverController: button=0x%04x %s", button, pressed ? "pressed" : "released");
             switch (button)
             {
                 case FrcXboxController.BUTTON_A:
@@ -682,6 +683,38 @@ public class FrcTest extends FrcTeleOp
                             }
                         }
                         processed = true;
+                    }
+                    break;
+
+                case FrcXboxController.BACK:
+                // Test auto balance from inside the community.
+                if (testChoices.getTest() == Test.SUBSYSTEMS_TEST &&
+                    robot.robotDrive != null && pressed)
+                {
+                    if (robot.autoBalanceTask.isActive())
+                    {
+                        robot.autoBalanceTask.autoAssistCancel();
+                    }
+                    else
+                    {
+                        robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, null);
+                    }
+                }
+                break;
+    
+                case FrcXboxController.START:
+                    // Test auto balance from outside the community.
+                    if (testChoices.getTest() == Test.SUBSYSTEMS_TEST &&
+                        robot.robotDrive != null && pressed)
+                    {
+                        if (robot.autoBalanceTask.isActive())
+                        {
+                            robot.autoBalanceTask.autoAssistCancel();
+                        }
+                        else
+                        {
+                            robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, null);
+                        }
                     }
                     break;
             }

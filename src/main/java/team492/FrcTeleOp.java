@@ -27,7 +27,6 @@ import TrcCommonLib.trclib.TrcRobot;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
-import team492.FrcAuto.BalanceInitSide;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
@@ -42,7 +41,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     // Global objects.
     //
     protected final Robot robot;
-    // private final TrcTriggerThresholdZones elevatorTrigger;
     private boolean controlsEnabled = false;
 
     private boolean manualOverride = false;
@@ -63,15 +61,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         // Create and initialize global object.
         //
         this.robot = robot;
-        // if (robot.elevator != null)
-        // {
-        //     elevatorTrigger = new TrcTriggerThresholdZones(
-        //         "elevatorTrigger", robot.elevatorPidActuator::getPosition, RobotParams.ELEVATOR_TRIGGERS, false);
-        // }
-        // else
-        // {
-        //     elevatorTrigger = null;
-        // }
     }   //FrcTeleOp
 
     //
@@ -107,11 +96,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             // TODO: Add back
             // robot.elevatorPidActuator.zeroCalibrate(moduleName);
         }
-
-        // if (elevatorTrigger != null)
-        // {
-        //     elevatorTrigger.enableTrigger(this::elevatorTriggerCallback);
-        // }
     }   //startMode
 
     /**
@@ -131,27 +115,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         //
         // Disable subsystems before exiting if necessary.
         //
-        // if (elevatorTrigger != null)
-        // {
-        //     elevatorTrigger.disableTrigger();
-        // }
     }   //stopMode
-
-    // /**
-    //  * This method is called when the elevator position crosses a certain threshold.
-    //  *
-    //  * @param context specifies the callback parameters.
-    //  */
-    // private void elevatorTriggerCallback(Object context)
-    // {
-    //     TrcTriggerThresholdZones.CallbackContext params = (TrcTriggerThresholdZones.CallbackContext) context;
-
-    //     if (robot.weedWhacker != null && params.prevZone == 0 && params.currZone == 1)
-    //     {
-    //         // Elevator is going up.
-    //         robot.weedWhacker.retract();
-    //     }
-    // }   //elevatorTriggerCallback
 
     /**
      * This method is called periodically on the main robot thread. Typically, you put TeleOp control code here that
@@ -193,8 +157,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (RobotParams.Preferences.useSubsystems)
                 {
                     double power = robot.operatorStick.getYWithDeadband(true);
-                    // double armPos = (1 - robot.operatorStick.getZ())/2.0 * RobotParams.ARM_SAFE_RANGE +
-                    //                 RobotParams.ARM_LOW_POS;
 
                     if (robot.arm != null && armControl)
                     {
@@ -318,26 +280,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcXboxController.BUTTON_B:
                 // Evan's turtle mode, need to test ownership 
-                if (robot.elevator != null && robot.arm != null && robot.wrist != null && pressed)
+                if (pressed)
                 {
                     robot.turtleMode(moduleName);
-                    // robot.elevatorPidActuator.setPosition(0.0, true);
-                    // robot.armPidActuator.setPosition(RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER);
-                    // robot.wristPidActuator.setPosition(5.0, true);
                 }
                 break;
 
             case FrcXboxController.BUTTON_X:
-                // TODO (Code Review): I hope this is test code! This is in the driver's controller, not the operator.
-                // Plus the fact that since it doesn't take ownership, it would interfere with analog control.
-                // if (pressed)
-                // {
-                //     robot.wristPidActuator.setPosition(90.0, true);
-                // }
-                // else
-                // {
-                //     robot.wristPidActuator.setPosition(0.0, true);
-                // }
                 break;
 
             case FrcXboxController.BUTTON_Y:
@@ -384,46 +333,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcXboxController.BACK:
-                // Test auto balance from inside the community.
-                // TODO (Code Review): This is test code and should not live here.
-                // If you want to keep it, move it to FrcTest.
-                // if (robot.robotDrive != null && pressed)
-                // {
-                //     if (robot.autoBalanceTask.isActive())
-                //     {
-                //         robot.autoBalanceTask.autoAssistCancel();
-                //     }
-                //     else
-                //     {
-                //         robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.INSIDE, null);
-                //     }
-                // }
                 break;
 
             case FrcXboxController.START:
-                // Test auto balance from outside the community.
-                // TODO (Code Review): This is test code and should not live here.
-                // If you want to keep it, move it to FrcTest.
-                // if (robot.robotDrive != null && pressed)
-                // {
-                //     if (robot.autoBalanceTask.isActive())
-                //     {
-                //         robot.autoBalanceTask.autoAssistCancel();
-                //     }
-                //     else
-                //     {
-                //         robot.autoBalanceTask.autoAssistBalance(BalanceInitSide.OUTSIDE, null);
-                //     }
-                // }
                 break;
 
             case FrcXboxController.LEFT_STICK_BUTTON:
-                // Force wrist sync
-                // TODO (Code Review): Is this test code? If it's not, move it out of the driver's controller.
-                // if (robot.wrist != null && pressed)
-                // {
-                //     robot.wrist.syncEncoder(true);
-                // }
                 break;
 
             case FrcXboxController.RIGHT_STICK_BUTTON:
@@ -432,7 +347,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     }   //driverControllerButtonEvent
 
     /**
-     * This method is called when a right driver stick button event is detected.
+     * This method is called when a left driver stick button event is detected.
      *
      * @param button specifies the button ID that generates the event
      * @param pressed specifies true if the button is pressed, false otherwise.
@@ -547,22 +462,25 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                 }
                 break;
-            //HIGH SCORING Cube or COne
-            case FrcJoystick.LOGITECH_BUTTON2:
-                // Press to set up for scoring.
+
+                case FrcJoystick.LOGITECH_BUTTON2:
+                // Press to set up for scoring on all levels.
+                // TODO: Once presets are all determined, switch to AutoScore
                 if (pressed)
                 {
                     if (objType == ObjectType.CONE)
                     {
-                        robot.prepSubsystems(
-                            moduleName,
-                            RobotParams.ELEVATOR_MAX_POS, RobotParams.ARM_MAX_POS,
+                        robot.prepSubsystems(moduleName,
+                            RobotParams.elevatorConeScorePresets[scoreLevel],
+                            RobotParams.armConeScorePresets[scoreLevel],
                             RobotParams.wristConeScorePresets[scoreLevel]);
                     }
                     else
                     {
-                        robot.prepSubsystems(
-                            moduleName, 11.4, RobotParams.ARM_MAX_POS, RobotParams.wristCubeScorePresets[scoreLevel]);
+                        robot.prepSubsystems(moduleName,
+                            RobotParams.elevatorCubeScorePresets[scoreLevel],
+                            RobotParams.armCubeScorePresets[scoreLevel],
+                            RobotParams.wristCubeScorePresets[scoreLevel]);
                     }
                 }
                 break;
@@ -575,8 +493,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON4:
                 if (pressed)
                 {
-                    robot.prepSubsystems(
-                        moduleName, RobotParams.ELEVATOR_MIN_POS, -12.6, RobotParams.WRIST_CUBE_PICKUP_POSITION);
+                    robot.prepSubsystems(moduleName, 
+                        RobotParams.ELEVATOR_CUBE_PICKUP_POSITION,
+                        RobotParams.ARM_CUBE_PICKUP_POSITION,
+                        RobotParams.WRIST_CUBE_PICKUP_POSITION);
                     robot.ledIndicator.setPickObject(ObjectType.CUBE);
                     objType = ObjectType.CUBE;
                 }
@@ -586,8 +506,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON5:
                 if (pressed)
                 {
-                    robot.prepSubsystems(
-                        moduleName, RobotParams.ELEVATOR_MIN_POS, -5.0, RobotParams.WRIST_CONE_PICKUP_POSITION);
+                    robot.prepSubsystems(moduleName, 
+                        RobotParams.ELEVATOR_CONE_PICKUP_POSITION,
+                        RobotParams.ARM_CONE_PICKUP_POSITION,
+                        RobotParams.WRIST_CONE_PICKUP_POSITION);
                     robot.ledIndicator.setPickObject(ObjectType.CONE);
                     objType = ObjectType.CONE;
                 }
@@ -623,6 +545,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON10:
+                // Force wrist sync
+                if (robot.wrist != null && pressed)
+                {
+                    robot.wrist.syncEncoder(true);
+                }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON11:
@@ -693,7 +620,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.ledIndicator.setPickObject(ObjectType.CONE);
                     objType = ObjectType.CONE;
                 }
-                // robot.prepareForSingleSubstationPickup(moduleName);
                 break;
             
             //CANCEL BUTTON
@@ -702,8 +628,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 {
                     if (robot.autoPickupTask != null) robot.autoPickupTask.autoAssistCancel();
                     if (robot.autoScoreTask != null) robot.autoScoreTask.autoAssistCancel();
+                    if (robot.autoBalanceTask != null) robot.autoBalanceTask.autoAssistCancel();
                     if (robot.arm != null ) robot.armPidActuator.releaseExclusiveAccess(moduleName);
                     if (robot.elevator != null) robot.elevatorPidActuator.releaseExclusiveAccess(moduleName);
+                    if (robot.wrist != null) robot.wristPidActuator.releaseExclusiveAccess(moduleName);
+                    if (robot.intake != null) robot.intake.releaseExclusiveAccess(moduleName);
                 }
                 break;
             
