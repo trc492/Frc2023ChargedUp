@@ -73,7 +73,6 @@ public class Arm
         actuatorMotor.setPositionSensorInverted(RobotParams.ARM_ENCODER_INVERTED);
         actuatorMotor.setFeedbackDevice(FeedbackDevice.IntegratedSensor);
         actuatorMotor.setCurrentLimit(20.0, 40.0, 0.5);
-        // TODO: Config max power here?
         // configMotionMagic(actuatorMotor.motor);
 
         TrcMotorLimitSwitch lowerLimitSw = new TrcMotorLimitSwitch("ArmLowerLimitSw", actuatorMotor, false);

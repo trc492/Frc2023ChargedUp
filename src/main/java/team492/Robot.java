@@ -735,6 +735,8 @@ public class Robot extends FrcRobotBase
     /**
      * This method configures the subsystems to Turtle Mode which means to retract everything so that the robot can
      * safely travel without damaging the subsystems.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
      */
     public void turtleMode(String owner)
     {
@@ -759,18 +761,46 @@ public class Robot extends FrcRobotBase
         //     owner, delay, RobotParams.ARM_TRAVEL_POSITION, true, RobotParams.ARM_MAX_POWER, null, 0.0);
     }   //turtleMode
 
+    /**
+     * This method prep the subsystems for a certain operation.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     * @param elevatorPos specifies the elevator position.
+     * @param armPos specifies the arm position.
+     * @param wristPos specifies the wrist position.
+     */
+    public void prepSubsystems(String owner, double elevatorPos, double armPos, double wristPos)
+    {
+        if (elevator != null && arm != null && wrist != null)
+        {
+            elevatorPidActuator.setPosition(owner, elevatorPos, true, 1.0, null, 0.0);
+            armPidActuator.setPosition(owner, armPos, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+            wristPidActuator.setPosition(owner, wristPos, true, RobotParams.WRIST_MAX_POWER, null, 0.0);
+        }
+    }   //prepSubsystems
+
     // prepares robot for single substation pickup
-    public void prepareForSingleSubstationPickup(String owner){
-        wrist.getPidActuator().setPosition(owner, 0.0, RobotParams.WRIST_MIN_POS, true, 1.0, null, 0.0);
-        arm.getPidActuator().setPosition(owner, 0.5, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        elevator.getPidActuator().setPosition(owner, 0.5, 5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-    }
+    public void prepForSingleSubstationPickup(String owner)
+    {
+        if (elevator != null && arm != null && wrist != null)
+        {
+            wristPidActuator.setPosition(owner, 0.0, RobotParams.WRIST_MIN_POS, true, 1.0, null, 0.0);
+            armPidActuator.setPosition(
+                owner, 0.5, RobotParams.ARM_MIN_POS, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+            elevatorPidActuator.setPosition(owner, 0.5, 5, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        }
+    }   //prepForSingleSubstationPickup
 
     //prepares robot for nose in ground pickup 
-    public void prepareForNosePickup(String owner){
-        wrist.getPidActuator().setPosition(owner, 0.0, 10, true, 1.0, null, 0.0);
-        arm.getPidActuator().setPosition(owner, 0.5, RobotParams.ARM_MIN_POS_WEEDWHACKER_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-        elevator.getPidActuator().setPosition(owner, 0.5, 0, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-    }
+    public void prepForNosePickup(String owner)
+    {
+        if (elevator != null && arm != null && wrist != null)
+        {
+            wristPidActuator.setPosition(owner, 0.0, 10, true, 1.0, null, 0.0);
+            armPidActuator.setPosition(
+                owner, 0.5, RobotParams.ARM_MIN_POS_WEEDWHACKER_DOWN, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+            elevatorPidActuator.setPosition(owner, 0.5, 0, true, RobotParams.ARM_MAX_POWER, null, 0.0);
+        }
+    }   //prepForNosePickup
 
 }   //class Robot

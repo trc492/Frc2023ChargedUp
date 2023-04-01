@@ -23,7 +23,6 @@
 package team492.subsystems;
 
 import TrcCommonLib.trclib.TrcAddressableLED;
-import TrcCommonLib.trclib.TrcColor;
 import TrcFrcLib.frclib.FrcAddressableLED;
 import TrcFrcLib.frclib.FrcColor;
 import team492.RobotParams;
@@ -46,10 +45,17 @@ public class LEDIndicator
     private static final TrcAddressableLED.Pattern hasObjectPattern =           // Red
         new TrcAddressableLED.Pattern("hasObject", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern pickCubePattern =            // Full bright Magenta
+    private static final TrcAddressableLED.Pattern pickCubePattern =            // Bright Magenta
         new TrcAddressableLED.Pattern("pickCube", new FrcColor(255, 0, 255), RobotParams.NUM_LEDS);
-    private static final TrcAddressableLED.Pattern pickConePattern =
+    private static final TrcAddressableLED.Pattern pickConePattern =            // Bright Yellow
         new TrcAddressableLED.Pattern("pickCone", new FrcColor(255, 255, 0), RobotParams.NUM_LEDS);
+
+    private static final TrcAddressableLED.Pattern scoreLevel2Pattern =         // Bright Green
+        new TrcAddressableLED.Pattern("scoreLevel2", new FrcColor(0, 255, 0), 45);
+    private static final TrcAddressableLED.Pattern scoreLevel1Pattern =         // Bright Green
+        new TrcAddressableLED.Pattern("scoreLevel1", new FrcColor(0, 255, 0), 30);
+    private static final TrcAddressableLED.Pattern scoreLevel0Pattern =         // Bright Green
+        new TrcAddressableLED.Pattern("scoreLevel0", new FrcColor(0, 255, 0), 15);
 
     private static final TrcAddressableLED.Pattern detectedConePattern =        // Yellow
         new TrcAddressableLED.Pattern("detectedCone", new FrcColor(63, 63, 0), RobotParams.NUM_LEDS);
@@ -65,9 +71,12 @@ public class LEDIndicator
             detectedAprilTagPattern,
             detectedCubePattern,
             detectedConePattern,
-            hasObjectPattern,
-            pickCubePattern, // TODO: Determine correct priority for pickCube and pickCone patterns
+            scoreLevel2Pattern,
+            scoreLevel1Pattern,
+            scoreLevel0Pattern,
             pickConePattern,
+            pickCubePattern,
+            hasObjectPattern,
             fieldOrientedPattern,
             robotOrientedPattern,
             inverseOrientedPattern,
@@ -173,6 +182,24 @@ public class LEDIndicator
         {
             led.setPatternState(pickConePattern, true);
         }
-    }
+    }   //setPickObject
+
+    public void setScoreLevel(int scoreLevel)
+    {
+        switch (scoreLevel)
+        {
+            case 0:
+                led.setPatternState(scoreLevel0Pattern, true, 0.5);
+                break;
+
+            case 1:
+                led.setPatternState(scoreLevel1Pattern, true, 0.5);
+                break;
+
+            case 2:
+                led.setPatternState(scoreLevel2Pattern, true, 0.5);
+                break;
+        }
+    }   //setScoreLevel
 
 }   //class LEDIndicator
