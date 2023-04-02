@@ -37,6 +37,7 @@ import team492.drivebases.RobotDrive;
 public class FrcTeleOp implements TrcRobot.RobotMode
 {
     private static final String moduleName = "FrcTeleOp";
+    private static final boolean traceButtonEvents = true;
     //
     // Global objects.
     //
@@ -262,6 +263,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      */
     protected void driverControllerButtonEvent(int button, boolean pressed)
     {
+        final String funcName = "driverControllerButtonEvent";
+
+        if (traceButtonEvents)
+        {
+            robot.globalTracer.traceInfo(funcName, ">>>>> button=%d, pressed=%s", button, pressed);
+        }
+
         robot.dashboard.displayPrintf(
             8, "DriverController: button=0x%04x %s", button, pressed ? "pressed" : "released");
 
@@ -353,6 +361,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      */
     protected void leftDriveStickButtonEvent(int button, boolean pressed)
     {
+        final String funcName = "leftDriveStickButtonEvent";
+
+        if (traceButtonEvents)
+        {
+            robot.globalTracer.traceInfo(funcName, ">>>>> button=%d, pressed=%s", button, pressed);
+        }
+
         robot.dashboard.displayPrintf(
             8, "LeftDriveStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
 
@@ -404,6 +419,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      */
     protected void rightDriveStickButtonEvent(int button, boolean pressed)
     {
+        final String funcName = "rightDriveStickButtonEvent";
+
+        if (traceButtonEvents)
+        {
+            robot.globalTracer.traceInfo(funcName, ">>>>> button=%d, pressed=%s", button, pressed);
+        }
+
         robot.dashboard.displayPrintf(
             8, "RightDriveStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
 
@@ -428,6 +450,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      */
     protected void operatorStickButtonEvent(int button, boolean pressed)
     {
+        final String funcName = "operatorStickButtonEvent";
+
+        if (traceButtonEvents)
+        {
+            robot.globalTracer.traceInfo(funcName, ">>>>> button=%d, pressed=%s", button, pressed);
+        }
+
         robot.dashboard.displayPrintf(
             8, "OperatorStick: button=0x%04x %s", button, pressed ? "pressed" : "released");
 
@@ -595,6 +624,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      */
     protected void buttonPanelButtonEvent(int button, boolean pressed)
     {
+        final String funcName = "buttonPanelButtonEvent";
+
+        if (traceButtonEvents)
+        {
+            robot.globalTracer.traceInfo(funcName, ">>>>> button=%d, pressed=%s", button, pressed);
+        }
+
         robot.dashboard.displayPrintf(
             8, "ButtonPanel: button=0x%04x %s", button, pressed ? "pressed" : "released");
 
@@ -715,6 +751,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
      */
     protected void switchPanelButtonEvent(int button, boolean pressed)
     {
+        final String funcName = "switchPanelButtonEvent";
+
+        if (traceButtonEvents)
+        {
+            robot.globalTracer.traceInfo(funcName, ">>>>> button=%d, pressed=%s", button, pressed);
+        }
+
         robot.dashboard.displayPrintf(
             8, "SwitchPanel: button=0x%04x %s", button, pressed ? "pressed" : "released");
 
