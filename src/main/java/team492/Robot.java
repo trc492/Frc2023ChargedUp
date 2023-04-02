@@ -35,7 +35,6 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobotBattery;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcVisionTargetInfo;
-import TrcCommonLib.trclib.TrcOpenCvColorBlobPipeline.DetectedObject;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANFalcon;

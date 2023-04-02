@@ -132,6 +132,10 @@ public class PhotonVision extends FrcPhotonVision
 
         if (detectedObject != null && ledIndicator != null)
         {
+            // TODO (Code Review): Why disable this? This only overrides the scoreLevel thing if it sees the AprilTag
+            // which means you already approached the scoring location. By then, you should already know what level
+            // you are scoring and the object you are scoring. I thought knowing vision sees the target is important
+            // here in case you are using autoScore with vision.
             // ledIndicator.setVisionDetectedObject(getPipeline());
         }
 
@@ -195,17 +199,14 @@ public class PhotonVision extends FrcPhotonVision
 
         if (poseEstimator != null)
         {
-            TrcDbgTrace.globalTraceInfo("getEstPose", "has poseEstimator");
             if (robotPose != null)
             {
                 poseEstimator.setReferencePose(DetectedObject.trcPose2DToPose3d(robotPose));
             }
             Optional<EstimatedRobotPose> optionalPose = poseEstimator.update();
-            TrcDbgTrace.globalTraceInfo("getEstPose", "optionalPose=%s", optionalPose.isPresent());
             if (optionalPose.isPresent())
             {
                 estimatedRobotPose = DetectedObject.pose3dToTrcPose2D(optionalPose.get().estimatedPose);
-                TrcDbgTrace.globalTraceInfo("getEstPose", "estPose=%s", estimatedRobotPose);
             }
         }
 
