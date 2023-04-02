@@ -96,7 +96,6 @@ public class Intake
         boolean sensorActive = ((AtomicBoolean) context).get();
         if (robot.ledIndicator != null)
         {
-            // Same issue as TeleOp, forgot to change when I switched
             robot.ledIndicator.setHasObject(sensorActive);
         }
 

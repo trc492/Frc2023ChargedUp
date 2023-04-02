@@ -492,7 +492,7 @@ public class RobotParams
     public static final double ARM_TOLERANCE                    = 1.0;
     public static final double ARM_CAL_POWER                    = -0.2;
     public static final double ARM_MAX_POWER                    = 0.4;
-    public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.0;
+    public static final double ARM_MAX_GRAVITY_COMP_POWER       = 0.05;
     public static final double ARM_PRESET_TOLERANCE             = 5.0;
 
     public static final double ARM_CUBE_PICKUP_POSITION         = -12.6;

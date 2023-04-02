@@ -480,7 +480,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             //     objType == ObjectType.CONE?
                             //         RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
                             //     1.0);
-                            // Originally planned to switch between showing score level and showing pickup, forgot to remove
                         }
                         else
                         {
@@ -684,13 +683,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.PANEL_BUTTON_WHITE1:
                 if (pressed)
                 {
-                    if (robot.autoPickupTask != null) robot.autoPickupTask.autoAssistCancel();
-                    if (robot.autoScoreTask != null) robot.autoScoreTask.autoAssistCancel();
-                    if (robot.autoBalanceTask != null) robot.autoBalanceTask.autoAssistCancel();
-                    if (robot.arm != null ) robot.armPidActuator.releaseExclusiveAccess(moduleName);
-                    if (robot.elevator != null) robot.elevatorPidActuator.releaseExclusiveAccess(moduleName);
-                    if (robot.wrist != null) robot.wristPidActuator.releaseExclusiveAccess(moduleName);
-                    if (robot.intake != null) robot.intake.releaseExclusiveAccess(moduleName);
+                    releaseAutoAssistAndSubsystems();
                 }
                 break;
             
@@ -791,5 +784,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
         }
     }   //switchPanelButtonEvent
+
+    private void releaseAutoAssistAndSubsystems()
+    {
+        if (robot.autoPickupTask != null) robot.autoPickupTask.autoAssistCancel();
+        if (robot.autoScoreTask != null) robot.autoScoreTask.autoAssistCancel();
+        if (robot.autoBalanceTask != null) robot.autoBalanceTask.autoAssistCancel();
+        if (robot.elevator != null) robot.elevatorPidActuator.releaseExclusiveAccess(moduleName);
+        if (robot.arm != null ) robot.armPidActuator.releaseExclusiveAccess(moduleName);
+        if (robot.wrist != null) robot.wristPidActuator.releaseExclusiveAccess(moduleName);
+        if (robot.intake != null) robot.intake.releaseExclusiveAccess(moduleName);
+    }   //releaseAutoAssistAndSubsystems
 
 }   //class FrcTeleOp
