@@ -96,11 +96,7 @@ public class Intake
         boolean sensorActive = ((AtomicBoolean) context).get();
         if (robot.ledIndicator != null)
         {
-            // TODO (Code Review): What does this do? In order for intake to trigger, you must have already
-            // set up picking up cone or cube. Therefore, the LED's already lite with the right color. This
-            // doesn't change it at all! Like I said, setScoreLevel should only be called if objType or
-            // scoreLevel have changed and none of those changed here.
-            // robot.ledIndicator.setScoreLevel(robot.objType, robot.scoreLevel);
+            // Same issue as TeleOp, forgot to change when I switched
             robot.ledIndicator.setHasObject(sensorActive);
         }
 

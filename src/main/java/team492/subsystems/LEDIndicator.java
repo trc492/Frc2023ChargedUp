@@ -182,7 +182,7 @@ public class LEDIndicator
      */
     public void setHasObject(boolean hasObject)
     {
-        led.setPatternState(hasObjectPattern, hasObject);
+        led.setPatternState(hasObjectPattern, hasObject, 0.5);
     }   //setHasObject
 
     private void setScoreLevel(TrcAddressableLED.Pattern[] scoreLevelPatterns, int scoreLevel)

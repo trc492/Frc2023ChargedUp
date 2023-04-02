@@ -480,10 +480,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             //     objType == ObjectType.CONE?
                             //         RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
                             //     1.0);
-                            // TODO (Code Review): What does this do? I don't understand. setScoreLevel should only
-                            // be called if either robot.objType or robot.scoreLevel have changed. Neither of those
-                            // changed here. So why call it?
-                            robot.ledIndicator.setScoreLevel(robot.objType, robot.scoreLevel);
+                            // Originally planned to switch between showing score level and showing pickup, forgot to remove
                         }
                         else
                         {
