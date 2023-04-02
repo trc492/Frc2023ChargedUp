@@ -264,7 +264,7 @@ public class Robot extends FrcRobotBase
 
                 if (RobotParams.Preferences.useWrist)
                 {
-                    wrist = new Wrist(globalTracer);
+                    wrist = new Wrist(this, globalTracer);
                     wristPidActuator = wrist.getPidActuator();
                 }
 
@@ -775,7 +775,7 @@ public class Robot extends FrcRobotBase
      */
     public void turtleMode(String owner)
     {
-        prepSubsystems(owner, RobotParams.ELEVATOR_MIN_POS, RobotParams.ARM_MIN_POS, 5.0);
+        prepSubsystems(owner, RobotParams.ELEVATOR_MIN_POS, RobotParams.ARM_MIN_POS, 7.0);
     }   //turtleMode
 
 }   //class Robot

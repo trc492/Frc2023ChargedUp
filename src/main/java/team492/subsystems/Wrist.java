@@ -43,6 +43,7 @@ import TrcCommonLib.trclib.TrcTriggerDigitalInput;
 import TrcFrcLib.frclib.FrcCANCoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
 import TrcFrcLib.frclib.FrcMotorActuator;
+import team492.Robot;
 import team492.RobotParams;
 
 public class Wrist
@@ -51,6 +52,7 @@ public class Wrist
     private static final String ZERO_CAL_FILE = "wristzero.txt";
     private static final TrcDbgTrace msgTracer = TrcDbgTrace.getGlobalTracer();
 
+    private final Robot robot;
     private final FrcCANFalcon actuatorMotor;
     private final TrcPidActuator pidActuator;
     private final FrcCANCoder encoder;
@@ -62,14 +64,16 @@ public class Wrist
      *
      * @param msgTracer specifies the tracer to used for message logging, can be null if not provided.
      */
-    public Wrist(TrcDbgTrace msgTracer)
+    public Wrist(Robot robot, TrcDbgTrace msgTracer)
     {
+        this.robot = robot;
         TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
             .setScaleAndOffset(RobotParams.WRIST_DEGS_PER_COUNT, RobotParams.WRIST_OFFSET)
             .setPosRange(RobotParams.WRIST_MIN_POS, RobotParams.WRIST_MAX_POS)
             .setPidParams(
                 RobotParams.WRIST_KP, RobotParams.WRIST_KI, RobotParams.WRIST_KD, RobotParams.WRIST_KF,
-                RobotParams.WRIST_IZONE, RobotParams.WRIST_TOLERANCE);
+                RobotParams.WRIST_IZONE, RobotParams.WRIST_TOLERANCE)
+            .setPowerCompensation(this::getGravityCompensation);
 
         actuatorMotor = new FrcCANFalcon(moduleName + ".motor", RobotParams.CANID_WRIST);
         actuatorMotor.resetFactoryDefault();
@@ -290,5 +294,16 @@ public class Wrist
             e.printStackTrace();
         }
     }   //saveZeroPosition
+
+    /**
+     * This method calculates the power required to hold the arm against gravity.
+     *
+     * @param currPower specifies the current arm power (not used).
+     * @return power value to hold arm against gravity.
+     */
+    public double getGravityCompensation(double currPower)
+    {
+        return RobotParams.WRIST_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()-robot.armPidActuator.getPosition()));
+    }   //getGravityCompensation
 
 }   //class Wrist

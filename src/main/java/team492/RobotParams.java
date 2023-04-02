@@ -278,11 +278,11 @@ public class RobotParams
     public static final double CAMERA_DATA_TIMEOUT              = 0.5;      // 500ms
     public static final double VISION_TIMEOUT                   = 0.5;      // 500ms
     public static final double VISION_TARGET_HEIGHT             = 104.0;    // Inches from the floor (not used)
-    public static final double CAMERA_Y_OFFSET                  = 11.6625;  // Inches from the center of the robot
-    public static final double CAMERA_X_OFFSET                  = 0.1875;   // 3/16 Inches from the center of the robot
-    public static final double CAMERA_HEIGHT                    = 42;       // Inches from the floor
-    public static final double CAMERA_PITCH                     = -45.9094323859;   // degrees from horizontal
-    public static final double CAMERA_YAW                       = -1.7346883895;    // degrees from front
+    public static final double CAMERA_Y_OFFSET                  = 9.5;      // Inches from the center of the robot
+    public static final double CAMERA_X_OFFSET                  = 0.0;      // Exactly centered
+    public static final double CAMERA_HEIGHT                    = 43.625;   // Inches from the floor
+    public static final double CAMERA_PITCH                     = -37.8528213888;   // degrees from horizontal
+    public static final double CAMERA_YAW                       = -2.9126252095;    // degrees from front
     public static final Transform3d CAMERA_TRANSFORM3D          = new Transform3d(
         new Translation3d(CAMERA_Y_OFFSET*TrcUtil.METERS_PER_INCH, -CAMERA_X_OFFSET*TrcUtil.METERS_PER_INCH,
                           CAMERA_HEIGHT*TrcUtil.METERS_PER_INCH),
@@ -461,7 +461,7 @@ public class RobotParams
     //TODO: tune these values
     public static final double[] elevatorConeScorePresets       =
     {
-        0.0, 12.5, ELEVATOR_MAX_POS
+        0.0, 15.0, ELEVATOR_MAX_POS
     };
     //TODO: tune these values
     public static final double[] elevatorCubeScorePresets       =
@@ -526,14 +526,15 @@ public class RobotParams
     public static final double WRIST_MAX_POS                    = 240.0;
     public static final double WRIST_SAFE_RANGE                 = WRIST_MAX_POS - WRIST_MIN_POS;
 
-    public static final double WRIST_KP                         = 0.006;
-    public static final double WRIST_KI                         = 0.008;
+    public static final double WRIST_KP                         = 0.03;
+    public static final double WRIST_KI                         = 0.0;
     public static final double WRIST_KD                         = 0.0;
-    public static final double WRIST_KF                         = 0.0002;
-    public static final double WRIST_IZONE                      = 3.0;
+    public static final double WRIST_KF                         = 0.0;
+    public static final double WRIST_IZONE                      = 0.0;
     public static final double WRIST_TOLERANCE                  = 1.0;
     public static final double WRIST_CAL_POWER                  = -0.1;
     public static final double WRIST_MAX_POWER                  = 0.2;
+    public static final double WRIST_MAX_GRAVITY_COMP_POWER     = -0.05;
     public static final double WRIST_PRESET_TOLERANCE           = 5.0;
 
     public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
@@ -541,7 +542,8 @@ public class RobotParams
     // TODO: Determine Wrist preset positions
     public static final double[] wristConeScorePresets          =
     {
-        0.0, 0.0, 195.0
+        0.0, 200.0
+        , 195.0
     };
     public static final double[] wristCubeScorePresets          =
     {

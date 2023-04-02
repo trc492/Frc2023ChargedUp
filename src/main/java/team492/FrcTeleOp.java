@@ -282,11 +282,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Evan's turtle mode, need to test ownership 
                 if (pressed)
                 {
-                    robot.turtleMode(moduleName);
+                    robot.turtleMode(null);
                 }
                 break;
 
             case FrcXboxController.BUTTON_X:
+                if (pressed)
+                {
+                    robot.wristPidActuator.setPosition(180.0, true);
+                }
                 break;
 
             case FrcXboxController.BUTTON_Y:
@@ -446,18 +450,35 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         }
                         else if (spitting)
                         {
-                            robot.intake.autoAssistSpitout(
-                                objType == ObjectType.CONE?
-                                    RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
-                                0.5);
+                            robot.intake.setPower(objType == ObjectType.CONE?
+                                    RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER);
+                            // robot.intake.autoAssistSpitout(
+                            //     objType == ObjectType.CONE?
+                            //         RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
+                            //     1.0);
                         }
                         else
                         {
-                             robot.intake.autoAssistIntake(
-                                objType == ObjectType.CONE?
-                                    RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER,
-                                objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0,
-                                0.5);
+                            if (!robot.intake.hasObject())
+                            {
+                                robot.intake.autoAssistIntake(
+                                    objType == ObjectType.CONE?
+                                        RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER,
+                                    objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0,
+                                    0.5);
+                            }
+                            // else if (manualOverride)
+                            // {
+                            //     robot.intake.setPower(RobotParams.INTAKE_PICKUP_POWER);
+                            // }
+
+                        }
+                    }
+                    else
+                    {
+                        if (spitting || manualOverride)
+                        {
+                            robot.intake.setPower(0.0);
                         }
                     }
                 }
@@ -585,7 +606,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 else
                 {
                     // Stop the arm on release.
-                    robot.armPidActuator.setPidPower(0.0);
+                    robot.armPidActuator.setPidPower(0.0, true);
                 }
                 break;
 
@@ -601,14 +622,12 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 else
                 {
                     // Stop the wrist on release.
-                    robot.wristPidActuator.setPower(0.0);
+                    robot.wristPidActuator.setPidPower(0.0, true);
                 }
                 break;
 
-            //TURTLE MODE (Everything retracted)
             case FrcJoystick.PANEL_BUTTON_BLUE1:
-                //evan also has turtle mode on Button B 
-                robot.turtleMode(moduleName);
+                manualOverride = pressed;
                 break;
 
 
@@ -654,13 +673,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     robot.prepSubsystems(moduleName, 11.4, RobotParams.ARM_MAX_POS, 120.0);
                 }
                 break;
-            //Ready For Scoring Cone Mid
-            case FrcJoystick.PANEL_BUTTON_BLUE2:
-                if (robot.autoScoreTask != null && pressed)
-                {
-                    robot.autoScoreTask.autoAssistScoreCone(1, ScoreLocation.LEFT, false, true, null);
-                }
 
+            //TURTLE MODE (Everything retracted)
+            case FrcJoystick.PANEL_BUTTON_BLUE2:
+                //evan also has turtle mode on Button B 
+                if (pressed)
+                {
+                    robot.turtleMode(null);
+                }
                 break;
 
             //Ready for Scoring Cube Mid 
