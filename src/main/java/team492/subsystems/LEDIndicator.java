@@ -45,17 +45,19 @@ public class LEDIndicator
     private static final TrcAddressableLED.Pattern hasObjectPattern =           // Red
         new TrcAddressableLED.Pattern("hasObject", new FrcColor(63, 0, 0), RobotParams.NUM_LEDS);
 
-    private static final TrcAddressableLED.Pattern pickCubePattern =            // Bright Magenta
-        new TrcAddressableLED.Pattern("pickCube", new FrcColor(255, 0, 255), RobotParams.NUM_LEDS);
-    private static final TrcAddressableLED.Pattern pickConePattern =            // Bright Yellow
-        new TrcAddressableLED.Pattern("pickCone", new FrcColor(255, 255, 0), RobotParams.NUM_LEDS);
+    private static final TrcAddressableLED.Pattern scoreCubeLevel2Pattern =     // Bright Magenta
+        new TrcAddressableLED.Pattern("scoreLevel2", new FrcColor(255, 0, 255), 45);
+    private static final TrcAddressableLED.Pattern scoreCubeLevel1Pattern =     // Bright Magenta
+        new TrcAddressableLED.Pattern("scoreLevel1", new FrcColor(255, 0, 255), 30);
+    private static final TrcAddressableLED.Pattern scoreCubeLevel0Pattern =     // Bright Magenta
+        new TrcAddressableLED.Pattern("scoreLevel0", new FrcColor(255, 0, 255), 15);
 
-    private static final TrcAddressableLED.Pattern scoreLevel2Pattern =         // Bright Green
-        new TrcAddressableLED.Pattern("scoreLevel2", new FrcColor(0, 255, 0), 45);
-    private static final TrcAddressableLED.Pattern scoreLevel1Pattern =         // Bright Green
-        new TrcAddressableLED.Pattern("scoreLevel1", new FrcColor(0, 255, 0), 30);
-    private static final TrcAddressableLED.Pattern scoreLevel0Pattern =         // Bright Green
-        new TrcAddressableLED.Pattern("scoreLevel0", new FrcColor(0, 255, 0), 15);
+    private static final TrcAddressableLED.Pattern scoreConeLevel2Pattern =     // Bright Yellow
+        new TrcAddressableLED.Pattern("scoreLevel2", new FrcColor(255, 255, 0), 45);
+    private static final TrcAddressableLED.Pattern scoreConeLevel1Pattern =     // Bright Yellow
+        new TrcAddressableLED.Pattern("scoreLevel1", new FrcColor(255, 255, 0), 30);
+    private static final TrcAddressableLED.Pattern scoreConeLevel0Pattern =     // Bright Yellow
+        new TrcAddressableLED.Pattern("scoreLevel0", new FrcColor(255, 255, 0), 15);
 
     private static final TrcAddressableLED.Pattern detectedConePattern =        // Yellow
         new TrcAddressableLED.Pattern("detectedCone", new FrcColor(63, 63, 0), RobotParams.NUM_LEDS);
@@ -71,12 +73,12 @@ public class LEDIndicator
             detectedAprilTagPattern,
             detectedCubePattern,
             detectedConePattern,
-            scoreLevel2Pattern,
-            scoreLevel1Pattern,
-            scoreLevel0Pattern,
-            pickConePattern,
-            pickCubePattern,
-            hasObjectPattern,
+            scoreConeLevel2Pattern,
+            scoreCubeLevel2Pattern,
+            scoreConeLevel1Pattern,
+            scoreCubeLevel1Pattern,
+            scoreConeLevel0Pattern,
+            scoreCubeLevel0Pattern,
             fieldOrientedPattern,
             robotOrientedPattern,
             inverseOrientedPattern,
@@ -172,33 +174,71 @@ public class LEDIndicator
         led.setPatternState(hasObjectPattern, hasObject);
     }   //setHasObject
 
-    public void setPickObject(ObjectType objType)
+    public void setScoreLevel(ObjectType objType, int scoreLevel)
     {
-        if (objType == ObjectType.CUBE)
+        if (objType == ObjectType.CONE)
         {
-            led.setPatternState(pickCubePattern, true);
+            switch (scoreLevel)
+            {
+                case 0:
+                    led.setPatternState(scoreConeLevel2Pattern, false);
+                    led.setPatternState(scoreCubeLevel2Pattern, false);
+                    led.setPatternState(scoreConeLevel1Pattern, false);
+                    led.setPatternState(scoreCubeLevel1Pattern, false);
+                    led.setPatternState(scoreConeLevel0Pattern, true);
+                    led.setPatternState(scoreCubeLevel0Pattern, false);
+                    break;
+    
+                case 1:
+                    led.setPatternState(scoreConeLevel2Pattern, false);
+                    led.setPatternState(scoreCubeLevel2Pattern, false);
+                    led.setPatternState(scoreConeLevel1Pattern, true);
+                    led.setPatternState(scoreCubeLevel1Pattern, false);
+                    led.setPatternState(scoreConeLevel0Pattern, false);
+                    led.setPatternState(scoreCubeLevel0Pattern, false);
+                    break;
+    
+                case 2:
+                    led.setPatternState(scoreConeLevel2Pattern, true);
+                    led.setPatternState(scoreCubeLevel2Pattern, false);
+                    led.setPatternState(scoreConeLevel1Pattern, false);
+                    led.setPatternState(scoreCubeLevel1Pattern, false);
+                    led.setPatternState(scoreConeLevel0Pattern, false);
+                    led.setPatternState(scoreCubeLevel0Pattern, false);
+                    break;
+            }
         }
         else
         {
-            led.setPatternState(pickConePattern, true);
-        }
-    }   //setPickObject
-
-    public void setScoreLevel(int scoreLevel)
-    {
-        switch (scoreLevel)
-        {
-            case 0:
-                led.setPatternState(scoreLevel0Pattern, true, 0.5);
-                break;
-
-            case 1:
-                led.setPatternState(scoreLevel1Pattern, true, 0.5);
-                break;
-
-            case 2:
-                led.setPatternState(scoreLevel2Pattern, true, 0.5);
-                break;
+            switch (scoreLevel)
+            {
+                case 0:
+                    led.setPatternState(scoreConeLevel2Pattern, false);
+                    led.setPatternState(scoreCubeLevel2Pattern, false);
+                    led.setPatternState(scoreConeLevel1Pattern, false);
+                    led.setPatternState(scoreCubeLevel1Pattern, false);
+                    led.setPatternState(scoreConeLevel0Pattern, false);
+                    led.setPatternState(scoreCubeLevel0Pattern, true);
+                    break;
+    
+                case 1:
+                    led.setPatternState(scoreConeLevel2Pattern, false);
+                    led.setPatternState(scoreCubeLevel2Pattern, false);
+                    led.setPatternState(scoreConeLevel1Pattern, false);
+                    led.setPatternState(scoreCubeLevel1Pattern, true);
+                    led.setPatternState(scoreConeLevel0Pattern, false);
+                    led.setPatternState(scoreCubeLevel0Pattern, false);
+                    break;
+    
+                case 2:
+                    led.setPatternState(scoreConeLevel2Pattern, false);
+                    led.setPatternState(scoreCubeLevel2Pattern, true);
+                    led.setPatternState(scoreConeLevel1Pattern, false);
+                    led.setPatternState(scoreCubeLevel1Pattern, false);
+                    led.setPatternState(scoreConeLevel0Pattern, false);
+                    led.setPatternState(scoreCubeLevel0Pattern, false);
+                    break;
+            }
         }
     }   //setScoreLevel
 

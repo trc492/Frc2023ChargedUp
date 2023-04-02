@@ -441,7 +441,7 @@ public class RobotParams
     public static final double ELEVATOR_AUTOSTART_OFFSET        = 2.5;
     public static final double ELEVATOR_OFFSET                  = 0.0;
     public static final double ELEVATOR_MIN_POS                 = 0.0;
-    public static final double ELEVATOR_MAX_POS                 = 29.0;
+    public static final double ELEVATOR_MAX_POS                 = 22.0;
     public static final double ELEVATOR_STALL_MIN_POWER         = 0.3;
     public static final double ELEVATOR_STALL_TOLERANCE         = 0.0;
     public static final double ELEVATOR_STALL_TIMEOUT           = 1.0;
@@ -458,15 +458,13 @@ public class RobotParams
 
     public static final double ELEVATOR_CUBE_PICKUP_POSITION    = ELEVATOR_MIN_POS;
     public static final double ELEVATOR_CONE_PICKUP_POSITION    = ELEVATOR_MIN_POS;
-    //TODO: tune these values
     public static final double[] elevatorConeScorePresets       =
     {
-        0.0, 15.0, ELEVATOR_MAX_POS
+        ELEVATOR_MIN_POS, 11.5, ELEVATOR_MAX_POS
     };
-    //TODO: tune these values
     public static final double[] elevatorCubeScorePresets       =
     {
-       0.0, 0.0, 11.4
+       ELEVATOR_MIN_POS, 0.0, 11.4
     };
 
     // Arm subsystem.
@@ -502,12 +500,12 @@ public class RobotParams
     //TODO: tune these values, random numbers
     public static final double[] armConeScorePresets            =
     {
-        20, ARM_MAX_POS, ARM_MAX_POS
+        ARM_CONE_PICKUP_POSITION, ARM_MAX_POS, ARM_MAX_POS
     };
     //TODO: tune these values, random numbers
     public static final double[] armCubeScorePresets            =
     {
-        20, ARM_MAX_POS, ARM_MAX_POS
+        ARM_CUBE_PICKUP_POSITION, 70.8, ARM_MAX_POS
     };
 
     // Wrist subsystem.
@@ -539,14 +537,13 @@ public class RobotParams
 
     public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
     public static final double WRIST_CUBE_PICKUP_POSITION       = 62.5;
-    // TODO: Determine Wrist preset positions
     public static final double[] wristConeScorePresets          =
     {
-        0.0, 200.0, 195.0
+        90.0, 210.0, 195.0
     };
     public static final double[] wristCubeScorePresets          =
     {
-        0.0, 0.0, 120.0
+        40.0, 100, 120.0
     };
 
     // Intake subsystem.
@@ -554,7 +551,8 @@ public class RobotParams
     public static final boolean INTAKE_TRIGGER_INVERTED         = true;
     public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_CONE_RETAIN_POWER         = 0.05;
-    public static final double INTAKE_SPIT_POWER                = -0.4;
+    public static final double INTAKE_CUBE_RETAIN_POWER         = 0.05;
+    public static final double INTAKE_SPIT_POWER                = -0.6;
 
     // WeedWhacker subsystem.
     public static final double WEEDWHACKER_CUBE_PICKUP_POWER     = 0.8;

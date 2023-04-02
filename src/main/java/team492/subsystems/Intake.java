@@ -56,7 +56,7 @@ public class Intake
         intakeMotor.setMotorInverted(RobotParams.INTAKE_MOTOR_INVERTED);
         intakeMotor.setBrakeModeEnabled(true);
         intakeMotor.enableVoltageCompensation(RobotParams.BATTERY_NOMINAL_VOLTAGE);
-        // intakeMotor.setCurrentLimit(20.0, 40.0, 0.5);
+        intakeMotor.setCurrentLimit(20.0, 40.0, 0.5);
 
         intakeSensor = new FrcDigitalInput(moduleName + ".sensor", RobotParams.DIO_INTAKE_SENSOR);
         intakeTrigger = new TrcTriggerDigitalInput(moduleName + ".trigger", intakeSensor);
@@ -96,7 +96,7 @@ public class Intake
         boolean sensorActive = ((AtomicBoolean) context).get();
         if (robot.ledIndicator != null)
         {
-            robot.ledIndicator.setHasObject(sensorActive);
+            robot.ledIndicator.setScoreLevel(robot.objType, robot.scoreLevel);
         }
 
         if (msgTracer != null)

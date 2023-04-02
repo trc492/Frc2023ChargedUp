@@ -28,6 +28,7 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.ObjectType;
+import team492.FrcAuto.ScoreLevel;
 import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
 
@@ -47,8 +48,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean armControl = false;
     private boolean wristControl = false;
     private boolean spitting = false;
-    private ObjectType objType = ObjectType.CONE;
-    private int scoreLevel = 2;
 
     /**
      * Constructor: Create an instance of the object.
@@ -282,15 +281,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Evan's turtle mode, need to test ownership 
                 if (pressed)
                 {
-                    robot.turtleMode(null);
+                    robot.turtleMode(moduleName);
                 }
                 break;
 
             case FrcXboxController.BUTTON_X:
-                if (pressed)
-                {
-                    robot.wristPidActuator.setPosition(180.0, true);
-                }
                 break;
 
             case FrcXboxController.BUTTON_Y:
@@ -450,22 +445,23 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         }
                         else if (spitting)
                         {
-                            robot.intake.setPower(objType == ObjectType.CONE?
+                            robot.intake.setPower(robot.objType == ObjectType.CONE?
                                     RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER);
                             // robot.intake.autoAssistSpitout(
                             //     objType == ObjectType.CONE?
                             //         RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
                             //     1.0);
+                            robot.ledIndicator.setScoreLevel(robot.objType, robot.scoreLevel);
                         }
                         else
                         {
                             if (!robot.intake.hasObject())
                             {
                                 robot.intake.autoAssistIntake(
-                                    objType == ObjectType.CONE?
+                                    robot.objType == ObjectType.CONE?
                                         RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER,
-                                    objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: 0.0,
-                                    0.5);
+                                    robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER,
+                                    0.75);
                             }
                             // else if (manualOverride)
                             // {
@@ -489,19 +485,19 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // TODO: Once presets are all determined, switch to AutoScore
                 if (pressed)
                 {
-                    if (objType == ObjectType.CONE)
+                    if (robot.objType == ObjectType.CONE)
                     {
                         robot.prepSubsystems(moduleName,
-                            RobotParams.elevatorConeScorePresets[scoreLevel],
-                            RobotParams.armConeScorePresets[scoreLevel],
-                            RobotParams.wristConeScorePresets[scoreLevel]);
+                            RobotParams.elevatorConeScorePresets[robot.scoreLevel],
+                            RobotParams.armConeScorePresets[robot.scoreLevel],
+                            RobotParams.wristConeScorePresets[robot.scoreLevel]);
                     }
                     else
                     {
                         robot.prepSubsystems(moduleName,
-                            RobotParams.elevatorCubeScorePresets[scoreLevel],
-                            RobotParams.armCubeScorePresets[scoreLevel],
-                            RobotParams.wristCubeScorePresets[scoreLevel]);
+                            RobotParams.elevatorCubeScorePresets[robot.scoreLevel],
+                            RobotParams.armCubeScorePresets[robot.scoreLevel],
+                            RobotParams.wristCubeScorePresets[robot.scoreLevel]);
                     }
                 }
                 break;
@@ -518,8 +514,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         RobotParams.ELEVATOR_CUBE_PICKUP_POSITION,
                         RobotParams.ARM_CUBE_PICKUP_POSITION,
                         RobotParams.WRIST_CUBE_PICKUP_POSITION);
-                    robot.ledIndicator.setPickObject(ObjectType.CUBE);
-                    objType = ObjectType.CUBE;
+                    robot.ledIndicator.setScoreLevel(ObjectType.CUBE, robot.scoreLevel);
+                    robot.objType = ObjectType.CUBE;
                 }
                 break;
             
@@ -531,26 +527,26 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         RobotParams.ELEVATOR_CONE_PICKUP_POSITION,
                         RobotParams.ARM_CONE_PICKUP_POSITION,
                         RobotParams.WRIST_CONE_PICKUP_POSITION);
-                    robot.ledIndicator.setPickObject(ObjectType.CONE);
-                    objType = ObjectType.CONE;
+                    robot.ledIndicator.setScoreLevel(ObjectType.CONE, robot.scoreLevel);
+                    robot.objType = ObjectType.CONE;
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON6:
                 // Increases score level
-                if (pressed && scoreLevel < 2)
+                if (pressed && robot.scoreLevel < 2)
                 {
-                    scoreLevel++;
-                    robot.ledIndicator.setScoreLevel(scoreLevel);
+                    robot.scoreLevel++;
+                    robot.ledIndicator.setScoreLevel(robot.objType, robot.scoreLevel);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON7:
                 // Lowers score level
-                if (pressed && scoreLevel > 0)
+                if (pressed && robot.scoreLevel > 0)
                 {
-                    scoreLevel--;
-                    robot.ledIndicator.setScoreLevel(scoreLevel);
+                    robot.scoreLevel--;
+                    robot.ledIndicator.setScoreLevel(robot.objType, robot.scoreLevel);
                 }
                 break;
 
@@ -636,8 +632,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (pressed)
                 {
                     robot.prepSubsystems(moduleName, 5.0, RobotParams.ARM_MIN_POS, 5.0);
-                    robot.ledIndicator.setPickObject(ObjectType.CONE);
-                    objType = ObjectType.CONE;
+                    robot.ledIndicator.setScoreLevel(ObjectType.CONE, robot.scoreLevel);
+                    robot.objType = ObjectType.CONE;
                 }
                 break;
             
@@ -679,7 +675,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //evan also has turtle mode on Button B 
                 if (pressed)
                 {
-                    robot.turtleMode(null);
+                    robot.turtleMode(moduleName);
                 }
                 break;
 

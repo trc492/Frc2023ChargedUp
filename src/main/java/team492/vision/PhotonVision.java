@@ -132,7 +132,7 @@ public class PhotonVision extends FrcPhotonVision
 
         if (detectedObject != null && ledIndicator != null)
         {
-            ledIndicator.setVisionDetectedObject(getPipeline());
+            // ledIndicator.setVisionDetectedObject(getPipeline());
         }
 
         return detectedObject;
@@ -195,14 +195,17 @@ public class PhotonVision extends FrcPhotonVision
 
         if (poseEstimator != null)
         {
+            TrcDbgTrace.globalTraceInfo("getEstPose", "has poseEstimator");
             if (robotPose != null)
             {
                 poseEstimator.setReferencePose(DetectedObject.trcPose2DToPose3d(robotPose));
             }
             Optional<EstimatedRobotPose> optionalPose = poseEstimator.update();
+            TrcDbgTrace.globalTraceInfo("getEstPose", "optionalPose=%s", optionalPose.isPresent());
             if (optionalPose.isPresent())
             {
                 estimatedRobotPose = DetectedObject.pose3dToTrcPose2D(optionalPose.get().estimatedPose);
+                TrcDbgTrace.globalTraceInfo("getEstPose", "estPose=%s", estimatedRobotPose);
             }
         }
 

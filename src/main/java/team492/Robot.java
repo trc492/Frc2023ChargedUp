@@ -35,6 +35,7 @@ import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobotBattery;
 import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcVisionTargetInfo;
+import TrcCommonLib.trclib.TrcOpenCvColorBlobPipeline.DetectedObject;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcAnalogEncoder;
 import TrcFrcLib.frclib.FrcCANFalcon;
@@ -53,6 +54,7 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import team492.FrcAuto.ObjectType;
 import team492.autotasks.TaskAutoBalance;
 import team492.autotasks.TaskAutoPickup;
 import team492.autotasks.TaskAutoScore;
@@ -135,6 +137,9 @@ public class Robot extends FrcRobotBase
     public TaskAutoScore autoScoreTask;
     public TaskAutoPickup autoPickupTask;
     public TaskAutoBalance autoBalanceTask;
+
+    public int scoreLevel = 2;
+    public ObjectType objType = ObjectType.CONE;
 
     /**
      * Constructor: Create an instance of the object.
@@ -604,17 +609,11 @@ public class Robot extends FrcRobotBase
                     lineNum++;
                 }
 
-                if (weedWhacker != null)
+                if (photonVision != null && photonVision.getPipeline() == PipelineType.APRILTAG)
                 {
-                    dashboard.displayPrintf(lineNum, weedWhacker.toString());
-                }
-
-                if (photonVision != null)
-                {
-                    PipelineType pipelineType = photonVision.getPipeline();
-                    TrcPose2D robotPose =  pipelineType == PipelineType.APRILTAG?
-                        photonVision.getEstimatedFieldPosition(null): null;
-                    dashboard.displayPrintf(lineNum, "Vision[%s]: robotPose=%s", pipelineType, robotPose);
+                    FrcPhotonVision.DetectedObject detectedObj = photonVision.getBestDetectedObject();
+                    TrcPose2D robotPose = detectedObj != null? photonVision.getRobotFieldPosition(detectedObj): null;
+                    dashboard.displayPrintf(lineNum, "Vision[APRILTAG]: robotPose=%s", robotPose);
                     lineNum++;
                 }
 
@@ -775,7 +774,7 @@ public class Robot extends FrcRobotBase
      */
     public void turtleMode(String owner)
     {
-        prepSubsystems(owner, RobotParams.ELEVATOR_MIN_POS, RobotParams.ARM_MIN_POS, 7.0);
+        prepSubsystems(owner,0.5,  RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0);
     }   //turtleMode
 
 }   //class Robot
