@@ -542,8 +542,7 @@ public class RobotParams
     // TODO: Determine Wrist preset positions
     public static final double[] wristConeScorePresets          =
     {
-        0.0, 200.0
-        , 195.0
+        0.0, 200.0, 195.0
     };
     public static final double[] wristCubeScorePresets          =
     {

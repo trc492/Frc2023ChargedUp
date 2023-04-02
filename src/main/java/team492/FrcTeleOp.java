@@ -484,7 +484,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
 
-                case FrcJoystick.LOGITECH_BUTTON2:
+            case FrcJoystick.LOGITECH_BUTTON2:
                 // Press to set up for scoring on all levels.
                 // TODO: Once presets are all determined, switch to AutoScore
                 if (pressed)
@@ -605,7 +605,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 else
                 {
-                    // Stop the arm on release.
+                    // Stop the arm on release but still holding its position.
                     robot.armPidActuator.setPidPower(0.0, true);
                 }
                 break;
@@ -621,7 +621,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 else
                 {
-                    // Stop the wrist on release.
+                    // Stop the wrist on release but still holding its position.
                     robot.wristPidActuator.setPidPower(0.0, true);
                 }
                 break;

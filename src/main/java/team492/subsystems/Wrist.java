@@ -50,9 +50,9 @@ public class Wrist
 {
     private static final String moduleName = "Wrist";
     private static final String ZERO_CAL_FILE = "wristzero.txt";
-    private static final TrcDbgTrace msgTracer = TrcDbgTrace.getGlobalTracer();
 
     private final Robot robot;
+    private final TrcDbgTrace msgTracer;
     private final FrcCANFalcon actuatorMotor;
     private final TrcPidActuator pidActuator;
     private final FrcCANCoder encoder;
@@ -62,11 +62,13 @@ public class Wrist
     /**
      * Constructor: Create an instance of the object.
      *
+     * @param robot specifies the robot object so we can access other subsystems.
      * @param msgTracer specifies the tracer to used for message logging, can be null if not provided.
      */
     public Wrist(Robot robot, TrcDbgTrace msgTracer)
     {
         this.robot = robot;
+        this.msgTracer = msgTracer;
         TrcPidActuator.Parameters actuatorParams = new TrcPidActuator.Parameters()
             .setScaleAndOffset(RobotParams.WRIST_DEGS_PER_COUNT, RobotParams.WRIST_OFFSET)
             .setPosRange(RobotParams.WRIST_MIN_POS, RobotParams.WRIST_MAX_POS)
@@ -303,7 +305,8 @@ public class Wrist
      */
     public double getGravityCompensation(double currPower)
     {
-        return RobotParams.WRIST_MAX_GRAVITY_COMP_POWER * Math.sin(Math.toRadians(pidActuator.getPosition()-robot.armPidActuator.getPosition()));
+        return RobotParams.WRIST_MAX_GRAVITY_COMP_POWER *
+               Math.sin(Math.toRadians(pidActuator.getPosition() - robot.armPidActuator.getPosition()));
     }   //getGravityCompensation
 
 }   //class Wrist
