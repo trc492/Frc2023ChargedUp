@@ -67,7 +67,6 @@ import team492.subsystems.Wrist;
 import team492.vision.LimeLightVision;
 import team492.vision.OpenCvVision;
 import team492.vision.PhotonVision;
-import team492.vision.PhotonVision.PipelineType;
 
 /**
  * The Main class is configured to instantiate and automatically run this class,
@@ -608,13 +607,13 @@ public class Robot extends FrcRobotBase
                     lineNum++;
                 }
 
-                if (photonVision != null && photonVision.getPipeline() == PipelineType.APRILTAG)
-                {
-                    FrcPhotonVision.DetectedObject detectedObj = photonVision.getBestDetectedObject();
-                    TrcPose2D robotPose = detectedObj != null? photonVision.getRobotFieldPosition(detectedObj): null;
-                    dashboard.displayPrintf(lineNum, "Vision[APRILTAG]: robotPose=%s", robotPose);
-                    lineNum++;
-                }
+                // if (photonVision != null && photonVision.getPipeline() == PipelineType.APRILTAG)
+                // {
+                //     FrcPhotonVision.DetectedObject detectedObj = photonVision.getBestDetectedObject();
+                //     TrcPose2D robotPose = detectedObj != null? photonVision.getRobotFieldPosition(detectedObj): null;
+                //     dashboard.displayPrintf(lineNum, "Vision[APRILTAG]: robotPose=%s", robotPose);
+                //     lineNum++;
+                // }
 
                 // if (robotDrive != null)
                 // {

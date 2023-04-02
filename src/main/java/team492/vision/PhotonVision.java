@@ -258,7 +258,13 @@ public class PhotonVision extends FrcPhotonVision
             case APRILTAG:
                 if (target != null)
                 {
-                    targetHeight = getAprilTagPose(target.getFiducialId()).getZ();
+                    // Even though PhotonVision said detected target, FieldLayout may not give us AprilTagPose.
+                    // Check it before access the AprilTag pose.
+                    Pose3d aprilTagPose = getAprilTagPose(target.getFiducialId());
+                    if (aprilTagPose != null)
+                    {
+                        targetHeight = aprilTagPose.getZ();
+                    }
                 }
                 break;
 
