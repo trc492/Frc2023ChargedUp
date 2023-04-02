@@ -416,7 +416,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.intake.autoAssistSpitout(
                         currOwner, 0.0,
                         taskParams.objectType == ObjectType.CONE?
-                            RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
+                            RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER,
                             0.0, event, 0.0);
                 }
                 break;

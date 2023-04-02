@@ -551,8 +551,9 @@ public class RobotParams
     public static final boolean INTAKE_TRIGGER_INVERTED         = true;
     public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_CONE_RETAIN_POWER         = 0.05;
-    public static final double INTAKE_CUBE_RETAIN_POWER         = 0.05;
-    public static final double INTAKE_SPIT_POWER                = -0.6;
+    public static final double INTAKE_CUBE_RETAIN_POWER         = -0.05;
+    public static final double INTAKE_CONE_SPIT_POWER           = -0.8;
+    public static final double INTAKE_CUBE_SPIT_POWER           = 0.4;
 
     // WeedWhacker subsystem.
     public static final double WEEDWHACKER_CUBE_PICKUP_POWER     = 0.8;

@@ -168,7 +168,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                         {
                             robot.wristPidActuator.setPosition(moduleName, 0.0, 20.0, true, 1.0, null, 0.0);
                         }
-                        robot.intake.setPower(moduleName, 0.5, RobotParams.INTAKE_SPIT_POWER, 0.5, intakeEvent);
+                        robot.intake.setPower(moduleName, 0.5, preloadType == ObjectType.CONE? RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER, 0.5, intakeEvent);
                         sm.waitForSingleEvent(intakeEvent, State.BACK_UP);
                         // piecesScored++;
                     }

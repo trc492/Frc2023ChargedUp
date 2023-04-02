@@ -47,6 +47,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean manualOverride = false;
     private boolean armControl = false;
     private boolean wristControl = false;
+    private boolean intakeControl = false;
     private boolean spitting = false;
 
     /**
@@ -446,7 +447,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         else if (spitting)
                         {
                             robot.intake.setPower(robot.objType == ObjectType.CONE?
-                                    RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER);
+                                    RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
                             // robot.intake.autoAssistSpitout(
                             //     objType == ObjectType.CONE?
                             //         RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
@@ -463,18 +464,25 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                                     robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER,
                                     0.75);
                             }
-                            // else if (manualOverride)
-                            // {
-                            //     robot.intake.setPower(RobotParams.INTAKE_PICKUP_POWER);
-                            // }
+                            else
+                            {
+                                intakeControl = true;
+                                robot.intake.setPower(robot.objType == ObjectType.CONE?
+                                    RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER);
+                            }
 
                         }
                     }
                     else
                     {
-                        if (spitting || manualOverride)
+                        if (spitting)
                         {
                             robot.intake.setPower(0.0);
+                        }
+                        else if(intakeControl)
+                        {
+                            robot.intake.setPower(robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER);
+                            intakeControl = false;
                         }
                     }
                 }
