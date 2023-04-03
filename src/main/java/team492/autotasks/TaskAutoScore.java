@@ -351,6 +351,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
                     wristPos = RobotParams.wristCubeScorePresets[taskParams.scoreLevel];
                 }
+                // TODO (Code Review): Why are you doing these? msgTracer is already enabled on all of them?!
                 robot.elevatorPidActuator.setMsgTracer(msgTracer, false);
                 robot.armPidActuator.setMsgTracer(msgTracer, false);
                 robot.wristPidActuator.setMsgTracer(msgTracer, false);
@@ -365,7 +366,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     currOwner, 0.3, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 1.9);
                 sm.addEvent(wristEvent);
 
-                if (taskParams.useVision)   
+                if (taskParams.useVision)
                 {
                     robot.photonVision.setPipeline(PipelineType.APRILTAG);
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
@@ -426,7 +427,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 break;
 
             case RESET:
-                if(acquireDriveBaseOwnership()){
+                if (acquireDriveBaseOwnership())
+                {
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
                     // TODO: Tune delays & timeout
                     robot.robotDrive.purePursuitDrive.start(
@@ -435,11 +437,10 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.turtleMode(currOwner);
                     sm.waitForSingleEvent(driveEvent, State.DONE, 2.0);
                 }
-                // Back up 2 feet.
-                // Lower elevator to 0 height after a delay to make sure we don't hit anything.
-                // Lower arm to TRAVEL_POS after a delay to make sure we don't hit anything.
-                // goto DONE.
-
+                else
+                {
+                    sm.setState(State.DONE);
+                }
                 break; 
 
             default:

@@ -43,7 +43,6 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
-        BACK_UP,
         TURN,
         START_TO_CLIMB,
         CLIMB,
@@ -145,6 +144,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             switch (state)
             {
                 case START:
+                    // TODO (Code Review): Why do you comment all these out? This means you will not be able to do red alliance?! And you
+                    // can't change any options during competition.
                     // Read autoChoices.
                     // alliance = FrcAuto.autoChoices.getAlliance();
                     // scorePreload = FrcAuto.autoChoices.getScorePreload();

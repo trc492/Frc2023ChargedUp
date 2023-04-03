@@ -739,24 +739,48 @@ public class Robot extends FrcRobotBase
      * @param armPos specifies the arm position.
      * @param wristDelay specifies the delay in seconds before moving wrist.
      * @param wristPos specifies the wrist position.
+     * @param timeout specifies the maximum time allowed for the operation.
      */
     public void prepSubsystems(
-        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay, double wristPos, double timeout)
+        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay,
+        double wristPos, double timeout)
     {
         if (elevator != null && arm != null && wrist != null)
         {
             elevatorPidActuator.setPosition(owner, elevatorDelay, elevatorPos, true, 1.0, null, timeout);
             armPidActuator.setPosition(owner, armDelay, armPos, true, RobotParams.ARM_MAX_POWER, null, timeout);
-            wristPidActuator.setPosition(owner, wristDelay, wristPos, true, RobotParams.WRIST_MAX_POWER, null, timeout);
+            wristPidActuator.setPosition(
+                owner, wristDelay, wristPos, true, RobotParams.WRIST_MAX_POWER, null, timeout);
         }
     }   //prepSubsystems
 
+    /**
+     * This method prep the subsystems for a certain operation.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     * @param elevatorDelay specifies the delay in seconds before moving elevator.
+     * @param elevatorPos specifies the elevator position.
+     * @param armDelay specifies the delay in seconds before moving arm.
+     * @param armPos specifies the arm position.
+     * @param wristDelay specifies the delay in seconds before moving wrist.
+     * @param wristPos specifies the wrist position.
+     */
     public void prepSubsystems(
-        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay, double wirstPos)
+        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay,
+        double wirstPos)
     {
         prepSubsystems(owner, elevatorDelay, elevatorPos, armDelay, armPos, wristDelay, wirstPos, 0.0);
-    }
+    }   //prepSubsystems
 
+    /**
+     * This method prep the subsystems for a certain operation.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     * @param elevatorPos specifies the elevator position.
+     * @param armPos specifies the arm position.
+     * @param wristPos specifies the wrist position.
+     * @param timeout specifies the maximum time allowed for the operation.
+     */
     public void prepSubsystems(String owner, double elevatorPos, double armPos, double wristPos, double timeout)
     {
         prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, timeout);
@@ -783,7 +807,7 @@ public class Robot extends FrcRobotBase
      */
     public void turtleMode(String owner)
     {
-        prepSubsystems(owner,0.5,  RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0, 1.5);
+        prepSubsystems(owner, 0.5, RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0, 1.5);
     }   //turtleMode
 
 }   //class Robot
