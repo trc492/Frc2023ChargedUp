@@ -68,7 +68,7 @@ public class FrcAuto implements TrcRobot.RobotMode
         MIDDLE(1),
         BARRIER(2);
         // The value can be used as index into arrays if necessary.
-        int value;
+        public int value;
         AutoStartPos(int value)
         {
             this.value = value;
@@ -223,9 +223,9 @@ public class FrcAuto implements TrcRobot.RobotMode
             return autoStrategyMenu.getCurrentChoiceObject();
         }   //getStrategy
 
-        public int getStartPos()
+        public AutoStartPos getStartPos()
         {
-            return autoStartPosMenu.getCurrentChoiceObject().value;
+            return autoStartPosMenu.getCurrentChoiceObject();
         }   //getStartPos
 
         public ObjectType getPreloadedObjType()

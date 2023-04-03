@@ -546,12 +546,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON4:
                 if (pressed)
                 {
-                    robot.prepSubsystems(moduleName, 
-                        RobotParams.ELEVATOR_CUBE_PICKUP_POSITION,
-                        RobotParams.ARM_CUBE_PICKUP_POSITION,
-                        RobotParams.WRIST_CUBE_PICKUP_POSITION);
-                    robot.ledIndicator.setScoreLevel(ObjectType.CUBE, robot.scoreLevel);
-                    robot.objType = ObjectType.CUBE;
+                    robot.prepForCubeGroundPickup(moduleName, 0.0, null);
                 }
                 break;
             
@@ -559,12 +554,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.LOGITECH_BUTTON5:
                 if (pressed)
                 {
-                    robot.prepSubsystems(moduleName, 
-                        RobotParams.ELEVATOR_CONE_PICKUP_POSITION,
-                        RobotParams.ARM_CONE_PICKUP_POSITION,
-                        RobotParams.WRIST_CONE_PICKUP_POSITION);
-                    robot.ledIndicator.setScoreLevel(ObjectType.CONE, robot.scoreLevel);
-                    robot.objType = ObjectType.CONE;
+                    robot.prepForConeGroundPickup(moduleName, 0.0, null);
                 }
                 break;
 
@@ -674,9 +664,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
                 if (pressed)
                 {
-                    robot.prepSubsystems(moduleName, 5.0, RobotParams.ARM_MIN_POS, 5.0);
-                    robot.ledIndicator.setScoreLevel(ObjectType.CONE, robot.scoreLevel);
-                    robot.objType = ObjectType.CONE;
+                    robot.prepForConeSubstationPickup(moduleName, 0.0, null);
                 }
                 break;
             
@@ -700,6 +688,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
             
             //Ready for Scoring Cube High 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
+                // TODO (Code Review): Why are we not using autoScore(prepOnly)?
                 if (robot.autoScoreTask != null && pressed)
                 {
                     // robot.autoScoreTask.autoAssistScoreCube(2, false, true, null);

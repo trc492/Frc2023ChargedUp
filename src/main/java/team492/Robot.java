@@ -870,6 +870,31 @@ public class Robot extends FrcRobotBase
         prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, 0.0, null);
     }   //prepSubsystems
 
+    public void prepForCubeGroundPickup(String owner, double delay, TrcEvent event)
+    {
+        prepSubsystems(
+            owner, delay, RobotParams.ELEVATOR_CUBE_PICKUP_POSITION, delay, RobotParams.ARM_CUBE_PICKUP_POSITION,
+            delay, RobotParams.WRIST_CUBE_PICKUP_POSITION, 0.0, event);
+        ledIndicator.setScoreLevel(ObjectType.CUBE, scoreLevel);
+        objType = ObjectType.CUBE;
+    }   //prepForCubeGroundPickup
+
+    public void prepForConeGroundPickup(String owner, double delay, TrcEvent event)
+    {
+        prepSubsystems(
+            owner, delay, RobotParams.ELEVATOR_CONE_PICKUP_POSITION, delay, RobotParams.ARM_CONE_PICKUP_POSITION,
+            delay, RobotParams.WRIST_CONE_PICKUP_POSITION, 0.0, event);
+        ledIndicator.setScoreLevel(ObjectType.CONE, scoreLevel);
+        objType = ObjectType.CONE;
+    }   //prepForConeGroundPickup
+
+    public void prepForConeSubstationPickup(String owner, double delay, TrcEvent event)
+    {
+        prepSubsystems(owner, delay, 5.0, delay, RobotParams.ARM_MIN_POS, delay, 5.0, 0.0, event);
+        ledIndicator.setScoreLevel(ObjectType.CONE, scoreLevel);
+        objType = ObjectType.CONE;
+    }   //prepForConeSubstationPickup
+
     /**
      * This method configures the subsystems to Turtle Mode which means to retract everything so that the robot can
      * safely travel without damaging the subsystems.
