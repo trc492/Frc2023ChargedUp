@@ -741,14 +741,25 @@ public class Robot extends FrcRobotBase
      * @param wristPos specifies the wrist position.
      */
     public void prepSubsystems(
-        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay, double wristPos)
+        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay, double wristPos, double timeout)
     {
         if (elevator != null && arm != null && wrist != null)
         {
-            elevatorPidActuator.setPosition(owner, elevatorDelay, elevatorPos, true, 1.0, null, 0.0);
-            armPidActuator.setPosition(owner, armDelay, armPos, true, RobotParams.ARM_MAX_POWER, null, 0.0);
-            wristPidActuator.setPosition(owner, wristDelay, wristPos, true, RobotParams.WRIST_MAX_POWER, null, 0.0);
+            elevatorPidActuator.setPosition(owner, elevatorDelay, elevatorPos, true, 1.0, null, timeout);
+            armPidActuator.setPosition(owner, armDelay, armPos, true, RobotParams.ARM_MAX_POWER, null, timeout);
+            wristPidActuator.setPosition(owner, wristDelay, wristPos, true, RobotParams.WRIST_MAX_POWER, null, timeout);
         }
+    }   //prepSubsystems
+
+    public void prepSubsystems(
+        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay, double wirstPos)
+    {
+        prepSubsystems(owner, elevatorDelay, elevatorPos, armDelay, armPos, wristDelay, wirstPos, 0.0);
+    }
+
+    public void prepSubsystems(String owner, double elevatorPos, double armPos, double wristPos, double timeout)
+    {
+        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, timeout);
     }   //prepSubsystems
 
     /**
@@ -761,7 +772,7 @@ public class Robot extends FrcRobotBase
      */
     public void prepSubsystems(String owner, double elevatorPos, double armPos, double wristPos)
     {
-        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos);
+        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, 0.0);
     }   //prepSubsystems
 
     /**
@@ -772,7 +783,7 @@ public class Robot extends FrcRobotBase
      */
     public void turtleMode(String owner)
     {
-        prepSubsystems(owner,0.5,  RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0);
+        prepSubsystems(owner,0.5,  RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0, 1.5);
     }   //turtleMode
 
 }   //class Robot

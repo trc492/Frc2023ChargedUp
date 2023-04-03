@@ -115,6 +115,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
         //
         // Disable subsystems before exiting if necessary.
         //
+        releaseAutoAssistAndSubsystems();
     }   //stopMode
 
     /**

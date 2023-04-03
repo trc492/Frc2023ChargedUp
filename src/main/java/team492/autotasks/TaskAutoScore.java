@@ -351,18 +351,21 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
                     wristPos = RobotParams.wristCubeScorePresets[taskParams.scoreLevel];
                 }
+                robot.elevatorPidActuator.setMsgTracer(msgTracer, false);
+                robot.armPidActuator.setMsgTracer(msgTracer, false);
+                robot.wristPidActuator.setMsgTracer(msgTracer, false);
 
                 robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
+                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 1.9);
                 sm.addEvent(elevatorEvent);
                 robot.armPidActuator.setPosition(
-                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
+                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.9);
                 sm.addEvent(armEvent);
                 robot.wristPidActuator.setPosition(
-                    currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
+                    currOwner, 0.3, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 1.9);
                 sm.addEvent(wristEvent);
 
-                if (taskParams.useVision)
+                if (taskParams.useVision)   
                 {
                     robot.photonVision.setPipeline(PipelineType.APRILTAG);
                     robot.photonVision.detectBestObject(visionEvent, RobotParams.VISION_TIMEOUT);
@@ -418,21 +421,25 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                         taskParams.objectType == ObjectType.CONE?
                             RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER,
                             0.0, event, 0.0);
+                    sm.waitForSingleEvent(event, State.RESET);
                 }
                 break;
 
             case RESET:
+                if(acquireDriveBaseOwnership()){
+                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
+                    // TODO: Tune delays & timeout
+                    robot.robotDrive.purePursuitDrive.start(
+                        currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
+                        new TrcPose2D(0.0, -24.0, 0.0));
+                    robot.turtleMode(currOwner);
+                    sm.waitForSingleEvent(driveEvent, State.DONE, 2.0);
+                }
                 // Back up 2 feet.
                 // Lower elevator to 0 height after a delay to make sure we don't hit anything.
                 // Lower arm to TRAVEL_POS after a delay to make sure we don't hit anything.
                 // goto DONE.
-                robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
-                // TODO: Tune delays & timeout
-                robot.robotDrive.purePursuitDrive.start(
-                    currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                    new TrcPose2D(0.0, -24.0, 0.0));
-                robot.turtleMode(currOwner);
-                sm.waitForSingleEvent(driveEvent, State.DONE, 2.0);
+
                 break; 
 
             default:

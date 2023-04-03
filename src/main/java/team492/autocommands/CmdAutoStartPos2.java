@@ -146,35 +146,31 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             {
                 case START:
                     // Read autoChoices.
-                    alliance = FrcAuto.autoChoices.getAlliance();
-                    scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    preloadType = FrcAuto.autoChoices.getPreloadedObjType();
-                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
-                    scoreLocation = FrcAuto.autoChoices.getScoreLocation();
-                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    // alliance = FrcAuto.autoChoices.getAlliance();
+                    // scorePreload = FrcAuto.autoChoices.getScorePreload();
+                    // preloadType = FrcAuto.autoChoices.getPreloadedObjType();
+                    // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    // scoreLocation = FrcAuto.autoChoices.getScoreLocation();
+                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     startPos = alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_2: RobotParams.STARTPOS_RED_2;
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(startPos, false);
+                    robot.wristPidActuator.setPosition(RobotParams.WRIST_MIN_POS, true);
+
+                    // Zero elevator (just in case)
+                    // TODO: Remove if unnecessary
+                    robot.elevatorPidActuator.zeroCalibrate();
 
                     if (scorePreload)
                     {
                         robot.autoScoreTask.autoAssistScoreObject(
                             preloadType, scoreLevel, scoreLocation, false, false, autoAssistEvent);
-                        sm.waitForSingleEvent(autoAssistEvent, State.BACK_UP);
+                        sm.waitForSingleEvent(autoAssistEvent, doAutoBalance? State.TURN: State.DONE);
                     }
                     else
                     {
-                        sm.setState(State.BACK_UP);
+                        sm.setState(doAutoBalance? State.TURN: State.DONE);
                     }
-                    break;
-
-                case BACK_UP:
-                    // Back up a little so autoScore can raise the arm without hitting the shelf, and signal event when done.
-                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
-                    robot.robotDrive.purePursuitDrive.start(
-                        driveEvent, 0.8, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, -24.0, 0.0));
-                    sm.waitForSingleEvent(driveEvent, doAutoBalance? State.TURN: State.DONE);
                     break;
 
                 case TURN:
