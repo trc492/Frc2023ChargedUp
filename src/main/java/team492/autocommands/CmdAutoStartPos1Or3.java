@@ -278,7 +278,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 case DRIVE_TO_SCORE:
                     //do turtle mode so vision can see the target
                     if(robot.intake.hasObject()){
-                        robot.turtleMode(moduleName);
+                        robot.turtleMode(moduleName, null);
                         //drive to a place where we can see the apriltag
                         if (startPos == 0 && alliance == Alliance.Blue || startPos == 2 && alliance == Alliance.Red)
                         {

@@ -77,9 +77,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent elevatorEvent;
-    private final TrcEvent armEvent;
-    private final TrcEvent wristEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
     private final TrcEvent event;
@@ -102,9 +99,6 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
         this.robot = robot;
         this.msgTracer = msgTracer;
 
-        elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
-        armEvent = new TrcEvent(moduleName + ".armEvent");
-        wristEvent = new TrcEvent(moduleName + ".wristEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
         event = new TrcEvent(moduleName);
@@ -356,15 +350,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 robot.armPidActuator.setMsgTracer(msgTracer, false);
                 robot.wristPidActuator.setMsgTracer(msgTracer, false);
 
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 1.9);
-                sm.addEvent(elevatorEvent);
-                robot.armPidActuator.setPosition(
-                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 1.9);
-                sm.addEvent(armEvent);
-                robot.wristPidActuator.setPosition(
-                    currOwner, 0.3, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 1.9);
-                sm.addEvent(wristEvent);
+                robot.prepSubsystems(currOwner, 0.0, elevatorPos, 0.0, armPos, 0.3, wristPos, 1.9, event);
+                sm.addEvent(event);
 
                 if (taskParams.useVision)
                 {
@@ -434,7 +421,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     robot.robotDrive.purePursuitDrive.start(
                         currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
                         new TrcPose2D(0.0, -24.0, 0.0));
-                    robot.turtleMode(currOwner);
+                    robot.turtleMode(currOwner, null);
                     sm.waitForSingleEvent(driveEvent, State.DONE, 2.0);
                 }
                 else

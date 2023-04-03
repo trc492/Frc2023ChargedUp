@@ -875,10 +875,11 @@ public class Robot extends FrcRobotBase
      * safely travel without damaging the subsystems.
      *
      * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     * @param event specifies the event to signal when the operation is completed.
      */
-    public void turtleMode(String owner)
+    public void turtleMode(String owner, TrcEvent event)
     {
-        prepSubsystems(owner, 0.5, RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0, 1.5);
+        prepSubsystems(owner, 0.5, RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0, 1.5, event);
     }   //turtleMode
 
 }   //class Robot

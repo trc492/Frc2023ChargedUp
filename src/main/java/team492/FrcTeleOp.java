@@ -290,7 +290,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // Evan's turtle mode, need to test ownership 
                 if (pressed)
                 {
-                    robot.turtleMode(moduleName);
+                    robot.turtleMode(moduleName, null);
                 }
                 break;
 
@@ -712,7 +712,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 //evan also has turtle mode on Button B 
                 if (pressed)
                 {
-                    robot.turtleMode(moduleName);
+                    robot.turtleMode(moduleName, null);
                 }
                 break;
 

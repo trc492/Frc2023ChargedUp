@@ -29,7 +29,6 @@ import TrcCommonLib.trclib.TrcOwnershipMgr;
 import TrcCommonLib.trclib.TrcPose2D;
 import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcCommonLib.trclib.TrcTaskMgr;
-import TrcCommonLib.trclib.TrcTimer;
 import TrcCommonLib.trclib.TrcUtil;
 import TrcCommonLib.trclib.TrcTaskMgr.TaskType;
 import TrcFrcLib.frclib.FrcPhotonVision.DetectedObject;
@@ -69,14 +68,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
     private final String ownerName;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent elevatorEvent;
-    private final TrcEvent armEvent;
-    private final TrcEvent wristEvent;
+    private final TrcEvent event;
     private final TrcEvent intakeEvent;
     private final TrcEvent visionEvent;
     private final TrcEvent driveEvent;
-    private final TrcEvent timerEvent;
-    private final TrcTimer timer;
     private String currOwner = null;
     private String driveOwner = null;
 
@@ -93,14 +88,10 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
         this.ownerName = ownerName;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        elevatorEvent = new TrcEvent(moduleName + ".elevatorEvent");
-        armEvent = new TrcEvent(moduleName + ".armEvent");
-        wristEvent = new TrcEvent(moduleName + ".wristEvent");
+        event = new TrcEvent(moduleName);
         intakeEvent = new TrcEvent(moduleName + ".intakeEvent");
         visionEvent = new TrcEvent(moduleName + ".visionEvent");
         driveEvent = new TrcEvent(moduleName + ".driveEvent");
-        timerEvent = new TrcEvent(moduleName + ".timerEvent");
-        timer = new TrcTimer(moduleName + ".timer");
     }   //TaskAutoPickup
 
     /**
@@ -286,15 +277,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
                     useWeedWhacker = robot.weedWhacker != null;
                 }
 
-                robot.elevatorPidActuator.setPosition(
-                    currOwner, 0.0, elevatorPos, true, 1.0, elevatorEvent, 0.7);
-                sm.addEvent(elevatorEvent);
-                robot.armPidActuator.setPosition(
-                    currOwner, 0.0, armPos, true, RobotParams.ARM_MAX_POWER, armEvent, 0.7);
-                sm.addEvent(armEvent);
-                robot.wristPidActuator.setPosition(
-                    currOwner, 0.0, wristPos, true, RobotParams.WRIST_MAX_POWER, wristEvent, 0.7);
-                sm.addEvent(wristEvent);
+                robot.prepSubsystems(currOwner, elevatorPos, armPos, wristPos, 0.7, event);
+                sm.addEvent(event);
 
                 if (useWeedWhacker)
                 {
@@ -375,9 +359,8 @@ public class TaskAutoPickup extends TrcAutoTask<TaskAutoPickup.State>
 
             case PREP_FOR_TRAVEL:
                 // Assume travel position.
-                robot.turtleMode(currOwner);
-                timer.set(1.0, timerEvent);
-                sm.waitForSingleEvent(timerEvent, State.DONE);
+                robot.turtleMode(currOwner, event);
+                sm.waitForSingleEvent(event, State.DONE);
                 break;
 
             default:

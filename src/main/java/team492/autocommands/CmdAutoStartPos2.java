@@ -43,7 +43,7 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
     private enum State
     {
         START,
-        TURN,
+        PREP_TO_BALANCE,
         START_TO_CLIMB,
         CLIMB,
         LEVEL,
@@ -166,19 +166,19 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
                     {
                         robot.autoScoreTask.autoAssistScoreObject(
                             preloadType, scoreLevel, scoreLocation, false, false, autoAssistEvent);
-                        sm.waitForSingleEvent(autoAssistEvent, doAutoBalance? State.TURN: State.DONE);
+                        sm.waitForSingleEvent(autoAssistEvent, doAutoBalance? State.PREP_TO_BALANCE: State.DONE);
                     }
                     else
                     {
-                        sm.setState(doAutoBalance? State.TURN: State.DONE);
+                        sm.setState(doAutoBalance? State.PREP_TO_BALANCE: State.DONE);
                     }
                     break;
 
-                case TURN:
-                    // Turn right to prepare to crab over the station.
+                case PREP_TO_BALANCE:
+                    // Back up and turn right to prepare to crab over the station.
                     robot.robotDrive.purePursuitDrive.start(
                         driveEvent, 0.7, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, 0.0, 90.0));
+                        new TrcPose2D(0.0, -24.0, 90.0));
                     sm.waitForSingleEvent(driveEvent, State.START_TO_CLIMB);
                     break;
 
