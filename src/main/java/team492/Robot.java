@@ -28,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 import TrcCommonLib.trclib.TrcDbgTrace;
+import TrcCommonLib.trclib.TrcEvent;
 import TrcCommonLib.trclib.TrcIntake;
 import TrcCommonLib.trclib.TrcOpenCvDetector;
 import TrcCommonLib.trclib.TrcPidActuator;
@@ -729,6 +730,82 @@ public class Robot extends FrcRobotBase
         return (pressureSensor.getVoltage() - 0.5) * 50.0;
     }   //getPressure
 
+    private final TrcEvent elevatorEvent = new TrcEvent("robot.elevatorEvent");
+    private final TrcEvent armEvent = new TrcEvent("robot.armEvent");
+    private final TrcEvent wristEvent = new TrcEvent("robot.wristEvent");
+    private TrcEvent completionEvent = null;
+
+    /**
+     * This method is called when one of the subsystem operations has completed. It signals the completion event only
+     * if all three subsystem operations have completed.
+     *
+     * @param context not used.
+     */
+    private void prepCompletion(Object context)
+    {
+        if (completionEvent != null && elevatorEvent.isSignaled() && armEvent.isSignaled() && wristEvent.isSignaled())
+        {
+            completionEvent.signal();
+            completionEvent = null;
+        }
+    }   //prepCompletion
+
+    /**
+     * This method prep the subsystems for a certain operation.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     * @param elevatorDelay specifies the delay in seconds before moving elevator.
+     * @param elevatorPos specifies the elevator position.
+     * @param armDelay specifies the delay in seconds before moving arm.
+     * @param armPos specifies the arm position.
+     * @param wristDelay specifies the delay in seconds before moving wrist.
+     * @param wristPos specifies the wrist position.
+     * @param timeout specifies the maximum time allowed for the operation.
+     * @param event specifies the event to signal when the operation is completed.
+     */
+    public void prepSubsystems(
+        String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay,
+        double wristPos, double timeout, TrcEvent event)
+    {
+        if (elevator != null && arm != null && wrist != null)
+        {
+            if (event != null)
+            {
+                elevatorEvent.clear();
+                armEvent.clear();
+                wristEvent.clear();
+                elevatorEvent.setCallback(this::prepCompletion, null);
+                armEvent.setCallback(this::prepCompletion, null);
+                wristEvent.setCallback(this::prepCompletion, null);
+                completionEvent = event;
+            }
+
+            elevatorPidActuator.setPosition(
+                owner, elevatorDelay, elevatorPos, true, 1.0, event != null? elevatorEvent: null, timeout);
+            armPidActuator.setPosition(
+                owner, armDelay, armPos, true, RobotParams.ARM_MAX_POWER, event != null? armEvent: null, timeout);
+            wristPidActuator.setPosition(
+                owner, wristDelay, wristPos, true, RobotParams.WRIST_MAX_POWER, event != null? wristEvent: null,
+                timeout);
+        }
+    }   //prepSubsystems
+
+    /**
+     * This method prep the subsystems for a certain operation.
+     *
+     * @param owner specifies the owner ID to check if the caller has ownership of the subsystems.
+     * @param elevatorPos specifies the elevator position.
+     * @param armPos specifies the arm position.
+     * @param wristPos specifies the wrist position.
+     * @param timeout specifies the maximum time allowed for the operation.
+     * @param event specifies the event to signal when the operation is completed.
+     */
+    public void prepSubsystems(
+        String owner, double elevatorPos, double armPos, double wristPos, double timeout, TrcEvent event)
+    {
+        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, timeout, event);
+    }   //prepSubsystems
+
     /**
      * This method prep the subsystems for a certain operation.
      *
@@ -745,13 +822,7 @@ public class Robot extends FrcRobotBase
         String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay,
         double wristPos, double timeout)
     {
-        if (elevator != null && arm != null && wrist != null)
-        {
-            elevatorPidActuator.setPosition(owner, elevatorDelay, elevatorPos, true, 1.0, null, timeout);
-            armPidActuator.setPosition(owner, armDelay, armPos, true, RobotParams.ARM_MAX_POWER, null, timeout);
-            wristPidActuator.setPosition(
-                owner, wristDelay, wristPos, true, RobotParams.WRIST_MAX_POWER, null, timeout);
-        }
+        prepSubsystems(owner, elevatorDelay, elevatorPos, armDelay, armPos, wristDelay, wristPos, timeout, null);
     }   //prepSubsystems
 
     /**
@@ -769,7 +840,7 @@ public class Robot extends FrcRobotBase
         String owner, double elevatorDelay, double elevatorPos, double armDelay, double armPos, double wristDelay,
         double wirstPos)
     {
-        prepSubsystems(owner, elevatorDelay, elevatorPos, armDelay, armPos, wristDelay, wirstPos, 0.0);
+        prepSubsystems(owner, elevatorDelay, elevatorPos, armDelay, armPos, wristDelay, wirstPos, 0.0, null);
     }   //prepSubsystems
 
     /**
@@ -783,7 +854,7 @@ public class Robot extends FrcRobotBase
      */
     public void prepSubsystems(String owner, double elevatorPos, double armPos, double wristPos, double timeout)
     {
-        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, timeout);
+        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, timeout, null);
     }   //prepSubsystems
 
     /**
@@ -796,7 +867,7 @@ public class Robot extends FrcRobotBase
      */
     public void prepSubsystems(String owner, double elevatorPos, double armPos, double wristPos)
     {
-        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, 0.0);
+        prepSubsystems(owner, 0.0, elevatorPos, 0.0, armPos, 0.0, wristPos, 0.0, null);
     }   //prepSubsystems
 
     /**
