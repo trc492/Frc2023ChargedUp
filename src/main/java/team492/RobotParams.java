@@ -529,15 +529,15 @@ public class RobotParams
     public static final double WRIST_IZONE                      = 0.0;
     public static final double WRIST_TOLERANCE                  = 1.0;
     public static final double WRIST_CAL_POWER                  = -0.1;
-    public static final double WRIST_MAX_POWER                  = 0.2;
+    public static final double WRIST_MAX_POWER                  = 0.3;//0.2
     public static final double WRIST_MAX_GRAVITY_COMP_POWER     = -0.05;
     public static final double WRIST_PRESET_TOLERANCE           = 5.0;
 
     public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
-    public static final double WRIST_CUBE_PICKUP_POSITION       = 62.5;
+    public static final double WRIST_CUBE_PICKUP_POSITION       = 68;//62.5
     public static final double[] wristConeScorePresets          =
     {
-        90.0, 210.0, 195.0
+        90.0, 210.0, 200.0//195.0
     };
     public static final double[] wristCubeScorePresets          =
     {
@@ -550,7 +550,7 @@ public class RobotParams
     public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_CONE_RETAIN_POWER         = 0.05;
     public static final double INTAKE_CUBE_RETAIN_POWER         = -0.03;
-    public static final double INTAKE_CONE_SPIT_POWER           = -0.6;
+    public static final double INTAKE_CONE_SPIT_POWER           = -0.4; //-0.6
     public static final double INTAKE_CUBE_SPIT_POWER           = 0.3;
 
     // WeedWhacker subsystem.
