@@ -141,10 +141,10 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
 
                     // Set robot's absolute field position according to the start position in autoChoices.
-                    robot.elevatorPidActuator.zeroCalibrate();
                     robot.robotDrive.setFieldPosition(null, false);
+
+                    robot.elevatorPidActuator.zeroCalibrate();
                     robot.wristPidActuator.setPosition(RobotParams.WRIST_MIN_POS, true);
-                    
 
                     if (scorePreload)
                     {
@@ -175,8 +175,8 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                             driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                             robot.robotDrive.adjustPosByAlliance(
                                 alliance,
-                                new TrcPose2D(RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X,
-                                              RobotParams.CHARGING_STATION_CENTER_BLUE_Y, 180.0)));
+                                new TrcPose2D(
+                                    RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 190.0, 180.0)));
                     }
                     else
                     {
@@ -185,7 +185,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                             driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                             robot.robotDrive.adjustPosByAlliance(
                                 alliance,
-                                new TrcPose2D(-181.0, 190, 180.0)));
+                                new TrcPose2D(-181.0, 190.0, 180.0)));
                     }
                     sm.waitForSingleEvent(driveEvent, State.PICKUP_SECOND_CUBE);
                     break; 

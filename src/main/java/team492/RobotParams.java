@@ -460,11 +460,11 @@ public class RobotParams
     public static final double ELEVATOR_CONE_PICKUP_POSITION    = ELEVATOR_MIN_POS;
     public static final double[] elevatorConeScorePresets       =
     {
-        ELEVATOR_MIN_POS, 10, ELEVATOR_MAX_POS
+        ELEVATOR_MIN_POS, 10.0, ELEVATOR_MAX_POS
     };
     public static final double[] elevatorCubeScorePresets       =
     {
-       ELEVATOR_MIN_POS, 0.0, 10//11.4
+       ELEVATOR_MIN_POS, 0.0, 10.0  //11.4
     };
 
     // Arm subsystem.
@@ -541,7 +541,7 @@ public class RobotParams
     };
     public static final double[] wristCubeScorePresets          =
     {
-        45.0, 100, 130//120.0
+        45.0, 100.0, 130.0  //120.0
     };
 
     // Intake subsystem.

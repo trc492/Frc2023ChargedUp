@@ -608,12 +608,21 @@ public class Robot extends FrcRobotBase
                     lineNum++;
                 }
 
-                // if (photonVision != null && photonVision.getPipeline() == PipelineType.APRILTAG)
+                // if (photonVision != null)
                 // {
                 //     FrcPhotonVision.DetectedObject detectedObj = photonVision.getBestDetectedObject();
-                //     TrcPose2D robotPose = detectedObj != null? photonVision.getRobotFieldPosition(detectedObj): null;
-                //     dashboard.displayPrintf(lineNum, "Vision[APRILTAG]: robotPose=%s", robotPose);
-                //     lineNum++;
+                //     if (detectedObj != null)
+                //     {
+                //         PipelineType pipelineType = photonVision.getPipeline();
+                //         dashboard.displayPrintf(lineNum, "Vision[%s]: dectedObj=%s", pipelineType, detectedObj);
+                //         lineNum++;
+                //         if (pipelineType == PipelineType.APRILTAG)
+                //         {
+                //             TrcPose2D robotPose = photonVision.getRobotFieldPosition(detectedObj);
+                //             dashboard.displayPrintf(lineNum, "Vision[%s]: robotPose=%s", pipelineType, robotPose);
+                //             lineNum++;
+                //         }
+                //     }
                 // }
 
                 // if (robotDrive != null)

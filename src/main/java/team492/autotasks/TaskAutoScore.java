@@ -184,7 +184,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 scoringCommitEvent = null;
             }
         }
-    }   //scoringCommit
+    }   //commitToScore
 
     /**
      * This method cancels an in progress auto-assist operation if any.
@@ -357,6 +357,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
 
                 if (taskParams.prepOnly && scoringCommitEvent != null)
                 {
+                    // For prepOnly, don't continue until receiving the signal for the commitToScore event.
                     sm.addEvent(scoringCommitEvent);
                 }
 

@@ -28,7 +28,6 @@ import TrcCommonLib.trclib.TrcRobot.RunMode;
 import TrcFrcLib.frclib.FrcJoystick;
 import TrcFrcLib.frclib.FrcXboxController;
 import team492.FrcAuto.ObjectType;
-import team492.FrcAuto.ScoreLocation;
 import team492.drivebases.RobotDrive;
 
 /**
@@ -47,7 +46,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
     private boolean manualOverride = false;
     private boolean armControl = false;
     private boolean wristControl = false;
-    private boolean intakeControl = false;
     private boolean spitting = false;
 
     /**
@@ -160,7 +158,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         robot.robotDrive.driveBase.arcadeDrive(inputs[1], inputs[2]);
                     }
                     robot.robotDrive.displaySteerEncoders(1);
-
                 }
                 //
                 // Analog control of subsystem is done here if necessary.
@@ -485,8 +482,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         }
                         else if (spitting)
                         {
+                            // TODO (Code Review): why? Shouldn't you just call autoAssistSpitout? Is there anything wrong with autoAssist?
+                            // Why do you guys keep bypassing it?
                             robot.intake.setPower(robot.objType == ObjectType.CONE?
-                            RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
+                                RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
                             // robot.autoScoreTask.commitToScore();
                         }
                         else
@@ -501,20 +500,22 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             }
                             else
                             {
-                                intakeControl = true;
+                                // TODO (Code Review): Again, why? autoAssistIntake already taken in the object and actively retaining the object.
+                                // You are overriding it by applying full pickup power???
                                 robot.intake.setPower(robot.objType == ObjectType.CONE?
                                     RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER);
                             }
-
                         }
                     }
                     else
                     {
+                        // TODO (Code Review): Why do you do this? Shouldn't autoAssistIntake do this for you already?
                         if (robot.intake.hasObject())
                         {
                             robot.intake.setPower(robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER);
-                            intakeControl = false;
                         }
+                        // TODO (Code Review):
+                        // What is this??? There is no else. I completely don't understand this logic?!
                         {
                             robot.intake.setPower(0.0);
                         }
@@ -540,13 +541,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             RobotParams.elevatorCubeScorePresets[robot.scoreLevel],
                             RobotParams.armCubeScorePresets[robot.scoreLevel],
                             RobotParams.wristCubeScorePresets[robot.scoreLevel]);
-                    }                    // robot.autoScoreTask.autoAssistScoreObject(robot.objType, robot.scoreLevel, null, false, true, null);
+                    }
+                    // robot.autoScoreTask.autoAssistScoreObject(robot.objType, robot.scoreLevel, null, false, true, null);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
                 spitting = pressed;
-                if(!pressed) { robot.intake.setPower(0.0); }
+                // TODO (Code Review): This should use autoAssist!
+                if (!pressed)
+                {
+                    robot.intake.setPower(0.0);
+                }
                 // if(!pressed && robot.autoScoreTask.isActive()) { robot.autoScoreTask.autoAssistCancel(); }
                 break;
             
@@ -667,7 +673,6 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 manualOverride = pressed;
                 break;
 
-
             //Prepare for Single Substation Pickup 
             case FrcJoystick.PANEL_BUTTON_YELLOW1:
                 if (pressed)
@@ -685,13 +690,18 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 break;
             
             case FrcJoystick.PANEL_BUTTON_RED2:
-                if(pressed){
+                // TODO (Code Review): What is this? Why? You already have a pair of buttons doing level up and down!
+                // If you prefer discrete buttons selecting score levels, then don't have up/down buttons but you are wasting buttons.
+                if (pressed)
+                {
                     robot.scoreLevel = 2;
                 }
                 break;
             
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-                if(pressed){
+                // TODO (Code Review): Again, why?!
+                if (pressed)
+                {
                     robot.scoreLevel = 1;
                 }
                 break;
