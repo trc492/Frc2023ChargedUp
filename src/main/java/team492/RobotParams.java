@@ -319,11 +319,11 @@ public class RobotParams
     public static final double MECANUM_Y_TOLERANCE              = 2.0;
 
     // Swerve Drive Base.
-    // Tuned 3/02/2023
+    // Tuned 4/03/2023
     public static final double SWERVE_INCHES_PER_COUNT          = 9.3802993133e-4;
-    public static final double SWERVE_KP                        = 0.016;
+    public static final double SWERVE_KP                        = 0.008;
     public static final double SWERVE_KI                        = 0.0;
-    public static final double SWERVE_KD                        = 0.004;
+    public static final double SWERVE_KD                        = 0.0;
     public static final double SWERVE_KF                        = 0.0;
     public static final double SWERVE_TOLERANCE                 = 2.0;
 
@@ -464,7 +464,7 @@ public class RobotParams
     };
     public static final double[] elevatorCubeScorePresets       =
     {
-       ELEVATOR_MIN_POS, 0.0, 11.4
+       ELEVATOR_MIN_POS, 0.0, 10//11.4
     };
 
     // Arm subsystem.
@@ -541,7 +541,7 @@ public class RobotParams
     };
     public static final double[] wristCubeScorePresets          =
     {
-        45.0, 100, 120.0
+        45.0, 100, 130//120.0
     };
 
     // Intake subsystem.

@@ -144,15 +144,13 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
             switch (state)
             {
                 case START:
-                    // TODO (Code Review): Why do you comment all these out? This means you will not be able to do red alliance?! And you
-                    // can't change any options during competition.
                     // Read autoChoices.
-                    // alliance = FrcAuto.autoChoices.getAlliance();
-                    // scorePreload = FrcAuto.autoChoices.getScorePreload();
-                    // preloadType = FrcAuto.autoChoices.getPreloadedObjType();
-                    // scoreLevel = FrcAuto.autoChoices.getScoreLevel();
-                    // scoreLocation = FrcAuto.autoChoices.getScoreLocation();
-                    // doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
+                    alliance = FrcAuto.autoChoices.getAlliance();
+                    scorePreload = FrcAuto.autoChoices.getScorePreload();
+                    preloadType = FrcAuto.autoChoices.getPreloadedObjType();
+                    scoreLevel = FrcAuto.autoChoices.getScoreLevel();
+                    scoreLocation = FrcAuto.autoChoices.getScoreLocation();
+                    doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     startPos = alliance == Alliance.Blue? RobotParams.STARTPOS_BLUE_2: RobotParams.STARTPOS_RED_2;
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(startPos, false);

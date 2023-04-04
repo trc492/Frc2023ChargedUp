@@ -143,7 +143,7 @@ public class SwerveDrive extends RobotDrive
             lfWheel, lbWheel, rfWheel, rbWheel, gyro,
             RobotParams.ROBOT_WHEELBASE_WIDTH, RobotParams.ROBOT_WHEELBASE_LENGTH);
         driveBase.setSynchronizeOdometriesEnabled(false);
-        driveBase.setOdometryScales(RobotParams.SWERVE_INCHES_PER_COUNT);
+        driveBase.setOdometryScales(RobotParams.SWERVE_INCHES_PER_COUNT, RobotParams.SWERVE_INCHES_PER_COUNT);
 
         if (RobotParams.Preferences.useAntiTipping)
         {

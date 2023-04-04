@@ -141,7 +141,10 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
 
                     // Set robot's absolute field position according to the start position in autoChoices.
+                    robot.elevatorPidActuator.zeroCalibrate();
                     robot.robotDrive.setFieldPosition(null, false);
+                    robot.wristPidActuator.setPosition(RobotParams.WRIST_MIN_POS, true);
+                    
 
                     if (scorePreload)
                     {
@@ -163,6 +166,8 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     //at slower speed and have autoAssistIntake turn on to plow into and pick up the cube. Make sure this
                     //segment will exit community. I think your Y does not exit community. Please check.
                     robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
+                    robot.robotDrive.purePursuitDrive.setMsgTracer(robot.globalTracer, true, true);
+
                     if (startPos == AutoStartPos.FIELDRAIL)
                     {
                         // We are going for the game piece on the guardrail side.
@@ -180,9 +185,10 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                             driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
                             robot.robotDrive.adjustPosByAlliance(
                                 alliance,
-                                new TrcPose2D(-185.0, RobotParams.CHARGING_STATION_CENTER_BLUE_Y, 180.0)));
+                                new TrcPose2D(-181.0, 190, 180.0)));
                     }
                     sm.waitForSingleEvent(driveEvent, State.PICKUP_SECOND_CUBE);
+                    break; 
 
                 case PICKUP_SECOND_CUBE:
                     robot.prepForCubeGroundPickup(null, 0.0, null);

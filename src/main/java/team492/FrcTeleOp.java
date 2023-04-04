@@ -140,17 +140,27 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 if (robot.robotDrive != null)
                 {
                     double[] inputs = robot.robotDrive.getDriveInputs();
+                    double turnPower = inputs[2];
+                    if (robot.driverController.getLeftTriggerAxis() > 0)
+                    {
+                        turnPower = 0.05;
+                    }
+                    else if (robot.driverController.getRightTriggerAxis() > 0)
+                    {
+                        turnPower = -0.05;
+                    }
 
                     if (robot.robotDrive.driveBase.supportsHolonomicDrive())
                     {
                         robot.robotDrive.driveBase.holonomicDrive(
-                            null, inputs[0], inputs[1], inputs[2], getDriveGyroAngle());
+                            null, inputs[0], inputs[1], turnPower, getDriveGyroAngle());
                     }
                     else
                     {
                         robot.robotDrive.driveBase.arcadeDrive(inputs[1], inputs[2]);
                     }
                     robot.robotDrive.displaySteerEncoders(1);
+
                 }
                 //
                 // Analog control of subsystem is done here if necessary.
@@ -476,11 +486,8 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         else if (spitting)
                         {
                             robot.intake.setPower(robot.objType == ObjectType.CONE?
-                                    RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
-                            // robot.intake.autoAssistSpitout(
-                            //     objType == ObjectType.CONE?
-                            //         RobotParams.INTAKE_SPIT_POWER: -RobotParams.INTAKE_SPIT_POWER,
-                            //     1.0);
+                            RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
+                            // robot.autoScoreTask.commitToScore();
                         }
                         else
                         {
@@ -503,14 +510,13 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                     }
                     else
                     {
-                        if (spitting)
-                        {
-                            robot.intake.setPower(0.0);
-                        }
-                        else if(intakeControl)
+                        if (robot.intake.hasObject())
                         {
                             robot.intake.setPower(robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER);
                             intakeControl = false;
+                        }
+                        {
+                            robot.intake.setPower(0.0);
                         }
                     }
                 }
@@ -534,12 +540,14 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                             RobotParams.elevatorCubeScorePresets[robot.scoreLevel],
                             RobotParams.armCubeScorePresets[robot.scoreLevel],
                             RobotParams.wristCubeScorePresets[robot.scoreLevel]);
-                    }
+                    }                    // robot.autoScoreTask.autoAssistScoreObject(robot.objType, robot.scoreLevel, null, false, true, null);
                 }
                 break;
 
             case FrcJoystick.LOGITECH_BUTTON3:
                 spitting = pressed;
+                if(!pressed) { robot.intake.setPower(0.0); }
+                // if(!pressed && robot.autoScoreTask.isActive()) { robot.autoScoreTask.autoAssistCancel(); }
                 break;
             
             //READY CUBE GROUND PICKUP
@@ -676,23 +684,15 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
             
-            //Complete autoscore testing 
             case FrcJoystick.PANEL_BUTTON_RED2:
-                // manualOverride = pressed;
-                if (robot.autoScoreTask != null && pressed)
-                {
-                    robot.autoScoreTask.autoAssistScoreCone(2, ScoreLocation.LEFT, true, false, null);
-
+                if(pressed){
+                    robot.scoreLevel = 2;
                 }
                 break;
             
-            //Ready for Scoring Cube High 
             case FrcJoystick.PANEL_BUTTON_GREEN2:
-                // TODO (Code Review): Why are we not using autoScore(prepOnly)?
-                if (robot.autoScoreTask != null && pressed)
-                {
-                    // robot.autoScoreTask.autoAssistScoreCube(2, false, true, null);
-                    robot.prepSubsystems(moduleName, 11.4, RobotParams.ARM_MAX_POS, 120.0);
+                if(pressed){
+                    robot.scoreLevel = 1;
                 }
                 break;
 
@@ -707,18 +707,10 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             //Ready for Scoring Cube Mid 
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                if (robot.autoScoreTask != null && pressed)
-                {
-                    robot.autoScoreTask.autoAssistScoreCube(1, false, true, null);
-                }
                 break;
 
             //Ready for Scoring low 
             case FrcJoystick.PANEL_BUTTON_WHITE2:
-                if (robot.autoScoreTask != null && pressed)
-                {
-                    robot.autoScoreTask.autoAssistScoreCube(0, false, true, null);
-                }
                 break;
         }
     }   //buttonPanelButtonEvent

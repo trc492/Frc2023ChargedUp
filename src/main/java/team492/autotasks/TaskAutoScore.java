@@ -173,7 +173,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     /**
      * This method is called to continue the previous prep-only autoAssist scoring operation to finish the scoring.
      */
-    public void scoringCommit()
+    public void commitToScore()
     {
         if (scoringCommitEvent != null)
         {
@@ -345,12 +345,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
                     wristPos = RobotParams.wristCubeScorePresets[taskParams.scoreLevel];
                 }
-                // TODO (Code Review): Why are you doing these? msgTracer is already enabled on all of them?!
-                robot.elevatorPidActuator.setMsgTracer(msgTracer, false);
-                robot.armPidActuator.setMsgTracer(msgTracer, false);
-                robot.wristPidActuator.setMsgTracer(msgTracer, false);
-
-                robot.prepSubsystems(currOwner, 0.0, elevatorPos, 0.0, armPos, 0.3, wristPos, 1.9, event);
+                robot.prepSubsystems(currOwner, 0.0, elevatorPos, 0.0, armPos, 0.4, wristPos, 1.0, event);
                 sm.addEvent(event);
 
                 if (taskParams.useVision)
@@ -414,20 +409,8 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 break;
 
             case RESET:
-                if (acquireDriveBaseOwnership())
-                {
-                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.25);
-                    // TODO: Tune delays & timeout
-                    robot.robotDrive.purePursuitDrive.start(
-                        currOwner, driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, -24.0, 0.0));
-                    robot.turtleMode(currOwner, null);
-                    sm.waitForSingleEvent(driveEvent, State.DONE, 2.0);
-                }
-                else
-                {
-                    sm.setState(State.DONE);
-                }
+                robot.turtleMode(currOwner, event);
+                sm.waitForSingleEvent(event, State.DONE);
                 break; 
 
             default:
