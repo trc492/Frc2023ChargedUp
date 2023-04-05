@@ -59,6 +59,7 @@ public class Intake
         intakeMotor.setCurrentLimit(20.0, 40.0, 0.5);
 
         intakeSensor = new FrcDigitalInput(moduleName + ".sensor", RobotParams.DIO_INTAKE_SENSOR);
+        intakeSensor.setInverted(RobotParams.INTAKE_TRIGGER_INVERTED);
         intakeTrigger = new TrcTriggerDigitalInput(moduleName + ".trigger", intakeSensor);
 
         intake = new TrcIntake(moduleName, intakeMotor, params, intakeTrigger, this::intakeTriggerCallback);

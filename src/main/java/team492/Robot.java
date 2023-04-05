@@ -275,7 +275,6 @@ public class Robot extends FrcRobotBase
                 if (RobotParams.Preferences.useIntake)
                 {
                     TrcIntake.Parameters intakeParams = new TrcIntake.Parameters()
-                        .setTriggerInverted(RobotParams.INTAKE_TRIGGER_INVERTED)
                         .setMsgTracer(globalTracer);
                     intake = new Intake(this, globalTracer, intakeParams).getTrcIntake();
                 }
