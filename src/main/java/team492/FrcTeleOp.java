@@ -480,44 +480,23 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         {
                             robot.intake.autoAssistCancel();
                         }
+                        else if (!robot.intake.hasObject())
+                        {
+                            robot.intake.autoAssistIntake(
+                                robot.objType == ObjectType.CONE?
+                                    RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER,
+                                robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER,
+                                0.75);
+                        }
                         else if (spitting)
                         {
-                            // TODO (Code Review): why? Shouldn't you just call autoAssistSpitout? Is there anything wrong with autoAssist?
-                            // Why do you guys keep bypassing it?
-                            robot.intake.setPower(robot.objType == ObjectType.CONE?
-                                RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
-                            // robot.autoScoreTask.commitToScore();
-                        }
-                        else
-                        {
-                            if (!robot.intake.hasObject())
-                            {
-                                robot.intake.autoAssistIntake(
-                                    robot.objType == ObjectType.CONE?
-                                        RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER,
-                                    robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER,
-                                    0.75);
-                            }
-                            else
-                            {
-                                // TODO (Code Review): Again, why? autoAssistIntake already taken in the object and actively retaining the object.
-                                // You are overriding it by applying full pickup power???
-                                robot.intake.setPower(robot.objType == ObjectType.CONE?
-                                    RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // TODO (Code Review): Why do you do this? Shouldn't autoAssistIntake do this for you already?
-                        if (robot.intake.hasObject())
-                        {
-                            robot.intake.setPower(robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER);
-                        }
-                        // TODO (Code Review):
-                        // What is this??? There is no else. I completely don't understand this logic?!
-                        {
-                            robot.intake.setPower(0.0);
+                            // robot.intake.setPower(robot.objType == ObjectType.CONE?
+                            //     RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
+                            double finishDelay = robot.objType == ObjectType.CONE? 5.0 : 1.0;
+                            robot.intake.autoAssistSpitout(
+                                robot.objType == ObjectType.CONE?
+                                    RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER,
+                                finishDelay);
                         }
                     }
                 }
