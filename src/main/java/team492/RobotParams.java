@@ -319,19 +319,20 @@ public class RobotParams
     public static final double MECANUM_Y_TOLERANCE              = 2.0;
 
     // Swerve Drive Base.
-    // Tuned 4/03/2023
-    public static final double SWERVE_INCHES_PER_COUNT          = 9.3802993133e-4;
-    public static final double SWERVE_KP                        = 0.008;
-    public static final double SWERVE_KI                        = 0.0;
-    public static final double SWERVE_KD                        = 0.0;
+    // Tuned 4/04/2023
+    public static final double SWERVE_INCHES_PER_COUNT          = 9.88203319e-4;
+    public static final double SWERVE_KP                        = 0.015;
+    public static final double SWERVE_KI                        = 0.1;
+    public static final double SWERVE_KD                        = 0.008;
     public static final double SWERVE_KF                        = 0.0;
+    public static final double SWERVE_IZONE                     = 5.0;
     public static final double SWERVE_TOLERANCE                 = 2.0;
 
-    public static final double GYRO_TURN_KP                     = 0.0085;
-    public static final double GYRO_TURN_KI                     = 0.001;
-    public static final double GYRO_TURN_KD                     = 0.0007;
+    public static final double GYRO_TURN_KP                     = 0.007;
+    public static final double GYRO_TURN_KI                     = 0.01;
+    public static final double GYRO_TURN_KD                     = 0.0013;
     public static final double GYRO_TURN_KF                     = 0.0;
-    public static final double GYRO_TURN_IZONE                  = 10.0;
+    public static final double GYRO_TURN_IZONE                  = 5.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
     public static final double[] GYRO_TILT_THRESHOLDS           = {-15.0, -5.0, 5.0, 15.0};
     public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {20.0};
@@ -522,15 +523,16 @@ public class RobotParams
     public static final double WRIST_MAX_POS                    = 240.0;
     public static final double WRIST_SAFE_RANGE                 = WRIST_MAX_POS - WRIST_MIN_POS;
 
-    public static final double WRIST_KP                         = 0.03;
+    public static final double WRIST_KP                         = 0.027;
     public static final double WRIST_KI                         = 0.0;
-    public static final double WRIST_KD                         = 0.0;
+    public static final double WRIST_KD                         = 0.0003;
     public static final double WRIST_KF                         = 0.0;
     public static final double WRIST_IZONE                      = 0.0;
     public static final double WRIST_TOLERANCE                  = 1.0;
     public static final double WRIST_CAL_POWER                  = -0.1;
-    public static final double WRIST_MAX_POWER                  = 0.3;//0.2
-    public static final double WRIST_MAX_GRAVITY_COMP_POWER     = -0.05;
+    public static final double WRIST_MAX_POWER                  = 0.5;  //0.2
+    // TODO (Code Review): Really??? You spent so much time tuning Gravity Comp to be -0.05 and now you set it to zero???
+    public static final double WRIST_MAX_GRAVITY_COMP_POWER     = 0.0;
     public static final double WRIST_PRESET_TOLERANCE           = 5.0;
 
     public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
@@ -549,8 +551,8 @@ public class RobotParams
     public static final boolean INTAKE_TRIGGER_INVERTED         = true;
     public static final double INTAKE_PICKUP_POWER              = 0.8;
     public static final double INTAKE_CONE_RETAIN_POWER         = 0.05;
-    public static final double INTAKE_CUBE_RETAIN_POWER         = -0.03;
-    public static final double INTAKE_CONE_SPIT_POWER           = -0.4; //-0.6
+    public static final double INTAKE_CUBE_RETAIN_POWER         = -0.05;
+    public static final double INTAKE_CONE_SPIT_POWER           = -0.3;
     public static final double INTAKE_CUBE_SPIT_POWER           = 0.3;
 
     // WeedWhacker subsystem.

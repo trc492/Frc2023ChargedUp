@@ -43,6 +43,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     {
         START,
         EXIT_COMMUNITY,
+        // EXIT_COMMUNITY2,
         PICKUP_SECOND_CUBE,
         PREP_SCORE_SECOND_CUBE,
         SCORE_SECOND_CUBE,
@@ -64,7 +65,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
     private int scoreLevel = 0;
     private ScoreLocation scoreLocation = ScoreLocation.RIGHT;
     private boolean doAutoBalance = false;
-    private boolean scoreSecondPiece = true;
+    private boolean scoreSecondPiece = false;
 
     /**
      * Constructor: Create an instance of the object.
@@ -139,7 +140,6 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     scoreLocation = FrcAuto.autoChoices.getScoreLocation();
                     doAutoBalance = FrcAuto.autoChoices.getDoAutoBalance();
                     scoreSecondPiece = FrcAuto.autoChoices.getScoreSecondPiece();
-
                     // Set robot's absolute field position according to the start position in autoChoices.
                     robot.robotDrive.setFieldPosition(null, false);
 
@@ -154,41 +154,33 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     }
                     else
                     {
-                        sm.setState(doAutoBalance? State.EXIT_COMMUNITY: State.DONE);
+                        sm.setState(State.EXIT_COMMUNITY);
+                        // sm.setState(doAutoBalance? State.EXIT_COMMUNITY: State.DONE);
                     }
                     break;
 
                 case EXIT_COMMUNITY:
-                    //TODO (Code Review): Your original code will land the centroid of the robot on top of the cube.
-                    //It would have been okay if you had the autoAssistIntake already turned on but you did that after.
-                    //It means you would have bounced the cube away already. I splitted the state into two. The first one
-                    //basically exits community at a slightly faster speed. The second state will approach the second cube
-                    //at slower speed and have autoAssistIntake turn on to plow into and pick up the cube. Make sure this
-                    //segment will exit community. I think your Y does not exit community. Please check.
-                    robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.5);
-                    robot.robotDrive.purePursuitDrive.setMsgTracer(robot.globalTracer, true, true);
-
-                    if (startPos == AutoStartPos.FIELDRAIL)
-                    {
-                        // We are going for the game piece on the guardrail side.
-                        robot.robotDrive.purePursuitDrive.start(
-                            driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                            robot.robotDrive.adjustPosByAlliance(
-                                alliance,
-                                new TrcPose2D(
-                                    RobotParams.CENTER_BETWEEN_CHARGING_STATION_AND_FIELD_EDGE_X, 190.0, 180.0)));
-                    }
-                    else
-                    {
-                        // We are going for the game piece on the substation side.
-                        robot.robotDrive.purePursuitDrive.start(
-                            driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                            robot.robotDrive.adjustPosByAlliance(
-                                alliance,
-                                new TrcPose2D(-181.0, 190.0, 180.0)));
-                    }
-                    sm.waitForSingleEvent(driveEvent, State.PICKUP_SECOND_CUBE);
+                    double xDelta = startPos == AutoStartPos.BARRIER? -8.0: 8.0;
+                    double yDelta = alliance == Alliance.Blue? 180.0: -180.0;
+                    TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
+                    robot.robotDrive.pidDrive.setMsgTracer(robot.globalTracer, true, true);
+                    robot.robotDrive.pidDrive.setAbsoluteTarget(robotPose.x + xDelta, robotPose.y + yDelta, robotPose.angle, driveEvent);
+                    sm.waitForSingleEvent(driveEvent, State.DONE);
+                    // robot.robotDrive.enableDistanceTrigger(6.0, driveEvent);
+                    // double xPower = alliance == Alliance.Blue && startPos == AutoStartPos.BARRIER ||
+                    //                 alliance == Alliance.Red && startPos == AutoStartPos.FIELDRAIL? -0.2: 0.2;
+                    // robot.robotDrive.driveBase.holonomicDrive(
+                    //     null, xPower, 0.0, 0.0, robot.robotDrive.driveBase.getHeading());
+                    // sm.waitForSingleEvent(driveEvent, State.EXIT_COMMUNITY2);//PICKUP_SECOND_CUBE);
                     break; 
+
+                // case EXIT_COMMUNITY2:
+                //     robot.robotDrive.enableDistanceTrigger(160.0, driveEvent);
+                //     double yPower = alliance == Alliance.Blue? 0.5: -0.5;
+                //     robot.robotDrive.driveBase.holonomicDrive(
+                //         null, 0, yPower, 0, robot.robotDrive.driveBase.getHeading());
+                //     sm.waitForSingleEvent(driveEvent, State.DONE);
+                //     break;
 
                 case PICKUP_SECOND_CUBE:
                     robot.prepForCubeGroundPickup(null, 0.0, null);

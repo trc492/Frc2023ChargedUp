@@ -898,7 +898,7 @@ public class Robot extends FrcRobotBase
 
     public void prepForConeSubstationPickup(String owner, double delay, TrcEvent event)
     {
-        prepSubsystems(owner, delay, 5.0, delay, RobotParams.ARM_MIN_POS, delay, 5.0, 0.0, event);
+        prepSubsystems(owner, delay, 5.0, delay, RobotParams.ARM_MIN_POS, delay, 3.0, 0.0, event);
         ledIndicator.setScoreLevel(ObjectType.CONE, scoreLevel);
         objType = ObjectType.CONE;
     }   //prepForConeSubstationPickup
@@ -912,7 +912,7 @@ public class Robot extends FrcRobotBase
      */
     public void turtleMode(String owner, TrcEvent event)
     {
-        prepSubsystems(owner, 0.5, RobotParams.ELEVATOR_MIN_POS, 0.5, RobotParams.ARM_MIN_POS, 0.0, 7.0, 1.0, event);
+        prepSubsystems(owner, 0.2, RobotParams.ELEVATOR_MIN_POS, 0.2, RobotParams.ARM_MIN_POS, 0.0, 7.0, 1.0, event);
     }   //turtleMode
 
 }   //class Robot

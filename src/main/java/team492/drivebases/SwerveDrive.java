@@ -196,7 +196,7 @@ public class SwerveDrive extends RobotDrive
         //
         // PID Parameters for X and Y are the same for Swerve Drive.
         xPosPidCoeff = yPosPidCoeff = new TrcPidController.PidCoefficients(
-            RobotParams.SWERVE_KP, RobotParams.SWERVE_KI, RobotParams.SWERVE_KD, RobotParams.SWERVE_KF);
+            RobotParams.SWERVE_KP, RobotParams.SWERVE_KI, RobotParams.SWERVE_KD, RobotParams.SWERVE_KF, RobotParams.SWERVE_IZONE);
         turnPidCoeff = new TrcPidController.PidCoefficients(
             RobotParams.GYRO_TURN_KP, RobotParams.GYRO_TURN_KI, RobotParams.GYRO_TURN_KD, RobotParams.GYRO_TURN_KF,
             RobotParams.GYRO_TURN_IZONE);
