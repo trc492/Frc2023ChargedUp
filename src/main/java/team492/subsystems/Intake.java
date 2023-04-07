@@ -99,6 +99,7 @@ public class Intake
         {
             if (sensorActive)
             {
+                // TODO (Code Review): This does not turn it off, it will turn it ON for 0.1 second and then off.
                 robot.ledIndicator.setIntakeRunning(false, robot.objType, robot.scoreLevel);
             }
             robot.ledIndicator.setHasObject(sensorActive);
