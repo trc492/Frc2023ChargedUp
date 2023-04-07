@@ -345,7 +345,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                     armPos = RobotParams.armCubeScorePresets[taskParams.scoreLevel];
                     wristPos = RobotParams.wristCubeScorePresets[taskParams.scoreLevel];
                 }
-                robot.prepSubsystems(currOwner, 0.0, elevatorPos, 0.0, armPos, 0.4, wristPos, 1.0, event);
+                robot.prepSubsystems(currOwner, 0.0, elevatorPos, 0.0, armPos, 0.8, wristPos, 1.0, event);
                 sm.addEvent(event);
 
                 if (taskParams.useVision)

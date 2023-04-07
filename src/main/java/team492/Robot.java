@@ -898,7 +898,7 @@ public class Robot extends FrcRobotBase
 
     public void prepForConeSubstationPickup(String owner, double delay, TrcEvent event)
     {
-        prepSubsystems(owner, delay, 5.0, delay, RobotParams.ARM_MIN_POS, delay, 3.0, 0.0, event);
+        prepSubsystems(owner, delay, 6.5, delay, RobotParams.ARM_MIN_POS, delay, 13.5, 0.0, event);
         ledIndicator.setScoreLevel(ObjectType.CONE, scoreLevel);
         objType = ObjectType.CONE;
     }   //prepForConeSubstationPickup

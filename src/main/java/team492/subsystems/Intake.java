@@ -97,6 +97,10 @@ public class Intake
         boolean sensorActive = ((AtomicBoolean) context).get();
         if (robot.ledIndicator != null)
         {
+            if (sensorActive)
+            {
+                robot.ledIndicator.setIntakeRunning(false, robot.objType, robot.scoreLevel);
+            }
             robot.ledIndicator.setHasObject(sensorActive);
         }
 

@@ -185,6 +185,15 @@ public class LEDIndicator
         led.setPatternState(hasObjectPattern, hasObject, 0.5);
     }   //setHasObject
 
+    public void setIntakeRunning(boolean running, ObjectType objType, int scoreLevel)
+    {
+        clearScoreLevels(coneScoreLevelPatterns);
+        clearScoreLevels(cubeScoreLevelPatterns);
+        led.setPatternState(
+            objType == ObjectType.CONE? coneScoreLevelPatterns[scoreLevel]: cubeScoreLevelPatterns[scoreLevel], true,
+            0.1, running? 0.1: 0.0);
+    }
+
     private void clearScoreLevels(TrcAddressableLED.Pattern[] scoreLevelPatterns)
     {
         // Clear all of them first.

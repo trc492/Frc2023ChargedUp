@@ -240,7 +240,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     if (leveling)
                     {
                         // We are starting to level off, drive a tuned distance to the center of the charging station.
-                        robot.robotDrive.enableDistanceTrigger(RobotParams.Preferences.homeField? 19.0: 23.0, event);
+                        robot.robotDrive.enableDistanceTrigger(RobotParams.Preferences.homeField? 19.0: 24.0, event);
                         sm.waitForSingleEvent(event, State.SETTLE);
                     }
                     else
@@ -287,7 +287,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // Robot is still tipped. Drive the robot in the climb direction for a short distance.
                     robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
-                    robot.robotDrive.enableDistanceTrigger(2.0, event);
+                    robot.robotDrive.enableDistanceTrigger(1.5, event);
                     robot.robotDrive.driveBase.holonomicDrive(
                         currOwner, 0.0, dir*0.1, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.waitForSingleEvent(tiltEvent, State.SETTLE);

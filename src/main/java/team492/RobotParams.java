@@ -53,7 +53,7 @@ public class RobotParams
         public static final boolean useOpenCvVision             = false;
         public static final boolean useStreamCamera             = false;
         // Auto Options
-        public static final boolean homeField                   = true;     // TODO: Remember to change this back
+        public static final boolean homeField                   = false;
         public static final boolean doBalanceCorrection         = true;
         // Robot
         public static final boolean noRobot                     = false;
@@ -330,7 +330,7 @@ public class RobotParams
 
     public static final double GYRO_TURN_KP                     = 0.007;
     public static final double GYRO_TURN_KI                     = 0.01;
-    public static final double GYRO_TURN_KD                     = 0.0013;
+    public static final double GYRO_TURN_KD                     = 0.001;
     public static final double GYRO_TURN_KF                     = 0.0;
     public static final double GYRO_TURN_IZONE                  = 5.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
@@ -536,10 +536,10 @@ public class RobotParams
     public static final double WRIST_PRESET_TOLERANCE           = 5.0;
 
     public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
-    public static final double WRIST_CUBE_PICKUP_POSITION       = 68;//62.5
+    public static final double WRIST_CUBE_PICKUP_POSITION       = 62.5;
     public static final double[] wristConeScorePresets          =
     {
-        90.0, 210.0, 200.0//195.0
+        90.0, 210.0, 196.0//195.0
     };
     public static final double[] wristCubeScorePresets          =
     {

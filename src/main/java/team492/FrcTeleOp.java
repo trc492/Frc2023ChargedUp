@@ -479,6 +479,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         if (robot.intake.isAutoAssistActive())
                         {
                             robot.intake.autoAssistCancel();
+                            robot.ledIndicator.setIntakeRunning(false, robot.objType, robot.scoreLevel);
                         }
                         else if (!robot.intake.hasObject())
                         {
@@ -487,16 +488,16 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                                     RobotParams.INTAKE_PICKUP_POWER: -RobotParams.INTAKE_PICKUP_POWER,
                                 robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_RETAIN_POWER: RobotParams.INTAKE_CUBE_RETAIN_POWER,
                                 0.75);
+                            robot.ledIndicator.setIntakeRunning(true, robot.objType, robot.scoreLevel);
                         }
                         else if (spitting)
                         {
-                            // robot.intake.setPower(robot.objType == ObjectType.CONE?
-                            //     RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
-                            double finishDelay = robot.objType == ObjectType.CONE? 5.0 : 1.0;
-                            robot.intake.autoAssistSpitout(
-                                robot.objType == ObjectType.CONE?
-                                    RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER,
-                                finishDelay);
+                            robot.intake.setPower(robot.objType == ObjectType.CONE? RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER);
+                            // double finishDelay = robot.objType == ObjectType.CONE? 5.0 : 1.0;
+                            // robot.intake.autoAssistSpitout(
+                            //     robot.objType == ObjectType.CONE?
+                            //         RobotParams.INTAKE_CONE_SPIT_POWER: RobotParams.INTAKE_CUBE_SPIT_POWER,
+                            //     finishDelay);
                         }
                     }
                 }
