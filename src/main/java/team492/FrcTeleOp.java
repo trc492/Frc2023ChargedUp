@@ -479,8 +479,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                         if (robot.intake.isAutoAssistActive())
                         {
                             robot.intake.autoAssistCancel();
-                            // TODO (Code Review): this does not turn it off, it will turn it ON for 0.1 second but won't flash though.
-                            robot.ledIndicator.setIntakeRunning(false, robot.objType, robot.scoreLevel);
+                            robot.ledIndicator.setScoreLevel(robot.objType, robot.scoreLevel);
                         }
                         else if (!robot.intake.hasObject())
                         {
@@ -696,8 +695,11 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 }
                 break;
 
-            //Ready for Scoring Cube Mid 
+            //CONE SHOOTING
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
+                if(pressed){
+                    robot.intake.setPower(null, 0, -1.0, 1.0, null);
+                }
                 break;
 
             //Ready for Scoring low 

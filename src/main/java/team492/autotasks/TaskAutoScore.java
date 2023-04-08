@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
+import team492.FrcAuto.AutoStartPos;
 import team492.FrcAuto.ObjectType;
 import team492.FrcAuto.ScoreLocation;
 import team492.vision.PhotonVision.PipelineType;
@@ -82,6 +83,7 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
     private final TrcEvent event;
     private TrcEvent scoringCommitEvent;
     private Alliance alliance;
+    private AutoStartPos startPos;
     private String currOwner = null;
     private String driveOwner = null;
 
@@ -410,6 +412,11 @@ public class TaskAutoScore extends TrcAutoTask<TaskAutoScore.State>
                 break;
 
             case RESET:
+                double yDelta = alliance == Alliance.Blue? 24.0: -24.0;
+                TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
+                robot.robotDrive.pidDrive.setMsgTracer(robot.globalTracer, true, true);
+                robot.robotDrive.pidDrive.setAbsoluteTarget(robotPose.x, robotPose.y + yDelta, robotPose.angle, driveEvent);
+                sm.waitForSingleEvent(driveEvent, State.DONE);
                 robot.turtleMode(currOwner, event);
                 sm.waitForSingleEvent(event, State.DONE);
                 break; 

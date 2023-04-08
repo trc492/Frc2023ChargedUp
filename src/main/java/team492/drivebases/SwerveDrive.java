@@ -702,6 +702,9 @@ public class SwerveDrive extends RobotDrive
         return pos;
     }   //adjustPosByAlliance
 
+    // Balance Zones:
+    // --- -15 --- -5 --- 5 --- 15 ---          Thresholds
+    //  0       1      2     3      4           Zone Numbers
     /**
      * This method checks if the robot is in the balance zone.
      *

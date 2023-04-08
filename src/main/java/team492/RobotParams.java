@@ -332,7 +332,7 @@ public class RobotParams
     public static final double GYRO_TURN_KI                     = 0.01;
     public static final double GYRO_TURN_KD                     = 0.001;
     public static final double GYRO_TURN_KF                     = 0.0;
-    public static final double GYRO_TURN_IZONE                  = 5.0;
+    public static final double GYRO_TURN_IZONE                  = 10.0;
     public static final double GYRO_TURN_TOLERANCE              = 2.0;
     public static final double[] GYRO_TILT_THRESHOLDS           = {-15.0, -5.0, 5.0, 15.0};
     public static final double[] DRIVE_DISTANCE_THRESHOLDS      = {20.0};
@@ -536,7 +536,7 @@ public class RobotParams
     public static final double WRIST_PRESET_TOLERANCE           = 5.0;
 
     public static final double WRIST_CONE_PICKUP_POSITION       = 115.0;
-    public static final double WRIST_CUBE_PICKUP_POSITION       = 62.5;
+    public static final double WRIST_CUBE_PICKUP_POSITION       = 64.5;
     public static final double[] wristConeScorePresets          =
     {
         90.0, 210.0, 196.0//195.0

@@ -174,10 +174,8 @@ public class CmdAutoStartPos2 implements TrcRobot.RobotCommand
 
                 case PREP_TO_BALANCE:
                     // Back up and turn right to prepare to crab over the station.
-                    robot.robotDrive.purePursuitDrive.start(
-                        driveEvent, 1.5, robot.robotDrive.driveBase.getFieldPosition(), true,
-                        new TrcPose2D(0.0, -36.0, 90.0));
-                    sm.waitForSingleEvent(driveEvent, State.START_TO_CLIMB);
+                    robot.robotDrive.pidDrive.setRelativeTurnTarget(90.0, driveEvent);
+                    sm.waitForSingleEvent(driveEvent, State.START_TO_CLIMB, 2.0);
                     break;
 
                 case START_TO_CLIMB:

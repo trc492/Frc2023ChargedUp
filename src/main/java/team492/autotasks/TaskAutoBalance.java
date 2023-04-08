@@ -35,6 +35,7 @@ import team492.FrcAuto;
 import team492.Robot;
 import team492.RobotParams;
 import team492.FrcAuto.BalanceInitSide;
+import team492.drivebases.SwerveDrive.TiltDir;
 
 /**
  * This class implements auto-assist balancing on the charging station.
@@ -211,6 +212,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     {
         double tiltAngle = robot.robotDrive.getGyroRoll();
         double dir = alliance == Alliance.Blue? -Math.signum(tiltAngle): Math.signum(tiltAngle);
+        TiltDir enterBalance = robot.robotDrive.enteringBalanceZone();
+        TiltDir exitBalance = robot.robotDrive.exitingBalanceZone();
         boolean inBalance = robot.robotDrive.inBalanceZone();
         boolean leveling = robot.robotDrive.startingToLevel();
         boolean tiltTriggered = tiltEvent.isSignaled();
@@ -237,11 +240,13 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
             case CLIMB:
                 if (tiltTriggered)
                 {
-                    if (leveling)
+                    if (leveling)   // 0->1, 4->3
                     {
                         // We are starting to level off, drive a tuned distance to the center of the charging station.
                         robot.robotDrive.enableDistanceTrigger(RobotParams.Preferences.homeField? 19.0: 24.0, event);
-                        sm.waitForSingleEvent(event, State.SETTLE);
+                        sm.addEvent(event);
+                        sm.addEvent(tiltEvent);     // Only want 1->2 or 3->2
+                        sm.waitForEvents(State.SETTLE, false);
                     }
                     else
                     {
@@ -257,14 +262,24 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 break;
 
             case SETTLE:
-                // It takes time for the charging station to balance, wait for it to settle.
-                robot.robotDrive.driveBase.stop(currOwner);
-                robot.robotDrive.disableDistanceTrigger();
-                robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
-                balanced = false;
-                sm.waitForSingleEvent(
-                    tiltEvent, RobotParams.Preferences.doBalanceCorrection? State.CHECK: State.DONE,
-                    RobotParams.Preferences.homeField? 2.0: 1.0);
+                // Only stop and settle when we are entering the balance zone (ignoring noise exiting balance zone)
+                if (enterBalance != null)
+                {
+                    // It takes time for the charging station to balance, wait for it to settle.
+                    robot.robotDrive.driveBase.stop(currOwner);
+                    robot.robotDrive.disableDistanceTrigger();
+                    robot.robotDrive.setAntiDefenseEnabled(currOwner, true);
+                    balanced = false;
+                    sm.waitForSingleEvent(
+                        tiltEvent, RobotParams.Preferences.doBalanceCorrection? State.CHECK: State.DONE,
+                        RobotParams.Preferences.homeField? 2.0: 1.0);
+                }
+                else
+                {
+                    // We are still on the edge, keep climbing
+                    tiltEvent.clear();
+                    sm.setState(State.CLIMB);
+                }
                 break;
 
             case CHECK:
@@ -287,10 +302,12 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // Robot is still tipped. Drive the robot in the climb direction for a short distance.
                     robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
-                    robot.robotDrive.enableDistanceTrigger(1.5, event);
+                    robot.robotDrive.enableDistanceTrigger(4.0, event);
+                    sm.addEvent(event);
                     robot.robotDrive.driveBase.holonomicDrive(
                         currOwner, 0.0, dir*0.1, 0.0, robot.robotDrive.driveBase.getHeading());
-                    sm.waitForSingleEvent(tiltEvent, State.SETTLE);
+                    sm.addEvent(tiltEvent);
+                    sm.waitForEvents(State.SETTLE);
                 }
                 break;
             
