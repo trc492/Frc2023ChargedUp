@@ -166,68 +166,30 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                     TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
                     robot.robotDrive.pidDrive.setMsgTracer(robot.globalTracer, true, true);
                     robot.robotDrive.pidDrive.setAbsoluteTarget(robotPose.x + xDelta, robotPose.y + yDelta, robotPose.angle, driveEvent);
-                    State nextState = startPos == AutoStartPos.BARRIER? State.TURN_TO_FACE_CUBE : State.TURN_TO_FACE_CUBE; 
-                    sm.waitForSingleEvent(driveEvent, nextState);
-                    // robot.robotDrive.enableDistanceTrigger(6.0, driveEvent);
-                    // double xPower = alliance == Alliance.Blue && startPos == AutoStartPos.BARRIER ||
-                    //                 alliance == Alliance.Red && startPos == AutoStartPos.FIELDRAIL? -0.2: 0.2;
-                    // robot.robotDrive.driveBase.holonomicDrive(
-                    //     null, xPower, 0.0, 0.0, robot.robotDrive.driveBase.getHeading());
-                    // sm.waitForSingleEvent(driveEvent, State.EXIT_COMMUNITY2);//PICKUP_SECOND_CUBE);
-                    break; 
-                case TURN_TO_FACE_CUBE:
-                    double absHeading = alliance== Alliance.Blue ? 360: 180;
-                    robot.robotDrive.pidDrive.setAbsoluteHeadingTarget(absHeading, driveEvent);
-                    sm.addEvent(driveEvent);
-                    robot.prepSubsystems(null, 0.0, RobotParams.ELEVATOR_CUBE_PICKUP_POSITION,
-                        0.0, RobotParams.ARM_CUBE_PICKUP_POSITION, 0.8, RobotParams.WRIST_CUBE_PICKUP_POSITION, 1.0, autoAssistEvent);
-                    sm.addEvent(autoAssistEvent);
-                    sm.waitForEvents(State.PICKUP_SECOND_CUBE);
+                    // TODO (Code Review): What is this line? You checked BARRIER but then both if and else are going to the same next state?!
+                    // State nextState = startPos == AutoStartPos.BARRIER? State.TURN_TO_FACE_CUBE : State.TURN_TO_FACE_CUBE;
+                    // sm.waitForSingleEvent(driveEvent, nextState);
+                    sm.waitForSingleEvent(driveEvent, State.TURN_TO_FACE_CUBE);
                     break; 
 
-                // case EXIT_COMMUNITY2:
-                //     robot.robotDrive.enableDistanceTrigger(160.0, driveEvent);
-                //     double yPower = alliance == Alliance.Blue? 0.5: -0.5;
-                //     robot.robotDrive.driveBase.holonomicDrive(
-                //         null, 0, yPower, 0, robot.robotDrive.driveBase.getHeading());
-                //     sm.waitForSingleEvent(driveEvent, State.DONE);
-                //     break;
+                case TURN_TO_FACE_CUBE:
+                    double absHeading = alliance == Alliance.Blue? 360.0: 180.0;
+                    sm.addEvent(driveEvent);
+                    robot.robotDrive.pidDrive.setAbsoluteHeadingTarget(absHeading, driveEvent);
+                    sm.addEvent(autoAssistEvent);
+                    robot.prepForCubeGroundPickup(null, 0.0, autoAssistEvent);
+                    sm.waitForEvents(State.PICKUP_SECOND_CUBE, true);
+                    break; 
 
                 case PICKUP_SECOND_CUBE:
-                    // double yDelta = alliance == Alliance.Blue? 180.0: -180.0;
-                    // TrcPose2D robotPose = robot.robotDrive.driveBase.getFieldPosition();
-                    // robot.robotDrive.pidDrive.setMsgTracer(robot.globalTracer, true, true);
-                    // robot.robotDrive.pidDrive.setAbsoluteTarget(robotPose.x + xDelta, robotPose.y + yDelta, robotPose.angle, driveEvent);
-                    // robot.prepForCubeGroundPickup(moduleName, 0.0, null);
-                    // robot.robotDrive.pidDrive.setAbsoluteTarget(robotPose.x, robotPose.y + yDelta, robotPose.angle, driveEvent);
-
                     sm.addEvent(autoAssistEvent);
                     robot.intake.autoAssistIntake(
                         0.0, RobotParams.INTAKE_PICKUP_POWER, RobotParams.INTAKE_CUBE_RETAIN_POWER, 0.75,
                         autoAssistEvent, 0.0);
-                    robot.robotDrive.pidDrive.getYPidCtrl().setOutputLimit(0.2);
-                    robot.robotDrive.pidDrive.setRelativeTarget(0, 30, 0, driveEvent);
-                    sm.addEvent(autoAssistEvent);
+
                     sm.addEvent(driveEvent);
-                    // robot.robotDrive.purePursuitDrive.setMoveOutputLimit(0.3);
-                    // if (startPos == AutoStartPos.FIELDRAIL)
-                    // {
-                    //     // We are going for the game piece on the guardrail side.
-                    //     robot.robotDrive.purePursuitDrive.start(
-                    //         driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                    //         robot.robotDrive.adjustPosByAlliance(
-                    //             alliance,
-                    //             new TrcPose2D(RobotParams.GAME_PIECE_1_X, RobotParams.GAME_PIECE_BLUE_Y, 0.0)));
-                    // }
-                    // else
-                    // {
-                    //     // We are going for the game piece on the substation side.
-                    //     robot.robotDrive.purePursuitDrive.start(
-                    //         driveEvent, 0.0, robot.robotDrive.driveBase.getFieldPosition(), false,
-                    //         robot.robotDrive.adjustPosByAlliance(
-                    //             alliance,
-                    //             new TrcPose2D(RobotParams.GAME_PIECE_4_X, RobotParams.GAME_PIECE_BLUE_Y, 0.0)));
-                    // }
+                    robot.robotDrive.pidDrive.getYPidCtrl().setOutputLimit(0.2);
+                    robot.robotDrive.pidDrive.setRelativeTarget(0.0, 30.0, 0.0, driveEvent);
                     sm.waitForEvents(State.DONE, false);
                     break;
 
