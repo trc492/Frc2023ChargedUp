@@ -60,7 +60,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
     private final String owner;
     private final Robot robot;
     private final TrcDbgTrace msgTracer;
-    private final TrcEvent event, tiltEvent;
+    private final TrcEvent tiltEvent;
+    private final TrcEvent distanceTriggerEvent;
 
     private Alliance alliance;
     private double startDir;
@@ -80,8 +81,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         this.owner = owner;
         this.robot = robot;
         this.msgTracer = msgTracer;
-        event = new TrcEvent(moduleName);
         tiltEvent = new TrcEvent(moduleName + ".tiltEvent");
+        distanceTriggerEvent = new TrcEvent(moduleName + ".distanceTriggerEvent");
     }   //TaskAutoBalance
 
     /**
@@ -213,17 +214,19 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
         double tiltAngle = robot.robotDrive.getGyroRoll();
         double dir = alliance == Alliance.Blue? -Math.signum(tiltAngle): Math.signum(tiltAngle);
         TiltDir enterBalance = robot.robotDrive.enteringBalanceZone();
-        TiltDir exitBalance = robot.robotDrive.exitingBalanceZone();
         boolean inBalance = robot.robotDrive.inBalanceZone();
         boolean leveling = robot.robotDrive.startingToLevel();
         boolean tiltTriggered = tiltEvent.isSignaled();
+        boolean distanceTriggered = distanceTriggerEvent.isSignaled();
 
         if (msgTracer != null)
         {
             msgTracer.traceInfo(
-                moduleName, "[%.3f] %s: xDist=%.1f, tilt=%.3f, inBalance=%s, leveling=%s, tiltTriggered=%s",
+                moduleName,
+                "[%.3f] %s: xDist=%.1f, tilt=%.3f, enterBalance=%s, inBalance=%s, leveling=%s, tiltTriggered=%s, " +
+                "distanceTriggered=%s",
                 TrcTimer.getModeElapsedTime(), state, robot.robotDrive.driveBase.getXPosition(), tiltAngle,
-                inBalance, leveling, tiltTriggered);
+                enterBalance, inBalance, leveling, tiltTriggered, distanceTriggered);
         }
 
         switch (state)
@@ -243,9 +246,10 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     if (leveling)   // 0->1, 4->3
                     {
                         // We are starting to level off, drive a tuned distance to the center of the charging station.
-                        robot.robotDrive.enableDistanceTrigger(RobotParams.Preferences.homeField? 19.0: 24.0, event);
-                        sm.addEvent(event);
-                        sm.addEvent(tiltEvent);     // Only want 1->2 or 3->2
+                        robot.robotDrive.enableDistanceTrigger(
+                            RobotParams.Preferences.homeField? 19.0: 24.0, distanceTriggerEvent);
+                        sm.addEvent(distanceTriggerEvent);
+                        sm.addEvent(tiltEvent);     // Only want 1->2 or 3->2 (aka enterBalance).
                         sm.waitForEvents(State.SETTLE, false);
                     }
                     else
@@ -262,8 +266,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 break;
 
             case SETTLE:
-                // Only stop and settle when we are entering the balance zone (ignoring noise exiting balance zone)
-                if (enterBalance != null)
+                // Only stop and settle when we are entering the balance zone (ignoring noise exiting balance zone).
+                if (tiltTriggered && enterBalance != null)
                 {
                     // It takes time for the charging station to balance, wait for it to settle.
                     robot.robotDrive.driveBase.stop(currOwner);
@@ -274,11 +278,22 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                         tiltEvent, RobotParams.Preferences.doBalanceCorrection? State.CHECK: State.DONE,
                         RobotParams.Preferences.homeField? 2.0: 1.0);
                 }
+                else if (distanceTriggered)
+                {
+                    // Distance triggered but no balance yet. Climb some more slower.
+                    robot.robotDrive.driveBase.holonomicDrive(
+                        currOwner, 0.0, startDir*0.1, 0.0, robot.robotDrive.driveBase.getHeading());
+                    sm.addEvent(distanceTriggerEvent);
+                    sm.addEvent(tiltEvent);
+                    sm.waitForEvents(State.SETTLE, false);
+                }
                 else
                 {
-                    // We are still on the edge, keep climbing
-                    tiltEvent.clear();
-                    sm.setState(State.CLIMB);
+                    // Tilt triggered but we are not entering balance. We are still on the edge, keep climbing and
+                    // wait for either tiltTrigger or distanceTrigger.
+                    sm.addEvent(tiltEvent);
+                    sm.addEvent(distanceTriggerEvent);
+                    sm.waitForEvents(State.SETTLE, false);
                 }
                 break;
 
@@ -302,8 +317,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // Robot is still tipped. Drive the robot in the climb direction for a short distance.
                     robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
-                    robot.robotDrive.enableDistanceTrigger(4.0, event);
-                    sm.addEvent(event);
+                    robot.robotDrive.enableDistanceTrigger(4.0, distanceTriggerEvent);
+                    sm.addEvent(distanceTriggerEvent);
                     robot.robotDrive.driveBase.holonomicDrive(
                         currOwner, 0.0, dir*0.1, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.addEvent(tiltEvent);

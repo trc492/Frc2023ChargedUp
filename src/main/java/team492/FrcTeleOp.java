@@ -697,7 +697,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             //CONE SHOOTING
             case FrcJoystick.PANEL_BUTTON_YELLOW2:
-                if(pressed){
+                // TODO (Code Review): Is this test code?
+                if (pressed)
+                {
                     robot.intake.setPower(null, 0, -1.0, 1.0, null);
                 }
                 break;
