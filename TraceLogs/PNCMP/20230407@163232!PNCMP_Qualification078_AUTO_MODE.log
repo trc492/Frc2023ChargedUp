@@ -1,0 +1,598 @@
+globalTracer.robotStartMode_Info: Fri Apr 07 16:32:32 PDT 2023: [0.028] ***** Start AUTO_MODE *****
+globalTracer.syncSteerEncoders_Info: [0.272] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.277] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.282] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.288] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.289] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.292] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.294] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.295] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.297] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.298] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.300] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.303] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.306] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.308] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.310] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.313] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.315] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.318] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.321] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.334] steerEncPos[0]=-49
+globalTracer.syncSteerEncoders_Info: [0.336] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.340] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.343] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.345] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.349] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.352] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.355] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.357] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.360] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.363] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.367] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.369] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.373] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.375] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.378] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.381] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.384] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.387] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.390] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.393] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.396] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.399] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.401] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.405] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.407] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.410] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.413] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.415] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.418] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.420] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.423] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.427] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.429] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.432] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.435] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.438] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.440] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.444] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.446] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.449] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.451] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.454] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.457] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.460] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.462] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.464] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.466] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.468] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.471] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.474] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.476] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.478] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.480] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.481] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.485] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.487] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.489] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.491] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.496] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.497] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.500] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.502] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.505] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.507] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.509] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.510] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.512] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.515] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.517] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.519] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.521] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.524] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.526] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.528] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.530] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.533] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.534] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.536] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.538] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.540] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.542] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.546] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.548] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.550] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.552] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.553] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.556] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.557] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.560] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.563] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.565] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.567] steerEncPos[0]=-48
+globalTracer.syncSteerEncoders_Info: [0.569] steerEncPos[0]=-47
+globalTracer.syncSteerEncoders_Info: [0.572] syncSteerEncPos[0]=-80
+globalTracer.syncSteerEncoders_Info: [0.575] syncSteerEncPos[1]=63
+globalTracer.syncSteerEncoders_Info: [0.577] syncSteerEncPos[2]=-242
+globalTracer.syncSteerEncoders_Info: [0.579] syncSteerEncPos[3]=-44
+globalTracer.ElevatorMotor.recordResponseCode_Err: setIdleMode (ErrCode=kHALError)
+globalTracer.FrcAuto_Info: <Info name="MatchInfo" date="Fri Apr 07 16:32:32 PDT 2023" event="PNCMP" type="Qualification" match=78 replay=1 alliance="Red" location=1 gameMsg="" />
+globalTracer.FrcAuto_Info: <Info name="AutoChoices" alliance="Red" strategy="AUTO_STARTPOS_2" startPos="MIDDLE" preloadedObj="CUBE" scoreLevel="2" scoreLocation="MIDDLE" useVision="true" scorePreload="true" doAutoBalance="true" scoreSecondPiece="false" startDelay=0 sec pathFile="DrivePath.csv" xDistance=6.0 ft yDistance=6.0 ft turnDegrees=90 deg driveTime=4 sec drivePower=4.0 />
+globalTracer.startCompetition_Warn: AUTO_MODE.prePeriodicTasks took too long (0.089s/0.040s)
+globalTracer.CmdAutoStartPos2_Info: [0.751] START: xDist=-0.0, tilt=0.450, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.autoAssistScoreObject_Info: TaskAutoScore: objectType=CUBE, scoreLevel=2, scoreLocation=MIDDLE, useVision=false, prepOnly=false, event=(CmdAutoStartPos2.autoAssistEvent=CLEARED)
+globalTracer.acquireSubsystemsOwnership_Info: TaskAutoScore: Successfully acquired subsystem ownerships.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="0.792" tag=">>>>>" CmdAutoStartPos2.state="START" />
+globalTracer.startCompetition_Warn: AUTO_MODE.periodic took too long (0.055s/0.040s)
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="0.873" tag=">>>>>" TaskAutoScore.state="START" />
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.071s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (2582024.720/0.020)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(robot.elevatorEvent=CLEARED)
+globalTracer.printPidInfo_Info: [1.718967] Elevator.pidActuator.pidCtrl: Target=  10.0, Input=  10.0, dT=0.020243, CurrErr=   0.0, ErrRate=  -0.9, Output= 0.019(-1.000/ 1.000)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=true, onTarget=false, event=(robot.armEvent=CLEARED)
+globalTracer.printPidInfo_Info: [1.842567] Arm.pidActuator.pidCtrl: Target=  93.0, Input=  53.8, dT=0.021146, CurrErr=  39.2, ErrRate= -91.4, Output= 0.745(-1.000/ 1.000)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=true, onTarget=false, event=(robot.wristEvent=CLEARED)
+globalTracer.printPidInfo_Info: [2.670630] Wrist.pidActuator.pidCtrl: Target= 130.0, Input= 129.5, dT=0.019908, CurrErr=   0.5, ErrRate=  -2.3, Output= 0.013(-1.000/ 1.000)
+globalTracer.performAutoAssist_Info: [2.695] AutoAssist: intake=false,intakePower=0.3,retainPower=0.0,finishDelay=0.000,event=(TaskAutoScore=SIGNALED),timeout=0.000, hasObject=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="2.717" tag=">>>>>" TaskAutoScore.state="SCORE_OBJECT" />
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.042/0.020)
+globalTracer.finishAutoAssist_Info: [2.777] canceled=false, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.000
+globalTracer.intakeTriggerCallback_Info: [2.780] active=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="2.790" tag=">>>>>" TaskAutoScore.state="RESET" />
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="2.809" pose="(x=-108.2,y=578.7,angle=0.4)" />
+globalTracer.printPidInfo_Info: [2.815036] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.018368, CurrErr=   0.2, ErrRate=   0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.821706] pidDrive.yPidCtrl: Target= -24.0, Input=   0.0, dT=0.017808, CurrErr= -24.0, ErrRate=   0.0, Output=-0.009(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.830373] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.017720, CurrErr=   0.0, ErrRate=   0.0, Output= 0.000(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.044/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="2.848" pose="(x=-108.2,y=578.7,angle=0.4)" />
+globalTracer.printPidInfo_Info: [2.854316] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.044024, CurrErr=   0.2, ErrRate=   0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.861291] pidDrive.yPidCtrl: Target= -24.0, Input=   0.0, dT=0.043996, CurrErr= -24.0, ErrRate=   0.0, Output=-0.031(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.867948] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.043996, CurrErr=   0.0, ErrRate=   0.2, Output= 0.000(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="2.893" pose="(x=-108.2,y=578.7,angle=0.4)" />
+globalTracer.printPidInfo_Info: [2.896286] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.041934, CurrErr=   0.2, ErrRate=   0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.900962] pidDrive.yPidCtrl: Target= -24.0, Input=   0.0, dT=0.042862, CurrErr= -24.0, ErrRate=   0.0, Output=-0.052(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.907468] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.042867, CurrErr=   0.0, ErrRate=  -0.2, Output=-0.000(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="2.923" pose="(x=-108.2,y=578.7,angle=0.4)" />
+globalTracer.printPidInfo_Info: [2.926712] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.031169, CurrErr=   0.2, ErrRate=   0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.931669] pidDrive.yPidCtrl: Target= -24.0, Input=   0.0, dT=0.030247, CurrErr= -24.0, ErrRate=   0.0, Output=-0.067(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.937190] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.030243, CurrErr=  -0.0, ErrRate=  -0.7, Output=-0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="2.953" pose="(x=-108.2,y=578.6,angle=0.4)" />
+globalTracer.printPidInfo_Info: [2.956446] pidDrive.xPidCtrl: Target=   0.2, Input=  -0.0, dT=0.030141, CurrErr=   0.2, ErrRate=   0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.964092] pidDrive.yPidCtrl: Target= -24.0, Input=  -0.1, dT=0.030143, CurrErr= -23.9, ErrRate=   4.3, Output=-0.083(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.968824] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.030143, CurrErr=  -0.0, ErrRate=   0.3, Output= 0.000(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="2.985" pose="(x=-108.2,y=578.5,angle=0.4)" />
+globalTracer.printPidInfo_Info: [2.989052] pidDrive.xPidCtrl: Target=   0.2, Input=  -0.0, dT=0.031435, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [2.994843] pidDrive.yPidCtrl: Target= -24.0, Input=  -0.2, dT=0.032447, CurrErr= -23.8, ErrRate=   3.6, Output=-0.099(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.001498] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.032454, CurrErr=   0.0, ErrRate=   1.2, Output= 0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.029" pose="(x=-108.2,y=578.4,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.032358] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.044554, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.040336] pidDrive.yPidCtrl: Target= -24.0, Input=  -0.3, dT=0.044147, CurrErr= -23.7, ErrRate=   2.2, Output=-0.121(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.045356] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.044143, CurrErr=   0.1, ErrRate=   0.5, Output= 0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.046/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.067" pose="(x=-108.2,y=578.0,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.069771] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.037201, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.074740] pidDrive.yPidCtrl: Target= -24.0, Input=  -0.8, dT=0.036609, CurrErr= -23.2, ErrRate=  11.7, Output=-0.139(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.081523] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.036607, CurrErr=   0.2, ErrRate=   2.7, Output= 0.004(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.095" pose="(x=-108.2,y=577.8,angle=0.2)" />
+globalTracer.printPidInfo_Info: [3.098388] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.028811, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.105943] pidDrive.yPidCtrl: Target= -24.0, Input=  -1.0, dT=0.028793, CurrErr= -23.0, ErrRate=   6.5, Output=-0.154(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.111210] pidDriveturnPidCtrl: Target=   0.4, Input=   0.2, dT=0.028791, CurrErr=   0.3, ErrRate=   3.5, Output= 0.005(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.129" pose="(x=-108.2,y=577.2,angle=0.2)" />
+globalTracer.printPidInfo_Info: [3.131536] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.033641, CurrErr=   0.2, ErrRate=  -0.1, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.136525] pidDrive.yPidCtrl: Target= -24.0, Input=  -1.6, dT=0.033644, CurrErr= -22.4, ErrRate=  18.0, Output=-0.170(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.142494] pidDriveturnPidCtrl: Target=   0.4, Input=   0.2, dT=0.033644, CurrErr=   0.3, ErrRate=   0.0, Output= 0.002(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.170" pose="(x=-108.2,y=576.8,angle=0.2)" />
+globalTracer.printPidInfo_Info: [3.173508] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.041504, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.177485] pidDrive.yPidCtrl: Target= -24.0, Input=  -1.9, dT=0.041501, CurrErr= -22.1, ErrRate=   8.6, Output=-0.191(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.198332] pidDriveturnPidCtrl: Target=   0.4, Input=   0.2, dT=0.041500, CurrErr=   0.2, ErrRate=  -0.2, Output= 0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.054/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.218" pose="(x=-108.2,y=575.7,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.219886] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.043455, CurrErr=   0.2, ErrRate=   0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.227136] pidDrive.yPidCtrl: Target= -24.0, Input=  -3.1, dT=0.043452, CurrErr= -20.9, ErrRate=  26.6, Output=-0.169(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.233335] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.043452, CurrErr=   0.1, ErrRate=  -2.8, Output=-0.002(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.249" pose="(x=-108.2,y=574.6,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.255865] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.036282, CurrErr=   0.2, ErrRate=   0.0, Output= 0.003(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.262305] pidDrive.yPidCtrl: Target= -24.0, Input=  -4.1, dT=0.036285, CurrErr= -19.9, ErrRate=  29.0, Output=-0.151(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.269200] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.036284, CurrErr=   0.1, ErrRate=  -0.3, Output= 0.000(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.293" pose="(x=-108.2,y=574.0,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.297770] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.040055, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.304448] pidDrive.yPidCtrl: Target= -24.0, Input=  -4.7, dT=0.040051, CurrErr= -19.3, ErrRate=  14.2, Output=-0.171(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.311885] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.040051, CurrErr=   0.1, ErrRate=   0.5, Output= 0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.046/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.332" pose="(x=-108.2,y=572.4,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.336696] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.041677, CurrErr=   0.2, ErrRate=  -0.1, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.340493] pidDrive.yPidCtrl: Target= -24.0, Input=  -6.4, dT=0.041681, CurrErr= -17.6, ErrRate=  40.3, Output=-0.150(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.348261] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.041682, CurrErr=   0.1, ErrRate=  -0.5, Output= 0.000(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.363" pose="(x=-108.2,y=571.7,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.365709] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.028631, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.373800] pidDrive.yPidCtrl: Target= -24.0, Input=  -7.0, dT=0.029464, CurrErr= -17.0, ErrRate=  20.7, Output=-0.136(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.378703] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.029469, CurrErr=   0.1, ErrRate=   1.0, Output= 0.002(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.408" pose="(x=-108.2,y=570.5,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.410784] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.044873, CurrErr=   0.2, ErrRate=  -0.1, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.418569] pidDrive.yPidCtrl: Target= -24.0, Input=  -8.2, dT=0.044057, CurrErr= -15.8, ErrRate=  27.5, Output=-0.114(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.425103] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.044052, CurrErr=   0.1, ErrRate=   0.0, Output= 0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.050/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.449" pose="(x=-108.2,y=568.9,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.451921] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.041609, CurrErr=   0.2, ErrRate=  -0.1, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.459842] pidDrive.yPidCtrl: Target= -24.0, Input=  -9.9, dT=0.041596, CurrErr= -14.1, ErrRate=  40.1, Output=-0.093(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.466180] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.041596, CurrErr=   0.1, ErrRate=  -1.4, Output=-0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.488" pose="(x=-108.3,y=568.0,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.489900] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.037402, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.497334] pidDrive.yPidCtrl: Target= -24.0, Input= -10.8, dT=0.038069, CurrErr= -13.2, ErrRate=  23.8, Output=-0.074(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.503014] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.038073, CurrErr=   0.0, ErrRate=  -1.1, Output=-0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.540" pose="(x=-108.3,y=567.5,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.543778] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.053203, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.549167] pidDrive.yPidCtrl: Target= -24.0, Input= -11.2, dT=0.052529, CurrErr= -12.8, ErrRate=   8.1, Output=-0.100(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.553172] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.052524, CurrErr=   0.1, ErrRate=   0.8, Output= 0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.046/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.569" pose="(x=-108.3,y=566.3,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.574220] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.030847, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.580056] pidDrive.yPidCtrl: Target= -24.0, Input= -12.4, dT=0.030848, CurrErr= -11.6, ErrRate=  40.1, Output=-0.085(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.585415] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.030849, CurrErr=   0.1, ErrRate=  -1.0, Output=-0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.601" pose="(x=-108.3,y=565.9,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.607525] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.030934, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.625189] pidDrive.yPidCtrl: Target= -24.0, Input= -12.8, dT=0.030931, CurrErr= -11.1, ErrRate=  13.5, Output=-0.069(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.627828] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.030930, CurrErr=   0.0, ErrRate=  -1.3, Output=-0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.652" pose="(x=-108.3,y=564.8,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.656977] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.051890, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.662472] pidDrive.yPidCtrl: Target= -24.0, Input= -13.9, dT=0.051891, CurrErr= -10.1, ErrRate=  20.4, Output=-0.043(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.670094] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.051892, CurrErr=   0.0, ErrRate=   0.2, Output= 0.000(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.043/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.692" pose="(x=-108.3,y=564.3,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.695837] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.039117, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.701786] pidDrive.yPidCtrl: Target= -24.0, Input= -14.5, dT=0.039117, CurrErr=  -9.5, ErrRate=  14.4, Output=-0.028(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.707860] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.039117, CurrErr=  -0.0, ErrRate=  -1.0, Output=-0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.723" pose="(x=-108.3,y=563.9,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.728834] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.034338, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.735064] pidDrive.yPidCtrl: Target= -24.0, Input= -14.8, dT=0.034338, CurrErr=  -9.2, ErrRate=   9.1, Output=-0.045(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.739574] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.034338, CurrErr=   0.1, ErrRate=   2.6, Output= 0.003(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.757" pose="(x=-108.3,y=563.7,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.760253] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.030764, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.766576] pidDrive.yPidCtrl: Target= -24.0, Input= -15.0, dT=0.030769, CurrErr=  -9.0, ErrRate=   6.9, Output=-0.060(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.772603] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.030772, CurrErr=   0.1, ErrRate=   2.3, Output= 0.003(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.799" pose="(x=-108.3,y=563.6,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.803464] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.042646, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=true, onTarget=false, event=(robot.wristEvent=CLEARED)
+globalTracer.printPidInfo_Info: [3.809458] pidDrive.yPidCtrl: Target= -24.0, Input= -15.1, dT=0.042646, CurrErr=  -8.9, ErrRate=   2.6, Output=-0.082(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.810745] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=   8.5, dT=0.020038, CurrErr=  -1.5, ErrRate=  -0.5, Output=-0.039(-1.000/ 1.000)
+globalTracer.printPidInfo_Info: [3.812259] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.042646, CurrErr=   0.1, ErrRate=  -1.9, Output=-0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.049/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.838" pose="(x=-108.3,y=563.3,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.841754] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.037531, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.849562] pidDrive.yPidCtrl: Target= -24.0, Input= -15.4, dT=0.037539, CurrErr=  -8.6, ErrRate=   8.8, Output=-0.063(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.857181] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.037540, CurrErr=   0.1, ErrRate=   0.8, Output= 0.001(-0.800/ 0.800)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(robot.elevatorEvent=CLEARED)
+globalTracer.printPidInfo_Info: [3.872362] Elevator.pidActuator.pidCtrl: Target=   0.0, Input=   0.2, dT=0.020601, CurrErr=  -0.2, ErrRate=   0.0, Output=-0.103(-1.000/ 1.000)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.882" pose="(x=-108.3,y=563.1,angle=0.3)" />
+globalTracer.printPidInfo_Info: [3.886217] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.044263, CurrErr=   0.2, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.892971] pidDrive.yPidCtrl: Target= -24.0, Input= -15.6, dT=0.044278, CurrErr=  -8.4, ErrRate=   4.7, Output=-0.085(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.899300] pidDriveturnPidCtrl: Target=   0.4, Input=   0.3, dT=0.044277, CurrErr=   0.1, ErrRate=   0.0, Output= 0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.046/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.938" pose="(x=-108.3,y=562.9,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.943236] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.054976, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.950669] pidDrive.yPidCtrl: Target= -24.0, Input= -15.9, dT=0.057300, CurrErr=  -8.1, ErrRate=   3.6, Output=-0.093(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.957877] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.057302, CurrErr=   0.0, ErrRate=  -1.0, Output=-0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.053/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="3.979" pose="(x=-108.3,y=562.4,angle=0.4)" />
+globalTracer.printPidInfo_Info: [3.984061] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.044978, CurrErr=   0.2, ErrRate=  -0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.990760] pidDrive.yPidCtrl: Target= -24.0, Input= -16.3, dT=0.042632, CurrErr=  -7.7, ErrRate=  11.5, Output=-0.072(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [3.997172] pidDriveturnPidCtrl: Target=   0.4, Input=   0.4, dT=0.042630, CurrErr=  -0.0, ErrRate=  -0.9, Output=-0.001(-0.800/ 0.800)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=true, onTarget=false, event=(robot.armEvent=CLEARED)
+globalTracer.printPidInfo_Info: [4.015982] Arm.pidActuator.pidCtrl: Target= -33.0, Input= -14.7, dT=0.020369, CurrErr= -18.3, ErrRate= 107.9, Output=-0.338(-1.000/ 1.000)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.014" pose="(x=-108.3,y=561.9,angle=0.5)" />
+globalTracer.printPidInfo_Info: [4.024329] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.033785, CurrErr=   0.2, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.029748] pidDrive.yPidCtrl: Target= -24.0, Input= -16.8, dT=0.033786, CurrErr=  -7.2, ErrRate=  12.9, Output=-0.055(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.044499] pidDriveturnPidCtrl: Target=   0.4, Input=   0.5, dT=0.033784, CurrErr=  -0.0, ErrRate=  -0.6, Output=-0.001(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.040s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.048/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.078" pose="(x=-108.3,y=561.4,angle=0.5)" />
+globalTracer.printPidInfo_Info: [4.080941] pidDrive.xPidCtrl: Target=   0.2, Input=   0.0, dT=0.063492, CurrErr=   0.2, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.088162] pidDrive.yPidCtrl: Target= -24.0, Input= -17.3, dT=0.063496, CurrErr=  -6.7, ErrRate=   8.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.093494] pidDriveturnPidCtrl: Target=   0.4, Input=   0.5, dT=0.063496, CurrErr=  -0.0, ErrRate=  -0.3, Output=-0.001(-0.800/ 0.800)
+globalTracer.AutoScore Done_Info: Robot thinks it is at:(x=-108.3,y=561.4,angle=0.5)
+globalTracer.stopSubsystems_Info: TaskAutoScore: Stopping subsystems.
+globalTracer.releaseSubsystemsOwnership_Info: TaskAutoScore: Releasing subsystem ownership (currOwner=TaskAutoScore, robotDrive=null, elevator=TaskAutoScore, arm=TaskAutoScore, wrist=TaskAutoScore, intake=TaskAutoScore).
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="4.112" tag=">>>>>" TaskAutoScore.state="DONE" />
+globalTracer.startCompetition_Warn: AUTO_MODE.postPeriodicTasks took too long (0.040s/0.040s)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.062/0.020)
+globalTracer.CmdAutoStartPos2_Info: [4.129] PREP_TO_BALANCE: xDist=0.0, tilt=0.050, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="4.137" tag=">>>>>" CmdAutoStartPos2.state="PREP_TO_BALANCE" RobotPose=(x=-108.3,y=560.9,angle=0.5) TargetPose=(x=-108.2,y=554.7,angle=90.4) />
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.141" pose="(x=-108.3,y=560.9,angle=0.5)" />
+globalTracer.printPidInfo_Info: [4.147344] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.152422] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.159596] pidDriveturnPidCtrl: Target=  90.4, Input=   0.5, dT=0.005826, CurrErr=  90.0, ErrRate=   0.0, Output= 0.005(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.044/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.178" pose="(x=-108.3,y=560.7,angle=0.5)" />
+globalTracer.printPidInfo_Info: [4.182509] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.188468] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.193845] pidDriveturnPidCtrl: Target=  90.4, Input=   0.5, dT=0.037218, CurrErr=  89.9, ErrRate=  -0.5, Output= 0.042(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.223" pose="(x=-108.3,y=560.7,angle=0.5)" />
+globalTracer.printPidInfo_Info: [4.223762] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.227473] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.235097] pidDriveturnPidCtrl: Target=  90.4, Input=   0.5, dT=0.042685, CurrErr=  89.9, ErrRate=   0.2, Output= 0.085(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.245" pose="(x=-108.3,y=560.6,angle=0.5)" />
+globalTracer.printPidInfo_Info: [4.246054] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.251304] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.252878] pidDriveturnPidCtrl: Target=  90.4, Input=   0.5, dT=0.024747, CurrErr=  89.9, ErrRate=  -0.4, Output= 0.110(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.271" pose="(x=-108.3,y=560.5,angle=0.5)" />
+globalTracer.printPidInfo_Info: [4.273281] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.278871] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.284139] pidDriveturnPidCtrl: Target=  90.4, Input=   0.5, dT=0.020723, CurrErr=  89.9, ErrRate=  -1.9, Output= 0.131(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.297" pose="(x=-108.3,y=560.5,angle=0.8)" />
+globalTracer.printPidInfo_Info: [4.301635] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.308206] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.314429] pidDriveturnPidCtrl: Target=  90.4, Input=   0.8, dT=0.027991, CurrErr=  89.7, ErrRate=  -8.6, Output= 0.159(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.339" pose="(x=-108.3,y=560.5,angle=2.0)" />
+globalTracer.printPidInfo_Info: [4.343381] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.350622] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.355963] pidDriveturnPidCtrl: Target=  90.4, Input=   2.0, dT=0.044822, CurrErr=  88.4, ErrRate= -27.9, Output= 0.203(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.043/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.374" pose="(x=-108.3,y=560.5,angle=4.4)" />
+globalTracer.printPidInfo_Info: [4.378152] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.383798] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.389879] pidDriveturnPidCtrl: Target=  90.4, Input=   4.4, dT=0.033843, CurrErr=  86.0, ErrRate= -69.7, Output= 0.237(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.404" pose="(x=-108.4,y=560.5,angle=6.6)" />
+globalTracer.printPidInfo_Info: [4.407927] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.413867] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.418909] pidDriveturnPidCtrl: Target=  90.4, Input=   6.6, dT=0.029308, CurrErr=  83.8, ErrRate= -76.8, Output= 0.266(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.436" pose="(x=-108.4,y=560.4,angle=9.4)" />
+globalTracer.printPidInfo_Info: [4.439876] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.446334] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.459740] pidDriveturnPidCtrl: Target=  90.4, Input=   9.4, dT=0.031653, CurrErr=  81.0, ErrRate= -87.2, Output= 0.298(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.485" pose="(x=-108.4,y=560.4,angle=14.6)" />
+globalTracer.printPidInfo_Info: [4.489685] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.495436] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.500752] pidDriveturnPidCtrl: Target=  90.4, Input=  14.6, dT=0.050945, CurrErr=  75.9, ErrRate=-101.3, Output= 0.349(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.041/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.518" pose="(x=-108.4,y=560.4,angle=20.8)" />
+globalTracer.printPidInfo_Info: [4.522519] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.528516] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.533955] pidDriveturnPidCtrl: Target=  90.4, Input=  20.8, dT=0.032631, CurrErr=  69.6, ErrRate=-191.5, Output= 0.316(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.547" pose="(x=-108.5,y=560.4,angle=28.1)" />
+globalTracer.printPidInfo_Info: [4.551764] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.557123] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.562336] pidDriveturnPidCtrl: Target=  90.4, Input=  28.1, dT=0.029098, CurrErr=  62.3, ErrRate=-251.2, Output= 0.287(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.577" pose="(x=-108.5,y=560.4,angle=33.4)" />
+globalTracer.printPidInfo_Info: [4.581500] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.587466] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.592983] pidDriveturnPidCtrl: Target=  90.4, Input=  33.4, dT=0.030099, CurrErr=  57.0, ErrRate=-177.1, Output= 0.257(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.617" pose="(x=-108.6,y=560.4,angle=38.9)" />
+globalTracer.printPidInfo_Info: [4.621796] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.627811] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.633319] pidDriveturnPidCtrl: Target=  90.4, Input=  38.9, dT=0.040308, CurrErr=  51.5, ErrRate=-136.7, Output= 0.224(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.043/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.653" pose="(x=-108.8,y=560.2,angle=47.2)" />
+globalTracer.printPidInfo_Info: [4.657238] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.663223] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.669321] pidDriveturnPidCtrl: Target=  90.4, Input=  47.2, dT=0.035028, CurrErr=  43.2, ErrRate=-235.2, Output= 0.189(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.677" pose="(x=-108.6,y=560.4,angle=52.6)" />
+globalTracer.printPidInfo_Info: [4.678908] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.682918] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.685686] pidDriveturnPidCtrl: Target=  90.4, Input=  52.6, dT=0.024809, CurrErr=  37.8, ErrRate=-217.7, Output= 0.164(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.698" pose="(x=-108.6,y=560.4,angle=57.8)" />
+globalTracer.printPidInfo_Info: [4.701063] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.706232] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.709359] pidDriveturnPidCtrl: Target=  90.4, Input=  57.8, dT=0.020271, CurrErr=  32.6, ErrRate=-259.0, Output= 0.143(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.719" pose="(x=-108.6,y=560.4,angle=62.7)" />
+globalTracer.printPidInfo_Info: [4.721905] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.726672] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.729744] pidDriveturnPidCtrl: Target=  90.4, Input=  62.7, dT=0.021273, CurrErr=  27.7, ErrRate=-228.5, Output= 0.122(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.745" pose="(x=-108.6,y=560.4,angle=65.0)" />
+globalTracer.printPidInfo_Info: [4.748382] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.752272] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.755886] pidDriveturnPidCtrl: Target=  90.4, Input=  65.0, dT=0.025347, CurrErr=  25.5, ErrRate= -89.2, Output= 0.097(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.766" pose="(x=-108.6,y=560.4,angle=69.1)" />
+globalTracer.printPidInfo_Info: [4.768337] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.772057] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.775658] pidDriveturnPidCtrl: Target=  90.4, Input=  69.1, dT=0.022016, CurrErr=  21.3, ErrRate=-186.7, Output= 0.075(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.786" pose="(x=-108.6,y=560.4,angle=70.9)" />
+globalTracer.printPidInfo_Info: [4.788128] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.791640] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.795484] pidDriveturnPidCtrl: Target=  90.4, Input=  70.9, dT=0.018369, CurrErr=  19.5, ErrRate=-100.2, Output= 0.056(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.808" pose="(x=-108.8,y=560.4,angle=75.6)" />
+globalTracer.printPidInfo_Info: [4.810489] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.814892] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.826514] pidDriveturnPidCtrl: Target=  90.4, Input=  75.6, dT=0.022522, CurrErr=  14.8, ErrRate=-207.8, Output= 0.034(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.836" pose="(x=-108.6,y=560.5,angle=76.9)" />
+globalTracer.printPidInfo_Info: [4.837856] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.841261] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.845270] pidDriveturnPidCtrl: Target=  90.4, Input=  76.9, dT=0.028207, CurrErr=  13.5, ErrRate= -45.4, Output= 0.049(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.856" pose="(x=-108.6,y=560.5,angle=78.0)" />
+globalTracer.printPidInfo_Info: [4.858321] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.861589] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.865069] pidDriveturnPidCtrl: Target=  90.4, Input=  78.0, dT=0.019957, CurrErr=  12.4, ErrRate= -56.6, Output= 0.030(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.882" pose="(x=-108.6,y=560.5,angle=79.9)" />
+globalTracer.printPidInfo_Info: [4.885702] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.889128] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.892253] pidDriveturnPidCtrl: Target=  90.4, Input=  79.9, dT=0.026183, CurrErr=  10.5, ErrRate= -73.3, Output= 0.004(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.909" pose="(x=-108.6,y=560.5,angle=80.8)" />
+globalTracer.printPidInfo_Info: [4.913442] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.918724] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.924829] pidDriveturnPidCtrl: Target=  90.4, Input=  80.8, dT=0.026288, CurrErr=   9.6, ErrRate= -32.3, Output= 0.030(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.940" pose="(x=-108.6,y=560.5,angle=81.1)" />
+globalTracer.printPidInfo_Info: [4.947067] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.954061] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.960561] pidDriveturnPidCtrl: Target=  90.4, Input=  81.1, dT=0.032939, CurrErr=   9.3, ErrRate= -10.0, Output= 0.061(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="4.974" pose="(x=-108.7,y=560.5,angle=81.2)" />
+globalTracer.printPidInfo_Info: [4.976079] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.988093] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [4.993207] pidDriveturnPidCtrl: Target=  90.4, Input=  81.2, dT=0.033765, CurrErr=   9.3, ErrRate=  -1.5, Output= 0.072(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.021" pose="(x=-108.7,y=560.5,angle=81.1)" />
+globalTracer.printPidInfo_Info: [5.024103] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.029899] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.035106] pidDriveturnPidCtrl: Target=  90.4, Input=  81.1, dT=0.042724, CurrErr=   9.3, ErrRate=   0.7, Output= 0.079(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.043/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.056" pose="(x=-108.7,y=560.5,angle=81.6)" />
+globalTracer.printPidInfo_Info: [5.060068] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.066552] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.072271] pidDriveturnPidCtrl: Target=  90.4, Input=  81.6, dT=0.034494, CurrErr=   8.8, ErrRate= -13.3, Output= 0.064(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.086" pose="(x=-108.7,y=560.5,angle=82.1)" />
+globalTracer.printPidInfo_Info: [5.091340] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.096583] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.102269] pidDriveturnPidCtrl: Target=  90.4, Input=  82.1, dT=0.030553, CurrErr=   8.3, ErrRate= -18.0, Output= 0.058(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.118" pose="(x=-108.7,y=560.5,angle=83.1)" />
+globalTracer.printPidInfo_Info: [5.121106] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.126685] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.132761] pidDriveturnPidCtrl: Target=  90.4, Input=  83.1, dT=0.035037, CurrErr=   7.4, ErrRate= -26.3, Output= 0.046(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.168" pose="(x=-108.7,y=560.5,angle=84.0)" />
+globalTracer.printPidInfo_Info: [5.175127] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.179433] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.185082] pidDriveturnPidCtrl: Target=  90.4, Input=  84.0, dT=0.048988, CurrErr=   6.5, ErrRate= -18.6, Output= 0.051(-0.800/ 0.800)
+globalTracer.startCompetition_Warn: AUTO_MODE took too long (0.054/0.020)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.211" pose="(x=-108.7,y=560.5,angle=85.2)" />
+globalTracer.printPidInfo_Info: [5.213122] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.216967] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.221361] pidDriveturnPidCtrl: Target=  90.4, Input=  85.2, dT=0.044349, CurrErr=   5.3, ErrRate= -26.8, Output= 0.036(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.238" pose="(x=-108.7,y=560.5,angle=85.5)" />
+globalTracer.printPidInfo_Info: [5.240727] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.245131] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.249512] pidDriveturnPidCtrl: Target=  90.4, Input=  85.5, dT=0.027746, CurrErr=   5.0, ErrRate= -10.8, Output= 0.052(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.273" pose="(x=-108.7,y=560.5,angle=86.3)" />
+globalTracer.printPidInfo_Info: [5.274865] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.281010] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.286950] pidDriveturnPidCtrl: Target=  90.4, Input=  86.3, dT=0.034186, CurrErr=   4.1, ErrRate= -24.6, Output= 0.034(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.302" pose="(x=-108.7,y=560.5,angle=86.9)" />
+globalTracer.printPidInfo_Info: [5.303693] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.308715] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.315240] pidDriveturnPidCtrl: Target=  90.4, Input=  86.9, dT=0.028844, CurrErr=   3.5, ErrRate= -21.8, Output= 0.033(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.329" pose="(x=-108.7,y=560.5,angle=87.1)" />
+globalTracer.printPidInfo_Info: [5.331799] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.337612] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.342264] pidDriveturnPidCtrl: Target=  90.4, Input=  87.1, dT=0.026735, CurrErr=   3.3, ErrRate=  -6.4, Output= 0.048(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.365" pose="(x=-108.7,y=560.5,angle=87.3)" />
+globalTracer.printPidInfo_Info: [5.366830] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.370477] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.374720] pidDriveturnPidCtrl: Target=  90.4, Input=  87.3, dT=0.031291, CurrErr=   3.1, ErrRate=  -8.0, Output= 0.046(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.394" pose="(x=-108.7,y=560.5,angle=87.5)" />
+globalTracer.printPidInfo_Info: [5.400092] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.405930] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.411030] pidDriveturnPidCtrl: Target=  90.4, Input=  87.5, dT=0.035967, CurrErr=   2.9, ErrRate=  -4.2, Output= 0.049(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.426" pose="(x=-108.7,y=560.5,angle=87.7)" />
+globalTracer.printPidInfo_Info: [5.429480] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.435284] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.440260] pidDriveturnPidCtrl: Target=  90.4, Input=  87.7, dT=0.030121, CurrErr=   2.7, ErrRate=  -8.0, Output= 0.045(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.454" pose="(x=-108.7,y=560.5,angle=87.9)" />
+globalTracer.printPidInfo_Info: [5.457609] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.463539] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.469303] pidDriveturnPidCtrl: Target=  90.4, Input=  87.9, dT=0.026231, CurrErr=   2.5, ErrRate=  -5.7, Output= 0.047(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.483" pose="(x=-108.7,y=560.5,angle=88.7)" />
+globalTracer.printPidInfo_Info: [5.487411] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.492904] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.497774] pidDriveturnPidCtrl: Target=  90.4, Input=  88.7, dT=0.031894, CurrErr=   1.8, ErrRate= -24.1, Output= 0.015(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.517" pose="(x=-108.7,y=560.5,angle=88.9)" />
+globalTracer.printPidInfo_Info: [5.526121] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.531892] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.537131] pidDriveturnPidCtrl: Target=  90.4, Input=  88.9, dT=0.034332, CurrErr=   1.6, ErrRate=  -6.1, Output= 0.005(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.552" pose="(x=-108.7,y=560.6,angle=89.4)" />
+globalTracer.printPidInfo_Info: [5.557837] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.567383] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.572735] pidDriveturnPidCtrl: Target=  90.4, Input=  89.4, dT=0.030944, CurrErr=   1.0, ErrRate= -17.5, Output=-0.010(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.592" pose="(x=-108.7,y=560.5,angle=89.6)" />
+globalTracer.printPidInfo_Info: [5.595009] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.597459] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.601400] pidDriveturnPidCtrl: Target=  90.4, Input=  89.6, dT=0.044018, CurrErr=   0.8, ErrRate=  -5.0, Output= 0.001(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.612" pose="(x=-108.7,y=560.5,angle=89.8)" />
+globalTracer.printPidInfo_Info: [5.613683] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.616296] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.620487] pidDriveturnPidCtrl: Target=  90.4, Input=  89.8, dT=0.019684, CurrErr=   0.7, ErrRate=  -7.1, Output=-0.002(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.640" pose="(x=-108.7,y=560.5,angle=89.8)" />
+globalTracer.printPidInfo_Info: [5.642583] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.063492, CurrErr=   0.0, ErrRate=   0.0, Output= 0.002(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.647106] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.063496, CurrErr=   0.0, ErrRate=   0.0, Output=-0.037(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.650213] pidDriveturnPidCtrl: Target=  90.4, Input=  89.8, dT=0.026795, CurrErr=   0.7, ErrRate=   0.0, Output= 0.005(-0.800/ 0.800)
+globalTracer.pidDrive_Info: <Event name="RobotPose" time="5.659" pose="(x=-108.3,y=560.9,angle=89.7)" />
+globalTracer.printPidInfo_Info: [5.660963] pidDrive.xPidCtrl: Target=   0.0, Input=   0.0, dT=0.000000, CurrErr=   0.0, ErrRate=   0.0, Output= 0.000(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.665855] pidDrive.yPidCtrl: Target=   0.0, Input=   0.0, dT=0.000000, CurrErr=   0.0, ErrRate=   0.0, Output= 0.000(-0.400/ 0.400)
+globalTracer.printPidInfo_Info: [5.669105] pidDriveturnPidCtrl: Target=   0.0, Input=   0.0, dT=0.000000, CurrErr=   0.0, ErrRate=   0.0, Output= 0.000(-0.800/ 0.800)
+globalTracer.CmdAutoStartPos2_Info: [5.677] START_TO_CLIMB: xDist=-108.3, tilt=0.340, enteringBalance=null, exitingBalance=null, tiltTriggered=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="5.682" tag=">>>>>" CmdAutoStartPos2.state="START_TO_CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [6.227] CLIMB: xDist=-119.0, tilt=-6.810, enteringBalance=null, exitingBalance=TILT_LEFT, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="6.230" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [6.362] CLIMB: xDist=-122.9, tilt=-15.890, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="6.363" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [6.878] CLIMB: xDist=-137.1, tilt=-14.810, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="6.881" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [7.035] CLIMB: xDist=-141.7, tilt=-15.080, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="7.037" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [7.055] CLIMB: xDist=-142.2, tilt=-14.120, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="7.056" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [7.743] CLIMB: xDist=-161.1, tilt=-4.750, enteringBalance=TILT_LEFT, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="7.744" tag=">>>>>" CmdAutoStartPos2.state="CLIMB" />
+globalTracer.CmdAutoStartPos2_Info: [7.862] LEVEL: xDist=-164.7, tilt=5.490, enteringBalance=null, exitingBalance=TILT_RIGHT, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="7.864" tag=">>>>>" CmdAutoStartPos2.state="LEVEL" />
+globalTracer.CmdAutoStartPos2_Info: [7.962] DESCEND: xDist=-168.0, tilt=15.340, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="7.964" tag=">>>>>" CmdAutoStartPos2.state="DESCEND" />
+globalTracer.CmdAutoStartPos2_Info: [8.098] DESCEND: xDist=-173.5, tilt=12.720, enteringBalance=null, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="8.099" tag=">>>>>" CmdAutoStartPos2.state="DESCEND" />
+globalTracer.CmdAutoStartPos2_Info: [8.294] DESCEND: xDist=-182.2, tilt=3.860, enteringBalance=TILT_RIGHT, exitingBalance=null, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="8.296" tag=">>>>>" CmdAutoStartPos2.state="DESCEND" />
+globalTracer.CmdAutoStartPos2_Info: [8.432] BALANCE: xDist=-187.2, tilt=7.380, enteringBalance=null, exitingBalance=TILT_RIGHT, tiltTriggered=true
+globalTracer.autoAssistBalance_Info: TaskAutoBalance: initSide=OUTSIDE, event=(CmdAutoStartPos2.autoAssistEvent=SIGNALED)
+globalTracer.acquireSubsystemOwnership_Info: TaskAutoBalance: Successfully acquired subsystem ownerships.
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="8.439" tag=">>>>>" CmdAutoStartPos2.state="BALANCE" />
+globalTracer.TaskAutoBalance_Info: [8.439] START: xDist=-187.2, tilt=7.380, inBalance=false, leveling=false, tiltTriggered=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="8.446" tag=">>>>>" TaskAutoBalance.state="START" />
+globalTracer.TaskAutoBalance_Info: [9.472] CLIMB: xDist=-192.9, tilt=5.640, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.473" tag=">>>>>" TaskAutoBalance.state="CLIMB" />
+globalTracer.TaskAutoBalance_Info: [9.707] CLIMB: xDist=-193.4, tilt=15.570, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="9.719" tag=">>>>>" TaskAutoBalance.state="CLIMB" />
+globalTracer.TaskAutoBalance_Info: [10.467] CLIMB: xDist=-196.0, tilt=14.920, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.471" tag=">>>>>" TaskAutoBalance.state="CLIMB" />
+globalTracer.TaskAutoBalance_Info: [10.606] SETTLE: xDist=-196.7, tilt=15.010, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.609" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [10.803] CHECK: xDist=-197.0, tilt=14.770, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.808" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [10.981] SETTLE: xDist=-197.1, tilt=15.720, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="10.986" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [11.988] CHECK: xDist=-197.2, tilt=15.630, inBalance=false, leveling=false, tiltTriggered=false
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="11.997" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [13.072] SETTLE: xDist=-197.5, tilt=14.940, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="13.079" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [13.408] CHECK: xDist=-197.5, tilt=15.200, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="13.422" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [13.612] SETTLE: xDist=-197.7, tilt=14.980, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="13.625" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [13.893] CHECK: xDist=-197.7, tilt=15.000, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="13.910" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [14.123] SETTLE: xDist=-197.8, tilt=14.990, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="14.134" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [14.426] CHECK: xDist=-197.8, tilt=15.040, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="14.441" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [14.658] SETTLE: xDist=-198.0, tilt=14.970, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="14.666" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.TaskAutoBalance_Info: [14.972] CHECK: xDist=-198.0, tilt=15.210, inBalance=false, leveling=false, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="14.990" tag=">>>>>" TaskAutoBalance.state="CHECK" />
+globalTracer.TaskAutoBalance_Info: [15.179] SETTLE: xDist=-198.0, tilt=14.970, inBalance=false, leveling=true, tiltTriggered=true
+globalTracer.traceStateInfo_Info: <Event name="StateInfo" time="15.191" tag=">>>>>" TaskAutoBalance.state="SETTLE" />
+globalTracer.startCompetition_Info: *** Transitioning from AUTO_MODE to DISABLED_MODE ***
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoBalance: Canceling auto-assist balance.
+globalTracer.stopSubsystems_Info: TaskAutoBalance: Stopping subsystems.
+globalTracer.releaseSubsystemsOwnership_Info: TaskAutoBalance: Releasing subsystem ownership (currOwner=TaskAutoBalance, robotDrive=TaskAutoBalance).
+globalTracer.robotStopMode_Info: [15.322] ***** Stop AUTO_MODE *****
+globalTracer.FrcRobotBase_Info: ***** Performance Metrics *****
+globalTracer.FrcRobotBase_Info: (AUTO_MODE->DISABLED_MODE) Performance Metrics: LoopCount=656
+globalTracer.FrcRobotBase_Info: RobotInit=4.693037, PrevModeStopTask=0.000454, PrevStopMode=0.015851, PrevRobotStopMode=0.003328, RobotStartMode=0.612146, startMode=0.043812, startTask=0.000104
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.001583/0.088981
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.002187/0.054676
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.003766/0.071374
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003977/0.010158
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.000542/0.995234
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000017/0.020245
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000058/0.000085
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.000161/7.666686
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.006693/7.666643
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000033/7.660108
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000024/7.660104
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000024/7.660104
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.001389/0.022292
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.005468/7.660104
+globalTracer.TaskPerformance_Info: pidDrive.driveTask: POST_PERIODIC_TASK=0.024224/0.034404
+globalTracer.TaskPerformance_Info: tiltTrigger.triggerTask: PRE_PERIODIC_TASK=0.000057/0.020010
+globalTracer.TaskPerformance_Info: distanceTrigger.triggerTask: PRE_PERIODIC_TASK=0.000066/0.057685
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.pidMotorTask: OUTPUT_TASK=0.000575/0.022412
+globalTracer.TaskPerformance_Info: Arm.pidActuator.pidMotorTask: OUTPUT_TASK=0.000455/0.022145
+globalTracer.TaskPerformance_Info: Wrist.pidActuator.pidMotorTask: OUTPUT_TASK=0.000521/0.027381
+globalTracer.TaskPerformance_Info: Intake.trigger.triggerTask: PRE_PERIODIC_TASK=0.000082/0.014699
+globalTracer.TaskPerformance_Info: TaskAutoScore: POST_PERIODIC_TASK=0.001079/0.026114
+globalTracer.TaskPerformance_Info: TaskAutoBalance: POST_PERIODIC_TASK=0.000756/0.020124
