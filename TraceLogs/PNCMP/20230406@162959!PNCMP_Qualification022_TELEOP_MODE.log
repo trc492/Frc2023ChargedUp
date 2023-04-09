@@ -1,0 +1,250 @@
+globalTracer.robotStartMode_Info: Thu Apr 06 16:29:40 PDT 2023: [0.007] ***** Start TELEOP_MODE *****
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.107/0.020)
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.045/0.020)
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [1.828026] Elevator.pidActuator.pidCtrl: Target=   6.5, Input=   6.4, dT=0.020525, CurrErr=   0.1, ErrRate=   0.0, Output= 0.042(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [3.056] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [8.498] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [8.511] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=6, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=6, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [10.870001] Arm.pidActuator.pidCtrl: Target= -33.0, Input= -32.6, dT=0.020916, CurrErr=  -0.4, ErrRate=   4.2, Output=-0.045(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.046/0.020)
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [13.755256] Elevator.pidActuator.pidCtrl: Target=  22.0, Input=  21.9, dT=0.020778, CurrErr=   0.1, ErrRate=  -0.4, Output= 0.029(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [14.723194] Arm.pidActuator.pidCtrl: Target=  93.0, Input=  93.1, dT=0.020275, CurrErr=  -0.1, ErrRate=   8.7, Output= 0.085(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [21.630] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [23.546] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [23.551] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [40.509] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [45.128] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [45.600] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.finishAutoAssist_Info: [45.954] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [45.961] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [65.007] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [66.513] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [66.517] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [67.660] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [67.717] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [67.721] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [79.747] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [82.169] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [83.421] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [83.480] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [83.487] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [84.078] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [84.801] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [84.803] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [93.333] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [93.391] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [93.392] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [100.038] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [103.225] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [104.758] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [105.071] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [105.076] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [115.838] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [118.733] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [119.745] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [120.513] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [121.703] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [124.366] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [126.314] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [128.085] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [130.437] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.044/0.020)
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.startCompetition_Info: *** Transitioning from TELEOP_MODE to DISABLED_MODE ***
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoBalance: Canceling auto-assist balance.
+globalTracer.robotStopMode_Info: [135.362] ***** Stop TELEOP_MODE *****
+globalTracer.FrcRobotBase_Info: ***** Performance Metrics *****
+globalTracer.FrcRobotBase_Info: (TELEOP_MODE->DISABLED_MODE) Performance Metrics: LoopCount=6858
+globalTracer.FrcRobotBase_Info: RobotInit=5.841323, PrevModeStopTask=0.003537, PrevStopMode=0.003440, PrevRobotStopMode=0.009435, RobotStartMode=0.031593, startMode=0.035618, startTask=0.000063
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.000746/0.026162
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.002309/0.033714
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.000084/0.004439
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003380/0.014263
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.000401/0.996093
+globalTracer.TaskPerformance_Info: DriverController.buttonEvent: PRE_PERIODIC_TASK=0.000014/0.019724
+globalTracer.TaskPerformance_Info: operatorStick.buttonEvent: PRE_PERIODIC_TASK=0.000064/0.019724
+globalTracer.TaskPerformance_Info: buttonPanel.buttonEvent: PRE_PERIODIC_TASK=0.000018/0.019724
+globalTracer.TaskPerformance_Info: switchPanel.buttonEvent: PRE_PERIODIC_TASK=0.000005/0.019724
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000032/0.020513
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000057/0.000074
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.001817/38.370209
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.001279/38.370122
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000065/38.368973
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000024/38.368932
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000027/38.368930
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.000545/0.020196
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.002623/38.368929
+globalTracer.TaskPerformance_Info: purePursuitDrive.driveTask: POST_PERIODIC_TASK=0.004024/0.020939
+globalTracer.TaskPerformance_Info: tiltTrigger.triggerTask: PRE_PERIODIC_TASK=0.000022/0.019791
+globalTracer.TaskPerformance_Info: distanceTrigger.triggerTask: PRE_PERIODIC_TASK=0.000016/0.020315
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.pidMotorTask: OUTPUT_TASK=0.000257/0.023066
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.stopMotorTask: STOP_TASK=0.002656/0.000000
+globalTracer.TaskPerformance_Info: Arm.pidActuator.pidMotorTask: OUTPUT_TASK=0.000210/0.023246
+globalTracer.TaskPerformance_Info: Arm.pidActuator.stopMotorTask: STOP_TASK=0.000241/0.000000
+globalTracer.TaskPerformance_Info: Wrist.pidActuator.pidMotorTask: OUTPUT_TASK=0.000198/0.023135
+globalTracer.TaskPerformance_Info: Wrist.pidActuator.stopMotorTask: STOP_TASK=0.000152/0.000000
+globalTracer.TaskPerformance_Info: Intake.trigger.triggerTask: PRE_PERIODIC_TASK=0.000037/0.087802
+globalTracer.TaskPerformance_Info: TaskAutoScore: POST_PERIODIC_TASK=0.000736/0.020737
+globalTracer.TaskPerformance_Info: TaskAutoBalance: POST_PERIODIC_TASK=0.000525/0.019977

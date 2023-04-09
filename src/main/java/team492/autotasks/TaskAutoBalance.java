@@ -266,8 +266,8 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 break;
 
             case SETTLE:
-                // Only stop and settle when we are entering the balance zone (ignoring noise exiting balance zone).
-                if (tiltTriggered && enterBalance != null)
+                // Only stop and settle when we are entering the balance zone or distance triggered.
+                if (tiltTriggered && enterBalance != null || distanceTriggered)
                 {
                     // It takes time for the charging station to balance, wait for it to settle.
                     robot.robotDrive.driveBase.stop(currOwner);
@@ -277,15 +277,6 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     sm.waitForSingleEvent(
                         tiltEvent, RobotParams.Preferences.doBalanceCorrection? State.CHECK: State.DONE,
                         RobotParams.Preferences.homeField? 2.0: 1.0);
-                }
-                else if (distanceTriggered)
-                {
-                    // Distance triggered but no balance yet. Climb some more slower.
-                    robot.robotDrive.driveBase.holonomicDrive(
-                        currOwner, 0.0, startDir*0.1, 0.0, robot.robotDrive.driveBase.getHeading());
-                    sm.addEvent(distanceTriggerEvent);
-                    sm.addEvent(tiltEvent);
-                    sm.waitForEvents(State.SETTLE, false);
                 }
                 else
                 {
@@ -325,7 +316,7 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                     sm.waitForEvents(State.SETTLE);
                 }
                 break;
-            
+
             default:
             case DONE:
                 robot.robotDrive.driveBase.stop(currOwner);

@@ -1,0 +1,310 @@
+globalTracer.robotStartMode_Info: Thu Apr 06 15:22:45 PDT 2023: [0.011] ***** Start TELEOP_MODE *****
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.094/0.020)
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.042/0.020)
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [1.479923] Elevator.pidActuator.pidCtrl: Target=   0.0, Input=   0.2, dT=0.020790, CurrErr=  -0.2, ErrRate=   0.0, Output=-0.076(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [1.754] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [1.832648] Wrist.pidActuator.pidCtrl: Target=  68.0, Input=  67.5, dT=0.020145, CurrErr=   0.5, ErrRate=  -2.8, Output= 0.012(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.finishAutoAssist_Info: [2.621] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [2.636] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [8.045175] Arm.pidActuator.pidCtrl: Target= -12.6, Input= -11.8, dT=0.019960, CurrErr=  -0.8, ErrRate=   0.0, Output=-0.028(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [8.788832] Elevator.pidActuator.pidCtrl: Target=   0.0, Input=   0.0, dT=0.020886, CurrErr=  -0.0, ErrRate=   0.0, Output=-0.019(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [8.997423] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=   7.7, dT=0.020803, CurrErr=  -0.7, ErrRate=   0.1, Output=-0.018(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=true, onTarget=false, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [9.601831] Arm.pidActuator.pidCtrl: Target= -33.0, Input= -29.0, dT=0.020637, CurrErr=  -4.0, ErrRate=  12.8, Output=-0.104(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [16.874628] Wrist.pidActuator.pidCtrl: Target=  13.5, Input=  12.9, dT=0.020706, CurrErr=   0.6, ErrRate=  -1.8, Output= 0.015(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [17.210752] Elevator.pidActuator.pidCtrl: Target=   6.5, Input=   6.4, dT=0.020864, CurrErr=   0.1, ErrRate=  -1.8, Output= 0.060(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.startCompetition_Warn: TELEOP_MODE took too long (0.046/0.020)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [18.485236] Arm.pidActuator.pidCtrl: Target= -33.0, Input= -32.0, dT=0.020750, CurrErr=  -1.0, ErrRate= -12.7, Output=-0.055(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [19.006] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [22.530] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [22.543] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=6, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=6, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [28.084704] Wrist.pidActuator.pidCtrl: Target= 196.0, Input= 196.4, dT=0.020769, CurrErr=  -0.4, ErrRate=  -6.4, Output=-0.013(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [28.126316] Elevator.pidActuator.pidCtrl: Target=  22.0, Input=  21.9, dT=0.020919, CurrErr=   0.1, ErrRate=  -0.9, Output= 0.042(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [29.656256] Arm.pidActuator.pidCtrl: Target=  93.0, Input=  93.3, dT=0.020781, CurrErr=  -0.3, ErrRate=  -4.2, Output= 0.081(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=true, onTarget=false, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [34.015058] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=  15.8, dT=0.019814, CurrErr=  -8.8, ErrRate= 187.6, Output=-0.181(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=true, onTarget=false, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [34.222794] Elevator.pidActuator.pidCtrl: Target=   0.0, Input=   9.1, dT=0.020549, CurrErr=  -9.1, ErrRate=  22.4, Output=-1.000(-1.000/ 1.000)
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=true, onTarget=false, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [34.224726] Arm.pidActuator.pidCtrl: Target= -33.0, Input= -11.2, dT=0.023000, CurrErr= -21.8, ErrRate=  22.9, Output=-0.396(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [37.428357] Wrist.pidActuator.pidCtrl: Target=  13.5, Input=  13.1, dT=0.020556, CurrErr=   0.4, ErrRate=  -1.6, Output= 0.011(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [37.801153] Elevator.pidActuator.pidCtrl: Target=   6.5, Input=   6.4, dT=0.020214, CurrErr=   0.1, ErrRate=   0.0, Output= 0.029(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [38.428] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [38.919420] Arm.pidActuator.pidCtrl: Target= -33.0, Input= -32.1, dT=0.020637, CurrErr=  -0.9, ErrRate= -34.1, Output=-0.053(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.finishAutoAssist_Info: [41.084] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [41.089] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=6, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=6, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Elevator.pidActuator: stalled=false, expired=false, onTarget=true, event=(Elevator.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [49.101461] Elevator.pidActuator.pidCtrl: Target=  22.0, Input=  21.9, dT=0.020670, CurrErr=   0.1, ErrRate=  -2.2, Output= 0.063(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Elevator.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [49.950228] Wrist.pidActuator.pidCtrl: Target= 196.0, Input= 195.3, dT=0.022435, CurrErr=   0.7, ErrRate=  -1.1, Output= 0.018(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.pidMotorTask_Info: TrcPidMotor.Arm.pidActuator: stalled=false, expired=false, onTarget=true, event=(Arm.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [50.216312] Arm.pidActuator.pidCtrl: Target=  93.0, Input=  93.2, dT=0.020653, CurrErr=  -0.2, ErrRate=   0.0, Output= 0.084(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Arm.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.setPosition_Info: Elevator.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Arm.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=true, onTarget=false, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [53.961884] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=  18.2, dT=0.020573, CurrErr= -11.2, ErrRate= 162.0, Output=-0.254(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [54.480333] Wrist.pidActuator.pidCtrl: Target=  13.5, Input=  13.2, dT=0.019642, CurrErr=   0.3, ErrRate=  -0.1, Output= 0.007(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [57.953] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [59.783] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [60.160239] Wrist.pidActuator.pidCtrl: Target=  68.0, Input=  67.8, dT=0.019808, CurrErr=   0.2, ErrRate=   0.0, Output= 0.005(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=true, onTarget=false, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [63.405273] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=   8.3, dT=0.020615, CurrErr=  -1.3, ErrRate=  -6.3, Output=-0.037(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [63.982] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [64.233276] Wrist.pidActuator.pidCtrl: Target=  68.0, Input=  67.3, dT=0.020834, CurrErr=   0.7, ErrRate=  -5.4, Output= 0.018(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.finishAutoAssist_Info: [66.932] canceled=true, AutoAssistTimedOut=false, hasObject=false, finishDelay=0.750
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [71.570] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.finishAutoAssist_Info: [72.098] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [72.101] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=true, onTarget=false, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [74.417465] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=   8.2, dT=0.020705, CurrErr=  -1.2, ErrRate=  -1.3, Output=-0.033(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [80.685525] Wrist.pidActuator.pidCtrl: Target=  13.5, Input=  13.3, dT=0.020678, CurrErr=   0.2, ErrRate=  -3.9, Output= 0.003(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [82.821] AutoAssist: intake=true,intakePower=0.8,retainPower=0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.finishAutoAssist_Info: [86.552] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [86.553] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=true, onTarget=false, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [89.609594] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=   8.2, dT=0.020918, CurrErr=  -1.2, ErrRate=   5.0, Output=-0.031(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.performAutoAssist_Info: [100.922] AutoAssist: intake=true,intakePower=-0.8,retainPower=-0.1,finishDelay=0.750,event=null,timeout=0.000, hasObject=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [100.955650] Wrist.pidActuator.pidCtrl: Target=  68.0, Input=  67.3, dT=0.017855, CurrErr=   0.7, ErrRate=   0.0, Output= 0.019(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.finishAutoAssist_Info: [102.239] canceled=false, AutoAssistTimedOut=false, hasObject=true, finishDelay=0.750
+globalTracer.intakeTriggerCallback_Info: [102.245] active=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [108.564958] Wrist.pidActuator.pidCtrl: Target=   7.0, Input=   8.0, dT=0.020582, CurrErr=  -1.0, ErrRate=  -1.6, Output=-0.027(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=7, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.pidMotorTask_Info: TrcPidMotor.Wrist.pidActuator: stalled=false, expired=false, onTarget=true, event=(Wrist.pidActuator.releaseOwnership=CLEARED)
+globalTracer.printPidInfo_Info: [112.143589] Wrist.pidActuator.pidCtrl: Target= 100.0, Input=  99.6, dT=0.019696, CurrErr=   0.4, ErrRate=  -1.5, Output= 0.011(-1.000/ 1.000)
+globalTracer.releaseOwnership_Info: Wrist.pidActuator: Released ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=true
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=3, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=1, pressed=false
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=true
+globalTracer.setPosition_Info: Wrist.pidActuator: Acquired ownership on behalf of the FrcTeleOp.
+globalTracer.operatorStickButtonEvent_Info: >>>>> button=4, pressed=false
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=true
+globalTracer.driverControllerButtonEvent_Info: >>>>> button=2, pressed=false
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=true
+globalTracer.buttonPanelButtonEvent_Info: >>>>> button=8, pressed=false
+globalTracer.startCompetition_Info: *** Transitioning from TELEOP_MODE to DISABLED_MODE ***
+globalTracer.autoAssistCancel_Info: TaskAutoPickup: Canceling auto-assist pickup.
+globalTracer.autoAssistCancel_Info: TaskAutoScore: Canceling auto-assist score object.
+globalTracer.autoAssistCancel_Info: TaskAutoBalance: Canceling auto-assist balance.
+globalTracer.robotStopMode_Info: [135.304] ***** Stop TELEOP_MODE *****
+globalTracer.FrcRobotBase_Info: ***** Performance Metrics *****
+globalTracer.FrcRobotBase_Info: (TELEOP_MODE->DISABLED_MODE) Performance Metrics: LoopCount=6856
+globalTracer.FrcRobotBase_Info: RobotInit=4.967631, PrevModeStopTask=0.006466, PrevStopMode=0.000881, PrevRobotStopMode=0.004474, RobotStartMode=0.033489, startMode=0.028510, startTask=0.000060
+globalTracer.FrcRobotBase_Info: PrePeriodicTask(Avg/Max)=0.000694/0.023502
+globalTracer.FrcRobotBase_Info: Periodic(Avg/Max)=0.002383/0.032076
+globalTracer.FrcRobotBase_Info: postPeriodicTask(Avg/Max)=0.000081/0.004359
+globalTracer.FrcRobotBase_Info: Updates(Avg/Max)=0.003502/0.023627
+globalTracer.TaskPerformance_Info: TrcWatchdogMgr: STANDALONE_TASK=0.000542/0.995227
+globalTracer.TaskPerformance_Info: DriverController.buttonEvent: PRE_PERIODIC_TASK=0.000012/0.019722
+globalTracer.TaskPerformance_Info: operatorStick.buttonEvent: PRE_PERIODIC_TASK=0.000044/0.019722
+globalTracer.TaskPerformance_Info: buttonPanel.buttonEvent: PRE_PERIODIC_TASK=0.000020/0.019722
+globalTracer.TaskPerformance_Info: switchPanel.buttonEvent: PRE_PERIODIC_TASK=0.000004/0.019722
+globalTracer.TaskPerformance_Info: LED: OUTPUT_TASK=0.000039/0.020573
+globalTracer.TaskPerformance_Info: TrcMotor.odometryTask: STANDALONE_TASK=0.000059/0.000078
+globalTracer.TaskPerformance_Info: lfDrive.cleanupTask: STOP_TASK=0.001509/38.371730
+globalTracer.TaskPerformance_Info: lfWheel.servo.stopTask: STOP_TASK=0.003666/38.373116
+globalTracer.TaskPerformance_Info: rfWheel.servo.stopTask: STOP_TASK=0.000027/38.369576
+globalTracer.TaskPerformance_Info: lbWheel.servo.stopTask: STOP_TASK=0.000022/38.369573
+globalTracer.TaskPerformance_Info: rbWheel.servo.stopTask: STOP_TASK=0.000022/38.369572
+globalTracer.TaskPerformance_Info: TrcDriveBase.odometryTask: PRE_PERIODIC_TASK=0.000551/0.020392
+globalTracer.TaskPerformance_Info: TrcDriveBase.stopTask: STOP_TASK=0.004943/38.369570
+globalTracer.TaskPerformance_Info: pidDrive.driveTask: POST_PERIODIC_TASK=0.022841/0.031363
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.pidMotorTask: OUTPUT_TASK=0.000264/0.023193
+globalTracer.TaskPerformance_Info: Elevator.pidActuator.stopMotorTask: STOP_TASK=0.000188/0.000000
+globalTracer.TaskPerformance_Info: Arm.pidActuator.pidMotorTask: OUTPUT_TASK=0.000212/0.023379
+globalTracer.TaskPerformance_Info: Arm.pidActuator.stopMotorTask: STOP_TASK=0.000090/0.000000
+globalTracer.TaskPerformance_Info: Wrist.pidActuator.pidMotorTask: OUTPUT_TASK=0.000221/0.023143
+globalTracer.TaskPerformance_Info: Wrist.pidActuator.stopMotorTask: STOP_TASK=0.000070/0.000000
+globalTracer.TaskPerformance_Info: Intake.trigger.triggerTask: PRE_PERIODIC_TASK=0.000045/0.132198
+globalTracer.TaskPerformance_Info: TaskAutoScore: POST_PERIODIC_TASK=0.001073/0.021182
