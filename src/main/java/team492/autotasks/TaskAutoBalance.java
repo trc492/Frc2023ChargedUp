@@ -308,10 +308,10 @@ public class TaskAutoBalance extends TrcAutoTask<TaskAutoBalance.State>
                 {
                     // Robot is still tipped. Drive the robot in the climb direction for a short distance.
                     robot.robotDrive.setAntiDefenseEnabled(currOwner, false);
-                    robot.robotDrive.enableDistanceTrigger(4.0, distanceTriggerEvent);
+                    robot.robotDrive.enableDistanceTrigger(1.5, distanceTriggerEvent);
                     sm.addEvent(distanceTriggerEvent);
                     robot.robotDrive.driveBase.holonomicDrive(
-                        currOwner, 0.0, dir*0.1, 0.0, robot.robotDrive.driveBase.getHeading());
+                        currOwner, 0.0, dir*0.09, 0.0, robot.robotDrive.driveBase.getHeading());
                     sm.addEvent(tiltEvent);
                     sm.waitForEvents(State.SETTLE);
                 }

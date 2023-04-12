@@ -184,7 +184,7 @@ public class CmdAutoStartPos1Or3 implements TrcRobot.RobotCommand
                 case PICKUP_SECOND_CUBE:
                     sm.addEvent(autoAssistEvent);
                     robot.intake.autoAssistIntake(
-                        0.0, RobotParams.INTAKE_PICKUP_POWER, RobotParams.INTAKE_CUBE_RETAIN_POWER, 0.75,
+                        0.0, -RobotParams.INTAKE_PICKUP_POWER, RobotParams.INTAKE_CUBE_RETAIN_POWER, 0.75,
                         autoAssistEvent, 0.0);
 
                     sm.addEvent(driveEvent);

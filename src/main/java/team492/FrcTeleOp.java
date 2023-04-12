@@ -700,7 +700,9 @@ public class FrcTeleOp implements TrcRobot.RobotMode
                 // TODO (Code Review): Is this test code?
                 if (pressed)
                 {
-                    robot.intake.setPower(null, 0, -1.0, 1.0, null);
+                    //arm - 93.8, wrist - 199, elevator - 22.8
+                    robot.prepSubsystems(moduleName,22.8, 93.8, 199);
+                    // robot.intake.setPower(null, 0, -1.0, 1.0, null);
                 }
                 break;
 
