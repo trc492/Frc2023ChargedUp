@@ -306,7 +306,7 @@ public class FrcTeleOp implements TrcRobot.RobotMode
 
             case FrcXboxController.BUTTON_Y:
                 // Toggle between Field or Robot oriented driving mode.
-                if (pressed)
+                if (pressed && robot.robotDrive != null)
                 {
                     if (robot.robotDrive.driveOrientation != RobotDrive.DriveOrientation.FIELD)
                     {
